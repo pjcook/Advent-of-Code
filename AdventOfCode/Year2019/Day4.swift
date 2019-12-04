@@ -22,7 +22,7 @@ struct VenusPasswordCalculator {
     func isValidPassword(input: Int) -> Bool {
         let password = String(input)
         let characters = password.compactMap { Int(String($0)) }
-        let orderedPassword = characters.sorted().map { String($0) }.joined()
+        guard characters == characters.sorted() else { return false }
         var hasDouble = false
         let count = characters.count
         var ignoreCharacter: Int? = nil
@@ -37,6 +37,6 @@ struct VenusPasswordCalculator {
             }
         }
         
-        return hasDouble && password == orderedPassword
+        return hasDouble
     }
 }
