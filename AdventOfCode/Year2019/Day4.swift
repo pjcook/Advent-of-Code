@@ -21,11 +21,17 @@ struct VenusPasswordCalculator {
     
     func isValidPassword(input: Int) -> Bool {
         let password = String(input)
-        let characters = password.compactMap { Int(String($0)) }
+        let characters = password.compactMap { $0 }
         guard characters == characters.sorted() else { return false }
+        
+        return hasOnlyTwoAdjacentIntegers(characters)
+    }
+    
+    func hasOnlyTwoAdjacentIntegers(_ characters: [String.Element]) -> Bool {
         var hasDouble = false
         let count = characters.count
-        var ignoreCharacter: Int? = nil
+        var ignoreCharacter: Character? = nil
+
         for i in 0..<count-1 {
             if ignoreCharacter != characters[i], characters[i] == characters[i+1] {
                 if i+2 <= count-1, characters[i] == characters[i+2] {
@@ -36,7 +42,26 @@ struct VenusPasswordCalculator {
                 }
             }
         }
-        
+
         return hasDouble
+    }
+    
+    func hasOnlyTwoAdjacentIntegersDaniel(_ input: Int) -> Bool {
+        var value = Character("-")
+        var count = 1
+        
+        for character in String(input) {
+            if character == value {
+                count += 1
+                continue
+            }
+            
+            if count == 2 { return true }
+            
+            value = character
+            count = 1
+        }
+        
+        return count == 2
     }
 }

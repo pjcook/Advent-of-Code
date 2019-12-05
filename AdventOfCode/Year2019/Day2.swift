@@ -8,13 +8,13 @@
 
 import Foundation
 
-enum OpCode: Int {
-    case add = 1
-    case multiply = 2
-    case finished = 99
-}
-
 struct IntCodeComputer {
+    enum OpCode: Int {
+        case add = 1
+        case multiply = 2
+        case finished = 99
+    }
+
     private var data: [Int]
     var readData: [Int] { return data }
     
