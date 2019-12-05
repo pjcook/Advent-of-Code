@@ -20,6 +20,15 @@ struct AdvancedIntCodeComputer {
             case lessThan = 7
             case equals = 8
             case finished = 99
+            
+            var instructionCount: Int {
+                switch self {
+                case .add, .multiply, .lessThan, .equals: return 4
+                case .input, .output: return 2
+                case .jumpIfFalse, .jumpIfTrue: return 3
+                case .finished: return 0
+                }
+            }
         }
         
         enum Mode: Int {
@@ -28,15 +37,17 @@ struct AdvancedIntCodeComputer {
         }
         
         let opCode: OpCode
-        let param1Mode: Mode
-        let param2Mode: Mode
+        let value: Int?
+        let output: Int?
+        let writeIndex: Int?
+        let position: Int
         
-        init(_ value: String) throws {
-            var value = value
-            let e = value.count > 0 ? String(value.removeLast()) : ""
-            let d = value.count > 0 ? String(value.removeLast()) : ""
-            let c = value.count > 0 ? String(value.removeLast()) : ""
-            let b = value.count > 0 ? String(value.removeLast()) : ""
+        init(_ data: [Int], input: Int, position: Int) throws {
+            var string = String(data[position])
+            let e = string.count > 0 ? String(string.removeLast()) : ""
+            let d = string.count > 0 ? String(string.removeLast()) : ""
+            let c = string.count > 0 ? String(string.removeLast()) : ""
+            let b = string.count > 0 ? String(string.removeLast()) : ""
             
             guard
                 let mode2 = Mode(rawValue: Int(b) ?? 0),
@@ -45,8 +56,95 @@ struct AdvancedIntCodeComputer {
             else { throw Errors.invalidOpCode }
             
             opCode = code
-            param2Mode = mode2
-            param1Mode = mode1
+            let param2Mode = mode2
+            let param1Mode = mode1
+            
+            switch opCode {
+                case .add:
+                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
+                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
+                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
+                    writeIndex = data[position+3]
+                    value = value1 + value2
+                    output = nil
+
+                case .multiply:
+                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
+                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
+                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
+                    writeIndex = data[position+3]
+                    value = value1 * value2
+                    output = nil
+
+                case .input:
+                    guard position+2 < data.count else { throw Errors.intCodeInvalidIndex }
+                    writeIndex = data[position+1]
+                    value = input
+                    output = nil
+
+                case .output:
+                    guard position+2 < data.count else { throw Errors.intCodeInvalidIndex }
+                    output = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
+                    value = nil
+                    writeIndex = nil
+                    
+                case .jumpIfTrue:
+                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
+                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
+                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
+                    if value1 != 0 {
+                        writeIndex = value2
+                    } else {
+                        writeIndex = position + 3
+                    }
+                    value = nil
+                    output = nil
+                    
+                case .jumpIfFalse:
+                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
+                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
+                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
+                    if value1 == 0 {
+                        writeIndex = value2
+                    } else {
+                        writeIndex = position + 3
+                    }
+                    value = nil
+                    output = nil
+                    
+                case .lessThan:
+                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
+                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
+                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
+                    writeIndex = data[position+3]
+                    value = value1 < value2 ? 1 : 0
+                    output = nil
+
+                case .equals:
+                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
+                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
+                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
+                    writeIndex = data[position+3]
+                    value = value1 == value2 ? 1 : 0
+                    output = nil
+
+                case .finished:
+                    writeIndex = nil
+                    value = nil
+                    output = nil
+            }
+            
+            self.position = Program.incrementPosition(position, opCode: opCode, writeIndex: writeIndex)
+        }
+        
+        private static func incrementPosition(_ position: Int, opCode: OpCode, writeIndex: Int?) -> Int {
+            switch opCode {
+            case .jumpIfTrue, .jumpIfFalse:
+                return writeIndex ?? 0
+                
+            default:
+                return position + opCode.instructionCount
+            }
         }
     }
 
@@ -62,71 +160,18 @@ struct AdvancedIntCodeComputer {
         var position = 0
         var output = -1
         let dataCount = data.count
-        var program = try Program(String(data[position]))
+        var program = try Program(data, input: input, position: position)
         while program.opCode != .finished {
-            
-            switch program.opCode {
-            case .add:
-                guard position+3 < dataCount else { throw Errors.intCodeInvalidIndex }
-                let value1 = program.param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                let value2 = program.param2Mode == .immediate ? data[position+2] : data[data[position+2]]
-                let endIndex = data[position+3]
-                data[endIndex] = value1 + value2
-                position += 4
-
-            case .multiply:
-                guard position+3 < dataCount else { throw Errors.intCodeInvalidIndex }
-                let value1 = program.param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                let value2 = program.param2Mode == .immediate ? data[position+2] : data[data[position+2]]
-                let endIndex = data[position+3]
-                data[endIndex] = value1 * value2
-                position += 4
-
-            case .input:
-                data[data[position+1]] = input
-                position += 2
-
-            case .output:
-                output = program.param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                position += 2
-                
-            case .jumpIfTrue:
-                let value1 = program.param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                let value2 = program.param2Mode == .immediate ? data[position+2] : data[data[position+2]]
-                if value1 != 0 {
-                    position = value2
-                } else {
-                    position += 3
-                }
-                
-            case .jumpIfFalse:
-                let value1 = program.param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                let value2 = program.param2Mode == .immediate ? data[position+2] : data[data[position+2]]
-                if value1 == 0 {
-                    position = value2
-                } else {
-                    position += 3
-                }
-                
-            case .lessThan:
-                let value1 = program.param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                let value2 = program.param2Mode == .immediate ? data[position+2] : data[data[position+2]]
-                let endIndex = data[position+3]
-                data[endIndex] = value1 < value2 ? 1 : 0
-                position += 4
-
-            case .equals:
-                let value1 = program.param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                let value2 = program.param2Mode == .immediate ? data[position+2] : data[data[position+2]]
-                let endIndex = data[position+3]
-                data[endIndex] = value1 == value2 ? 1 : 0
-                position += 4
-
-            case .finished: break
+            if let writeIndex = program.writeIndex, let value = program.value {
+                data[writeIndex] = value
+            } else if let programOutput = program.output {
+                output = programOutput
             }
+            
+            position = program.position
 
             guard position < dataCount else { throw Errors.intCodeInvalidIndex }
-            program = try Program(String(data[position]))
+            program = try Program(data, input: input, position: position)
         }
         return output
     }
