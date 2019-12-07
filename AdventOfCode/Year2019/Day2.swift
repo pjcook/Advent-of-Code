@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import InputReader
 
 struct IntCodeComputer {
     enum OpCode: Int {

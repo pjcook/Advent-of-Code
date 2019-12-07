@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import InputReader
 @testable import Year2019
 
 class Day5Tests: XCTestCase {
@@ -14,102 +15,109 @@ class Day5Tests: XCTestCase {
     func test_sample_data1() throws {
         let data = "1101,100,-1,4,0".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        let output = try computer.process(0)
+        let output = try computer.process({ 0 })
         XCTAssertEqual(-1, output)
         XCTAssertEqual(99, computer.readData[4])
     }
     
-    func test_part1() throws {
-        guard let data = try readInput(filename: "Day5.input", delimiter: ",", cast: Int.init) as? [Int] else { return XCTFail() }
+    func test_part1_chris() throws {
+        guard let data = try readInput(filename: "Day5_sample1.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: Day5Tests.self)) as? [Int] else { return XCTFail() }
         var computer = AdvancedIntCodeComputer(data: data)
-        let output = try computer.process(1)
+        let output = try computer.process({ 5 })
+        XCTAssertEqual(584126, output)
+    }
+    
+    func test_part1() throws {
+        guard let data = try readInput(filename: "Day5.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { return XCTFail() }
+        var computer = AdvancedIntCodeComputer(data: data)
+        let output = try computer.process({ 1 })
         XCTAssertEqual(9006673, output)
     }
     
     func test_part2_sample_data1() throws {
         let data = "3,9,8,9,10,9,4,9,99,-1,8".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(1, try computer.process(8))
+        XCTAssertEqual(1, try computer.process({ 8 }))
     }
     
     func test_part2_sample_data1b() throws {
         let data = "3,9,8,9,10,9,4,9,99,-1,8".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(0, try computer.process(7))
+        XCTAssertEqual(0, try computer.process({ 7 }))
     }
     
     func test_part2_sample_data2() throws {
         let data = "3,9,7,9,10,9,4,9,99,-1,8".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(1, try computer.process(7))
+        XCTAssertEqual(1, try computer.process({ 7 }))
     }
     
     func test_part2_sample_data2b() throws {
         let data = "3,9,7,9,10,9,4,9,99,-1,8".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(0, try computer.process(8))
+        XCTAssertEqual(0, try computer.process({ 8 }))
     }
     
     func test_part2_sample_data3() throws {
         let data = "3,3,1108,-1,8,3,4,3,99".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(1, try computer.process(8))
+        XCTAssertEqual(1, try computer.process({ 8 }))
     }
     
     func test_part2_sample_data3b() throws {
         let data = "3,3,1108,-1,8,3,4,3,99".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(0, try computer.process(9))
+        XCTAssertEqual(0, try computer.process({ 9 }))
     }
     
     func test_part2_sample_data4() throws {
         let data = "3,3,1107,-1,8,3,4,3,99".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(1, try computer.process(6))
+        XCTAssertEqual(1, try computer.process({ 6 }))
     }
     
     func test_part2_sample_data4b() throws {
         let data = "3,3,1107,-1,8,3,4,3,99".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(0, try computer.process(9))
+        XCTAssertEqual(0, try computer.process({ 9 }))
     }
     
     func test_part2_sample_data5() throws {
         let data = "3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(0, try computer.process(0))
+        XCTAssertEqual(0, try computer.process({ 0 }))
     }
     
     func test_part2_sample_data5b() throws {
         let data = "3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(1, try computer.process(99))
+        XCTAssertEqual(1, try computer.process({ 99 }))
     }
     
     func test_part2_sample_data6() throws {
         let data = "3,3,1105,-1,9,1101,0,0,12,4,12,99,1".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(0, try computer.process(0))
+        XCTAssertEqual(0, try computer.process({ 0 }))
     }
     
     func test_part2_sample_data6b() throws {
         let data = "3,3,1105,-1,9,1101,0,0,12,4,12,99,1".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(1, try computer.process(9))
+        XCTAssertEqual(1, try computer.process({ 9 }))
     }
     
     func test_part2_sample_data7() throws {
         let data = "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99".split(separator: ",").compactMap { Int($0) }
         var computer = AdvancedIntCodeComputer(data: data)
-        XCTAssertEqual(999, try computer.process(6))
-        XCTAssertEqual(1000, try computer.process(8))
-        XCTAssertEqual(1001, try computer.process(22))
+        XCTAssertEqual(999, try computer.process({ 6 }))
+        XCTAssertEqual(1000, try computer.process({ 8 }))
+        XCTAssertEqual(1001, try computer.process({ 22 }))
     }
     
     func test_part2() throws {
-        guard let data = try readInput(filename: "Day5.input", delimiter: ",", cast: Int.init) as? [Int] else { return XCTFail() }
+        guard let data = try readInput(filename: "Day5.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { return XCTFail() }
         var computer = AdvancedIntCodeComputer(data: data)
-        let output = try computer.process(5)
+        let output = try computer.process({ 5 })
         XCTAssertEqual(3629692, output)
     }
 

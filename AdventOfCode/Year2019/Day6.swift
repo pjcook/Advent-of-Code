@@ -36,28 +36,12 @@ struct UniversalOrbitMap {
     func distance(of: PlanetID, to: PlanetID) -> Int {
         let chain1 = chain(of)
         let chain2 = chain(to)
-        var count = 0
+
         for i in 0..<min(chain1.count, chain2.count) {
-            if chain1[i] == chain2[i] {
-                count += 1
-            } else {
-                break
-            }
-        }
-        return chain1.count - count + chain2.count - count - 2
-    }
-    
-    func distanceZip(of: PlanetID, to: PlanetID) -> Int {
-        let chain1 = chain(of)
-        let chain2 = chain(to)
-        var count = 0
-        
-        for (item1, item2) in zip(chain1, chain2) {
-            if item1 == item2 { count += 1 }
-            else { break }
+            if chain1[i] != chain2[i] { return chain1.count - i + chain2.count - i - 2 }
         }
         
-        return chain1.count - count + chain2.count - count - 2
+        return 0
     }
     
     private func countOrbitChain(_ id: PlanetID) -> Int {

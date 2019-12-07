@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Year2019
+@testable import InputReader
 
 class InputReaderTests: XCTestCase {
 
@@ -17,21 +17,21 @@ class InputReaderTests: XCTestCase {
     }
     
     func test_validFile2() throws {
-        let array = try readInput(filename: "Day2.input", delimiter: ",", cast: Int.init)
+        let array = try readInput(filename: "Day2.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: InputReaderTests.self))
         XCTAssertEqual(153, array.count)
     }
     
     func test_invalidFilename() throws {
         XCTAssertThrowsError(try readInput(filename: "nofile.data", delimiter: "\n", cast: Int.init, bundle: Bundle(for: InputReaderTests.self)), "Failed") { error in
-            guard let error = error as? Errors else { return XCTFail() }
-            XCTAssertEqual(Errors.invalidFilename, error)
+            guard let error = error as? InputErrors else { return XCTFail() }
+            XCTAssertEqual(InputErrors.invalidFilename, error)
         }
     }
     
     func test_invalidFileData() throws {
         XCTAssertThrowsError(try readInput(filename: "InvalidData.png", delimiter: "\n", cast: Int.init, bundle: Bundle(for: InputReaderTests.self)), "Failed") { error in
-            guard let error = error as? Errors else { return XCTFail() }
-            XCTAssertEqual(Errors.invalidFileData, error)
+            guard let error = error as? InputErrors else { return XCTFail() }
+            XCTAssertEqual(InputErrors.invalidFileData, error)
         }
     }
     

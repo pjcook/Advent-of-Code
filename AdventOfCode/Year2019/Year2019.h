@@ -15,5 +15,3 @@ FOUNDATION_EXPORT double Year2019VersionNumber;
 FOUNDATION_EXPORT const unsigned char Year2019VersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <Year2019/PublicHeader.h>
-
-

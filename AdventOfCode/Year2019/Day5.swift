@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import InputReader
 
 struct AdvancedIntCodeComputer {
     struct Program {
@@ -42,7 +43,7 @@ struct AdvancedIntCodeComputer {
         let writeIndex: Int?
         let position: Int
         
-        init(_ data: [Int], input: Int, position: Int) throws {
+        init(_ data: [Int], readInput: ()->Int, position: Int) throws {
             var string = String(data[position])
             let e = string.count > 0 ? String(string.removeLast()) : ""
             let d = string.count > 0 ? String(string.removeLast()) : ""
@@ -53,7 +54,9 @@ struct AdvancedIntCodeComputer {
                 let mode2 = Mode(rawValue: Int(b) ?? 0),
                 let mode1 = Mode(rawValue: Int(c) ?? 0),
                 let code = OpCode(rawValue: Int(d+e) ?? -999)
-            else { throw Errors.invalidOpCode }
+            else {
+                throw Errors.invalidOpCode
+            }
             
             opCode = code
             let param2Mode = mode2
@@ -79,7 +82,7 @@ struct AdvancedIntCodeComputer {
                 case .input:
                     guard position+2 < data.count else { throw Errors.intCodeInvalidIndex }
                     writeIndex = data[position+1]
-                    value = input
+                    value = readInput()
                     output = nil
 
                 case .output:
@@ -155,12 +158,12 @@ struct AdvancedIntCodeComputer {
         self.data = data
     }
     
-    mutating func process(_ input: Int) throws -> Int {
+    mutating func process(_ readInput: ()->Int) throws -> Int {
         guard !data.isEmpty else { throw Errors.intCodeNoData }
         var position = 0
         var output = -1
         let dataCount = data.count
-        var program = try Program(data, input: input, position: position)
+        var program = try Program(data, readInput: readInput, position: position)
         while program.opCode != .finished {
             if let writeIndex = program.writeIndex, let value = program.value {
                 data[writeIndex] = value
@@ -171,7 +174,7 @@ struct AdvancedIntCodeComputer {
             position = program.position
 
             guard position < dataCount else { throw Errors.intCodeInvalidIndex }
-            program = try Program(data, input: input, position: position)
+            program = try Program(data, readInput: readInput, position: position)
         }
         return output
     }

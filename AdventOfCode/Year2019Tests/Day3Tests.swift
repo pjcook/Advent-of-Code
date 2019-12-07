@@ -7,12 +7,13 @@
 //
 
 import XCTest
+import InputReader
 @testable import Year2019
 
 class Day3Tests: XCTestCase {
 
     func test_day3_part1() throws {
-        let data = try readInput(filename: "Day3.input", delimiter: "\n", cast: String.init)
+        let data = try readInput(filename: "Day3.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
         let wireData = try data.compactMap { try WireData($0) }
         let range = wireData.reduce(WireData.DirectionRange.zero) { $0.maxRange($1.range) }
         var map = ManhattanMap(range)
@@ -123,7 +124,7 @@ class Day3Tests: XCTestCase {
     }
     
     func test_wireData() throws {
-        let data = try readInput(filename: "Day3.input", delimiter: "\n", cast: String.init)
+        let data = try readInput(filename: "Day3.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
         let wireData = try data.compactMap { try WireData($0) }
         
         XCTAssertEqual(301, wireData[0].data.count)

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import InputReader
 
 struct ManhattanInstruction {
     enum Direction: String {
