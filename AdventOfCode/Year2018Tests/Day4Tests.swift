@@ -40,8 +40,16 @@ class Day4Tests: XCTestCase {
         
         XCTAssertEqual(input.count, data.count)
         XCTAssertEqual(ReposeLineData.LineDataType.asleep, data[1].dataType)
-        XCTAssertEqual(ReposezLineData.LineDataType.awake, data[7].dataType)
-        XCTAssertEqual(data[5].dataType, ReposeLineData.LineDataType.beginShift)
+        XCTAssertEqual(ReposeLineData.LineDataType.awake, data[7].dataType)
+        switch data[5].dataType {
+        case .asleep, .awake: XCTFail()
+        case let .beginShift(id):
+            XCTAssertEqual(99, id)
+        }
+    }
+    
+    func test_part1() {
+        
     }
 
 }

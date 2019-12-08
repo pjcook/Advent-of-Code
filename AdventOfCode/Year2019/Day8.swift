@@ -58,9 +58,9 @@ func renderImage(_ data: String, size: CGSize) {
         var row = ""
         for x in 0..<rowData.count {
             if rowData[x] == 1 {
-                row += "*"
+                row += "◻️"
             } else {
-                row += " "
+                row += "◼️"
             }
         }
         print("\(row)")
