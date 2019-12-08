@@ -158,7 +158,7 @@ struct AdvancedIntCodeComputer {
         self.data = data
     }
     
-    mutating func process(_ readInput: ()->Int) throws -> Int {
+    mutating func process(_ readInput: ()->Int, processOutput: ((Int)->())? = nil, finished: (()->Void)? = nil) throws -> Int {
         guard !data.isEmpty else { throw Errors.intCodeNoData }
         var position = 0
         var output = -1
@@ -169,6 +169,7 @@ struct AdvancedIntCodeComputer {
                 data[writeIndex] = value
             } else if let programOutput = program.output {
                 output = programOutput
+                processOutput?(output)
             }
             
             position = program.position
@@ -176,6 +177,7 @@ struct AdvancedIntCodeComputer {
             guard position < dataCount else { throw Errors.intCodeInvalidIndex }
             program = try Program(data, readInput: readInput, position: position)
         }
+        finished?()
         return output
     }
 }

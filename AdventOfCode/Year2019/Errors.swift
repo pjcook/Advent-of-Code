@@ -15,4 +15,5 @@ enum Errors: Error {
     case calculateNounVerbNoResult
     case invalidManhattanInstruction
     case invalidInput
+    case validImageLayerNotFound
 }

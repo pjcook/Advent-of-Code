@@ -37,20 +37,51 @@ class Day7Tests: XCTestCase {
     }
     
     func test_part1() throws {
-        XCTAssertEqual(212460, try findMaximumThrusterValue(phaseSettings: [0,1,2,3,4]))
+        guard let input = try readInput(filename: "Day7.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+        XCTAssertEqual(212460, try findMaximumThrusterValue(phaseSettings: [0,1,2,3,4], input: input))
+    }
+    
+    func test_part2() throws {
+        guard let input = try readInput(filename: "Day7.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+        XCTAssertEqual(21844737, try findMaximumThrusterValue(phaseSettings: [9,8,7,6,5], input: input, loop: true))
     }
     
     func test_part2_sample_data1() throws {
         let settings = [9,8,7,6,5]
         let input = [3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5]
-        XCTAssertEqual(139629729, try findMaximumThrusterValue(phaseSettings: settings))
+        XCTAssertEqual(139629729, try findMaximumThrusterValue(phaseSettings: settings, input: input, loop: true))
     }
     
     func test_part2_sample_data2() throws {
         let settings = [9,7,8,5,6]
         let input = [3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,
         53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10]
-        XCTAssertEqual(18216, try findMaximumThrusterValue(phaseSettings: settings))
+        XCTAssertEqual(18216, try findMaximumThrusterValue(phaseSettings: settings, input: input, loop: true))
+    }
+    
+    func test_dispatch_groups() {
+        let mainGroup = DispatchGroup()
+        let group2 = DispatchGroup()
+        print("enter")
+        mainGroup.enter()
+        group2.enter()
+        
+        DispatchQueue.global().async {
+            print("group2 wait")
+            group2.wait()
+            print("leave main group")
+            mainGroup.leave()
+        }
+       
+        DispatchQueue.global().asyncAfter(deadline: .now()+0.1) {
+            print("leave group2")
+            group2.leave()
+        }
+        
+        print("wait")
+        mainGroup.wait()
+        print("finished")
+        XCTAssertTrue(true)
     }
 
 }

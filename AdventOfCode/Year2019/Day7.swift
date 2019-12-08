@@ -9,39 +9,136 @@
 import Foundation
 import InputReader
 
-func processThrusterSettings(_ settings: [Int], _ input: [Int], loop: Bool = false) throws -> Int {
-    var amp1 = AdvancedIntCodeComputer(data: input)
-    var amp2 = AdvancedIntCodeComputer(data: input)
-    var amp3 = AdvancedIntCodeComputer(data: input)
-    var amp4 = AdvancedIntCodeComputer(data: input)
-    var amp5 = AdvancedIntCodeComputer(data: input)
-    
-    var programInputs = [Int]()
+func processThrusterSettings(_ settings: [Int], _ input: [Int]) throws -> Int {
+    var programInputs = [0]
     
     func readInput() -> Int {
         let value = programInputs.removeFirst()
         if programInputs.isEmpty {
             programInputs.append(value)
         }
+        print("Read input:\(value)")
         return value
     }
     
+    var output = 0
+    var amplifiers = [Int:AdvancedIntCodeComputer]()
     
+    for setting in settings {
+        print("Running Amplifier:\(setting)")
+        var amp = amplifiers[setting]
+        if amp == nil {
+            amp = AdvancedIntCodeComputer(data: input)
+            amplifiers[setting] = amp
+        }
+        programInputs = [setting, output]
+        output = try amp!.process(readInput)
+    }
+
+    return output
+}
+
+class ChainedComputer {
+    private let program: [Int]
+    private var inputs: [Int]
+    private var amplifier: AdvancedIntCodeComputer
+    private let id: String
     
-    programInputs = [settings[0], 0]
-    let a = try amp1.process(readInput)
+    var lastOutput: Int?
+    var shouldStopProcessing = false
     
-    programInputs = [settings[1], a]
-    let b = try amp2.process(readInput)
+    deinit {
+        shouldStopProcessing = true
+    }
     
-    programInputs = [settings[2], b]
-    let c = try amp3.process(readInput)
+    init(id: String, inputs: [Int], program: [Int]) {
+        self.id = id
+        self.program = program
+        self.inputs = inputs
+        amplifier = AdvancedIntCodeComputer(data: program)
+    }
     
-    programInputs = [settings[3], c]
-    let d = try amp4.process(readInput)
+    func run(writeInput: ((Int)->Void)?) throws {
+        shouldStopProcessing = false
+        lastOutput = try amplifier.process(readInput, processOutput: { input in
+            writeInput?(input)
+        }, finished: finished)
+    }
     
-    programInputs = [settings[4], d]
-    return try amp5.process(readInput)
+    private func readInput() -> Int {
+        guard !shouldStopProcessing else { return 0 }
+        usleep(200)
+        if inputs.isEmpty {
+            return readInput()
+        }
+        return inputs.removeFirst()
+    }
+    
+    func writeInput(_ input: Int) {
+        inputs.append(input)
+    }
+    
+    private func finished() {
+        shouldStopProcessing = true
+    }
+}
+
+func processThrusterSettingsLooped(_ settings: [Int], _ input: [Int]) throws -> Int {
+    let completeGroup = DispatchGroup()
+
+    let computer1 = ChainedComputer(id: "1", inputs: [settings[0], 0], program: input)
+    let computer2 = ChainedComputer(id: "2", inputs: [settings[1]], program: input)
+    let computer3 = ChainedComputer(id: "3", inputs: [settings[2]], program: input)
+    let computer4 = ChainedComputer(id: "4", inputs: [settings[3]], program: input)
+    let computer5 = ChainedComputer(id: "5", inputs: [settings[4]], program: input)
+    
+    DispatchQueue.global().async {
+        completeGroup.enter()
+        do {
+            try computer1.run(writeInput: computer2.writeInput)
+        } catch {}
+        completeGroup.leave()
+    }
+    
+    DispatchQueue.global().async {
+        completeGroup.enter()
+        do {
+            try computer2.run(writeInput: computer3.writeInput)
+        } catch {}
+        completeGroup.leave()
+    }
+    
+    DispatchQueue.global().async {
+        completeGroup.enter()
+        do {
+            try computer3.run(writeInput: computer4.writeInput)
+        } catch {}
+        completeGroup.leave()
+    }
+    
+    DispatchQueue.global().async {
+        completeGroup.enter()
+        do {
+            try computer4.run(writeInput: computer5.writeInput)
+        } catch {}
+        completeGroup.leave()
+    }
+    
+    var finalOutput = 0
+    completeGroup.enter()
+
+    DispatchQueue.global().async {
+        do {
+            try computer5.run(writeInput: computer1.writeInput)
+            finalOutput = computer5.lastOutput!
+            completeGroup.leave()
+        } catch {
+            completeGroup.leave()
+        }
+    }
+    
+    completeGroup.wait()
+    return finalOutput
 }
 
 func generateCombinations(_ possibleValues: [Int]) -> [[Int]] {
@@ -63,13 +160,15 @@ func generateCombinations(_ possibleValues: [Int]) -> [[Int]] {
     return combinations
 }
 
-func findMaximumThrusterValue(phaseSettings: [Int]) throws -> Int {
-    guard let input = try readInput(filename: "Day7.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
-
+func findMaximumThrusterValue(phaseSettings: [Int], input: [Int], loop: Bool = false) throws -> Int {
     var maxValue = 0
     
     for combination in generateCombinations(phaseSettings) {
-        maxValue = max(try processThrusterSettings(combination, input), maxValue)
+        if loop {
+            maxValue = max(try processThrusterSettingsLooped(combination, input), maxValue)
+        } else {
+            maxValue = max(try processThrusterSettings(combination, input), maxValue)
+        }
     }
     
     return maxValue
