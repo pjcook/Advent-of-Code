@@ -8,10 +8,10 @@
 
 import Foundation
 
-func processSensorBoost(_ program: [Int], input: Int) throws -> (Int,[Int]) {
-    let bigProgram = program + Array(repeating: 0, count: program.count)
+func processSensorBoost(_ program: [Int], input: Int) -> (Int,[Int]) {
+    let bigProgram = program + Array(repeating: 0, count: 1000)
     let computer = AdvancedIntCodeComputer(data: bigProgram)
     var output = [Int]()
-    let result = try computer.process({ input }, processOutput: { output.append($0) }, forceWriteMode: false)
+    let result = computer.process({ input }, processOutput: { output.append($0) }, forceWriteMode: false)
     return (result, output)
 }

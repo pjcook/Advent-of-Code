@@ -22,7 +22,7 @@ func processThrusterSettings(_ settings: [Int], _ input: [Int]) throws -> Int {
         print("Running Amplifier:\(setting)")
         let amp = AdvancedIntCodeComputer(data: input)
         programInputs = [setting, output]
-        output = try amp.process(readInput, processOutput: { print("Output:\($0)") })
+        output = amp.process(readInput, processOutput: { print("Output:\($0)") })
     }
 
     return output
@@ -50,7 +50,7 @@ class ChainedComputer {
     
     func run(writeInput: ((Int)->Void)?) throws {
         shouldStopProcessing = false
-        lastOutput = try amplifier.process(readInput, processOutput: { input in
+        lastOutput = amplifier.process(readInput, processOutput: { input in
             writeInput?(input)
         }, finished: finished)
     }
