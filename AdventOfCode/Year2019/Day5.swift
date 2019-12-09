@@ -202,7 +202,7 @@ class AdvancedIntCodeComputer {
             output = value
             processOutput?(output)
         }
-//        print(data)
+
         var program = try Program(
             readData: readData,
             writeData: writeData,
@@ -211,7 +211,7 @@ class AdvancedIntCodeComputer {
             position: position,
             forceWriteMode: forceWriteMode
         )
-//        print(data)
+
         while program.opCode != .finished {
             position = program.position
             program = try Program(
@@ -223,7 +223,6 @@ class AdvancedIntCodeComputer {
                 relativeBase: program.relativeBase,
                 forceWriteMode: forceWriteMode
             )
-//            print(data)
         }
         finished?()
         return output
