@@ -20,12 +20,13 @@ struct AdvancedIntCodeComputer {
             case jumpIfFalse = 6
             case lessThan = 7
             case equals = 8
+            case adjustRelativeBase = 9
             case finished = 99
             
             var instructionCount: Int {
                 switch self {
                 case .add, .multiply, .lessThan, .equals: return 4
-                case .input, .output: return 2
+                case .input, .output, .adjustRelativeBase: return 2
                 case .jumpIfFalse, .jumpIfTrue: return 3
                 case .finished: return 0
                 }
@@ -35,6 +36,7 @@ struct AdvancedIntCodeComputer {
         enum Mode: Int {
             case position = 0
             case immediate = 1
+            case relative = 2
         }
         
         let opCode: OpCode
@@ -42,15 +44,18 @@ struct AdvancedIntCodeComputer {
         let output: Int?
         let writeIndex: Int?
         let position: Int
+        let relativeBase: Int
         
-        init(_ data: [Int], readInput: ()->Int, position: Int) throws {
-            var string = String(data[position])
+        init(readData: (Int)->Int, readInput: ()->Int, position: Int, relativeBase: Int = 0, forceWriteMode: Bool = true) throws {
+            var string = String(readData(position))
             let e = string.count > 0 ? String(string.removeLast()) : ""
             let d = string.count > 0 ? String(string.removeLast()) : ""
             let c = string.count > 0 ? String(string.removeLast()) : ""
             let b = string.count > 0 ? String(string.removeLast()) : ""
+            let a = string.count > 0 ? String(string.removeLast()) : ""
             
             guard
+                let mode3 = Mode(rawValue: Int(a) ?? 0),
                 let mode2 = Mode(rawValue: Int(b) ?? 0),
                 let mode1 = Mode(rawValue: Int(c) ?? 0),
                 let code = OpCode(rawValue: Int(d+e) ?? -999)
@@ -61,40 +66,41 @@ struct AdvancedIntCodeComputer {
             opCode = code
             let param2Mode = mode2
             let param1Mode = mode1
+            let writeMode = forceWriteMode ? .position : mode3
             
             switch opCode {
                 case .add:
-                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
-                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
-                    writeIndex = data[position+3]
+                    let value1 = Program.read(readData: readData, position: position+1, relativeBase: relativeBase, mode: param1Mode)
+                    let value2 = Program.read(readData: readData, position: position+2, relativeBase: relativeBase, mode: param2Mode)
+                    writeIndex = Program.writePosition(readData: readData, position: position+3, relativeBase: relativeBase, mode: writeMode)
                     value = value1 + value2
                     output = nil
+                    self.relativeBase = relativeBase
 
                 case .multiply:
-                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
-                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
-                    writeIndex = data[position+3]
+                    let value1 = Program.read(readData: readData, position: position+1, relativeBase: relativeBase, mode: param1Mode)
+                    let value2 = Program.read(readData: readData, position: position+2, relativeBase: relativeBase, mode: param2Mode)
+                    writeIndex = Program.writePosition(readData: readData, position: position+3, relativeBase: relativeBase, mode: writeMode)
                     value = value1 * value2
                     output = nil
+                    self.relativeBase = relativeBase
 
                 case .input:
-                    guard position+2 < data.count else { throw Errors.intCodeInvalidIndex }
-                    writeIndex = data[position+1]
+                    writeIndex = Program.writePosition(readData: readData, position: position+3, relativeBase: relativeBase, mode: writeMode)
                     value = readInput()
+                    
                     output = nil
+                    self.relativeBase = relativeBase
 
                 case .output:
-                    guard position+2 < data.count else { throw Errors.intCodeInvalidIndex }
-                    output = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
+                    output = Program.read(readData: readData, position: position+1, relativeBase: relativeBase, mode: param1Mode)
                     value = nil
                     writeIndex = nil
+                    self.relativeBase = relativeBase
                     
                 case .jumpIfTrue:
-                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
-                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
+                    let value1 = Program.read(readData: readData, position: position+1, relativeBase: relativeBase, mode: param1Mode)
+                    let value2 = Program.read(readData: readData, position: position+2, relativeBase: relativeBase, mode: param2Mode)
                     if value1 != 0 {
                         writeIndex = value2
                     } else {
@@ -102,11 +108,11 @@ struct AdvancedIntCodeComputer {
                     }
                     value = nil
                     output = nil
+                    self.relativeBase = relativeBase
                     
                 case .jumpIfFalse:
-                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
-                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
+                    let value1 = Program.read(readData: readData, position: position+1, relativeBase: relativeBase, mode: param1Mode)
+                    let value2 = Program.read(readData: readData, position: position+2, relativeBase: relativeBase, mode: param2Mode)
                     if value1 == 0 {
                         writeIndex = value2
                     } else {
@@ -114,30 +120,55 @@ struct AdvancedIntCodeComputer {
                     }
                     value = nil
                     output = nil
+                    self.relativeBase = relativeBase
                     
                 case .lessThan:
-                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
-                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
-                    writeIndex = data[position+3]
+                    let value1 = Program.read(readData: readData, position: position+1, relativeBase: relativeBase, mode: param1Mode)
+                    let value2 = Program.read(readData: readData, position: position+2, relativeBase: relativeBase, mode: param2Mode)
+                    writeIndex = Program.writePosition(readData: readData, position: position+3, relativeBase: relativeBase, mode: writeMode)
                     value = value1 < value2 ? 1 : 0
                     output = nil
+                    self.relativeBase = relativeBase
 
                 case .equals:
-                    guard position+3 < data.count else { throw Errors.intCodeInvalidIndex }
-                    let value1 = param1Mode == .immediate ? data[position+1] : data[data[position+1]]
-                    let value2 = param2Mode == .immediate ? data[position+2] : data[data[position+2]]
-                    writeIndex = data[position+3]
+                    let value1 = Program.read(readData: readData, position: position+1, relativeBase: relativeBase, mode: param1Mode)
+                    let value2 = Program.read(readData: readData, position: position+2, relativeBase: relativeBase, mode: param2Mode)
+                    writeIndex = Program.writePosition(readData: readData, position: position+3, relativeBase: relativeBase, mode: writeMode)
                     value = value1 == value2 ? 1 : 0
                     output = nil
+                    self.relativeBase = relativeBase
+                
+                case .adjustRelativeBase:
+                    let value1 = Program.read(readData: readData, position: position+1, relativeBase: relativeBase, mode: param1Mode)
+                    self.relativeBase = relativeBase + value1
+                    writeIndex = nil
+                    output = nil
+                    value = nil
 
                 case .finished:
                     writeIndex = nil
                     value = nil
                     output = nil
+                    self.relativeBase = relativeBase
             }
             
             self.position = Program.incrementPosition(position, opCode: opCode, writeIndex: writeIndex)
+        }
+        
+        private static func writePosition(readData: (Int)->Int, position: Int, relativeBase: Int, mode: Mode) -> Int {
+            switch mode {
+            case .immediate: return position
+            case .position: return readData(position)
+            case .relative: return relativeBase + readData(position)
+            }
+        }
+        
+        private static func read(readData: (Int)->Int, position: Int, relativeBase: Int, mode: Mode) -> Int {
+            switch mode {
+            case .immediate: return readData(position)
+            case .position: return readData(readData(position))
+            case .relative: return readData(relativeBase + readData(position))
+            }
         }
         
         private static func incrementPosition(_ position: Int, opCode: OpCode, writeIndex: Int?) -> Int {
@@ -158,12 +189,15 @@ struct AdvancedIntCodeComputer {
         self.data = data
     }
     
-    mutating func process(_ readInput: ()->Int, processOutput: ((Int)->())? = nil, finished: (()->Void)? = nil) throws -> Int {
+    mutating func process(_ readInput: ()->Int, processOutput: ((Int)->())? = nil, finished: (()->Void)? = nil, forceWriteMode: Bool = true) throws -> Int {
         guard !data.isEmpty else { throw Errors.intCodeNoData }
+        func readData(index: Int) -> Int {
+            return data[index]
+        }
         var position = 0
         var output = -1
         let dataCount = data.count
-        var program = try Program(data, readInput: readInput, position: position)
+        var program = try Program(readData: readData, readInput: readInput, position: position, forceWriteMode: forceWriteMode)
         while program.opCode != .finished {
             if let writeIndex = program.writeIndex, let value = program.value {
                 data[writeIndex] = value
@@ -175,7 +209,7 @@ struct AdvancedIntCodeComputer {
             position = program.position
 
             guard position < dataCount else { throw Errors.intCodeInvalidIndex }
-            program = try Program(data, readInput: readInput, position: position)
+            program = try Program(readData: readData, readInput: readInput, position: position, relativeBase: program.relativeBase, forceWriteMode: forceWriteMode)
         }
         finished?()
         return output

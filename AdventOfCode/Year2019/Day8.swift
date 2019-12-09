@@ -17,8 +17,6 @@ extension Array {
     }
 }
 
-
-
 func decodeImageFindMultiplier(_ data: String, size: CGSize) -> Int {
     let layers = data.compactMap { Int(String($0)) }.chunked(into: Int(size.width * size.height))
     var selectedLayer = [Int]()
