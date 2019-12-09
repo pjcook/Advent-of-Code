@@ -13,26 +13,16 @@ func processThrusterSettings(_ settings: [Int], _ input: [Int]) throws -> Int {
     var programInputs = [0]
     
     func readInput() -> Int {
-        let value = programInputs.removeFirst()
-        if programInputs.isEmpty {
-            programInputs.append(value)
-        }
-        print("Read input:\(value)")
-        return value
+        programInputs.removeFirst()
     }
     
     var output = 0
-    var amplifiers = [Int:AdvancedIntCodeComputer]()
     
     for setting in settings {
         print("Running Amplifier:\(setting)")
-        var amp = amplifiers[setting]
-        if amp == nil {
-            amp = AdvancedIntCodeComputer(data: input)
-            amplifiers[setting] = amp
-        }
+        let amp = AdvancedIntCodeComputer(data: input)
         programInputs = [setting, output]
-        output = try amp!.process(readInput)
+        output = try amp.process(readInput, processOutput: { print("Output:\($0)") })
     }
 
     return output
