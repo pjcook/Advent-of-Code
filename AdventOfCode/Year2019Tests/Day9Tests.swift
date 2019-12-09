@@ -12,6 +12,48 @@ import InputReader
 
 class Day9Tests: XCTestCase {
 
+    func test_extract_codes_from_instruction1() {
+        let instruction = 1
+        
+        let d = instruction % 100
+        let c = instruction % 10000 % 1000 / 100
+        let b = instruction % 10000 / 1000
+        let a = instruction / 10000
+
+        XCTAssertEqual(1, d)
+        XCTAssertEqual(0, c)
+        XCTAssertEqual(0, b)
+        XCTAssertEqual(0, a)
+    }
+    
+    func test_extract_codes_from_instruction2() {
+        let instruction = 10001
+        
+        let d = instruction % 100
+        let c = instruction % 10000 % 1000 / 100
+        let b = instruction % 10000 / 1000
+        let a = instruction / 10000
+        
+        XCTAssertEqual(1, d)
+        XCTAssertEqual(0, c)
+        XCTAssertEqual(0, b)
+        XCTAssertEqual(1, a)
+    }
+    
+    func test_extract_codes_from_instruction3() {
+        let instruction = 20199
+        
+        let d = instruction % 100
+        let c = instruction % 10000 % 1000 / 100
+        let b = instruction % 10000 / 1000
+        let a = instruction / 10000
+        
+        XCTAssertEqual(99, d)
+        XCTAssertEqual(1, c)
+        XCTAssertEqual(0, b)
+        XCTAssertEqual(2, a)
+    }
+    
     func test_part1_sample_data1() throws {
         let program = [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
         let (result, output) = try processSensorBoost(program, input: 1)

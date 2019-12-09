@@ -47,18 +47,17 @@ struct AdvancedIntCodeComputer {
         let relativeBase: Int
         
         init(readData: (Int)->Int, readInput: ()->Int, position: Int, relativeBase: Int = 0, forceWriteMode: Bool = true) throws {
-            var string = String(readData(position))
-            let e = string.count > 0 ? String(string.removeLast()) : ""
-            let d = string.count > 0 ? String(string.removeLast()) : ""
-            let c = string.count > 0 ? String(string.removeLast()) : ""
-            let b = string.count > 0 ? String(string.removeLast()) : ""
-            let a = string.count > 0 ? String(string.removeLast()) : ""
+            let instruction = readData(position)
+            let d = instruction % 100
+            let c = instruction % 10000 % 1000 / 100
+            let b = instruction % 10000 / 1000
+            let a = instruction / 10000
             
             guard
-                let mode3 = Mode(rawValue: Int(a) ?? 0),
-                let mode2 = Mode(rawValue: Int(b) ?? 0),
-                let mode1 = Mode(rawValue: Int(c) ?? 0),
-                let code = OpCode(rawValue: Int(d+e) ?? -999)
+                let mode3 = Mode(rawValue: a),
+                let mode2 = Mode(rawValue: b),
+                let mode1 = Mode(rawValue: c),
+                let code = OpCode(rawValue: d)
             else {
                 throw Errors.invalidOpCode
             }
