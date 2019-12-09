@@ -46,22 +46,22 @@ struct VenusPasswordCalculator {
         return hasDouble
     }
     
-    func hasOnlyTwoAdjacentIntegersDaniel(_ input: Int) -> Bool {
-        var value = Character("-")
-        var count = 1
-        
-        for character in String(input) {
-            if character == value {
-                count += 1
-                continue
-            }
-            
-            if count == 2 { return true }
-            
-            value = character
-            count = 1
-        }
-        
-        return count == 2
-    }
+//    func hasOnlyTwoAdjacentIntegersDaniel(_ input: Int) -> Bool {
+//        var value = Character("-")
+//        var count = 1
+//        
+//        for character in String(input) {
+//            if character == value {
+//                count += 1
+//                continue
+//            }
+//            
+//            if count == 2 { return true }
+//            
+//            value = character
+//            count = 1
+//        }
+//        
+//        return count == 2
+//    }
 }
