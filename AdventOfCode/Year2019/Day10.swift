@@ -13,7 +13,7 @@ struct Point {
     let y: Int
 }
 
-extension Point: Hashable {
+extension Point: Hashable, CustomDebugStringConvertible {
     func angle(to point: Point, _ startAngle: Double = 0) -> Double {
         let dx = point.x - x
         let dy = point.y - y
@@ -33,6 +33,14 @@ extension Point: Hashable {
     }
     
     static let zero = Point(x: 0, y: 0)
+    
+    static func + (lhs: Point, rhs: Point) -> Point {
+        return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+    }
+    
+    var debugDescription: String {
+        return "(\(x):\(y))"
+    }
 }
 
 func radiansToDegrees(_ number: Double) -> Double {

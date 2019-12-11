@@ -16,6 +16,10 @@
 		D53642E5239F96A6001DD179 /* Day10_sample4.input in Resources */ = {isa = PBXBuildFile; fileRef = D53642E4239F96A6001DD179 /* Day10_sample4.input */; };
 		D53642E7239F96BA001DD179 /* Day10_sample5.input in Resources */ = {isa = PBXBuildFile; fileRef = D53642E6239F96BA001DD179 /* Day10_sample5.input */; };
 		D53642E9239FBC7F001DD179 /* Day10_part2_sample1.input in Resources */ = {isa = PBXBuildFile; fileRef = D53642E8239FBC7F001DD179 /* Day10_part2_sample1.input */; };
+		D53642ED239FFD18001DD179 /* Day11.input in Resources */ = {isa = PBXBuildFile; fileRef = D53642EC239FFD18001DD179 /* Day11.input */; };
+		D53642EF239FFD1F001DD179 /* Day11.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642EE239FFD1F001DD179 /* Day11.swift */; };
+		D53642F1239FFD31001DD179 /* Day11Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642F0239FFD31001DD179 /* Day11Tests.swift */; };
+		D53642F523A0D51E001DD179 /* Day11_chris.input in Resources */ = {isa = PBXBuildFile; fileRef = D53642F423A0D51E001DD179 /* Day11_chris.input */; };
 		D5E3CAFE2397AB7F00D39B5D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E3CAFD2397AB7F00D39B5D /* main.swift */; };
 		D5E3CB122397ABCB00D39B5D /* Year2019.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5E3CB092397ABCA00D39B5D /* Year2019.framework */; };
 		D5E3CB192397ABCB00D39B5D /* Year2019.h in Headers */ = {isa = PBXBuildFile; fileRef = D5E3CB0B2397ABCB00D39B5D /* Year2019.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -166,6 +170,11 @@
 		D53642E4239F96A6001DD179 /* Day10_sample4.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day10_sample4.input; sourceTree = "<group>"; };
 		D53642E6239F96BA001DD179 /* Day10_sample5.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day10_sample5.input; sourceTree = "<group>"; };
 		D53642E8239FBC7F001DD179 /* Day10_part2_sample1.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day10_part2_sample1.input; sourceTree = "<group>"; };
+		D53642EB239FFD0E001DD179 /* Day11_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day11_Readme.md; sourceTree = "<group>"; };
+		D53642EC239FFD18001DD179 /* Day11.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day11.input; sourceTree = "<group>"; };
+		D53642EE239FFD1F001DD179 /* Day11.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11.swift; sourceTree = "<group>"; };
+		D53642F0239FFD31001DD179 /* Day11Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11Tests.swift; sourceTree = "<group>"; };
+		D53642F423A0D51E001DD179 /* Day11_chris.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day11_chris.input; sourceTree = "<group>"; };
 		D5E3CAFA2397AB7F00D39B5D /* AdventOfCode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AdventOfCode; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5E3CAFD2397AB7F00D39B5D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D5E3CB092397ABCA00D39B5D /* Year2019.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Year2019.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -316,6 +325,16 @@
 			name = Day10;
 			sourceTree = "<group>";
 		};
+		D53642EA239FFCFA001DD179 /* Day11 */ = {
+			isa = PBXGroup;
+			children = (
+				D53642EB239FFD0E001DD179 /* Day11_Readme.md */,
+				D53642EC239FFD18001DD179 /* Day11.input */,
+				D53642EE239FFD1F001DD179 /* Day11.swift */,
+			);
+			name = Day11;
+			sourceTree = "<group>";
+		};
 		D5E3CAF12397AB7E00D39B5D = {
 			isa = PBXGroup;
 			children = (
@@ -356,6 +375,7 @@
 		D5E3CB0A2397ABCB00D39B5D /* Year2019 */ = {
 			isa = PBXGroup;
 			children = (
+				D53642EA239FFCFA001DD179 /* Day11 */,
 				D53642D6239EF16E001DD179 /* Day10 */,
 				D5E3CBF3239D2A7B00D39B5D /* Day9 */,
 				D5E3CBEB239CBB8600D39B5D /* Day8 */,
@@ -388,6 +408,7 @@
 				D5E3CBF1239CBF5000D39B5D /* Day8Tests.swift */,
 				D5E3CBF9239D2AB200D39B5D /* Day9Tests.swift */,
 				D53642DC239EF1AB001DD179 /* Day10Tests.swift */,
+				D53642F0239FFD31001DD179 /* Day11Tests.swift */,
 				D5E3CB182397ABCB00D39B5D /* Info.plist */,
 			);
 			path = Year2019Tests;
@@ -443,6 +464,7 @@
 				D53642E4239F96A6001DD179 /* Day10_sample4.input */,
 				D53642E6239F96BA001DD179 /* Day10_sample5.input */,
 				D53642E8239FBC7F001DD179 /* Day10_part2_sample1.input */,
+				D53642F423A0D51E001DD179 /* Day11_chris.input */,
 			);
 			name = "Test Data";
 			sourceTree = "<group>";
@@ -837,6 +859,7 @@
 				D53642D9239EF190001DD179 /* Day10.input in Resources */,
 				D5E3CB462397AC6900D39B5D /* Day3_Readme.md in Resources */,
 				D5E3CB4A2397AC7300D39B5D /* Day4_Readme.md in Resources */,
+				D53642ED239FFD18001DD179 /* Day11.input in Resources */,
 				D5E3CB3A2397AC5400D39B5D /* Day1_Readme.md in Resources */,
 				D5E3CB3F2397AC6100D39B5D /* Day2_Readme.md in Resources */,
 			);
@@ -854,6 +877,7 @@
 				D53642E5239F96A6001DD179 /* Day10_sample4.input in Resources */,
 				D53642E1239F9683001DD179 /* Day10_sample2.input in Resources */,
 				D53642E3239F9696001DD179 /* Day10_sample3.input in Resources */,
+				D53642F523A0D51E001DD179 /* Day11_chris.input in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -909,6 +933,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D5E3CB3B2397AC5400D39B5D /* Day1.swift in Sources */,
+				D53642EF239FFD1F001DD179 /* Day11.swift in Sources */,
 				D5E3CBF0239CBBB700D39B5D /* Day8.swift in Sources */,
 				D5E3CB5F239A250700D39B5D /* Day6.swift in Sources */,
 				D5E3CB562398EAE300D39B5D /* AdvancedIntCodeComputer.swift in Sources */,
@@ -937,6 +962,7 @@
 				D5E3CB332397AC4300D39B5D /* Day4Tests.swift in Sources */,
 				D5E3CB61239A306700D39B5D /* Day6Tests.swift in Sources */,
 				D53642DD239EF1AB001DD179 /* Day10Tests.swift in Sources */,
+				D53642F1239FFD31001DD179 /* Day11Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1168,7 +1194,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.software101.Year2019;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
