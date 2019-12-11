@@ -8,55 +8,55 @@
 
 import Foundation
 
-func paintWithRobot(_ program: [Int], startColor: Int) -> Int {
-    enum Direction: CustomDebugStringConvertible {
-        case N
-        case E
-        case S
-        case W
-        
-        var point: Point {
-            switch self {
-                case .N: return Point(x: 0, y: 1)
-                case .E: return Point(x: 1, y: 0)
-                case .S: return Point(x: 0, y: -1)
-                case .W: return Point(x: -1, y: 0)
-            }
-        }
-        
-        func rotate(_ value: Int) -> Direction {
-            if value == 0 { return rotateLeft() }
-            return rotateRight()
-        }
-        
-        func rotateLeft() -> Direction {
-            switch self {
-            case .N: return .W
-            case .E: return .N
-            case .S: return .E
-            case .W: return .S
-            }
-        }
-        
-        func rotateRight() -> Direction {
-            switch self {
-            case .N: return .E
-            case .E: return .S
-            case .S: return .W
-            case .W: return .N
-            }
-        }
-        
-        var debugDescription: String {
-            switch self {
-                case .N: return "N"
-                case .E: return "E"
-                case .S: return "S"
-                case .W: return "W"
-            }
+enum Direction: CustomDebugStringConvertible {
+    case N
+    case E
+    case S
+    case W
+    
+    var point: Point {
+        switch self {
+            case .N: return Point(x: 0, y: 1)
+            case .E: return Point(x: 1, y: 0)
+            case .S: return Point(x: 0, y: -1)
+            case .W: return Point(x: -1, y: 0)
         }
     }
     
+    func rotate(_ value: Int) -> Direction {
+        if value == 0 { return rotateLeft() }
+        return rotateRight()
+    }
+    
+    func rotateLeft() -> Direction {
+        switch self {
+        case .N: return .W
+        case .E: return .N
+        case .S: return .E
+        case .W: return .S
+        }
+    }
+    
+    func rotateRight() -> Direction {
+        switch self {
+        case .N: return .E
+        case .E: return .S
+        case .S: return .W
+        case .W: return .N
+        }
+    }
+    
+    var debugDescription: String {
+        switch self {
+            case .N: return "N"
+            case .E: return "E"
+            case .S: return "S"
+            case .W: return "W"
+        }
+    }
+}
+
+func paintWithRobot(_ program: [Int], startColor: Int) -> Int {
     let bigProgram = program + Array(repeating: 0, count: 1000)
     let computer = AdvancedIntCodeComputer(data: bigProgram)
     var output = [Point.zero:startColor]
