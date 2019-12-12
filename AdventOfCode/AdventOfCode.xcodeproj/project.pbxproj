@@ -20,6 +20,12 @@
 		D53642EF239FFD1F001DD179 /* Day11.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642EE239FFD1F001DD179 /* Day11.swift */; };
 		D53642F1239FFD31001DD179 /* Day11Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642F0239FFD31001DD179 /* Day11Tests.swift */; };
 		D53642F523A0D51E001DD179 /* Day11_chris.input in Resources */ = {isa = PBXBuildFile; fileRef = D53642F423A0D51E001DD179 /* Day11_chris.input */; };
+		D5DD1E0023A143C200D323AC /* SteppedIntComputer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DD1DFF23A143C200D323AC /* SteppedIntComputer.swift */; };
+		D5DD1E0423A16F2000D323AC /* Day12.input in Resources */ = {isa = PBXBuildFile; fileRef = D5DD1E0323A16F2000D323AC /* Day12.input */; };
+		D5DD1E0623A16F2700D323AC /* Day12.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DD1E0523A16F2700D323AC /* Day12.swift */; };
+		D5DD1E0823A16F3B00D323AC /* Day12Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DD1E0723A16F3B00D323AC /* Day12Tests.swift */; };
+		D5DD1E0A23A21B8800D323AC /* Day12_sample_data1.input in Resources */ = {isa = PBXBuildFile; fileRef = D5DD1E0923A21B8800D323AC /* Day12_sample_data1.input */; };
+		D5DD1E0C23A2256900D323AC /* Day12_sample_data2.input in Resources */ = {isa = PBXBuildFile; fileRef = D5DD1E0B23A2256900D323AC /* Day12_sample_data2.input */; };
 		D5E3CAFE2397AB7F00D39B5D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E3CAFD2397AB7F00D39B5D /* main.swift */; };
 		D5E3CB122397ABCB00D39B5D /* Year2019.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5E3CB092397ABCA00D39B5D /* Year2019.framework */; };
 		D5E3CB192397ABCB00D39B5D /* Year2019.h in Headers */ = {isa = PBXBuildFile; fileRef = D5E3CB0B2397ABCB00D39B5D /* Year2019.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -175,6 +181,13 @@
 		D53642EE239FFD1F001DD179 /* Day11.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11.swift; sourceTree = "<group>"; };
 		D53642F0239FFD31001DD179 /* Day11Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11Tests.swift; sourceTree = "<group>"; };
 		D53642F423A0D51E001DD179 /* Day11_chris.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day11_chris.input; sourceTree = "<group>"; };
+		D5DD1DFF23A143C200D323AC /* SteppedIntComputer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteppedIntComputer.swift; sourceTree = "<group>"; };
+		D5DD1E0223A16F1900D323AC /* Day12_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day12_Readme.md; sourceTree = "<group>"; };
+		D5DD1E0323A16F2000D323AC /* Day12.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day12.input; sourceTree = "<group>"; };
+		D5DD1E0523A16F2700D323AC /* Day12.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day12.swift; sourceTree = "<group>"; };
+		D5DD1E0723A16F3B00D323AC /* Day12Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day12Tests.swift; sourceTree = "<group>"; };
+		D5DD1E0923A21B8800D323AC /* Day12_sample_data1.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day12_sample_data1.input; sourceTree = "<group>"; };
+		D5DD1E0B23A2256900D323AC /* Day12_sample_data2.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day12_sample_data2.input; sourceTree = "<group>"; };
 		D5E3CAFA2397AB7F00D39B5D /* AdventOfCode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AdventOfCode; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5E3CAFD2397AB7F00D39B5D /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		D5E3CB092397ABCA00D39B5D /* Year2019.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Year2019.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -335,6 +348,16 @@
 			name = Day11;
 			sourceTree = "<group>";
 		};
+		D5DD1E0123A16F0400D323AC /* Day12 */ = {
+			isa = PBXGroup;
+			children = (
+				D5DD1E0223A16F1900D323AC /* Day12_Readme.md */,
+				D5DD1E0323A16F2000D323AC /* Day12.input */,
+				D5DD1E0523A16F2700D323AC /* Day12.swift */,
+			);
+			name = Day12;
+			sourceTree = "<group>";
+		};
 		D5E3CAF12397AB7E00D39B5D = {
 			isa = PBXGroup;
 			children = (
@@ -375,6 +398,7 @@
 		D5E3CB0A2397ABCB00D39B5D /* Year2019 */ = {
 			isa = PBXGroup;
 			children = (
+				D5DD1E0123A16F0400D323AC /* Day12 */,
 				D53642EA239FFCFA001DD179 /* Day11 */,
 				D53642D6239EF16E001DD179 /* Day10 */,
 				D5E3CBF3239D2A7B00D39B5D /* Day9 */,
@@ -409,6 +433,7 @@
 				D5E3CBF9239D2AB200D39B5D /* Day9Tests.swift */,
 				D53642DC239EF1AB001DD179 /* Day10Tests.swift */,
 				D53642F0239FFD31001DD179 /* Day11Tests.swift */,
+				D5DD1E0723A16F3B00D323AC /* Day12Tests.swift */,
 				D5E3CB182397ABCB00D39B5D /* Info.plist */,
 			);
 			path = Year2019Tests;
@@ -465,6 +490,8 @@
 				D53642E6239F96BA001DD179 /* Day10_sample5.input */,
 				D53642E8239FBC7F001DD179 /* Day10_part2_sample1.input */,
 				D53642F423A0D51E001DD179 /* Day11_chris.input */,
+				D5DD1E0923A21B8800D323AC /* Day12_sample_data1.input */,
+				D5DD1E0B23A2256900D323AC /* Day12_sample_data2.input */,
 			);
 			name = "Test Data";
 			sourceTree = "<group>";
@@ -475,6 +502,7 @@
 				D5E3CB522398EAC100D39B5D /* Day5_Readme.md */,
 				D5E3CB532398EAD700D39B5D /* Day5.input */,
 				D5E3CB552398EAE300D39B5D /* AdvancedIntCodeComputer.swift */,
+				D5DD1DFF23A143C200D323AC /* SteppedIntComputer.swift */,
 			);
 			name = Day5;
 			sourceTree = "<group>";
@@ -859,6 +887,7 @@
 				D53642D9239EF190001DD179 /* Day10.input in Resources */,
 				D5E3CB462397AC6900D39B5D /* Day3_Readme.md in Resources */,
 				D5E3CB4A2397AC7300D39B5D /* Day4_Readme.md in Resources */,
+				D5DD1E0423A16F2000D323AC /* Day12.input in Resources */,
 				D53642ED239FFD18001DD179 /* Day11.input in Resources */,
 				D5E3CB3A2397AC5400D39B5D /* Day1_Readme.md in Resources */,
 				D5E3CB3F2397AC6100D39B5D /* Day2_Readme.md in Resources */,
@@ -873,9 +902,11 @@
 				D53642DF239F72F3001DD179 /* Day10_sample1.input in Resources */,
 				D5E3CB65239A4DC100D39B5D /* Day5_sample1.input in Resources */,
 				D53642E7239F96BA001DD179 /* Day10_sample5.input in Resources */,
+				D5DD1E0A23A21B8800D323AC /* Day12_sample_data1.input in Resources */,
 				D5E3CB63239A309100D39B5D /* Day6_sample1.input in Resources */,
 				D53642E5239F96A6001DD179 /* Day10_sample4.input in Resources */,
 				D53642E1239F9683001DD179 /* Day10_sample2.input in Resources */,
+				D5DD1E0C23A2256900D323AC /* Day12_sample_data2.input in Resources */,
 				D53642E3239F9696001DD179 /* Day10_sample3.input in Resources */,
 				D53642F523A0D51E001DD179 /* Day11_chris.input in Resources */,
 			);
@@ -934,12 +965,14 @@
 			files = (
 				D5E3CB3B2397AC5400D39B5D /* Day1.swift in Sources */,
 				D53642EF239FFD1F001DD179 /* Day11.swift in Sources */,
+				D5DD1E0623A16F2700D323AC /* Day12.swift in Sources */,
 				D5E3CBF0239CBBB700D39B5D /* Day8.swift in Sources */,
 				D5E3CB5F239A250700D39B5D /* Day6.swift in Sources */,
 				D5E3CB562398EAE300D39B5D /* AdvancedIntCodeComputer.swift in Sources */,
 				D5E3CB452397AC6900D39B5D /* Day3.swift in Sources */,
 				D53642DB239EF196001DD179 /* Day10.swift in Sources */,
 				D5E3CBD5239A8F4800D39B5D /* Errors.swift in Sources */,
+				D5DD1E0023A143C200D323AC /* SteppedIntComputer.swift in Sources */,
 				D5E3CBF8239D2AA300D39B5D /* Day9.swift in Sources */,
 				D5E3CB412397AC6100D39B5D /* Day2.swift in Sources */,
 				D5E3CBBA239A6D6E00D39B5D /* Bundler.swift in Sources */,
@@ -963,6 +996,7 @@
 				D5E3CB61239A306700D39B5D /* Day6Tests.swift in Sources */,
 				D53642DD239EF1AB001DD179 /* Day10Tests.swift in Sources */,
 				D53642F1239FFD31001DD179 /* Day11Tests.swift in Sources */,
+				D5DD1E0823A16F3B00D323AC /* Day12Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1194,7 +1228,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.software101.Year2019;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1289,7 +1322,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.software101.Year2018;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
