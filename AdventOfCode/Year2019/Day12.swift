@@ -99,85 +99,7 @@ class Moon: Hashable, CustomDebugStringConvertible {
     }
 }
 
-fileprivate func calculateNextPositions(_ moons: inout [Vector], _ moonVelocities: inout [Vector], _ moonCount: Int) {
-    let snapshot = moons
-    let snapshotVelocity = moonVelocities
-    for i in 0..<moonCount {
-        let moon = snapshot[i]
-        let otherMoons = snapshot.filter { $0 != moon }
-        let velocity = calculateVelocity(moon: moon, otherMoons: otherMoons) + snapshotVelocity[i]
-        moons[i] = moon + velocity
-        moonVelocities[i] = velocity
-    }
-}
-
-func findRepeatingOrbits(moons: [Vector], numberOfSteps steps: Int) -> Int {
-    var moons = moons
-    var moonVelocities = moons.map { _ in Vector.zero }
-    let moonCount = moons.count
-//    var history = [[moons,moonVelocities]]
-    let history = [moons,moonVelocities]
-    for i in 0..<steps {
-        calculateNextPositions(&moons, &moonVelocities, moonCount)
-//        if history.contains([moons,moonVelocities]) {
-        if history == [moons,moonVelocities] {
-            return i + 1
-        }
-//        history.append([moons, moonVelocities])
-    }
-    
-    return -1
-}
-
-func findRepeatingOrbits3(moons: [Moon], numberOfSteps steps: Int) -> Int {
-    var xs = Set<String>()
-    var ys = Set<String>()
-    var zs = Set<String>()
-    var count = 0
-    
-    var prevX = xs.count
-    var prevY = ys.count
-    var prevZ = zs.count
-    
-    repeat {
-        count += 1
-        let x = 
-        
-        
-        prevX = xs.count
-        prevY = ys.count
-        prevZ = zs.count
-    } while xs.count != prevX && ys.count != prevY && zs.count != prevZ
-    
-    return count
-}
-
-func findRepeatingOrbits2(moons: [Moon], numberOfSteps steps: Int) -> Int {
-    var hashes = [Int:Bool]()
-    var history = [[Moon]]()
-    for i in 0..<steps {
-        _ = moons.map { $0.calculateNextVelocity() }
-        _ = moons.map { $0.applyNextVelocity() }
-        history.append(moons)
-        let hashCount = hashes.count
-        var hasher = Hasher()
-        _ = moons.map {
-            hasher.combine($0.position)
-            hasher.combine($0.velocity)
-        }
-        hashes[hasher.finalize()] = true
-        if hashCount == hashes.count {
-            print(history)
-            return i
-        }
-        if hashCount % 1000000 == 0 {
-            print(hashCount)
-        }
-    }
-    return -1
-}
-
-func processPositions2(moons: [Moon], numberOfSteps steps: Int) -> Int {
+func processPositions(moons: [Moon], numberOfSteps steps: Int) -> Int {
     for _ in 0..<steps {
         _ = moons.map { $0.calculateNextVelocity() }
         _ = moons.map { $0.applyNextVelocity() }
@@ -185,41 +107,76 @@ func processPositions2(moons: [Moon], numberOfSteps steps: Int) -> Int {
     return moons.reduce(0) { $0 + ($1.position.sumOfAbsoluteValues * $1.velocity.sumOfAbsoluteValues) }
 }
 
-func processPositions(moons: [Vector], numberOfSteps steps: Int) -> Int {
-    var moons = moons
-    var moonVelocities = moons.map { _ in Vector.zero }
-    let moonCount = moons.count
-    for _ in 0..<steps {
-        calculateNextPositions(&moons, &moonVelocities, moonCount)
-    }
-    
-    return calculateTotalSystemEnergy(moons, moonVelocities)
+struct SetData: Hashable, Equatable {
+    let position: Int
+    let velocity: Int
 }
 
-func calculateTotalSystemEnergy(_ moons: [Vector], _ velocities: [Vector]) -> Int {
-    var energy = 0
-    for i in 0..<moons.count {
-        energy += moons[i].sumOfAbsoluteValues * velocities[i].sumOfAbsoluteValues
-    }
-    return energy
-}
-
-func calculateVelocity(moon: Vector, otherMoons: [Vector]) -> Vector {
-    var x = 0
-    var y = 0
-    var z = 0
+func findRepeatingOrbits(moons: [Moon], numberOfSteps steps: Int) -> Int {
+    var xSet = Set<[Moon: SetData]>()
+    var ySet = Set<[Moon: SetData]>()
+    var zSet = Set<[Moon: SetData]>()
     
-    for om in otherMoons {
-        x += calculateVelocity(a: moon.x, b: om.x)
-        y += calculateVelocity(a: moon.y, b: om.y)
-        z += calculateVelocity(a: moon.z, b: om.z)
+    var xDict = [Moon: SetData]()
+    var yDict = [Moon: SetData]()
+    var zDict = [Moon: SetData]()
+    
+    moons.forEach {
+        xDict[$0] = SetData(position: $0.position.x, velocity: $0.velocity.x)
+        yDict[$0] = SetData(position: $0.position.y, velocity: $0.velocity.y)
+        zDict[$0] = SetData(position: $0.position.z, velocity: $0.velocity.z)
     }
     
-    return Vector(x: x, y: y, z: z)
+    xSet.insert(xDict)
+    ySet.insert(yDict)
+    zSet.insert(zDict)
+    
+    var xSetCount: Int?
+    var ySetCount: Int?
+    var zSetCount: Int?
+    
+    while xSetCount == nil || ySetCount == nil || zSetCount == nil {
+        let xCount = xSet.count
+        let yCount = ySet.count
+        let zCount = zSet.count
+        
+        _ = moons.map { $0.calculateNextVelocity() }
+        _ = moons.map { $0.applyNextVelocity() }
+        
+        moons.forEach {
+            xDict[$0] = SetData(position: $0.position.x, velocity: $0.velocity.x)
+            yDict[$0] = SetData(position: $0.position.y, velocity: $0.velocity.y)
+            zDict[$0] = SetData(position: $0.position.z, velocity: $0.velocity.z)
+        }
+        
+        xSet.insert(xDict)
+        ySet.insert(yDict)
+        zSet.insert(zDict)
+        
+        if xCount == xSet.count { xSetCount = xCount }
+        if yCount == ySet.count { ySetCount = yCount }
+        if zCount == zSet.count { zSetCount = zCount }
+    }
+    
+    guard let xCount = xSetCount, let yCount = ySetCount, let zCount = zSetCount else { return -1 }
+    
+    return lowestCommonMultiple(xCount, lowestCommonMultiple(yCount, zCount))
 }
 
-func calculateVelocity(a: Int, b: Int) -> Int {
-    if a > b { return -1 }
-    if a < b { return 1 }
-    return 0
+func lowestCommonMultiple(_ value1: Int, _ value2: Int) -> Int {
+    return (value1 * value2) / greatestCommonDivisor(value1, value2)
+}
+
+func greatestCommonDivisor(_ value1: Int, _ value2: Int) -> Int {
+    var i = 0
+    var j = max(value1, value2)
+    var result = min(value1, value2)
+    
+    while result != 0 {
+        i = j
+        j = result
+        result = i % j
+    }
+    
+    return j
 }
