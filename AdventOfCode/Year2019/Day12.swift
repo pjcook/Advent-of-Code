@@ -112,15 +112,7 @@ struct SetData: Hashable, Equatable {
     let velocity: Int
 }
 
-func findRepeatingOrbits(moons: [Moon], numberOfSteps steps: Int) -> Int {
-    var xSet = Set<[Moon: SetData]>()
-    var ySet = Set<[Moon: SetData]>()
-    var zSet = Set<[Moon: SetData]>()
-    
-    var xDict = [Moon: SetData]()
-    var yDict = [Moon: SetData]()
-    var zDict = [Moon: SetData]()
-    
+fileprivate func calculateSetData(_ moons: [Moon], _ xDict: inout [Moon : SetData], _ yDict: inout [Moon : SetData], _ zDict: inout [Moon : SetData], _ xSet: inout Set<[Moon : SetData]>, _ ySet: inout Set<[Moon : SetData]>, _ zSet: inout Set<[Moon : SetData]>) {
     moons.forEach {
         xDict[$0] = SetData(position: $0.position.x, velocity: $0.velocity.x)
         yDict[$0] = SetData(position: $0.position.y, velocity: $0.velocity.y)
@@ -130,6 +122,18 @@ func findRepeatingOrbits(moons: [Moon], numberOfSteps steps: Int) -> Int {
     xSet.insert(xDict)
     ySet.insert(yDict)
     zSet.insert(zDict)
+}
+
+func findRepeatingOrbits(moons: [Moon], numberOfSteps steps: Int) -> Int {
+    var xSet = Set<[Moon: SetData]>()
+    var ySet = Set<[Moon: SetData]>()
+    var zSet = Set<[Moon: SetData]>()
+    
+    var xDict = [Moon: SetData]()
+    var yDict = [Moon: SetData]()
+    var zDict = [Moon: SetData]()
+    
+    calculateSetData(moons, &xDict, &yDict, &zDict, &xSet, &ySet, &zSet)
     
     var xSetCount: Int?
     var ySetCount: Int?
@@ -143,15 +147,7 @@ func findRepeatingOrbits(moons: [Moon], numberOfSteps steps: Int) -> Int {
         _ = moons.map { $0.calculateNextVelocity() }
         _ = moons.map { $0.applyNextVelocity() }
         
-        moons.forEach {
-            xDict[$0] = SetData(position: $0.position.x, velocity: $0.velocity.x)
-            yDict[$0] = SetData(position: $0.position.y, velocity: $0.velocity.y)
-            zDict[$0] = SetData(position: $0.position.z, velocity: $0.velocity.z)
-        }
-        
-        xSet.insert(xDict)
-        ySet.insert(yDict)
-        zSet.insert(zDict)
+        calculateSetData(moons, &xDict, &yDict, &zDict, &xSet, &ySet, &zSet)
         
         if xCount == xSet.count { xSetCount = xCount }
         if yCount == ySet.count { ySetCount = yCount }
