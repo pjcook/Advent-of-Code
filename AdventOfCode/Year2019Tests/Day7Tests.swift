@@ -46,6 +46,11 @@ class Day7Tests: XCTestCase {
         XCTAssertEqual(21844737, try findMaximumThrusterValue(phaseSettings: [9,8,7,6,5], input: input, loop: true))
     }
     
+    func test_part2b() throws {
+        guard let input = try readInput(filename: "Day7.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+        XCTAssertEqual(21844737, try findMaximumThrusterValueStepped(phaseSettings: [9,8,7,6,5], input: input, loop: true))
+    }
+    
     func test_part2_sample_data1() throws {
         let settings = [9,8,7,6,5]
         let input = [3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5]

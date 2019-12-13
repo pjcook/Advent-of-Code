@@ -95,6 +95,7 @@
 		D5E43F0C23A35B7B00DCAFEA /* Day13.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E43F0B23A35B7B00DCAFEA /* Day13.swift */; };
 		D5E43F0E23A35B8C00DCAFEA /* Day13Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E43F0D23A35B8C00DCAFEA /* Day13Tests.swift */; };
 		D5E43F1023A37FDB00DCAFEA /* Day13_chris.input in Resources */ = {isa = PBXBuildFile; fileRef = D5E43F0F23A37FDB00DCAFEA /* Day13_chris.input */; };
+		D5E43F1423A3A34200DCAFEA /* Day7b.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E43F1323A3A34200DCAFEA /* Day7b.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -277,6 +278,7 @@
 		D5E43F0B23A35B7B00DCAFEA /* Day13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day13.swift; sourceTree = "<group>"; };
 		D5E43F0D23A35B8C00DCAFEA /* Day13Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day13Tests.swift; sourceTree = "<group>"; };
 		D5E43F0F23A37FDB00DCAFEA /* Day13_chris.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day13_chris.input; sourceTree = "<group>"; };
+		D5E43F1323A3A34200DCAFEA /* Day7b.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day7b.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -640,6 +642,7 @@
 				D5E3CBE4239B93C400D39B5D /* Day7_Readme.md */,
 				D5E3CBE5239B93DA00D39B5D /* Day7.input */,
 				D5E3CBE7239B93E700D39B5D /* Day7.swift */,
+				D5E43F1323A3A34200DCAFEA /* Day7b.swift */,
 			);
 			name = Day7;
 			sourceTree = "<group>";
@@ -1000,6 +1003,7 @@
 				D5DD1E0023A143C200D323AC /* SteppedIntComputer.swift in Sources */,
 				D5E3CBF8239D2AA300D39B5D /* Day9.swift in Sources */,
 				D5E3CB412397AC6100D39B5D /* Day2.swift in Sources */,
+				D5E43F1423A3A34200DCAFEA /* Day7b.swift in Sources */,
 				D5E3CBBA239A6D6E00D39B5D /* Bundler.swift in Sources */,
 				D5E3CBE8239B93E700D39B5D /* Day7.swift in Sources */,
 				D5E3CB4B2397AC7300D39B5D /* Day4.swift in Sources */,

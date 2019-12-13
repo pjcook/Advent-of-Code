@@ -9,7 +9,7 @@
 import Foundation
 import InputReader
 
-class SteppedIntComputer {
+class SteppedIntComputer: Hashable {
     typealias ReadInput = ()->Int?
     typealias ProcessOutput = (Int)->Void
     typealias CompletionHandler = ()->Void
@@ -21,6 +21,7 @@ class SteppedIntComputer {
         case finished
     }
     
+    private let id: Int
     private var data: [Int]
     private(set) var state = State.waiting
     private var instructionIndex = 0
@@ -30,12 +31,14 @@ class SteppedIntComputer {
     private let forceWriteMode: Bool
     
     init(
+        id: Int,
         data: [Int],
         readInput: @escaping ReadInput,
         processOutput: @escaping ProcessOutput,
         completionHandler: @escaping CompletionHandler,
         forceWriteMode: Bool
     ) {
+        self.id = id
         self.data = data
         self.readInput = readInput
         self.processOutput = processOutput
@@ -66,6 +69,14 @@ class SteppedIntComputer {
                 instructionIndex = instruction.instructionIndex
             }
         }
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: SteppedIntComputer, rhs: SteppedIntComputer) -> Bool {
+        lhs.id == rhs.id
     }
 }
 

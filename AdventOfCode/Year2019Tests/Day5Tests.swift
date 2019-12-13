@@ -24,6 +24,7 @@ class Day5Tests: XCTestCase {
         let data = "1101,100,-1,4,0".split(separator: ",").compactMap { Int($0) }
         var output = 0
         let computer = SteppedIntComputer(
+            id: 1,
             data: data,
             readInput: { 0 },
             processOutput: { output = $0 },
@@ -35,13 +36,31 @@ class Day5Tests: XCTestCase {
             continue
         }
         
-        XCTAssertEqual(-1, output)
+        XCTAssertEqual(0, output)
     }
     
     func test_part1_chris() throws {
         guard let data = try readInput(filename: "Day5_sample1.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: Day5Tests.self)) as? [Int] else { return XCTFail() }
         let computer = AdvancedIntCodeComputer(data: data)
         let output = computer.process({ 5 })
+        XCTAssertEqual(584126, output)
+    }
+    
+    func test_part1_steppedIntComputer() throws {
+        guard let data = try readInput(filename: "Day5_sample1.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: Day5Tests.self)) as? [Int] else { return XCTFail() }
+        var output = 0
+        let computer = SteppedIntComputer(
+            id: 1,
+            data: data,
+            readInput: { 5 },
+            processOutput: { output = $0 },
+            completionHandler: {},
+            forceWriteMode: true
+        )
+        computer.process()
+        while computer.state == .running {
+            continue
+        }
         XCTAssertEqual(584126, output)
     }
     

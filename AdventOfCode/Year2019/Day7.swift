@@ -19,10 +19,10 @@ func processThrusterSettings(_ settings: [Int], _ input: [Int]) throws -> Int {
     var output = 0
     
     for setting in settings {
-        print("Running Amplifier:\(setting)")
+//        print("Running Amplifier:\(setting)")
         let amp = AdvancedIntCodeComputer(data: input)
         programInputs = [setting, output]
-        output = amp.process(readInput, processOutput: { print("Output:\($0)") })
+        output = amp.process(readInput, processOutput: { _ in })
     }
 
     return output
@@ -66,6 +66,7 @@ class ChainedComputer {
     
     func writeInput(_ input: Int) {
         inputs.append(input)
+//        print(id, input)
     }
     
     private func finished() {
@@ -161,5 +162,14 @@ func findMaximumThrusterValue(phaseSettings: [Int], input: [Int], loop: Bool = f
         }
     }
     
+    return maxValue
+}
+
+func findMaximumThrusterValueStepped(phaseSettings: [Int], input: [Int], loop: Bool = false) throws -> Int {
+    var maxValue = 0
+    for combination in generateCombinations(phaseSettings) {
+        maxValue = max(try processAmplifiersLooped(combination, input), maxValue)
+//        print("MaxValue:", maxValue)
+    }
     return maxValue
 }
