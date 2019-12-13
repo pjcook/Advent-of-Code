@@ -32,28 +32,22 @@ func runGame(_ input: [Int]) -> Int {
         gameInstructions[Point(x: $0[0], y: $0[1])] = BlockTile(rawValue: $0[2])
     }
     let blockTiles = gameInstructions.compactMap { $0.value == .block ? $0 : nil }
-    drawGameBoard(gameInstructions)
+//    drawGameBoard(gameInstructions, score: 0)
     return blockTiles.count
 }
 
-fileprivate func convertOutputToGameInstructions(_ output: [Int], _ gameInstructions: inout [Point : BlockTile]) {
-    _ = output.chunked(into: 3).map {
-        gameInstructions[Point(x: $0[0], y: $0[1])] = BlockTile(rawValue: $0[2])
-    }
-}
 
-func playGame(_ input: [Int]) -> Int {
+func playGame(_ input: [Int], drawBoard: Bool = false) -> Int {
     let bigInput = input + Array(repeating: 0, count: 2000)
     var output = [Int]()
     let computer = AdvancedIntCodeComputer(data: bigInput)
     var gameInstructions = [Point:BlockTile]()
-    var finalScore = 0
+    var score = 0
     let finalScoreID = Point(x: -1, y: 0)
     
     _ = computer.process(
         {
-//            convertOutputToGameInstructions(output, &gameInstructions)
-//            drawGameBoard(gameInstructions)
+            if drawBoard { drawGameBoard(gameInstructions, score: score) }
             let paddlePosition = gameInstructions.first { $1 == .horizontalPaddle }
             let ballPosition = gameInstructions.first { $1 == .ball }
             if paddlePosition!.key.x == ballPosition!.key.x { return 0 }
@@ -69,7 +63,7 @@ func playGame(_ input: [Int]) -> Int {
                 let b = output.removeFirst()
                 let point = Point(x: x, y: y)
                 if point == finalScoreID {
-                    finalScore = b
+                    score = b
                 } else {
                     gameInstructions[Point(x: x, y: y)] = BlockTile(rawValue: b)
                 }
@@ -78,17 +72,16 @@ func playGame(_ input: [Int]) -> Int {
         finished: nil,
         forceWriteMode: false)
     
-//    convertOutputToGameInstructions(output, &gameInstructions)
-//    drawGameBoard(gameInstructions)
-    return finalScore
+    if drawBoard { drawGameBoard(gameInstructions, score: score) }
+    return score
 }
 
-func drawGameBoard(_ instruction: [Point:BlockTile]) {
+func drawGameBoard(_ instruction: [Point:BlockTile], score: Int) {
     let minX = instruction.reduce(0) { min($0,$1.key.x) }
     let minY = instruction.reduce(0) { min($0,$1.key.y) }
     let maxX = instruction.reduce(0) { max($0,$1.key.x) }
     let maxY = instruction.reduce(0) { max($0,$1.key.y) }
-    var map = ""
+    var map = "SCORE: \(score)\n"
 
     for y in (0...maxY-minY) {
         var row = ""

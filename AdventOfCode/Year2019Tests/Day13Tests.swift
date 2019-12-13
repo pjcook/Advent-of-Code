@@ -22,8 +22,11 @@ class Day13Tests: XCTestCase {
         XCTAssertEqual(258, output)
     }
     
-    func test_part2_sample_data1() throws {
-        
+    func test_part2_sample_data_chris() throws {
+        guard var data = try readInput(filename: "Day13_chris.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: Self.self)) as? [Int] else { return XCTFail() }
+        data[0] = 2
+        let output = playGame(data, drawBoard: false)
+        XCTAssertEqual(21426, output)
     }
     
     func test_part2() throws {
