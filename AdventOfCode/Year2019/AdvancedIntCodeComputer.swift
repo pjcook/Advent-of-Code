@@ -130,7 +130,7 @@ struct Instruction {
         let param2Mode = mode2
         let param1Mode = mode1
         let writeMode = forceWriteMode ? .instructionIndex : mode3
-        
+        print(opCode, param1Mode, param2Mode, writeMode, readData(instructionIndex+1), readData(instructionIndex+2), readData(instructionIndex+3))
         switch opCode {
             case .add:
                 let (value1, value2, writeIndex) =
