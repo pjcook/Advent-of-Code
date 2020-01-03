@@ -28,7 +28,7 @@ enum MoveStatus: Int {
 class Mapper {
     var map: [Point:MoveStatus] = [.zero:.moved]
     var computer: SteppedIntComputer?
-    let tiles = [0:"🟤", 1:"⚫️", 2:"🟠"]
+    let tiles = [-1:"⚪️",0:"🟤", 1:"⚫️", 2:"🟠",3:"🟣"]
     
     private let startPosition = Point.zero
     private var currentPosition = Point.zero
@@ -43,7 +43,10 @@ class Mapper {
             data: input,
             readInput: readInput,
             processOutput: processOutput,
-            completionHandler: {},
+            completionHandler: {
+                print("Finished")
+                self.drawMapInConsole()
+            },
             forceWriteMode: false
         )
     }
@@ -68,12 +71,12 @@ class Mapper {
                 }
             }
         } else if lastStatus == .moved {
-            let point = currentPosition + lastMovement.rotateLeft().point
-            if let mapStatus = map[point], mapStatus != .hitWall {
-                lastMovement = lastMovement.rotateLeft()
+            let point = currentPosition + lastMovement.point
+            if let mapStatus = map[point], mapStatus == .hitWall {
+                lastMovement = lastMovement.rotateRight()
             }
         }
-        
+        print(currentPosition , lastMovement)
         return lastMovement.moveValue
     }
     
@@ -98,33 +101,67 @@ class Mapper {
             finished = true
             drawMapInConsole()
         }
+        drawMapInConsole()
     }
     
     private func drawMapInConsole() {
         var rawMap = [Point:Int]()
         _ = map.map { rawMap[$0] = $1.rawValue }
+        rawMap[currentPosition] = 3
         drawMap(rawMap, tileMap: tiles)
     }
 }
 
-func drawMap(_ output: [Point:Int], tileMap: [Int:String]) {
-    let minX = output.reduce(0) { min($0,$1.key.x) }
-    let minY = output.reduce(0) { min($0,$1.key.y) }
-    let maxX = output.reduce(0) { max($0,$1.key.x) }
-    let maxY = output.reduce(0) { max($0,$1.key.y) }
+func drawMap(_ output: [Point:Int], tileMap: [Int:String], filename: String? = nil) {
+    let (minX,minY,maxX,maxY) = calculateMapDimensions(output)
+    var map = ""
+
+    for y in (0...maxY-minY) {
+        writeMapRow(maxX, minX, y, minY, output, tileMap, &map)
+    }
+    
+    writeMapToFile(filename, map)
+    if filename == nil { print(map + "\n") }
+}
+
+func drawMapReversed(_ output: [Point:Int], tileMap: [Int:String], filename: String? = nil) {
+    let (minX,minY,maxX,maxY) = calculateMapDimensions(output)
     var map = ""
 
     for y in (0...maxY-minY).reversed() {
-        var row = ""
-        for x in 0...maxX - minX {
-            let dx = x + minX
-            let dy = y + minY
-            let value = output[Point(x: dx, y: dy)] ?? 0
-            let char = tileMap[value]!
-            row += char
-        }
-        map += row + "\n"
+        writeMapRow(maxX, minX, y, minY, output, tileMap, &map)
     }
-    // hKthH7kh
-    print(map + "\n")
+    
+    writeMapToFile(filename, map)
+    if filename == nil { print(map + "\n") }
+}
+
+func writeMapRow(_ maxX: Int, _ minX: Int, _ y: Int, _ minY: Int, _ output: [Point : Int], _ tileMap: [Int : String], _ map: inout String) {
+    var row = ""
+    for x in 0...maxX - minX {
+        let dx = x + minX
+        let dy = y + minY
+        let value = output[Point(x: dx, y: dy)] ?? -1
+        let char = tileMap[value] ?? " "
+        row += char
+    }
+    map += row + "\n"
+}
+
+func writeMapToFile(_ filename: String?, _ map: String) {
+    if let filename = filename {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
+        do {
+            try map.write(to: url, atomically: true, encoding: .utf8)
+            print(url)
+        } catch { print(error) }
+    }
+}
+
+func calculateMapDimensions(_ output: [Point:Int]) -> (Int,Int,Int,Int) {
+    let minX = output.reduce(Int.max) { min($0,$1.key.x) }
+    let minY = output.reduce(Int.max) { min($0,$1.key.y) }
+    let maxX = output.reduce(0) { max($0,$1.key.x) }
+    let maxY = output.reduce(0) { max($0,$1.key.y) }
+    return (minX,minY,maxX,maxY)
 }

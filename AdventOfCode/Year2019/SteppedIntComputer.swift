@@ -21,10 +21,11 @@ class SteppedIntComputer: Hashable {
         case finished
     }
     
-    private let id: Int
-    private var data: [Int]
+    let id: Int
+    private var data: [Int:Int]
     private(set) var state = State.waiting
     private var instructionIndex = 0
+    private var relativeBase = 0
     private let readInput: ReadInput
     private let processOutput: ProcessOutput
     private let completionHandler: CompletionHandler
@@ -38,8 +39,12 @@ class SteppedIntComputer: Hashable {
         completionHandler: @escaping CompletionHandler,
         forceWriteMode: Bool
     ) {
+        var dataToDict = [Int:Int]()
+        for i in 0..<data.count {
+            dataToDict[i] = data[i]
+        }
         self.id = id
-        self.data = data
+        self.data = dataToDict
         self.readInput = readInput
         self.processOutput = processOutput
         self.completionHandler = completionHandler
@@ -54,20 +59,24 @@ class SteppedIntComputer: Hashable {
                 writeData: writeData,
                 finished: finished,
                 writeOutput: processOutput,
-                readInput: {
-                    if let input = readInput() {
-                        return input
-                    } else {
-                        state = .waitingForInput
-                        return nil
-                    }
-                },
+                readInput: manageReadInput,
                 instructionIndex: instructionIndex,
+                relativeBase: relativeBase,
                 forceWriteMode: forceWriteMode
             )
             if state == .running {
                 instructionIndex = instruction.instructionIndex
+                relativeBase = instruction.relativeBase
             }
+        }
+    }
+    
+    private func manageReadInput() -> Int? {
+        if let input = readInput() {
+            return input
+        } else {
+            state = .waitingForInput
+            return nil
         }
     }
     
@@ -82,7 +91,7 @@ class SteppedIntComputer: Hashable {
 
 extension SteppedIntComputer {
     private func readData(_ index: Int) -> Int {
-        return data[index]
+        return data[index] ?? 0
     }
     
     private func writeData(_ index: Int, _ value: Int) {

@@ -6,11 +6,17 @@
 //  Copyright © 2019 Software101. All rights reserved.
 //
 
-import Foundation
+import GameplayKit
 
 struct Point {
     let x: Int
     let y: Int
+}
+
+extension Point {
+    var vector: vector_int2 {
+        return [Int32(x),Int32(y)]
+    }
 }
 
 extension Point: Hashable, CustomDebugStringConvertible {
@@ -40,6 +46,14 @@ extension Point: Hashable, CustomDebugStringConvertible {
     
     var debugDescription: String {
         return "(\(x):\(y))"
+    }
+    
+    func addY(_ value: Int) -> Point {
+        return Point(x: x, y: y + value)
+    }
+    
+    func addX(_ value: Int) -> Point {
+        return Point(x: x + value, y: y)
     }
 }
 

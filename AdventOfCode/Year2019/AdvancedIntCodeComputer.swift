@@ -88,7 +88,7 @@ struct Instruction {
     }
     
     enum Mode: Int {
-        case instructionIndex = 0
+        case position = 0
         case immediate = 1
         case relative = 2
     }
@@ -129,8 +129,8 @@ struct Instruction {
         opCode = code
         let param2Mode = mode2
         let param1Mode = mode1
-        let writeMode = forceWriteMode ? .instructionIndex : mode3
-        print(opCode, param1Mode, param2Mode, writeMode, readData(instructionIndex+1), readData(instructionIndex+2), readData(instructionIndex+3))
+        let writeMode = forceWriteMode ? .position : mode3
+//        print(opCode, param1Mode, param2Mode, writeMode, readData(instructionIndex+1), readData(instructionIndex+2), readData(instructionIndex+3))
         switch opCode {
             case .add:
                 let (value1, value2, writeIndex) =
@@ -185,8 +185,8 @@ struct Instruction {
                 self.relativeBase = relativeBase + value1
 
             case .finished:
-                finished()
                 self.relativeBase = relativeBase
+                finished()
         }
         
         self.instructionIndex = opCode.incrementPosition(instructionIndex)
@@ -210,7 +210,7 @@ struct Instruction {
     private static func writePosition(readData: (Int)->Int, instructionIndex: Int, relativeBase: Int, mode: Mode) -> Int {
         switch mode {
         case .immediate: return instructionIndex
-        case .instructionIndex: return readData(instructionIndex)
+        case .position: return readData(instructionIndex)
         case .relative: return relativeBase + readData(instructionIndex)
         }
     }
@@ -218,7 +218,7 @@ struct Instruction {
     private static func read(readData: (Int)->Int, instructionIndex: Int, relativeBase: Int, mode: Mode) -> Int {
         switch mode {
         case .immediate: return readData(instructionIndex)
-        case .instructionIndex: return readData(readData(instructionIndex))
+        case .position: return readData(readData(instructionIndex))
         case .relative: return readData(relativeBase + readData(instructionIndex))
         }
     }

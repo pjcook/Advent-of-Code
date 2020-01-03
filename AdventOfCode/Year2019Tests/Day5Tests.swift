@@ -157,5 +157,13 @@ class Day5Tests: XCTestCase {
         let output = computer.process({ 5 })
         XCTAssertEqual(3629692, output)
     }
+    
+    func test_part2b() throws {
+        guard let data = try readInput(filename: "Day5.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { return XCTFail() }
+        var output = 0
+        let computer = SteppedIntComputer(id: 6, data: data, readInput: { 5 }, processOutput: { output = $0 }, completionHandler: {}, forceWriteMode: false)
+        computer.process()
+        XCTAssertEqual(3629692, output)
+    }
 
 }

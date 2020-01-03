@@ -14,6 +14,8 @@ enum Direction: CustomDebugStringConvertible {
     case S
     case W
     
+    static let all: [Direction] = [.N, .E, .S, .W]
+    
     var point: Point {
         switch self {
             case .N: return Point(x: 0, y: 1)

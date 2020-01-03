@@ -23,19 +23,38 @@ class Day14Tests: XCTestCase {
         ]
         
         let recipes = parseMineralInput(input)
-        XCTAssertEqual(6, recipes.count)
-        XCTAssertEqual(1, recipes.filter { $0.ingredient.id == .fuel }.count)
-        XCTAssertEqual(31, calculateOreRequired(1, recipes: recipes))
-        
         let calculator = OreCalculator(recipes: recipes)
         let fuel = recipes.first { $0.ingredient.id == .fuel }!
         let results = calculator.calculateRequiredBaseIngredients(fuel.ingredient)
-        print(results)
-        let oreCount = results.reduce(0) { currentValue, item in
-            let recipe = calculator.findRecipe(item.key)
-            return currentValue + (recipe.requiredIngredients[0].value * item.value)
-        }
+        let oreCount = calculator.calculateOreRequired(results)
         XCTAssertEqual(31, oreCount)
+    }
+    
+    func test_part1_sample_data1b() throws {
+        let input = [
+            "2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG",
+            "17 NVRVD, 3 JNWZP => 8 VPVL",
+            "53 STKFG, 6 MNCFX, 46 VJHF, 81 HVMC, 68 CXFTF, 25 GNMV => 1 FUEL",
+            "22 VJHF, 37 MNCFX => 5 FWMGM",
+            "139 ORE => 4 NVRVD",
+            "144 ORE => 7 JNWZP",
+            "5 MNCFX, 7 RFSQX, 2 FWMGM, 2 VPVL, 19 CXFTF => 3 HVMC",
+            "5 VJHF, 7 MNCFX, 9 VPVL, 37 CXFTF => 6 GNMV",
+            "145 ORE => 6 MNCFX",
+            "1 NVRVD => 8 CXFTF",
+            "1 VJHF, 6 MNCFX => 4 RFSQX",
+            "176 ORE => 6 VJHF"
+        ]
+        
+        let recipes = parseMineralInput(input)
+        let calculator = OreCalculator(recipes: recipes)
+        let fuel = recipes.first { $0.ingredient.id == .fuel }!
+        calculator.calculate(fuel.ingredient)
+        var results = [IngredientID: Int]()
+        _ = calculator.results.map { results[$0] = $1.used }
+        print(results)
+        let oreCount = calculator.calculateOreRequired(results)
+        XCTAssertEqual(180697, oreCount)
     }
     
     func test_part1_sample_data2() throws {
@@ -50,7 +69,11 @@ class Day14Tests: XCTestCase {
         ]
         
         let recipes = parseMineralInput(input)
-        XCTAssertEqual(165, calculateOreRequired(1, recipes: recipes))
+        let calculator = OreCalculator(recipes: recipes)
+        let fuel = recipes.first { $0.ingredient.id == .fuel }!
+        let results = calculator.calculateRequiredBaseIngredients(fuel.ingredient)
+        let oreCount = calculator.calculateOreRequired(results)
+        XCTAssertEqual(165, oreCount)
     }
     
     func test_part1_sample_data3() throws {
@@ -70,11 +93,7 @@ class Day14Tests: XCTestCase {
         let calculator = OreCalculator(recipes: recipes)
         let fuel = recipes.first { $0.ingredient.id == .fuel }!
         let results = calculator.calculateRequiredBaseIngredients(fuel.ingredient)
-        print(results)
-        let oreCount = results.reduce(0) { currentValue, item in
-            let recipe = calculator.findRecipe(item.key)
-            return currentValue + (recipe.requiredIngredients[0].value * item.value)
-        }
+        let oreCount = calculator.calculateOreRequired(results)
         XCTAssertEqual(13312, oreCount)
     }
     
@@ -99,12 +118,7 @@ class Day14Tests: XCTestCase {
         let fuel = recipes.first { $0.ingredient.id == .fuel }!
         let results = calculator.calculateRequiredBaseIngredients(fuel.ingredient)
         print(results)
-        print()
-        print(calculator.spareIngredients)
-        let oreCount = results.reduce(0) { currentValue, item in
-            let recipe = calculator.findRecipe(item.key)
-            return currentValue + (recipe.requiredIngredients[0].value * item.value)
-        }
+        let oreCount = calculator.calculateOreRequired(results)
         XCTAssertEqual(180697, oreCount)
     }
     
@@ -133,11 +147,7 @@ class Day14Tests: XCTestCase {
         let calculator = OreCalculator(recipes: recipes)
         let fuel = recipes.first { $0.ingredient.id == .fuel }!
         let results = calculator.calculateRequiredBaseIngredients(fuel.ingredient)
-        print(results)
-        let oreCount = results.reduce(0) { currentValue, item in
-            let recipe = calculator.findRecipe(item.key)
-            return currentValue + (recipe.requiredIngredients[0].value * item.value)
-        }
+        let oreCount = calculator.calculateOreRequired(results)
         XCTAssertEqual(2210736, oreCount)
     }
     
