@@ -84,11 +84,25 @@ class Day18Tests: XCTestCase {
         let input = try readInput(filename: "Day18.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
         let pathFinder = PathFinder(input)
         let result = pathFinder.calculateShortestPathToUnlockAllDoors()
-        XCTAssertEqual(4470, result)
+        XCTAssertEqual(4248, result)
     }
     
     func test_part2_sample_data1() throws {
+        let input = [
+        "#############",
+        "#g#f.D#..h#l#",
+        "#F###e#E###.#",
+        "#dCba@#@BcIJ#",
+        "#############",
+        "#nK.L@#@G...#",
+        "#M###N#H###.#",
+        "#o#m..#i#jk.#",
+        "#############",
+        ]
         
+        let pathFinder = MultiPathFinder(input)
+        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
+        XCTAssertEqual(72, result)
     }
     
     func test_part2_sample_data2() throws {
@@ -100,7 +114,11 @@ class Day18Tests: XCTestCase {
     }
     
     func test_part2() throws {
+        let input = try readInput(filename: "Day18_Part2.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
         
+        let pathFinder = MultiPathFinder(input)
+        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
+        XCTAssertEqual(472, result)
     }
 
 }

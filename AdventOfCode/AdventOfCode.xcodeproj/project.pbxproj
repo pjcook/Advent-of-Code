@@ -44,6 +44,7 @@
 		D5A877BB23BC8A44004A21CD /* Day24Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A877BA23BC8A44004A21CD /* Day24Tests.swift */; };
 		D5A877BD23BC8A4E004A21CD /* Day25Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A877BC23BC8A4E004A21CD /* Day25Tests.swift */; };
 		D5A877BF23BE2C06004A21CD /* Day24_Part2.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A877BE23BE2C06004A21CD /* Day24_Part2.swift */; };
+		D5A877C123C1F803004A21CD /* Day18_Part2.input in Resources */ = {isa = PBXBuildFile; fileRef = D5A877C023C1F803004A21CD /* Day18_Part2.input */; };
 		D5DD1E0023A143C200D323AC /* SteppedIntComputer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DD1DFF23A143C200D323AC /* SteppedIntComputer.swift */; };
 		D5DD1E0423A16F2000D323AC /* Day12.input in Resources */ = {isa = PBXBuildFile; fileRef = D5DD1E0323A16F2000D323AC /* Day12.input */; };
 		D5DD1E0623A16F2700D323AC /* Day12.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5DD1E0523A16F2700D323AC /* Day12.swift */; };
@@ -258,6 +259,7 @@
 		D5A877BA23BC8A44004A21CD /* Day24Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day24Tests.swift; sourceTree = "<group>"; };
 		D5A877BC23BC8A4E004A21CD /* Day25Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day25Tests.swift; sourceTree = "<group>"; };
 		D5A877BE23BE2C06004A21CD /* Day24_Part2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day24_Part2.swift; sourceTree = "<group>"; };
+		D5A877C023C1F803004A21CD /* Day18_Part2.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day18_Part2.input; sourceTree = "<group>"; };
 		D5DD1DFF23A143C200D323AC /* SteppedIntComputer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteppedIntComputer.swift; sourceTree = "<group>"; };
 		D5DD1E0223A16F1900D323AC /* Day12_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day12_Readme.md; sourceTree = "<group>"; };
 		D5DD1E0323A16F2000D323AC /* Day12.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day12.input; sourceTree = "<group>"; };
@@ -915,6 +917,7 @@
 			children = (
 				D5F0F6AA23A99531004A5E4A /* Day18_Readme.md */,
 				D5F0F6AB23A9953B004A5E4A /* Day18.input */,
+				D5A877C023C1F803004A21CD /* Day18_Part2.input */,
 				D5F0F6AD23A99545004A5E4A /* Day18.swift */,
 			);
 			name = Day18;
@@ -1158,6 +1161,7 @@
 				D5E3CBEE239CBBA700D39B5D /* Day8.input in Resources */,
 				D5A877A723BC8424004A21CD /* Day23.input in Resources */,
 				D5E3CBF6239D2A9D00D39B5D /* Day9.input in Resources */,
+				D5A877C123C1F803004A21CD /* Day18_Part2.input in Resources */,
 				D53642D9239EF190001DD179 /* Day10.input in Resources */,
 				D5E3CB462397AC6900D39B5D /* Day3_Readme.md in Resources */,
 				D5E3CB4A2397AC7300D39B5D /* Day4_Readme.md in Resources */,

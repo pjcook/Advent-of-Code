@@ -142,7 +142,7 @@ func writeMapRow(_ maxX: Int, _ minX: Int, _ y: Int, _ minY: Int, _ output: [Poi
         let dx = x + minX
         let dy = y + minY
         let value = output[Point(x: dx, y: dy)] ?? -1
-        let char = tileMap[value] ?? " "
+        let char = tileMap[value] ?? "(\(value.toAscii() ?? " ")"
         row += char
     }
     map += row + "\n"

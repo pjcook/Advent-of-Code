@@ -20,6 +20,7 @@ extension String {
 
 extension Int {
     func toAscii() -> String? {
+        guard self >= 0 else { return nil }
         if let us = UnicodeScalar(self) {
             return String(Character(us))
         }
