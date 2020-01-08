@@ -20,7 +20,7 @@ class MultiPathFinder {
     private var rawMap = [Point:Int]()
     private let keys: [Point:Int]
     private var pathFinders = [PathFinder]()
-    private var tempResult = Int.max
+    private var tempResult = 1886
 
     init(_ input: [String]) {
         for y in 0..<input.count {
@@ -87,7 +87,7 @@ class MultiPathFinder {
             let pathFinder = pathFinderContaining($0.value)
             let startingPoint = pathFinder.calculatePosition(visitedKeys)
             let distance = pathFinder.distance(startingPoint, $0.key, visitedKeys)
-            if distance > 0 && d + distance < 1886 {
+            if distance > 0 && d + distance < tempResult {
                 validKeys[$0.key] = ($0.value, distance)
             }
         }
