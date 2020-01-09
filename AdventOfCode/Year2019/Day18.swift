@@ -16,11 +16,17 @@ struct Path {
     let path: [Point]
 }
 
+struct Job {
+    let remainingKeys: [Point: Int]
+    let visitedKeys: [Int]
+    let distance: Int
+}
+
 class MultiPathFinder {
     private var rawMap = [Point:Int]()
     private let keys: [Point:Int]
     private var pathFinders = [PathFinder]()
-    private var tempResult = 1886
+    private var tempResult = Int.max //1886
 
     init(_ input: [String]) {
         for y in 0..<input.count {
@@ -50,6 +56,69 @@ class MultiPathFinder {
     let group = DispatchGroup()
     var queues = [DispatchQueue]()
     
+    var queue = OperationQueue()
+    var journeyDistance = Int.max
+    func addOperationsToQueue(_ job: Job) {
+        if self.queue.operationCount % 1000000 == 0 {
+            print("@@@", "VisitedKeys", job.visitedKeys.count, (job.visitedKeys).map({ $0.toAscii()! }).joined(), "Distance", job.distance, self.tempResult, "Queue", self.queue.operationCount)
+        }
+        
+        let validKeys = self.findValidKeys(remainingKeys: job.remainingKeys, visitedKeys: job.visitedKeys, distance: job.distance)
+        
+        let sortedValidKeys = validKeys.sorted { (arg0, arg1) -> Bool in
+            let (_, (_, distance1)) = arg0
+            let (_, (_, distance2)) = arg1
+            return distance1 < distance2
+        }
+        
+        for item in sortedValidKeys {
+            var remainingKeys = job.remainingKeys
+            remainingKeys.removeValue(forKey: item.key)
+            let distance = item.value.1
+            
+            guard distance < self.tempResult else { continue }
+            
+            if remainingKeys.isEmpty {
+                if distance < journeyDistance {
+                    journeyDistance = distance
+                    if distance < self.tempResult {
+                        self.tempResult = distance
+                    }
+                    print("###", "VisitedKeys", (job.visitedKeys + [item.value.0]).map({ $0.toAscii()! }).joined(), "Distance", distance, self.tempResult)
+                }
+            } else {
+                var visitedKeys = job.visitedKeys
+                visitedKeys.append(item.value.0)
+                let nextJob = Job(remainingKeys: remainingKeys, visitedKeys: visitedKeys, distance: distance)
+                self.queue.addOperation {
+                    self.addOperationsToQueue(nextJob)
+                }
+            }
+        }
+        if queue.operationCount == 1 {
+            self.group.leave()
+        }
+    }
+    
+    func calculateShortestPathToUnlockAllDoorsBFS() -> Int {
+        queue.maxConcurrentOperationCount = 8
+        let job = Job(remainingKeys: keys, visitedKeys: [], distance: 0)
+        group.enter()
+        queue.addOperation {
+            self.addOperationsToQueue(job)
+        }
+        
+        group.wait()
+        return journeyDistance
+    }
+    
+    func calculateShortestPathToUnlockAllDoorsSingleThreaded() -> Int {
+        let analyser = Analyser(findValidKeys: self.findValidKeys, generateCacheID: generateCacheID, group: self.group)
+        let result = analyser.calculate(remainingKeys: keys, visitedKeys: [], distance: 0)
+        analyser.leaveGroup()
+        return result
+    }
+    
     func calculateShortestPathToUnlockAllDoors() -> Int {
         let validKeys = findValidKeys(remainingKeys: keys, visitedKeys: [], distance: 0)
         
@@ -58,14 +127,14 @@ class MultiPathFinder {
         for item in validKeys {
             let queue = DispatchQueue(label: String(item.value.0))
             queues.append(queue)
-            let analyser = Analyser(findValidKeys: self.findValidKeys, group: self.group)
+            let analyser = Analyser(findValidKeys: self.findValidKeys, generateCacheID: generateCacheID, group: self.group)
             queue.async {
                 var keys = self.keys
                 keys.removeValue(forKey: item.key)
                 let distance = item.value.1
                 let nextDistance = analyser.calculate(remainingKeys: keys, visitedKeys: [item.value.0], distance: distance)
-                if nextDistance != Int.max && distance + nextDistance < journeyDistance {
-                    journeyDistance = distance + nextDistance
+                if nextDistance != Int.max && nextDistance < journeyDistance {
+                    journeyDistance = nextDistance
                 }
                 
                 analyser.leaveGroup()
@@ -87,23 +156,34 @@ class MultiPathFinder {
             let pathFinder = pathFinderContaining($0.value)
             let startingPoint = pathFinder.calculatePosition(visitedKeys)
             let distance = pathFinder.distance(startingPoint, $0.key, visitedKeys)
-            if distance > 0 && d + distance < tempResult {
-                validKeys[$0.key] = ($0.value, distance)
+            let total = d + distance
+            if distance > 0 && total < tempResult {
+                validKeys[$0.key] = ($0.value, total)
             }
         }
         return validKeys
     }
+    
+    private func generateCacheID(_ cost: Int, remainingKeys: [Int]) -> String {
+        let prefix = "\(cost)"
+        return prefix + remainingKeys.map({ $0.toAscii()! }).sorted().joined()
+    }
 }
 
+var tempResult = Int.max
+var cachedResults = [String:Int]()
+let semaphore = DispatchSemaphore(value: 1)
 class Analyser {
-    private var tempResult = Int.max
     typealias FindKeys = (_ remainingKeys: [Point: Int], _ visitedKeys: [Int], _ d: Int) -> [Point: (Int,Int)]
+    typealias GenerateCacheID = (_ cost: Int, _ remainingKeys: [Int]) -> String
     
     let findValidKeys: FindKeys
+    let generateCacheID: GenerateCacheID
     let group: DispatchGroup
     
-    init(findValidKeys: @escaping FindKeys, group: DispatchGroup) {
+    init(findValidKeys: @escaping FindKeys, generateCacheID: @escaping GenerateCacheID, group: DispatchGroup) {
         self.findValidKeys = findValidKeys
+        self.generateCacheID = generateCacheID
         self.group = group
         group.enter()
     }
@@ -112,8 +192,13 @@ class Analyser {
         group.leave()
     }
         
+    private var tick = 0
     func calculate(remainingKeys: [Point: Int], visitedKeys: [Int], distance d: Int) -> Int {
         var journeyDistance = Int.max
+        tick += 1
+        if tick % 1000000 == 0 {
+            print("ValidKeys", "VisitedKeys", visitedKeys.count, (visitedKeys).map({ $0.toAscii()! }).joined(), "Distance", d, tempResult, tick)
+        }
         
         let validKeys = findValidKeys(remainingKeys, visitedKeys, d)
         
@@ -127,52 +212,42 @@ class Analyser {
             var keys = remainingKeys
             keys.removeValue(forKey: item.key)
             let distance = item.value.1
+            guard distance < tempResult else { continue }
             if keys.isEmpty {
+                print("Solution", "VisitedKeys", (visitedKeys + [item.value.0]).map({ $0.toAscii()! }).joined(), "Distance", distance, tempResult, tick)
                 if distance < journeyDistance {
                     journeyDistance = distance
-                    if d + distance < tempResult { tempResult = d + distance }
-                    print("ValidKeys", "VisitedKeys", (visitedKeys + [item.value.0]).map({ $0.toAscii()! }).joined(), "Distance", d + distance, tempResult)
+                    if distance < tempResult { tempResult = distance }
                 }
             } else {
-                var updatedKeys = visitedKeys
-                updatedKeys.append(item.value.0)
-                let nextDistance = calculate(remainingKeys: keys, visitedKeys: updatedKeys, distance: d + distance)
-                if nextDistance != Int.max && distance + nextDistance < journeyDistance {
-                    journeyDistance = distance + nextDistance
+                let cacheKeys = keys.map { $0.value }
+                let newID = generateCacheID(d, cacheKeys)
+                semaphore.wait()
+                let result = cachedResults[newID]
+                semaphore.signal()
+                if let result = result {
+                    if result < journeyDistance {
+                        journeyDistance = result
+                    }
+                } else {
+                    var updatedKeys = visitedKeys
+                    updatedKeys.append(item.value.0)
+                    let nextDistance = calculate(remainingKeys: keys, visitedKeys: updatedKeys, distance: distance)
+                    if nextDistance != Int.max {
+                        semaphore.wait()
+                        cachedResults[newID] = nextDistance
+                        semaphore.signal()
+//                        print("Cache", newID, nextDistance, visitedKeys.map { $0.toAscii()! }.joined())
+                    }
+                    if nextDistance != Int.max && nextDistance < journeyDistance {
+                        journeyDistance = nextDistance
+                    }
                 }
             }
         }
         
         return journeyDistance
     }
-    
-//    func calculate(remainingKeys: [Point : Int], visitedKeys: [Int]) -> Int {
-//        var journeyDistance = Int.max
-//        for key in remainingKeys {
-//            let pathFinder = pathFinderContaining(key.value)
-//            let startingPoint = pathFinder.calculatePosition(visitedKeys)
-//            let distance = pathFinder.distance(startingPoint, key.key, visitedKeys)
-//            if distance > 0 {
-//                let position = key.key
-//                var keys = remainingKeys
-//                keys.removeValue(forKey: position)
-//                if keys.isEmpty {
-//                    if distance < journeyDistance {
-//                        journeyDistance = distance
-//                    }
-//                } else {
-//                    var updatedKeys = visitedKeys
-//                    updatedKeys.append(key.value)
-//                    let nextDistance = calculate(remainingKeys: keys, visitedKeys: updatedKeys)
-//                    if distance + nextDistance < journeyDistance {
-//                        journeyDistance = distance + nextDistance
-//                    }
-//                }
-//            }
-//        }
-//
-//        return journeyDistance
-//    }
 }
 
 class PathFinder {
@@ -189,9 +264,27 @@ class PathFinder {
     var isFinished = false
     var visitedKeys = [Int]()
     private var cachedPaths = [Path]()
+    let keyToDoor: [Int:Int]
+    let doorToKey: [Int:Int]
 
-    init(_ input: [String]) {
-        id = 1
+    init(id: Int) {
+        self.id = id
+        var keyToDoor: [Int:Int] = [:]
+        var doorToKey: [Int:Int] = [:]
+        let keyChars = "abcdefghijklmnopqrstuvwxyz"
+        let doorChars = "abcdefghijklmnopqrstuvwxyz".uppercased()
+        for (a,b) in zip(keyChars, doorChars) {
+            let key = String(a).toAscii().first!
+            let door = String(b).toAscii().first!
+            keyToDoor[key] = door
+            doorToKey[door] = key
+        }
+        self.keyToDoor = keyToDoor
+        self.doorToKey = doorToKey
+    }
+    
+    convenience init(_ input: [String]) {
+        self.init(id: 1)
         
         for y in 0..<input.count {
             var row = input[y]
@@ -204,8 +297,8 @@ class PathFinder {
         parseMap()
     }
     
-    init(_ input: [Point:Int], id: Int = 1) {
-        self.id = id
+    convenience init(_ input: [Point:Int], id: Int = 1) {
+        self.init(id: id)
         rawMap = input
         parseMap()
     }
@@ -265,16 +358,7 @@ class PathFinder {
     }
     
     func remainingDoors(_ visited: [Int]) -> [Int] {
-        var doors = doorsData
-        
-        for data in doors {
-            let key = data.value.toAscii()!.lowercased().toAscii().first!
-            if visited.contains(key) {
-                doors.removeValue(forKey: data.key)
-            }
-        }
-        
-        return doors.map { $0.value }
+        return doorsData.compactMap({ visited.contains(doorToKey[$0.value]!) ? nil : $0.value })
     }
     
     func distance(_ start: Point, _ end: Point, _ visited: [Int]) -> Int {
@@ -333,7 +417,20 @@ extension PathFinder {
             populatePathsCache(remainingKeys, startingPoint: item.key, map: map)
         }
         
+        print("Starting Point", startingPoint!)
         print("Doors:", doorsData.count, "Keys:", keysData.count)
+        doorsData.forEach {
+            print($0.key, $0.value)
+        }
+        print()
+        keys.forEach {
+            print($0.key, $0.value)
+        }
+        print()
+        cachedPaths.forEach {
+            print($0.start, $0.end, $0.distance, $0.doors.map { String($0) }.joined(separator: ","))
+        }
+        print()
     }
     
     private func populatePathsCache(_ keys: [Point:Int], startingPoint: Point, map: GKGridGraph<GKGridGraphNode>) {
