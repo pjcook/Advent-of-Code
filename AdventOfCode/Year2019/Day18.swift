@@ -380,7 +380,7 @@ class PathFinder {
 extension PathFinder {
     private func parseMap() {
         var nodesToRemove = [GKGridGraphNode]()
-                let (minX,minY,maxX,maxY) = calculateMapDimensions(rawMap)
+        let (minX,minY,maxX,maxY) = calculateMapDimensions(rawMap)
         let map = GKGridGraph(
             fromGridStartingAt: [Int32(minX),Int32(minY)],
             width: Int32(maxX-minX),

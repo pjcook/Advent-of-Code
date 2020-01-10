@@ -17,25 +17,62 @@ extension Direction {
             case .E: return 4
         }
     }
+    
+    var inverse: Direction {
+        switch self {
+        case .N: return .S
+        case .S: return .N
+        case .W: return .E
+        case .E: return .W
+        }
+    }
+}
+
+extension Point {
+    func directionTo(_ point: Point) -> Direction {
+        if x < point.x { return .E }
+        if x > point.x { return .W }
+        if y > point.y { return .S }
+        return .N
+    }
 }
 
 enum MoveStatus: Int {
     case hitWall = 0
     case moved = 1
     case movedFoundOxygenSystem = 2
+    case unknown = -1
+    case start = 4
+    
+    var sortOrder: Int {
+        switch self {
+        case .unknown: return 0
+        case .moved, .start: return 1
+        case .movedFoundOxygenSystem: return 2
+        case .hitWall: return 3
+        }
+    }
+}
+
+struct MapPointStatus {
+    let point: Point
+    let state: MoveStatus
+    let options: Set<Direction>
 }
 
 class Mapper {
-    var map: [Point:MoveStatus] = [.zero:.moved]
+    private(set) var map: [Point:MapPointStatus] = [.zero:MapPointStatus(point: .zero, state: .start, options: [])]
     var computer: SteppedIntComputer?
-    let tiles = [-1:"⚪️",0:"🟤", 1:"⚫️", 2:"🟠",3:"🟣"]
+    let tiles = [-1:"⚪️",0:"🟤", 1:"⚫️", 2:"🟠",3:"🟣",4:"🔴"]
     
-    private let startPosition = Point.zero
-    private var currentPosition = Point.zero
-    private var lastMovement: Direction = .E
+    let startPosition = Point.zero
+    private(set) var currentPosition = Point.zero
+    private var moveValue: Direction = .E
     private var lastStatus: MoveStatus = .moved
     private var finished = false
     private var started = false
+    private var route = [Direction]()
+    var processEntireSpace = false
     
     init(_ input: [Int]) {
         computer = SteppedIntComputer(
@@ -44,7 +81,6 @@ class Mapper {
             readInput: readInput,
             processOutput: processOutput,
             completionHandler: {
-                print("Finished")
                 self.drawMapInConsole()
             },
             forceWriteMode: false
@@ -55,60 +91,132 @@ class Mapper {
         computer?.process()
     }
     
+    func createMapper() -> GKMapper {
+        var newMap = [Point:Int]()
+        _ = map.map {
+            newMap[$0.key] = $0.value.state.rawValue
+        }
+        let mapper = GKMapper(newMap, wallID: 0)
+        mapper.removeTilesNotIn([1,2,4])
+        return mapper
+    }
+    
+    func fillWithOxygen() -> Int {
+        var isFull = false
+        var minutes = 0
+        while !isFull {
+            fillTilesWithOxygen()
+            minutes += 1
+            isFull = allTilesContainOxygen()
+            drawMapInConsole()
+        }
+        return minutes
+    }
+    
+    private func validOxygenNeighbours(_ point: Point) -> [Point] {
+        return
+            [
+                point + Direction.N.point,
+                point + Direction.S.point,
+                point + Direction.E.point,
+                point + Direction.W.point
+            ]
+            .compactMap { map[$0] }
+            .filter { [.moved, .start].contains($0.state) }
+            .map { $0.point }
+    }
+    
+    private func fillTilesWithOxygen() {
+        var tiles = [Point]()
+        map
+            .filter({ $0.value.state == .movedFoundOxygenSystem })
+            .map { tiles += validOxygenNeighbours($0.key) }
+        tiles.forEach {
+            let info = map[$0]!
+            map[$0] = MapPointStatus(point: $0, state: .movedFoundOxygenSystem, options: info.options)
+        }
+    }
+    
+    private func allTilesContainOxygen() -> Bool {
+        return Set(map.map { $0.value.state }).count == 2
+    }
+    
+    private func routeTo(_ point: Point) {
+        let mapper = createMapper()
+        var position = currentPosition
+        _ = mapper.route(position, point).compactMap {
+            if $0 != currentPosition {
+                let direction = position.directionTo($0)
+                position = position + direction.point
+                route.append(direction)
+            }
+        }
+    }
+    
     private func readInput() -> Int {
         guard !finished else { return 99 }
-        guard started else {
-            started = true
-            return lastMovement.moveValue
+        
+        let currentTile = map[currentPosition]!
+        if currentTile.options.count < 4 {
+            route.removeAll()
+            moveValue = Direction.all.first(where: { !currentTile.options.contains($0) })!
+            return moveValue.moveValue
         }
         
-        if lastStatus == .hitWall {
-            while true {
-                lastMovement = lastMovement.rotateRight()
-                let point = currentPosition + lastMovement.point
-                if let mapStatus = map[point], mapStatus != .hitWall {
-                    break
-                }
-            }
-        } else if lastStatus == .moved {
-            let point = currentPosition + lastMovement.point
-            if let mapStatus = map[point], mapStatus == .hitWall {
-                lastMovement = lastMovement.rotateRight()
-            }
+        if !route.isEmpty {
+            moveValue = route.removeFirst()
+            return moveValue.moveValue
         }
-        print(currentPosition , lastMovement)
-        return lastMovement.moveValue
+        
+        guard let tile = map.first(where: { $0.value.options.count < 4 && $0.value.state != .hitWall }) else {
+            return 99
+        }
+        
+        routeTo(tile.key)
+        moveValue = route.removeFirst()
+        return moveValue.moveValue
     }
     
     private func processOutput(_ value: Int) {
-        let status = MoveStatus(rawValue: value)!
-        switch status {
+        lastStatus = MoveStatus(rawValue: value)!
+        let currentState = map[currentPosition]!
+        var options = currentState.options
+        options.insert(moveValue)
+        map[currentPosition] = MapPointStatus(point: currentPosition, state: currentState.state, options: options)
+
+        let position = currentPosition + moveValue.point
+        var nextOptions = map[position]?.options ?? []
+        map[position] = MapPointStatus(point: position, state: lastStatus, options: nextOptions)
+        
+        switch lastStatus {
         case .hitWall:
-            let position = currentPosition + lastMovement.point
-            map[position] = status
+            break
             
         case .moved:
-            let position = currentPosition + lastMovement.point
-            if (map[position] ?? .moved) != .hitWall {
-                map[position] = status
-                currentPosition = position
-            }
+            nextOptions.insert(moveValue.inverse)
+            map[position] = MapPointStatus(point: position, state: lastStatus, options: nextOptions)
+            currentPosition = position
             
         case .movedFoundOxygenSystem:
-            let position = currentPosition + lastMovement.point
-            map[position] = status
+            nextOptions.insert(moveValue.inverse)
+            map[position] = MapPointStatus(point: position, state: lastStatus, options: nextOptions)
             currentPosition = position
-            finished = true
-            drawMapInConsole()
+            if !processEntireSpace {
+                finished = true
+            }
+            
+        case .unknown, .start:
+            break
         }
-        drawMapInConsole()
+//        drawMapInConsole()
     }
     
-    private func drawMapInConsole() {
+    func drawMapInConsole() {
         var rawMap = [Point:Int]()
-        _ = map.map { rawMap[$0] = $1.rawValue }
-        rawMap[currentPosition] = 3
-        drawMap(rawMap, tileMap: tiles)
+        _ = map.map { rawMap[$0] = $1.state.rawValue }
+        rawMap[startPosition] = 3
+        rawMap[currentPosition] = 4
+        drawMapReversed(rawMap, tileMap: tiles)
     }
 }
 
