@@ -66,16 +66,34 @@ class Day16Tests: XCTestCase {
     }
     
     func test_part2_sample_data1() throws {
-        let input = "03036732577212944063491565474664"
-        var repeatedInput = ""
+        let input = "03036732577212944063491565474664".map { Int(String($0))! }
+        var repeatedInput = [Int]()
         for _ in 0..<10000 {
             repeatedInput += input
         }
-        let fft = FFT(repeatedInput)
+        let fft = FFT2(repeatedInput)
         let result = fft.resolve(phases: 100)
-        let startIndex = result.index(result.startIndex, offsetBy: 303673)
-        let answer = String(result.prefix(through: result.index(startIndex, offsetBy: 7)))
-        XCTAssertEqual("84462026", answer)
+        
+        var startIndex = 0
+        startIndex += result[0] * 1000000
+        startIndex += result[1] * 100000
+        startIndex += result[2] * 10000
+        startIndex += result[3] * 1000
+        startIndex += result[4] * 100
+        startIndex += result[5] * 10
+        startIndex += result[6]
+
+        var answer = 0
+        answer += result[startIndex + 0] * 10000000
+        answer += result[startIndex + 1] * 1000000
+        answer += result[startIndex + 2] * 100000
+        answer += result[startIndex + 3] * 10000
+        answer += result[startIndex + 4] * 1000
+        answer += result[startIndex + 5] * 100
+        answer += result[startIndex + 6] * 10
+        answer += result[startIndex + 7]
+        
+        XCTAssertEqual(84462026, answer)
     }
 
 }

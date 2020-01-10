@@ -13,7 +13,7 @@ import InputReader
 class Day15Tests: XCTestCase {
 
     func test_part1() throws {
-        guard let input = try readInput(filename: "Day11.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+        guard let input = try readInput(filename: "Day15.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
         let mapper = Mapper(input + Array(repeating: 0, count: 2000))
         mapper.start()
     }
