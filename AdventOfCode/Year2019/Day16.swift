@@ -10,88 +10,34 @@ import Foundation
 
 class FFT {
     let basePattern = [0, 1, 0, -1]
-    var input = ""
-    var output = ""
-    
-    init(_ input: String) {
-        self.input = input
-    }
-    
-    func resolve(phases: Int) -> String {
-        let length = input.count
-        
-//        buildPatterns(length)
-        
-        for phase in 0..<phases {
-            output = ""
-
-            for iteration in 0..<length {
-                let pattern = buildPattern(iteration, itemCount: length)
-//                let pattern = cachedPatterns[iteration]
-                var result = 0
-                for (index, char) in input.enumerated() {
-                    result += Int(String(char))! * pattern[index]
-                }
-                output += String(String(result).last!)
-            }
-            
-            input = output
-            print(phase)
-        }
-        
-        return output
-    }
-    
-    var cachedPatterns: [[Int]] = []
-    private func buildPatterns(_ length: Int) {
-        for iteration in 0..<length {
-            let pattern = buildPattern(iteration, itemCount: length)
-            cachedPatterns.append(pattern)
-        }
-    }
-    
-    private func buildPattern(_ iteration: Int, itemCount: Int) -> [Int] {
-        var pattern = [Int]()
-        var pointer = 0
-        while pattern.count < itemCount+1 {
-            let value = basePattern[pointer]
-            pattern.append(contentsOf: Array(repeating: value, count: iteration+1))
-            pointer = nextPointer(pointer)
-        }
-        pattern.removeFirst()
-        return pattern
-    }
-    
-    private func nextPointer(_ pointer: Int) -> Int {
-        return pointer == basePattern.count-1 ? 0 : pointer+1
-    }
-}
-
-class FFT2 {
-    let basePattern = [0, 1, 0, -1]
     var input = [Int]()
     var output = [Int]()
     
-    init(_ input: [Int]) {
-        self.input = input
+    init(_ input: String) {
+        self.input = input.map { Int(String($0))! }
     }
     
     func resolve(phases: Int) -> [Int] {
         let length = input.count
-        
-        buildPatterns(length)
-        
+        let halfLength = length / 2
+                
         for phase in 0..<phases {
-            
             output.removeAll()
-            
+
             for iteration in 0..<length {
-                var result = 0
-                let pattern = cachedPatterns[iteration]
-                for (a,b) in zip(input, pattern) {
-                    result += a * b
+                if iteration % 1000 == 0 {
+                    print(phase, iteration)
                 }
-                output.append(Int(String(result))!)
+                
+                var result = 0
+                var lastMultiplier = multiplier(iteration, iteration)
+                for i in iteration..<length {
+                    if iteration < halfLength {
+                        lastMultiplier = multiplier(iteration, i)
+                    }
+                    result += input[i] * lastMultiplier
+                }
+                output.append(abs(result - Int(result / 10 * 10)))
             }
             
             input = output
@@ -101,27 +47,23 @@ class FFT2 {
         return output
     }
     
-    var cachedPatterns: [[Int]] = []
-    private func buildPatterns(_ length: Int) {
-        for iteration in 0..<length {
-            let pattern = buildPattern(iteration, itemCount: length)
-            cachedPatterns.append(pattern)
-        }
+    func result(_ startIndex: Int) -> Int {
+        var answer = 0
+        answer += output[startIndex + 0] * 10000000
+        answer += output[startIndex + 1] * 1000000
+        answer += output[startIndex + 2] * 100000
+        answer += output[startIndex + 3] * 10000
+        answer += output[startIndex + 4] * 1000
+        answer += output[startIndex + 5] * 100
+        answer += output[startIndex + 6] * 10
+        answer += output[startIndex + 7]
+        return answer
     }
     
-    private func buildPattern(_ iteration: Int, itemCount: Int) -> [Int] {
-        var pattern = [Int]()
-        var pointer = 0
-        while pattern.count < itemCount+1 {
-            let value = basePattern[pointer]
-            pattern.append(contentsOf: Array(repeating: value, count: iteration+1))
-            pointer = nextPointer(pointer)
-        }
-        pattern.removeFirst()
-        return pattern
-    }
-    
-    private func nextPointer(_ pointer: Int) -> Int {
-        return pointer == basePattern.count-1 ? 0 : pointer+1
+    func multiplier(_ y: Int, _ x: Int) -> Int {
+        let numberOfPatterns = basePattern.count
+        let remainder = (x+1) / (y+1)
+        return basePattern[remainder%numberOfPatterns]
     }
 }
+

@@ -128,7 +128,7 @@ class Mapper {
     
     private func fillTilesWithOxygen() {
         var tiles = [Point]()
-        map
+        _ = map
             .filter({ $0.value.state == .movedFoundOxygenSystem })
             .map { tiles += validOxygenNeighbours($0.key) }
         tiles.forEach {
