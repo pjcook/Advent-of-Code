@@ -57,71 +57,97 @@ func parseMineralInput(_ input: [String]) -> [Recipe] {
 
 class OreCalculator {
     let recipes: [Recipe]
-    let baseRecipes: [IngredientID: Recipe]
-    
+    private var required = [IngredientID:Int]()
+    private var spare = [IngredientID:Int]()
+
     init(recipes: [Recipe]) {
         self.recipes = recipes
-        baseRecipes = recipes.filter { $0.isBaseRecipe }.reduce(into: [IngredientID: Recipe]()) { $0[$1.ingredient.id] = $1 }
     }
     
-    struct CalcData {
-        let used: Int
-        let spare: Int
+    private func disassembleSpares() -> Int {
+        var ore = 0
+        var queue = spare.compactMap { $0.value > 0 ? $0.key : nil }
         
-        static let zero = CalcData(used: 0, spare: 0)
-    }
-    
-    var results: [IngredientID:CalcData] = [:]
-    
-    func calculate(_ ingredient: Ingredient) {
-        let recipe = findRecipe(ingredient.id)
-        guard !recipe.isBaseRecipe else { return }
-        let numberRequired = calculateNumberRequired(ingredient)
-        let multiplier = calculateMultiplier(numberRequired: numberRequired, numberProduced: recipe.ingredient.value)
-        for item in recipe.requiredIngredients {
-            let requiredAmount = item.value * multiplier
-            let result = results[item.id] ?? .zero
-            let itemRecipe = findRecipe(item.id)
-            results[item.id] = CalcData(used: result.used + requiredAmount, spare: max(0, (itemRecipe.ingredient.value * multiplier) - requiredAmount))
-            calculate(item)
+        while !queue.isEmpty {
+            let key = queue.removeFirst()
+            let value = spare[key] ?? 0
+            if value > 0 {
+                let recipe = findRecipe(key)
+                let multiplier = Int(value / recipe.ingredient.value)
+                let remainder = value - (recipe.ingredient.value * multiplier)
+                spare[key] = remainder
+                
+                for ingredient in recipe.requiredIngredients {
+                    if ingredient.id == IngredientID.ore {
+                        ore += recipe.requiredIngredients.first!.value * multiplier
+                    } else {
+                        let currentAmount = spare[ingredient.id] ?? 0
+                        spare[ingredient.id] = currentAmount + (ingredient.value * multiplier)
+                        if currentAmount + (ingredient.value * multiplier) > ingredient.value {
+                            queue.append(ingredient.id)
+                        }
+                    }
+                }
+            }
         }
-    }
-    
-    func calculateNumberRequired(_ ingredient: Ingredient) -> Int {
-        guard let result = results[ingredient.id] else { return ingredient.value }
-        results[ingredient.id] = CalcData(used: result.used + ingredient.value, spare: 0)
-        return ingredient.value - result.spare
-    }
-    
-    func calculateRequiredBaseIngredients(_ ingredient: Ingredient) -> [IngredientID:Int] {
-        let recipe = findRecipe(ingredient.id)
-        guard !recipe.isBaseRecipe else { return [:] }
-        var ingredients = [IngredientID:Int]()
-        let multiplier = calculateMultiplier(numberRequired: ingredient.value, numberProduced: recipe.ingredient.value)
-        for item in recipe.requiredIngredients {
-            let requiredAmount = item.value * multiplier
-            ingredients[item.id] = (ingredients[item.id] ?? 0) + requiredAmount
-            let multipliedItem = Ingredient(id: item.id, value: requiredAmount)
-            let results = calculateRequiredBaseIngredients(multipliedItem)
-            ingredients.merge(results) { $0 + $1 }
-        }
-        return ingredients
-    }
 
-    func calculateOreRequired(_ ingredients: [IngredientID:Int]) -> Int {
-        return ingredients.reduce(0) { currentValue, item in
-            let recipe = findRecipe(item.key)
-            guard recipe.isBaseRecipe else { return currentValue }
-            return currentValue + (recipe.requiredIngredients[0].value * calculateMultiplier(numberRequired: item.value, numberProduced: recipe.ingredient.value))
-        }
+        return ore
     }
-
-    func calculateMultiplier(numberRequired: Int, numberProduced: Int) -> Int {
-        var multiplier = numberRequired / numberProduced
-        if numberRequired % numberProduced != 0 {
-            multiplier += 1
+    
+    func calculateMaxFuel(_ ingredient: Ingredient, _ maxOre: Int) -> Int {
+        let ore = calculate(ingredient)
+        let basicSpares = spare
+        var remainingOre = maxOre
+        var fuelCount = 0
+                        
+        while remainingOre > ore {
+            let iterations = remainingOre / ore
+            fuelCount += iterations * ingredient.value
+            remainingOre -= ore * iterations
+            basicSpares.forEach {
+                spare[$0.key] = (spare[$0.key] ?? 0) + ($0.value * iterations)
+            }
+            remainingOre += disassembleSpares()
+//            print(fuelCount, remainingOre)
         }
-        return multiplier
+        
+        return fuelCount
+    }
+        
+    func calculate(_ ingredient: Ingredient) -> Int {
+        let initialItem = findRecipe(ingredient.id)
+        var ore = 0
+        required[initialItem.ingredient.id] = initialItem.ingredient.value
+        
+        while !required.isEmpty {
+            guard let work = required.popFirst() else { return ore }
+            let recipe = findRecipe(work.key)
+            var multiplier = work.value / recipe.ingredient.value
+            if work.value % recipe.ingredient.value != 0 {
+                multiplier += 1
+            }
+            let spareWork = (recipe.ingredient.value * multiplier) - work.value
+            let currentSpare = spare[work.key] ?? 0
+            spare[work.key] = currentSpare + spareWork
+            
+            for ingredient in recipe.requiredIngredients {
+                var requiredAmount = ingredient.value * multiplier
+                guard ingredient.id != IngredientID.ore else {
+                    ore += requiredAmount
+                    continue
+                }
+                let available = spare.removeValue(forKey: ingredient.id) ?? 0
+                requiredAmount -= available
+                if requiredAmount < 0 {
+                    spare[ingredient.id] = abs(requiredAmount)
+                } else {
+                    let outstandingAmount = required[ingredient.id] ?? 0
+                    required[ingredient.id] = outstandingAmount + requiredAmount
+                }
+            }
+        }
+        
+        return ore
     }
     
     func findRecipe(_ id: IngredientID) -> Recipe {

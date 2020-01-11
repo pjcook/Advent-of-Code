@@ -108,7 +108,7 @@ class Mapper {
             fillTilesWithOxygen()
             minutes += 1
             isFull = allTilesContainOxygen()
-            drawMapInConsole()
+//            drawMapInConsole()
         }
         return minutes
     }

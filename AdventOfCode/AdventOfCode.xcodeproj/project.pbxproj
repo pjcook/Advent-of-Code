@@ -20,6 +20,7 @@
 		D53642EF239FFD1F001DD179 /* Day11.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642EE239FFD1F001DD179 /* Day11.swift */; };
 		D53642F1239FFD31001DD179 /* Day11Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642F0239FFD31001DD179 /* Day11Tests.swift */; };
 		D53642F523A0D51E001DD179 /* Day11_chris.input in Resources */ = {isa = PBXBuildFile; fileRef = D53642F423A0D51E001DD179 /* Day11_chris.input */; };
+		D58A3B4123C88DBA004393AC /* GKMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58A3B4023C88DBA004393AC /* GKMapper.swift */; };
 		D5A8778423AAC43D004A21CD /* Day19.input in Resources */ = {isa = PBXBuildFile; fileRef = D5A8778323AAC43D004A21CD /* Day19.input */; };
 		D5A8778623AAC445004A21CD /* Day19.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A8778523AAC445004A21CD /* Day19.swift */; };
 		D5A8778823AAC456004A21CD /* Day19Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A8778723AAC456004A21CD /* Day19Tests.swift */; };
@@ -228,6 +229,7 @@
 		D53642EE239FFD1F001DD179 /* Day11.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11.swift; sourceTree = "<group>"; };
 		D53642F0239FFD31001DD179 /* Day11Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11Tests.swift; sourceTree = "<group>"; };
 		D53642F423A0D51E001DD179 /* Day11_chris.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day11_chris.input; sourceTree = "<group>"; };
+		D58A3B4023C88DBA004393AC /* GKMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GKMapper.swift; sourceTree = "<group>"; };
 		D5A8778223AAC434004A21CD /* Day19_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day19_Readme.md; sourceTree = "<group>"; };
 		D5A8778323AAC43D004A21CD /* Day19.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day19.input; sourceTree = "<group>"; };
 		D5A8778523AAC445004A21CD /* Day19.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day19.swift; sourceTree = "<group>"; };
@@ -604,6 +606,7 @@
 				D5E3CB0B2397ABCB00D39B5D /* Year2019.h */,
 				D5E3CBB9239A6D6E00D39B5D /* Bundler.swift */,
 				D5E3CBD4239A8F4800D39B5D /* Errors.swift */,
+				D58A3B4023C88DBA004393AC /* GKMapper.swift */,
 				D5E3CB0C2397ABCB00D39B5D /* Info.plist */,
 			);
 			path = Year2019;
@@ -1252,6 +1255,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D58A3B4123C88DBA004393AC /* GKMapper.swift in Sources */,
 				D5E3CB3B2397AC5400D39B5D /* Day1.swift in Sources */,
 				D53642EF239FFD1F001DD179 /* Day11.swift in Sources */,
 				D5A877AE23BC846D004A21CD /* Day24.swift in Sources */,
@@ -1538,6 +1542,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = Year2019/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1548,6 +1553,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.software101.Year2019;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1566,6 +1572,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_OPTIMIZATION_LEVEL = s;
 				INFOPLIST_FILE = Year2019/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1576,6 +1583,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.software101.Year2019;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
