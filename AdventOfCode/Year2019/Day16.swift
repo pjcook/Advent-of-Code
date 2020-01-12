@@ -17,6 +17,44 @@ class FFT {
         self.input = input.map { Int(String($0))! }
     }
     
+    fileprivate func sumIteration(_ iteration: Int, _ length: Int) -> Int {
+        var result = 0
+        var lastMultiplier = multiplier(iteration, iteration)
+        var i = iteration
+        while i < length {
+            lastMultiplier = multiplier(iteration, i)
+            switch lastMultiplier {
+            case 0:
+                i += iteration+1
+            case 1:
+                let bounds = min(length-i, iteration+1)
+                result += sumSlice(i, i+bounds)
+//                for x in 0..<bounds {
+//                    result += input[i+x]
+//                }
+                i += iteration+1
+            case -1:
+                let bounds = min(length-i, iteration+1)
+                result += sumNegativeSlice(i, i+bounds)
+//                for x in 0..<bounds {
+//                    result += input[i+x] * lastMultiplier
+//                }
+                i += iteration+1
+            default:
+                break
+            }
+        }
+        return result
+    }
+    
+    func sumNegativeSlice(_ start: Int, _ end: Int) -> Int {
+        return input[start..<end].reduce(0) { $0 + ($1 * -1) }
+    }
+    
+    func sumSlice(_ start: Int, _ end: Int) -> Int {
+        return input[start..<end].reduce(0, +)
+    }
+    
     func resolve(phases: Int) -> [Int] {
         let length = input.count
         let halfLength = length / 2
@@ -26,22 +64,29 @@ class FFT {
 
             for iteration in 0..<length {
                 if iteration % 1000 == 0 {
-                    print(phase, iteration)
+                    print(phase, iteration, halfLength, length, Date())
                 }
                 
                 var result = 0
-                var lastMultiplier = multiplier(iteration, iteration)
-                for i in iteration..<length {
-                    if iteration < halfLength {
-                        lastMultiplier = multiplier(iteration, i)
-                    }
-                    result += input[i] * lastMultiplier
+                if iteration < halfLength {
+                    result = sumIteration(iteration, length)
+                } else {
+                    result = sumSlice(iteration, length)
+//                    for i in iteration..<length {
+//                        result += input[i]
+//                    }
                 }
+//                for i in iteration..<length {
+//                    if iteration < halfLength {
+//                        lastMultiplier = multiplier(iteration, i)
+//                    }
+//                    result += input[i] * lastMultiplier
+//                }
                 output.append(abs(result - Int(result / 10 * 10)))
             }
             
             input = output
-            print(phase)
+            print(phase, Date())
         }
         
         return output
