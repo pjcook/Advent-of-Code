@@ -69,7 +69,9 @@ class Day20Tests: XCTestCase {
     }
     
     func test_part2() throws {
-        
+        let result = 6812
+        // Now write the code
+        XCTAssertEqual(6812, result)
     }
 
 }
