@@ -20,6 +20,7 @@
 		D53642EF239FFD1F001DD179 /* Day11.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642EE239FFD1F001DD179 /* Day11.swift */; };
 		D53642F1239FFD31001DD179 /* Day11Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642F0239FFD31001DD179 /* Day11Tests.swift */; };
 		D53642F523A0D51E001DD179 /* Day11_chris.input in Resources */ = {isa = PBXBuildFile; fileRef = D53642F423A0D51E001DD179 /* Day11_chris.input */; };
+		D5541C5D23EC018700EFFD42 /* InputReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5541C5C23EC018700EFFD42 /* InputReader.swift */; };
 		D58A3B4123C88DBA004393AC /* GKMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58A3B4023C88DBA004393AC /* GKMapper.swift */; };
 		D5A8778423AAC43D004A21CD /* Day19.input in Resources */ = {isa = PBXBuildFile; fileRef = D5A8778323AAC43D004A21CD /* Day19.input */; };
 		D5A8778623AAC445004A21CD /* Day19.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A8778523AAC445004A21CD /* Day19.swift */; };
@@ -83,7 +84,6 @@
 		D5E3CB85239A695300D39B5D /* Day1.input in Resources */ = {isa = PBXBuildFile; fileRef = D5E3CB84239A695300D39B5D /* Day1.input */; };
 		D5E3CB94239A696800D39B5D /* InputReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5E3CB8B239A696800D39B5D /* InputReader.framework */; };
 		D5E3CB9B239A696800D39B5D /* InputReader.h in Headers */ = {isa = PBXBuildFile; fileRef = D5E3CB8D239A696800D39B5D /* InputReader.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D5E3CBA2239A697D00D39B5D /* InputReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E3CB4D2397AC7C00D39B5D /* InputReader.swift */; };
 		D5E3CBA8239A6A5B00D39B5D /* InputReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E3CBA7239A6A5B00D39B5D /* InputReaderTests.swift */; };
 		D5E3CBAC239A6A7200D39B5D /* Day1_valid.data in Resources */ = {isa = PBXBuildFile; fileRef = D5E3CBA9239A6A7200D39B5D /* Day1_valid.data */; };
 		D5E3CBAD239A6A7200D39B5D /* InvalidData.png in Resources */ = {isa = PBXBuildFile; fileRef = D5E3CBAA239A6A7200D39B5D /* InvalidData.png */; };
@@ -229,6 +229,7 @@
 		D53642EE239FFD1F001DD179 /* Day11.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11.swift; sourceTree = "<group>"; };
 		D53642F0239FFD31001DD179 /* Day11Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11Tests.swift; sourceTree = "<group>"; };
 		D53642F423A0D51E001DD179 /* Day11_chris.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day11_chris.input; sourceTree = "<group>"; };
+		D5541C5C23EC018700EFFD42 /* InputReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputReader.swift; path = ../../../LogParser/Sources/LogParser/InputReader.swift; sourceTree = "<group>"; };
 		D58A3B4023C88DBA004393AC /* GKMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GKMapper.swift; sourceTree = "<group>"; };
 		D5A8778223AAC434004A21CD /* Day19_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day19_Readme.md; sourceTree = "<group>"; };
 		D5A8778323AAC43D004A21CD /* Day19.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day19.input; sourceTree = "<group>"; };
@@ -291,7 +292,6 @@
 		D5E3CB442397AC6900D39B5D /* Day3.input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Day3.input; sourceTree = "<group>"; };
 		D5E3CB482397AC7300D39B5D /* Day4_Readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Day4_Readme.md; sourceTree = "<group>"; };
 		D5E3CB492397AC7300D39B5D /* Day4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Day4.swift; sourceTree = "<group>"; };
-		D5E3CB4D2397AC7C00D39B5D /* InputReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InputReader.swift; sourceTree = "<group>"; };
 		D5E3CB522398EAC100D39B5D /* Day5_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day5_Readme.md; sourceTree = "<group>"; };
 		D5E3CB532398EAD700D39B5D /* Day5.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day5.input; sourceTree = "<group>"; };
 		D5E3CB552398EAE300D39B5D /* AdvancedIntCodeComputer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedIntCodeComputer.swift; sourceTree = "<group>"; };
@@ -769,7 +769,7 @@
 			isa = PBXGroup;
 			children = (
 				D5E3CB8D239A696800D39B5D /* InputReader.h */,
-				D5E3CB4D2397AC7C00D39B5D /* InputReader.swift */,
+				D5541C5C23EC018700EFFD42 /* InputReader.swift */,
 				D5E3CB8E239A696800D39B5D /* Info.plist */,
 			);
 			path = InputReader;
@@ -1114,6 +1114,7 @@
 					};
 					D5E3CB8A239A696800D39B5D = {
 						CreatedOnToolsVersion = 11.2.1;
+						LastSwiftMigration = 1130;
 					};
 					D5E3CB92239A696800D39B5D = {
 						CreatedOnToolsVersion = 11.2.1;
@@ -1350,7 +1351,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D5E3CBA2239A697D00D39B5D /* InputReader.swift in Sources */,
+				D5541C5D23EC018700EFFD42 /* InputReader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1725,6 +1726,7 @@
 		D5E3CB9D239A696800D39B5D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1743,6 +1745,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.software101.InputReader;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1752,6 +1755,7 @@
 		D5E3CB9E239A696800D39B5D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
