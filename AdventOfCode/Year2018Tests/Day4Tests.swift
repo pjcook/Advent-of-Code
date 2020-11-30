@@ -37,7 +37,7 @@ class Day4Tests: XCTestCase {
         for item in input {
             data.append(try ReposeLineData(item))
         }
-        data.sort { $0.date < $1.date }
+        data.sort { $0.date.date < $1.date.date }
         
         XCTAssertEqual(input.count, data.count)
         XCTAssertEqual(ReposeLineData.LineDataType.asleep, data[1].dataType)
@@ -56,9 +56,8 @@ class Day4Tests: XCTestCase {
         for item in input {
             data.append(try ReposeLineData(item))
         }
-        data.sort { $0.date < $1.date }
+        data.sort { $0.date.date < $1.date.date }
         var guards = [Int: Guard]()
-//        data.map { print("\($0)") }
         
         var guardItem: ReposeLineData!
         while !data.isEmpty {
@@ -81,7 +80,7 @@ class Day4Tests: XCTestCase {
             
             let id = guardItem.dataType.id
             assert(id != -1)
-//            print(id, "\(guardItem)", "\(asleepItem)", "\(awakeItem)")
+
             let sleepTime = SleepTime(start: asleepItem.date, end: awakeItem.date)
             if var g = guards[id] {
                 g.sleepTimes.append(sleepTime)
@@ -92,15 +91,13 @@ class Day4Tests: XCTestCase {
             }
         }
         
-//        guards.map { print("\($0)") }
+//        let g = guards.values.sorted { $0.totalSleep > $1.totalSleep }.first!
         var g = guards.values.first!
-        for gu in guards.values {
-            if gu.totalSleep > g.totalSleep {
-                g = gu
+        guards.values.forEach {
+            if $0.totalSleep > g.totalSleep {
+                g = $0
             }
         }
-        
-//        print(g.id, g.sleepiestMinute, g.id * g.sleepiestMinute)
         XCTAssertEqual(g.id * g.sleepiestMinute.0, 39422)
     }
     
@@ -111,7 +108,7 @@ class Day4Tests: XCTestCase {
         for item in input {
             data.append(try ReposeLineData(item))
         }
-        data.sort { $0.date < $1.date }
+        data.sort { $0.date.date < $1.date.date }
         var guards = [Int: Guard]()
         var guardItem: ReposeLineData!
         while !data.isEmpty {
@@ -146,11 +143,12 @@ class Day4Tests: XCTestCase {
         }
         
         var g = guards.values.first!
-        for gu in guards.values {
-            if gu.sleepiestMinute.1 > g.sleepiestMinute.1 {
-                g = gu
+        guards.values.forEach {
+            if $0.sleepiestMinute.1 > g.sleepiestMinute.1 {
+                g = $0
             }
         }
+//        let g = guards.values.sorted { $0.sleepiestMinute.1 > $1.sleepiestMinute.1 }.first!
         
         XCTAssertEqual(g.id * g.sleepiestMinute.0, 65474)
     }

@@ -28,12 +28,12 @@ struct ReposeLineData {
         }
     }
     
-    let date: Date
+    let date: ComponentizedDate
     let content: String
     let dataType: LineDataType
     
     var minutes: Int {
-        Calendar.current.dateComponents([.minute], from: date).minute ?? -1
+        date.minutes
     }
     
     init(_ input: String) throws {
@@ -45,7 +45,7 @@ struct ReposeLineData {
         }
 
         guard let date = reposeDateTimeFormatter.date(from: d) else { throw Errors.dateContersionFailed }
-        self.date = date
+        self.date = ComponentizedDate(date)
         _ = input.removeFirst()
         _ = input.removeFirst()
         content = input
@@ -67,7 +67,7 @@ struct ReposeLineData {
 
 extension ReposeLineData: CustomStringConvertible {
     var description: String {
-        var output = reposeDateTimeFormatter.string(from: date)
+        var output = reposeDateTimeFormatter.string(from: date.date)
         output += " \(dataType)"
         return output
     }
@@ -88,26 +88,16 @@ struct Guard {
     var sleepTimes: [SleepTime]
     
     var totalSleep: Int {
-        var sleep = 0
-        
-        sleepTimes.forEach {
-            let startMin = Calendar.current.dateComponents([.minute], from: $0.start).minute!
-            let endMin = Calendar.current.dateComponents([.minute], from: $0.end).minute!
-            sleep += endMin - startMin
-        }
-        
-        return sleep
+        sleepTimes.reduce(0) { $0 + ($1.end.minutes - $1.start.minutes) }
     }
     
     
     /// Return sleepiest minute and count
     var sleepiestMinute: (Int, Int) {
         var minutes = Array(repeating: 0, count: 60)
-        
+
         sleepTimes.forEach {
-            let startMin = Calendar.current.dateComponents([.minute], from: $0.start).minute!
-            let endMin = Calendar.current.dateComponents([.minute], from: $0.end).minute!
-            for i in startMin..<endMin {
+            for i in $0.start.minutes..<$0.end.minutes {
                 minutes[i] = minutes[i] + 1
             }
         }
@@ -126,8 +116,8 @@ struct Guard {
 }
 
 struct SleepTime {
-    let start: Date
-    let end: Date
+    let start: ComponentizedDate
+    let end: ComponentizedDate
 }
 
 extension Guard: CustomStringConvertible {
@@ -140,22 +130,19 @@ extension Guard: CustomStringConvertible {
         
         while !times.isEmpty {
             let st = times.removeFirst()
-            let components1 = Calendar.current.dateComponents([.month, .day, .minute], from: st.start)
-            let components2 = Calendar.current.dateComponents([.month, .day, .minute], from: st.end)
-            
-            if currentDay == 0 || currentMonth != components1.month! || currentDay != components1.day! {
+            if currentDay == 0 || currentMonth != st.start.month || currentDay != st.start.day {
                 output += String(repeating: ".", count: 60-lastMinute)
                 output += "\n"
-                currentMonth = components1.month!
-                currentDay = components1.day!
+                currentMonth = st.start.month
+                currentDay = st.start.day
                 output += "\(currentMonth)-\(currentDay) "
                 lastMinute = 0
             }
             
-            output += String(repeating: ".", count: components1.minute!-lastMinute)
-            output += String(repeating: "#", count: components2.minute!-components1.minute!)
+            output += String(repeating: ".", count: st.start.minutes-lastMinute)
+            output += String(repeating: "#", count: st.end.minutes-st.start.minutes)
             
-            lastMinute = components2.minute!
+            lastMinute = st.end.minutes
         }
         
         output += String(repeating: ".", count: 60-lastMinute)

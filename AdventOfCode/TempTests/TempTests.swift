@@ -1,15 +1,15 @@
 //
-//  Year2020Tests.swift
-//  Year2020Tests
+//  TempTests.swift
+//  TempTests
 //
 //  Created by PJ on 24/11/2020.
 //  Copyright © 2020 Software101. All rights reserved.
 //
 
 import XCTest
-@testable import Year2020
+@testable import Temp
 
-class Year2020Tests: XCTestCase {
+class TempTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
