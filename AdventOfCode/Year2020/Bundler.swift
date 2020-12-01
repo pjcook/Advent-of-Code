@@ -1,5 +1,5 @@
 import Foundation
 
-class Year2019 {
-    static let bundle = Bundle(for: Year2019.self)
+class Year2020 {
+    static let bundle = Bundle(for: Year2020.self)
 }
