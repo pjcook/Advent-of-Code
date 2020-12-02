@@ -1,11 +1,3 @@
-//
-//  InputReader.swift
-//  Year2019
-//
-//  Created by PJ COOK on 02/12/2019.
-//  Copyright © 2019 Software101. All rights reserved.
-//
-
 import Foundation
 
 public class Bundler {
@@ -17,6 +9,30 @@ public enum InputErrors: Error {
     case invalidFileData
 }
 
+public struct Input {
+    private let input: String
+    public init(_ filename: String, _ bundle: Bundle = Bundler.bundle) throws {
+        guard let url = bundle.url(forResource: filename, withExtension: nil) else {
+            throw InputErrors.invalidFilename
+        }
+        input = try String(contentsOf: url).trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+    
+    public var lines: [String] {
+        input.lines
+    }
+    
+    public func delimited<T>(_ delimiter: Character, cast: (String) -> T) -> [T] {
+        return input.split(separator: delimiter).compactMap { cast(String($0)) }
+    }
+}
+
+public extension String {
+    var lines: [String] {
+        components(separatedBy: .newlines)
+    }
+}
+
 public func readInput<T>(filename: String, delimiter: Character, cast: (String) -> T, bundle: Bundle = Bundler.bundle) throws -> [T] {
     func cleanString(_ input: String) -> String {
         return input.replacingOccurrences(of: "\n", with: "")
@@ -25,9 +41,6 @@ public func readInput<T>(filename: String, delimiter: Character, cast: (String) 
     guard let url = bundle.url(forResource: filename, withExtension: nil) else {
         throw InputErrors.invalidFilename
     }
-    let data = try Data(contentsOf: url)
-    guard let value = String(data: data, encoding: .utf8) else {
-        throw InputErrors.invalidFileData
-    }
+    let value = try String(contentsOf: url)
     return value.split(separator: delimiter).compactMap { cast(cleanString(String($0))) }
 }

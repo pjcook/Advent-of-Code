@@ -461,7 +461,7 @@
 		D53642EE239FFD1F001DD179 /* Day11.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11.swift; sourceTree = "<group>"; };
 		D53642F0239FFD31001DD179 /* Day11Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11Tests.swift; sourceTree = "<group>"; };
 		D53642F423A0D51E001DD179 /* Day11_chris.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day11_chris.input; sourceTree = "<group>"; };
-		D5541C5C23EC018700EFFD42 /* InputReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputReader.swift; path = ../../../LogParser/Sources/LogParser/InputReader.swift; sourceTree = "<group>"; };
+		D5541C5C23EC018700EFFD42 /* InputReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputReader.swift; path = InputReader/InputReader.swift; sourceTree = SOURCE_ROOT; };
 		D58A3B4023C88DBA004393AC /* GKMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GKMapper.swift; sourceTree = "<group>"; };
 		D5A8778223AAC434004A21CD /* Day19_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day19_Readme.md; sourceTree = "<group>"; };
 		D5A8778323AAC43D004A21CD /* Day19.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day19.input; sourceTree = "<group>"; };
