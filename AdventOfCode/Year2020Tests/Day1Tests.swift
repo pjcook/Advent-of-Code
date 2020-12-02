@@ -8,7 +8,7 @@ class Day1Tests: XCTestCase {
     
     override func setUpWithError() throws {
         let input = try Input("Day1.input", Year2020.bundle)
-        self.input = input.lines.compactMap(Int.init)
+        self.input = input.lines.compactMap(Int.init).sorted()
     }
 
     func test_part1() {
@@ -29,6 +29,10 @@ class Day1Tests: XCTestCase {
     
     func test_part1_v3() {
         XCTAssertEqual(381699, Day1.findMatch3(input: input, value: 2020))
+    }
+    
+    func test_part1_v4() {
+        XCTAssertEqual(381699, Day1.findMatch4(input: input, value: 2020))
     }
     
     func test() throws {

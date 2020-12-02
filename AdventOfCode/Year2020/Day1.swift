@@ -46,6 +46,13 @@ public enum Day1 {
             .map { $0 * (value - $0) } ?? 0
     }
     
+    public static func findMatch4(input: [Int], value: Int) -> Int {
+        let dict = input.reduce(into: [Int:Int]()) { $0[$1] = 0 }
+        return input
+            .first(where: { dict[value - $0] != nil })
+            .map { $0 * (value - $0) } ?? 0
+    }
+    
     public static func findMatch(input: [Int], matchValue: Int, levels: Int, startIndex: Int = 0, currentValue: Int = 0, level: Int = 1, indexes: [Int] = [], match: (Int, Int) -> Int, output: (Int, Int) -> Int) -> Int {
         var pt = startIndex
         while pt < input.count {
