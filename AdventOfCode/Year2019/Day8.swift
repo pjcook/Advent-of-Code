@@ -17,6 +17,19 @@ extension Array {
     }
 }
 
+extension Collection {
+    /// Splits into an array of subsequences each with the given length.
+    ///
+    /// - Parameter length: Length of each subsequence of the returned array.
+    public func split(length: Int) -> [SubSequence] {
+        stride(from: 0, to: count, by: length).map {
+            let lower = index(startIndex, offsetBy: $0)
+            let upper = index(lower, offsetBy: length)
+            return self[lower..<upper]
+        }
+    }
+}
+
 func decodeImageFindMultiplier(_ data: String, size: CGSize) -> Int {
     let layers = data.compactMap { Int(String($0)) }.chunked(into: Int(size.width * size.height))
     var selectedLayer = [Int]()

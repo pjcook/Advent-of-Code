@@ -12,32 +12,32 @@ import XCTest
 class InputReaderTests: XCTestCase {
 
     func test_validFile() throws {
-        let array = try readInput(filename: "Day1_valid.data", delimiter: "\n", cast: Int.init, bundle: Bundle(for: InputReaderTests.self))
+        let array = try readInput(filename: "Day1_valid.input", delimiter: "\n", cast: Int.init, bundle: Bundle(for: Self.self))
         XCTAssertEqual(100, array.count)
     }
     
     func test_validFile2() throws {
-        let array = try readInput(filename: "Day2.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: InputReaderTests.self))
+        let array = try readInput(filename: "Day2.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: Self.self))
         XCTAssertEqual(153, array.count)
     }
     
     func test_invalidFilename() throws {
-        XCTAssertThrowsError(try readInput(filename: "nofile.data", delimiter: "\n", cast: Int.init, bundle: Bundle(for: InputReaderTests.self)), "Failed") { error in
+        XCTAssertThrowsError(try readInput(filename: "nofile.input", delimiter: "\n", cast: Int.init, bundle: Bundle(for: Self.self)), "Failed") { error in
             guard let error = error as? InputErrors else { return XCTFail() }
             XCTAssertEqual(InputErrors.invalidFilename, error)
         }
     }
     
     func test_invalidFileData() throws {
-        XCTAssertThrowsError(try readInput(filename: "InvalidData.png", delimiter: "\n", cast: Int.init, bundle: Bundle(for: InputReaderTests.self)), "Failed") { error in
+        XCTAssertThrowsError(try readInput(filename: "InvalidData.png", delimiter: "\n", cast: Int.init, bundle: Bundle(for: Self.self)), "Failed") { error in
             guard let error = error as? InputErrors else { return XCTFail() }
             XCTAssertEqual(InputErrors.invalidFileData, error)
         }
     }
     
     func test_fileWithInvalidDataItems() throws {
-        let array = try readInput(filename: "Day1_invalid.data", delimiter: "\n", cast: Int.init, bundle: Bundle(for: InputReaderTests.self))
-        XCTAssertEqual(100, array.count)
+        let array = try readInput(filename: "Day1_invalid.input", delimiter: "\n", cast: Int.init, bundle: Bundle(for: Self.self))
+        XCTAssertEqual(99, array.count)
     }
 
 }
