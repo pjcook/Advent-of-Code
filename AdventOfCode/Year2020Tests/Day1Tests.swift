@@ -35,7 +35,7 @@ class Day1Tests: XCTestCase {
         XCTAssertEqual(381699, Day1.findMatch4(input: input, value: 2020))
     }
     
-    func test() throws {
+    func test() {
         let match = 2020
         let values = Set(input)
         var result = 0
