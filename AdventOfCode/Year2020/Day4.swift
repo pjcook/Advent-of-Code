@@ -133,71 +133,28 @@ public struct Day4_v2 {
     public static let eyrRegex = try! NSRegularExpression(pattern: "(\\beyr:(202[0-9]|2030)){1}", options: .caseInsensitive)
 
     public static let masterRegex = try! NSRegularExpression(pattern: "((\\bpid:[0-9]{9}\\b){1}|(\\bbyr:(19[2-9][0-9]|199[0-9]|200[0-2])){1}|(\\biyr:(201[0-9]|2020)){1}|(\\bhgt:((59|6[0-9]|7[0-6])in|(1[5-8][0-9]|19[0-3])cm)){1}|(\\bhcl:#[0-9a-f]{6}){1}|(\\becl:(amb|blu|brn|gry|grn|hzl|oth)){1}|(\\beyr:(202[0-9]|2030)){1})", options: .caseInsensitive)
+    
+    public static let part1Regex = try! NSRegularExpression(pattern: "((\\bpid:){1}|(\\bbyr:){1}|(\\biyr:){1}|(\\bhgt:){1}|(\\bhcl:){1}|(\\becl:){1}|(\\beyr:){1})", options: .caseInsensitive)
 
     public func validate2(input: [String]) -> Int {
-        var lines = input
-        var passports = 0
-        var passport = ""
-        
-        while !lines.isEmpty {
-            let line = lines.removeFirst()
-            if line.isEmpty {
-                passports += validatePassport(passport: passport) ? 1 : 0
-                passport = ""
-            } else {
-                passport += " " + line
-            }
-        }
-        
-        if !passport.isEmpty {
-            passports += validatePassport(passport: passport) ? 1 : 0
-        }
-        
-        return passports
+        return input
+            .split(whereSeparator: { $0.isEmpty })
+            .map { $0.joined(separator: " ") }
+            .filter { validatePassport(passport: $0) }.count
     }
     
     public func validate3(input: [String], regexes: [NSRegularExpression]) -> Int {
-        var lines = input
-        var passports = 0
-        var passport = ""
-        
-        while !lines.isEmpty {
-            let line = lines.removeFirst()
-            if line.isEmpty {
-                passports += validatePassport2(passport: passport, regexes: regexes) ? 1 : 0
-                passport = ""
-            } else {
-                passport += " " + line
-            }
-        }
-        
-        if !passport.isEmpty {
-            passports += validatePassport2(passport: passport, regexes: regexes) ? 1 : 0
-        }
-        
-        return passports
+        return input
+            .split(whereSeparator: { $0.isEmpty })
+            .map { $0.joined(separator: " ") }
+            .filter { validatePassport2(passport: $0, regexes: regexes) }.count
     }
     
     public func validate4(input: [String], regex: NSRegularExpression) -> Int {
-        var lines = input
-        var passports = 0
-        var passport = ""
-        
-        while !lines.isEmpty {
-            let line = lines.removeFirst()
-            if line.isEmpty {
-                passports += validatePassport3(passport: passport, regex: regex) ? 1 : 0
-                passport = ""
-            } else {
-                passport += " " + line
-            }
-        }
-        
-        if !passport.isEmpty {
-            passports += validatePassport3(passport: passport, regex: regex) ? 1 : 0
-        }
-        
-        return passports
+        return input
+            .split(whereSeparator: { $0.isEmpty })
+            .map { $0.joined(separator: " ") }
+            .filter { validatePassport3(passport: $0, regex: regex) }.count
     }
     
     public func validatePassport(passport: String) -> Bool {

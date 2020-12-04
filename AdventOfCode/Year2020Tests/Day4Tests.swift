@@ -34,10 +34,16 @@ class Day4Tests: XCTestCase {
         XCTAssertEqual(147, count)
     }
     
-    func test_part2_v4() throws {
+    func test_part2_v4_part1() throws {
         let day = Day4_v2()
-        let count = day.validate4(input: input, regex: Day4_v2.masterRegex)
-        XCTAssertEqual(147, count)
+        let part1 = day.validate4(input: input, regex: Day4_v2.part1Regex)
+        XCTAssertEqual(213, part1)
+    }
+    
+    func test_part2_v4_part2() throws {
+        let day = Day4_v2()
+        let part2 = day.validate4(input: input, regex: Day4_v2.masterRegex)
+        XCTAssertEqual(147, part2)
     }
     
     func test_failing_regex() {
