@@ -10,7 +10,7 @@ public enum InputErrors: Error {
 }
 
 public struct Input {
-    private let input: String
+    public let input: String
     public init(_ filename: String, _ bundle: Bundle = Bundler.bundle) throws {
         guard let url = bundle.url(forResource: filename, withExtension: nil) else {
             throw InputErrors.invalidFilename
