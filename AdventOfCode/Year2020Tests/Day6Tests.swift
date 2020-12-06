@@ -3,14 +3,22 @@ import InputReader
 @testable import Year2020
 
 class Day6Tests: XCTestCase {
-
+    var input: [String] = []
+        
+    override func setUpWithError() throws {
+        let input = try Input("Day6.input", Year2020.bundle)
+        self.input = input.lines
+    }
+    
     func test_part1() throws {
-//        guard let input = try readInput(filename: "Day1.input", delimiter: "\n", cast: Int.init, bundle: Year2018.bundle) as? [Int] else { return XCTFail() }
-//        XCTAssertEqual(486, processFrequencyChanges(input))
+        let day = Day6()
+        let count = day.count(input: input)
+        XCTAssertEqual(6596, count)
     }
     
     func test_part2() throws {
-//        guard let input = try readInput(filename: "Day1.input", delimiter: "\n", cast: Int.init, bundle: Year2018.bundle) as? [Int] else { return XCTFail() }
-//        XCTAssertEqual(69285, findFirstDuplicateFrequency(input))
+        let day = Day6()
+        let count = day.count2(input: input)
+        XCTAssertEqual(3219, count)
     }
 }
