@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Point {
+public struct Point: Hashable {
     public var x: Int
     public var y: Int
     
