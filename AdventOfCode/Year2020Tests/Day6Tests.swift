@@ -11,14 +11,18 @@ class Day6Tests: XCTestCase {
     }
     
     func test_part1() throws {
-        let day = Day6()
-        let count = day.count(input: input)
-        XCTAssertEqual(6596, count)
+        measure {
+            let day = Day6()
+            let count = day.count(input: input, reduce: day.reduce)
+            XCTAssertEqual(6596, count)
+        }
     }
     
     func test_part2() throws {
-        let day = Day6()
-        let count = day.count2(input: input)
-        XCTAssertEqual(3219, count)
+        measure {
+            let day = Day6()
+            let count = day.count(input: input, reduce: day.reduce2)
+            XCTAssertEqual(3219, count)
+        }
     }
 }
