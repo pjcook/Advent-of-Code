@@ -51,4 +51,9 @@ class Day6Tests: XCTestCase {
             XCTAssertEqual(3219, Day6.part2_daniel(input: input))
         }
     }
+    
+    func test() {
+        let result = Set("abcabacad")
+        print(result)
+    }
 }

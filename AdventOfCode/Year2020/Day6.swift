@@ -15,10 +15,7 @@ public struct Day6 {
     }
     
     public static func reduce_part1_v2(_ input: Array<String>.SubSequence) -> Int {
-        input
-            .joined(separator: "")
-            .reduce(into: Set<UnicodeScalar>()) { $0.formUnion($1.unicodeScalars) }
-            .count
+        Set(input.joined(separator: "")).count
     }
 
     public static func reduce_part1_v3(_ input: Array<String>.SubSequence) -> Int {
