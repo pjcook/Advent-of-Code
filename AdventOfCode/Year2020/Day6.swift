@@ -1,14 +1,14 @@
 import Foundation
 
 public struct Day6 {
-    public func count(input: [String], reduce: (_ input: Array<String>.SubSequence) -> Int) -> Int {
+    public static func count(input: [String], reduce: (_ input: Array<String>.SubSequence) -> Int) -> Int {
         return input
             .split(whereSeparator: { $0.isEmpty })
             .map(reduce)
             .reduce(0) { $0 + $1 }
     }
     
-    public func reduce(_ input: Array<String>.SubSequence) -> Int {
+    public static func reduce(_ input: Array<String>.SubSequence) -> Int {
         var responses = Set<UnicodeScalar>()
         input.forEach {
             responses.formUnion($0.unicodeScalars)
@@ -16,7 +16,7 @@ public struct Day6 {
         return responses.count
     }
     
-    public func reduce2(_ input: Array<String>.SubSequence) -> Int {
+    public static func reduce2(_ input: Array<String>.SubSequence) -> Int {
         let groupMemberCount = input.count
         var responses = [Character:Int]()
         input.forEach {
