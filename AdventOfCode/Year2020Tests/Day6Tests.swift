@@ -12,13 +12,43 @@ class Day6Tests: XCTestCase {
     
     func test_part1() throws {
         measure {
-            XCTAssertEqual(6596, Day6.count(input: input, reduce: Day6.reduce))
+            XCTAssertEqual(6596, Day6.count(input: input, reduce: Day6.reduce_part1))
         }
     }
     
     func test_part2() throws {
         measure {
-            XCTAssertEqual(3219, Day6.count(input: input, reduce: Day6.reduce2))
+            XCTAssertEqual(3219, Day6.count(input: input, reduce: Day6.reduce_part2))
+        }
+    }
+    
+    func test_part1_v2() throws {
+        measure {
+            XCTAssertEqual(6596, Day6.count(input: input, reduce: Day6.reduce_part1_v2))
+        }
+    }
+    
+    func test_part2_v2() throws {
+        measure {
+            XCTAssertEqual(3219, Day6.count(input: input, reduce: Day6.reduce_part2_v2))
+        }
+    }
+    
+    func test_part1_v3() throws {
+        measure {
+            XCTAssertEqual(6596, Day6.count(input: input, reduce: Day6.reduce_part1_v3))
+        }
+    }
+    
+    func test_part1_daniel() {
+        measure {
+            XCTAssertEqual(6596, Day6.part1_daniel(input: input))
+        }
+    }
+    
+    func test_part2_daniel() {
+        measure {
+            XCTAssertEqual(3219, Day6.part2_daniel(input: input))
         }
     }
 }
