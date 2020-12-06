@@ -2,33 +2,35 @@ import Foundation
 
 public struct Day6 {
     public func count(input: [String]) -> Int {
-        let groups = input.split(whereSeparator: { $0.isEmpty })
-        let groupedResponses: [[Character:Bool]] = groups.map {
-            var responses = [Character:Bool]()
-            $0.forEach {
-                $0.forEach { responses[$0] = true }
-            }
-            return responses
-        }
-        
-        return groupedResponses.map { $0.count }
+        return input.split(whereSeparator: { $0.isEmpty })
+            .map(reduce)
+            .map { $0.count }
             .reduce(0) { $0 + $1 }
     }
     
-    public func count2(input: [String]) -> Int {
-        let groups = input.split(whereSeparator: { $0.isEmpty })
-        let groupedResponses: [[Character:Int]] = groups.map {
-            let groupMemberCount = $0.count
-            var responses = [Character:Int]()
-            $0.forEach {
-                $0.forEach {
-                    responses[$0] = (responses[$0] ?? 0) + 1
-                }
-            }
-            return responses.filter { $0.value == groupMemberCount }
+    public func reduce(_ input: Array<String>.SubSequence) -> [Character : Bool] {
+        var responses = [Character:Bool]()
+        input.forEach {
+            $0.forEach { responses[$0] = true }
         }
-        
-        return groupedResponses.map { $0.count }
+        return responses
+    }
+    
+    public func count2(input: [String]) -> Int {
+        return input.split(whereSeparator: { $0.isEmpty })
+            .map(reduce2)
+            .map { $0.count }
             .reduce(0) { $0 + $1 }
+    }
+    
+    public func reduce2(_ input: Array<String>.SubSequence) -> [Character: Int] {
+        let groupMemberCount = input.count
+        var responses = [Character:Int]()
+        input.forEach {
+            $0.forEach {
+                responses[$0] = (responses[$0] ?? 0) + 1
+            }
+        }
+        return responses.filter { $0.value == groupMemberCount }
     }
 }
