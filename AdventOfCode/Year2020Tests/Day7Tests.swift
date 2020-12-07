@@ -44,6 +44,22 @@ class Day7Tests: XCTestCase {
         }
     }
     
+    func test_parsingToRules_v2() {
+        //        For the bag I used ^([a-z ]+) bags contain
+        //        For its contents I used ([0-9]+) ([a-z ]+) bag
+        measure {
+            let input = "light red bags contain 1 bright white bag, 2 muted yellow bags."
+            let range = NSRange(location: 0, length: input.utf16.count)
+            let rule = Day7.ruleRegex.firstMatch(in: input, options: [], range: range)!
+            let contents = Day7.contentRegex.matches(in: input, options: [], range: range)
+            
+            XCTAssertEqual("light red", input[Range(rule.range, in: input)!])
+            XCTAssertEqual(2, contents.count)
+            XCTAssertEqual("1 bright white", input[Range(contents[0].range, in: input)!])
+            XCTAssertEqual("2 muted yellow", input[Range(contents[1].range, in: input)!])
+        }
+    }
+    
     func test_parsingToRules() {
         measure {
             let rules = input.lines.map(Day7.Rule.init)
@@ -57,7 +73,7 @@ class Day7Tests: XCTestCase {
             XCTAssertEqual(594, rules.count)
         }
     }
-    
+        
     struct BagRule {
         let bag: String
         let amount: Int

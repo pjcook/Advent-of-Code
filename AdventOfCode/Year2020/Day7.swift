@@ -27,19 +27,21 @@ public struct Day7 {
 }
 
 public extension Day7 {
+    static let ruleRegex = try! NSRegularExpression(pattern: "^([a-z]+)\\s([a-z]+)")
+    static let contentRegex = try! NSRegularExpression(pattern: "([0-9]+)\\s([a-z]+)\\s([a-z]+)")
+    static let contentIDRegex = try! NSRegularExpression(pattern: "([0-9]+)")
+    static let contentColorRegex = try! NSRegularExpression(pattern: "([a-z]+)\\s([a-z]+)")
+    
     class Rule {
         public let color: String
         public let contents: [ContentBag]
 
         public init(_ input: String) {
-            let components = input.components(separatedBy: "bags contain")
-            color = components[0].trimmingCharacters(in: .whitespacesAndNewlines)
-            let contentItems = components[1].components(separatedBy: ",")
-            if contentItems[0] == " no other bags." {
-                contents = []
-            } else {
-                contents = contentItems.map(ContentBag.init)
-            }
+            let range = NSRange(location: 0, length: input.utf16.count)
+            let rule = Day7.ruleRegex.firstMatch(in: input, options: [], range: range)!
+            let bagContents = Day7.contentRegex.matches(in: input, options: [], range: range)
+            color = String(input[Range(rule.range, in: input)!])
+            contents = bagContents.map { ContentBag(String(input[Range($0.range, in: input)!])) }
         }
         
         private var containsColor: [String: Bool] = [:]
@@ -89,10 +91,17 @@ public extension Day7 {
         public let color: String
         public let count: Int
         public init(_ input: String) {
-            var components = input.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: " ")
-            components.removeLast()
-            count = Int(components.removeFirst())!
-            color = components.joined(separator: " ")
+            var input = input
+            count = Int(String(input.removeFirst()))!
+            _ = input.removeFirst()
+            color = input
+            
+            // 50% slower than above
+//            let range = NSRange(location: 0, length: input.utf16.count)
+//            let countMatch = Day7.contentIDRegex.firstMatch(in: input, options: [], range: range)!
+//            let colorMatch = Day7.contentColorRegex.firstMatch(in: input, options: [], range: range)!
+//            count = Int(String(input[Range(countMatch.range, in: input)!]))!
+//            color = String(input[Range(colorMatch.range, in: input)!])
         }
     }
 }
