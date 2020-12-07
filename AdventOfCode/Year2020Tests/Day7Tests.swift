@@ -19,6 +19,31 @@ class Day7Tests: XCTestCase {
         }
     }
     
+    func test_part1_v2() {
+        measure {
+            let day = Day7()
+            XCTAssertEqual(224, day.part1_v2(input.lines))
+        }
+    }
+    
+    func test_part1_v2_example() {
+        let input = """
+        light red bags contain 1 bright white bag, 2 muted yellow bags.
+        dark orange bags contain 3 bright white bags, 4 muted yellow bags.
+        bright white bags contain 1 shiny gold bag.
+        muted yellow bags contain 2 shiny gold bags, 9 faded blue bags.
+        shiny gold bags contain 1 dark olive bag, 2 vibrant plum bags.
+        dark olive bags contain 3 faded blue bags, 4 dotted black bags.
+        vibrant plum bags contain 5 faded blue bags, 6 dotted black bags.
+        faded blue bags contain no other bags.
+        dotted black bags contain no other bags.
+        """
+        measure {
+            let day = Day7()
+            XCTAssertEqual(4, day.part1_v2(input.lines))
+        }
+    }
+    
     func test_parsingToRules() {
         let rules = input.lines.map(Day7.Rule.init)
         XCTAssertEqual(594, rules.count)

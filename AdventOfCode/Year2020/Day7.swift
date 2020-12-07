@@ -19,6 +19,11 @@ public struct Day7 {
         let rule = rules.first(where: { $0.color == color })!
         return rule.nestedBagCount(rules: rules) - 1
     }
+    
+    public func part1_v2(_ input: [String], color: String = "shiny gold") -> Int {
+        let rules = Set<Rule>(input.map(Rule.init))
+        return (rules.first(where: { $0.color == color })?.parents(rules).count ?? 1)
+    }
 }
 
 public extension Day7 {
@@ -67,6 +72,16 @@ public extension Day7 {
                 })
             }
             return nestedContentCount
+        }
+        
+        public func parents(_ rules: Set<Rule>) -> Set<Rule> {
+            var parents = Set<Rule>(rules.filter({ $0.contents.contains(where: { $0.color == color }) }))
+            guard !parents.isEmpty else { return [] }
+            
+            for rule in parents {
+                parents = parents.union(rule.parents(rules))
+            }
+            return parents
         }
     }
     
