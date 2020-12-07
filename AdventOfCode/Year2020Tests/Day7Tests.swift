@@ -45,9 +45,45 @@ class Day7Tests: XCTestCase {
     }
     
     func test_parsingToRules() {
-        let rules = input.lines.map(Day7.Rule.init)
-        XCTAssertEqual(594, rules.count)
+        measure {
+            let rules = input.lines.map(Day7.Rule.init)
+            XCTAssertEqual(594, rules.count)
+        }
     }
+    
+    func test_parsingToRules_chris() {
+        measure {
+            let rules = getBags(input: input.lines)
+            XCTAssertEqual(594, rules.count)
+        }
+    }
+    
+    struct BagRule {
+        let bag: String
+        let amount: Int
+    }
+    
+    func getBags(input: [String]) -> [String: [BagRule]] {
+            var bagsAndRules: [String: [BagRule]] = [:]
+            
+            input.forEach { line in
+                let words = line.components(separatedBy: " ")
+                let bag = words.prefix(2).joined()
+                var rules: [BagRule] = []
+                for index in stride(from: 0, through: words.count, by: 4) {
+                    if (index + 4) < words.count {
+                        if let amount = Int(words[index + 4]) {
+                            let bag = words[index + 5] + words[index + 6]
+                            rules.append(BagRule(bag: bag, amount: amount))
+                        }
+                    }
+                }
+                
+                bagsAndRules[bag] = rules
+            }
+            
+            return bagsAndRules
+        }
     
     func test_part1_example() {
         let input = """
