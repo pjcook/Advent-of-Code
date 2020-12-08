@@ -13,7 +13,7 @@ class Day8Tests: XCTestCase {
         }
     }
     
-    func test_part2() throws {
+    func test_part2() {
         measure {
             let day = Day8()
             XCTAssertEqual(1270, day.part2(input.lines))
@@ -28,7 +28,7 @@ class Day8Tests: XCTestCase {
         }
     }
     
-    func test_part2_v2() throws {
+    func test_part2_v2() {
         measure {
             let day = Day8()
             XCTAssertEqual(1270, day.part2_v2(input.lines))
@@ -43,7 +43,7 @@ class Day8Tests: XCTestCase {
         }
     }
     
-    func test_part2_v3() throws {
+    func test_part2_v3() {
         measure {
             let day = Day8()
             XCTAssertEqual(1270, day.part2_v3(input.lines))
@@ -53,7 +53,7 @@ class Day8Tests: XCTestCase {
     // MARK: - different parsing options
     func test_parsing() {
         measure {
-            XCTAssertEqual(635, input.lines.compactMap(Day8.Instruction.parse).count)
+            XCTAssertEqual(635, input.lines.compactMap(Instruction.parse).count)
         }
     }
     

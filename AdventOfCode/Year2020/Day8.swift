@@ -10,99 +10,59 @@ public struct Day8 {
         
     public func part1(_ input: [String]) -> Int {
         let instructions = input.compactMap(Instruction.parse)
-        var accumulator = 0
-        var index = 0
-        var visited = Set<Int>()
-        
-        while !visited.contains(index) {
-            visited.insert(index)
-            switch instructions[index] {
-            case let .acc(value):
-                accumulator += value
-                index += 1
-                
-            case let .jmp(value):
-                index += value
-                
-            case .nop:
-                index += 1
-            }
-        }
-        return accumulator
+        return validate(instructions).1
     }
     
     public func part2(_ input: [String]) -> Int {
         let instructions = input.compactMap(Instruction.parse)
-        for (index, instruction) in instructions.enumerated() {
-            var edited = instructions
+        let indexes = validate(instructions).2
+        for index in indexes {
+            let instruction = instructions[index]
             switch instruction {
-            case .jmp:
-                edited[index] = .nop(0)
+            case .acc: break
+            case .jmp, .nop:
+                var edited = instructions
+                edited[index] = instruction.flipped
                 let result = validate(edited)
                 if result.0 {
                     return result.1
                 }
-
-            case let .nop(value):
-                edited[index] = .jmp(value)
-                let result = validate(edited)
-                if result.0 {
-                    return result.1
-                }
-
-            default:
-                break
             }
-            
         }
         return -1
     }
     
-    public func validate(_ instructions: [Instruction]) -> (Bool, Int) {
+    public func validate(_ instructions: [Instruction]) -> (Bool, Int, Set<Int>) {
         var accumulator = 0
         var index = 0
         var visited = Set<Int>()
 
         while !visited.contains(index) && index < instructions.count {
             visited.insert(index)
-            switch instructions[index] {
-            case let .acc(value):
-                accumulator += value
-                index += 1
-                
-            case let .jmp(value):
-                index += value
-                
-            case .nop:
-                index += 1
-            }
+            instructions[index].process(index: &index, accumulator: &accumulator)
         }
         
-        return (index >= instructions.count, accumulator)
+        return (index >= instructions.count, accumulator, visited)
+    }
+}
+
+extension Instruction {
+    func process(index: inout Int, accumulator: inout Int) {
+        switch self {
+        case .acc(let value):
+            accumulator += value
+            index += 1
+            
+        case .jmp(let value):
+            index += value
+            
+        case .nop:
+            index += 1
+        }
     }
 }
 
 extension Day8 {
-    public enum Instruction {
-        case acc(Int)
-        case jmp(Int)
-        case nop(Int)
-
-        public static func parse(_ input: String) -> Instruction? {
-            let parts = input.components(separatedBy: " ")
-            switch parts[0] {
-            case "acc":
-                return Instruction.acc(Int(parts[1])!)
-            case "jmp":
-                return Instruction.jmp(Int(parts[1])!)
-            case "nop":
-                return Instruction.nop(Int(parts[1])!)
-            default:
-                return nil
-            }
-        }
-    }
-    
     public func tokenize(_ value: Substring) -> Int {
         switch value {
         case "acc": return 0
@@ -116,35 +76,15 @@ extension Day8 {
 extension Day8 {
     public func part1_v2(_ input: [String]) -> Int {
         let instructions = input.map { $0.split(separator: " ") }
-        var accumulator = 0
-        var index = 0
-        var visited = Set<Int>()
-        
-        while !visited.contains(index) {
-            visited.insert(index)
-            switch instructions[index][0] {
-            case "acc":
-                accumulator += Int(instructions[index][1])!
-                index += 1
-                
-            case "jmp":
-                index += Int(instructions[index][1])!
-                
-            case "nop":
-                index += 1
-                
-            default:
-                break
-            }
-        }
-        return accumulator
+        return validate(instructions).1
     }
     
     public func part2_v2(_ input: [String]) -> Int {
         let instructions = input.map { $0.split(separator: " ") }
-        for (index, instruction) in instructions.enumerated() {
+        let result = validate(instructions)
+        for index in result.2 {
             var edited = instructions
-            switch instruction[0] {
+            switch instructions[index][0] {
             case "jmp":
                 edited[index][0] = "nop"
                 let result = validate(edited)
@@ -167,7 +107,7 @@ extension Day8 {
         return -1
     }
     
-    public func validate(_ instructions: [[String.SubSequence]]) -> (Bool, Int) {
+    public func validate(_ instructions: [[String.SubSequence]]) -> (Bool, Int, Set<Int>) {
         var accumulator = 0
         var index = 0
         var visited = Set<Int>()
@@ -190,7 +130,7 @@ extension Day8 {
             }
         }
         
-        return (index >= instructions.count, accumulator)
+        return (index >= instructions.count, accumulator, visited)
     }
 }
 
@@ -201,28 +141,7 @@ extension Day8 {
                 $0.split(separator: " ")
                     .map(tokenize)
             }
-        var accumulator = 0
-        var index = 0
-        var visited = Set<Int>()
-        
-        while !visited.contains(index) {
-            visited.insert(index)
-            switch instructions[index][0] {
-            case 0:
-                accumulator += instructions[index][1]
-                index += 1
-                
-            case 1:
-                index += instructions[index][1]
-                
-            case 2:
-                index += 1
-                
-            default:
-                break
-            }
-        }
-        return accumulator
+        return validate(instructions).1
     }
     
     public func part2_v3(_ input: [String]) -> Int {
@@ -231,9 +150,10 @@ extension Day8 {
                 $0.split(separator: " ")
                     .map(tokenize)
             }
-        for (index, instruction) in instructions.enumerated() {
+        let result = validate(instructions)
+        for index in result.2 {
             var edited = instructions
-            switch instruction[0] {
+            switch instructions[index][0] {
             case 1:
                 edited[index][0] = 2
                 let result = validate(edited)
@@ -256,7 +176,7 @@ extension Day8 {
         return -1
     }
     
-    public func validate(_ instructions: [[Int]]) -> (Bool, Int) {
+    public func validate(_ instructions: [[Int]]) -> (Bool, Int, Set<Int>) {
         var accumulator = 0
         var index = 0
         var visited = Set<Int>()
@@ -279,6 +199,6 @@ extension Day8 {
             }
         }
         
-        return (index >= instructions.count, accumulator)
+        return (index >= instructions.count, accumulator, visited)
     }
 }
