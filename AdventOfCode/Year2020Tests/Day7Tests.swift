@@ -68,6 +68,22 @@ class Day7Tests: XCTestCase {
         }
     }
     
+    func test_parsingToRules_v3_data() {
+        let input = """
+            light red bags contain 1 bright white bag, 2 muted yellow bags.
+            """
+        let day = Day7()
+        let rules = day.parse(input.lines)
+        XCTAssertEqual(1, rules.count)
+        let rule = rules[0]
+        XCTAssertEqual("light red", rule.color)
+        XCTAssertEqual(2, rule.contents.count)
+        XCTAssertEqual(1, rule.contents[0].count)
+        XCTAssertEqual("bright white", rule.contents[0].color)
+        XCTAssertEqual(2, rule.contents[1].count)
+        XCTAssertEqual("muted yellow", rule.contents[1].color)
+    }
+    
     func test_parsingToRules() {
         measure {
             let rules = input.lines.map(Day7.Rule.init)

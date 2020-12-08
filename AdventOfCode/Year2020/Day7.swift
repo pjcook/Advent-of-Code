@@ -2,19 +2,19 @@ import Foundation
 
 public struct Day7 {
     public func part1(_ input: [String], color: String = "shiny gold") -> Int {
-        let rules = Set<Rule>(input.map(Rule.init)).filter { !$0.contents.isEmpty }
+        let rules = Set<Rule>(parse(input).filter { !$0.contents.isEmpty })
         return rules
             .reduce(0) { $0 + ($1.contains(color: color, rules: rules) ? 1 : 0) }
     }
     
     public func part2(_ input: [String], color: String = "shiny gold") -> Int {
-        let rules = Set<Rule>(input.map(Rule.init))
+        let rules = Set<Rule>(parse(input))
         let rule = rules.first(where: { $0.color == color })!
         return rule.nestedBagCount(rules: rules) - 1
     }
     
     public func part1_v2(_ input: [String], color: String = "shiny gold") -> Int {
-        let rules = Set<Rule>(input.map(Rule.init)).filter { !$0.contents.isEmpty }
+        let rules = Set<Rule>(parse(input).filter { !$0.contents.isEmpty })
         return Rule(color: color).parents(rules).count
     }
 }
@@ -26,11 +26,11 @@ public extension Day7 {
             var index = 4
             var content = [Day7.ContentBag]()
             while index < words.count {
-                if index + 4 < words.count {
+                if index + 4 <= words.count {
                     content.append(
                         Day7.ContentBag(
                             count: Int(String(words[index]))!,
-                            color: words[index] + " " + words[index]
+                            color: words[index + 1] + " " + words[index + 2]
                         )
                     )
                 }
