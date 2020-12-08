@@ -2,16 +2,9 @@ import Foundation
 
 public struct Day7 {
     public func part1(_ input: [String], color: String = "shiny gold") -> Int {
-        let rules = Set<Rule>(input.map(Rule.init))
-        var canContainShineyGoldBag = 0
-        
-        for rule in rules {
-            if rule.contains(color: color, rules: rules) {
-                canContainShineyGoldBag += 1
-            }
-        }
-        
-        return canContainShineyGoldBag
+        let rules = Set<Rule>(input.map(Rule.init)).filter { !$0.contents.isEmpty }
+        return rules
+            .reduce(0) { $0 + ($1.contains(color: color, rules: rules) ? 1 : 0) }
     }
     
     public func part2(_ input: [String], color: String = "shiny gold") -> Int {
@@ -21,8 +14,30 @@ public struct Day7 {
     }
     
     public func part1_v2(_ input: [String], color: String = "shiny gold") -> Int {
-        let rules = Set<Rule>(input.map(Rule.init))
-        return (rules.first(where: { $0.color == color })?.parents(rules).count ?? 1)
+        let rules = Set<Rule>(input.map(Rule.init)).filter { !$0.contents.isEmpty }
+        return Rule(color: color).parents(rules).count
+    }
+}
+
+public extension Day7 {
+    func parse(_ input: [String]) -> [Rule] {
+        return input.map {
+            let words = $0.components(separatedBy: " ")
+            var index = 4
+            var content = [Day7.ContentBag]()
+            while index < words.count {
+                if index + 4 < words.count {
+                    content.append(
+                        Day7.ContentBag(
+                            count: Int(String(words[index]))!,
+                            color: words[index] + " " + words[index]
+                        )
+                    )
+                }
+                index += 4
+            }
+            return Day7.Rule(color: words[0] + " " + words[1], contents: content)
+        }
     }
 }
 
@@ -44,21 +59,26 @@ public extension Day7 {
             contents = bagContents.map { ContentBag(String(input[Range($0.range, in: input)!])) }
         }
         
-        private var containsColor: [String: Bool] = [:]
+        public init(color: String, contents: [ContentBag] = []) {
+            self.color = color
+            self.contents = contents
+        }
+        
+        private var containsColor: Bool?
         public func contains(color: String, rules: Set<Rule>) -> Bool {
-            if let result = containsColor[color] {
-                return result
+            if let containsColor = containsColor {
+                return containsColor
             } else {
                 for content in contents {
                     if content.color == color {
-                        containsColor[color] = true
+                        containsColor = true
                         return true
                     } else if rules.first(where: { $0.color == content.color })?.contains(color: color, rules: rules) ?? false {
-                        containsColor[color] = true
+                        containsColor = true
                         return true
                     }
                 }
-                containsColor[color] = false
+                containsColor = false
                 return false
             }
         }
@@ -102,6 +122,11 @@ public extension Day7 {
 //            let colorMatch = Day7.contentColorRegex.firstMatch(in: input, options: [], range: range)!
 //            count = Int(String(input[Range(countMatch.range, in: input)!]))!
 //            color = String(input[Range(colorMatch.range, in: input)!])
+        }
+        
+        public init(count: Int, color: String) {
+            self.count = count
+            self.color = color
         }
     }
 }

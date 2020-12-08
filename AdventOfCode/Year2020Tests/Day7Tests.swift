@@ -60,6 +60,14 @@ class Day7Tests: XCTestCase {
         }
     }
     
+    func test_parsingToRules_v3() {
+        measure {
+            let day = Day7()
+            let rules = day.parse(input.lines)
+            XCTAssertEqual(594, rules.count)
+        }
+    }
+    
     func test_parsingToRules() {
         measure {
             let rules = input.lines.map(Day7.Rule.init)
