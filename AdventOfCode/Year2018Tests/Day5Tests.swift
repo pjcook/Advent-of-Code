@@ -11,7 +11,7 @@ import InputReader
 @testable import Year2018
 
 class Day5Tests: XCTestCase {
-    let input = try! Input("Day5.input", Year2018.bundle)
+    let input = Input("Day5.input", Year2018.bundle)
     
     func test_part1() {
         let day = Day5()

@@ -11,6 +11,23 @@ import InputReader
 @testable import Year2019
 
 class Day14Tests: XCTestCase {
+    let input = try! readInputAsStrings(filename: "Day14.input", bundle: Year2019.bundle)
+    
+    func test_part1() throws {
+        let recipes = parseMineralInput(input)
+        let calculator = OreCalculator(recipes: recipes)
+        let fuel = recipes.first { $0.ingredient.id == .fuel }!
+        let ore = calculator.calculate(fuel.ingredient)
+        XCTAssertEqual(532506, ore)
+    }
+    
+    func test_part2() throws {
+        let recipes = parseMineralInput(input)
+        let calculator = OreCalculator(recipes: recipes)
+        let fuel = recipes.first { $0.ingredient.id == .fuel }!
+        let maxFuelProduced = calculator.calculateMaxFuel(fuel.ingredient, 1000000000000)
+        XCTAssertEqual(2595245, maxFuelProduced)
+    }
 
     func test_part1_sample_data1() throws {
         let input = [
@@ -141,15 +158,6 @@ class Day14Tests: XCTestCase {
         XCTAssertEqual(2210736, ore)
     }
     
-    func test_part1() throws {
-        let input = try readInput(filename: "Day14.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
-        let recipes = parseMineralInput(input)
-        let calculator = OreCalculator(recipes: recipes)
-        let fuel = recipes.first { $0.ingredient.id == .fuel }!
-        let ore = calculator.calculate(fuel.ingredient)
-        XCTAssertEqual(532506, ore)
-    }
-    
     func test_part2_sample_data1() throws {
         let input = [
             "157 ORE => 5 NZVS",
@@ -220,14 +228,4 @@ class Day14Tests: XCTestCase {
         let maxFuelProduced = calculator.calculateMaxFuel(fuel.ingredient, 1000000000000)
         XCTAssertEqual(460664, maxFuelProduced)
     }
-    
-    func test_part2() throws {
-        let input = try readInput(filename: "Day14.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
-        let recipes = parseMineralInput(input)
-        let calculator = OreCalculator(recipes: recipes)
-        let fuel = recipes.first { $0.ingredient.id == .fuel }!
-        let maxFuelProduced = calculator.calculateMaxFuel(fuel.ingredient, 1000000000000)
-        XCTAssertEqual(2595245, maxFuelProduced)
-    }
-
 }

@@ -3,7 +3,7 @@ import InputReader
 @testable import Year2020
 
 class Day8Tests: XCTestCase {
-    let input = try! Input("Day8.input", Year2020.bundle)
+    let input = Input("Day8.input", Year2020.bundle)
     
     // MARK: - using enums
     func test_part1() {

@@ -11,15 +11,17 @@ public enum InputErrors: Error {
 
 public struct Input {
     public let input: String
-    public init(_ filename: String, _ bundle: Bundle = Bundler.bundle) throws {
-        guard let url = bundle.url(forResource: filename, withExtension: nil) else {
-            throw InputErrors.invalidFilename
-        }
-        input = try String(contentsOf: url).trimmingCharacters(in: .whitespacesAndNewlines)
+    public init(_ filename: String, with withExtension: String? = nil, _ bundle: Bundle = Bundler.bundle) {
+        let url = bundle.url(forResource: filename, withExtension: withExtension)!
+        input = try! String(contentsOf: url).trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
     public var lines: [String] {
         input.lines
+    }
+    
+    public var integers: [Int] {
+        lines.compactMap(Int.init)
     }
     
     public func delimited<T>(_ delimiter: Character, cast: (String) -> T) -> [T] {
@@ -33,14 +35,14 @@ public extension String {
     }
 }
 
-public func readInput<T>(filename: String, delimiter: Character, cast: (String) -> T, bundle: Bundle = Bundler.bundle) throws -> [T] {
-    func cleanString(_ input: String) -> String {
-        return input.replacingOccurrences(of: "\n", with: "")
-    }
-    
-    guard let url = bundle.url(forResource: filename, withExtension: nil) else {
-        throw InputErrors.invalidFilename
-    }
-    let value = try String(contentsOf: url)
-    return value.split(separator: delimiter).compactMap { cast(cleanString(String($0))) }
+public func readInputAsStrings(filename: String, delimiter: Character = "\n", bundle: Bundle = Bundler.bundle) throws -> [String] {
+    let url = bundle.url(forResource: filename, withExtension: nil)!
+    let value = try String(contentsOf: url).trimmingCharacters(in: .whitespacesAndNewlines)
+    return value.split(separator: delimiter).compactMap { String($0) }
+}
+
+public func readInputAsIntegers(filename: String, delimiter: Character = "\n", bundle: Bundle = Bundler.bundle) throws -> [Int] {
+    let url = bundle.url(forResource: filename, withExtension: nil)!
+    let value = try String(contentsOf: url).trimmingCharacters(in: .whitespacesAndNewlines)
+    return value.split(separator: delimiter).compactMap { Int(String($0)) }
 }

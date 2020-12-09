@@ -404,10 +404,7 @@ extension PathFinder {
 
         // Find Doors
         doorsData = rawMap.filter { CharacterSet.uppercaseLetters.contains(UnicodeScalar($0.value)!) }
-        
-        // Find Keys
-        let keysData = rawMap.filter { CharacterSet.lowercaseLetters.contains(UnicodeScalar($0.value)!) }.map { keys[$0.key] = $0.value }
-        
+                
         // Populate Paths Cache
         populatePathsCache(keys, startingPoint: startingPoint!, map: map)
         
@@ -418,7 +415,7 @@ extension PathFinder {
         }
         
         print("Starting Point", startingPoint!)
-        print("Doors:", doorsData.count, "Keys:", keysData.count)
+        print("Doors:", doorsData.count, "Keys:", keys.count)
         doorsData.forEach {
             print($0.key, $0.value)
         }

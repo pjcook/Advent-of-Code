@@ -11,9 +11,9 @@ import InputReader
 @testable import Year2019
 
 class Day15Tests: XCTestCase {
+    let input = try! readInputAsIntegers(filename: "Day15.input", delimiter: ",", bundle: Year2019.bundle)
 
     func test_part1() throws {
-        guard let input = try readInput(filename: "Day15.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
         let mapper = Mapper(input + Array(repeating: 0, count: 2000))
         mapper.start()
         
@@ -26,7 +26,6 @@ class Day15Tests: XCTestCase {
     }
     
     func test_part2() throws {
-        guard let input = try readInput(filename: "Day15.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
         let mapper = Mapper(input + Array(repeating: 0, count: 2000))
         mapper.processEntireSpace = true
         mapper.start()

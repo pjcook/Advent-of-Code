@@ -3,44 +3,39 @@ import InputReader
 @testable import Year2020
 
 class Day4Tests: XCTestCase {
-    var input: [String] = []
-        
-    override func setUpWithError() throws {
-        let input = try Input("Day4.input", Year2020.bundle)
-        self.input = input.lines
-    }
+    let input = Input("Day4.input", Year2020.bundle).lines
     
-    func test_part1() throws {
+    func test_part1() {
         let day = Day4()
         let count = day.validate(input: input, validate: Day4.validateBasic)
         XCTAssertEqual(213, count)
     }
     
-    func test_part2() throws {
+    func test_part2() {
         let day = Day4()
         let count = day.validate(input: input, validate: Day4.validate)
         XCTAssertEqual(147, count)
     }
     
-    func test_part2_v2() throws {
+    func test_part2_v2() {
         let day = Day4_v2()
         let count = day.validate2(input: input)
         XCTAssertEqual(147, count)
     }
     
-    func test_part2_v3() throws {
+    func test_part2_v3() {
         let day = Day4_v2()
         let count = day.validate3(input: input, regexes: Day4_v2.regexes)
         XCTAssertEqual(147, count)
     }
     
-    func test_part2_v4_part1() throws {
+    func test_part2_v4_part1() {
         let day = Day4_v2()
         let part1 = day.validate4(input: input, regex: Day4_v2.part1Regex)
         XCTAssertEqual(213, part1)
     }
     
-    func test_part2_v4_part2() throws {
+    func test_part2_v4_part2() {
         let day = Day4_v2()
         let part2 = day.validate4(input: input, regex: Day4_v2.masterRegex)
         XCTAssertEqual(147, part2)

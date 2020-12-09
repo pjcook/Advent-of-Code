@@ -13,7 +13,7 @@ import InputReader
 class Day17Tests: XCTestCase {
 
     func test_part1() throws {
-        guard let input = try readInput(filename: "Day17.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+        let input = try readInputAsIntegers(filename: "Day17.input", delimiter: ",", bundle: Year2019.bundle)
         let robot = VacuumRobot(input)
         let result = robot.calibrate()
         robot.drawMapInConsole()
@@ -25,7 +25,7 @@ class Day17Tests: XCTestCase {
     }
     
     func test_part2() throws {
-        guard var input = try readInput(filename: "Day17.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+        var input = try readInputAsIntegers(filename: "Day17.input", delimiter: ",", bundle: Year2019.bundle)
         input[0] = 2
         let robot = VacuumRobot(input)
         let instructions = "A,C,C,A,B,A,B,A,B,C\nR,6,R,6,R,8,L,10,L,4\nL,4,L,12,R,6,L,10\nR,6,L,10,R,8\nn\n"
@@ -35,7 +35,7 @@ class Day17Tests: XCTestCase {
     }
     
     func test_part2_chris() throws {
-        guard var input = try readInput(filename: "Day17_chris.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: Self.self)) as? [Int] else { throw Errors.invalidInput }
+        var input = try readInputAsIntegers(filename: "Day17_chris.input", delimiter: ",", bundle: Bundle(for: Self.self))
         input[0] = 2
         let robot = VacuumRobot(input)
         let instructions = """

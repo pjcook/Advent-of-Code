@@ -11,6 +11,7 @@ import InputReader
 @testable import Year2019
 
 class Day1Tests: XCTestCase {
+    let input = try! readInputAsIntegers(filename: "Day1.input", bundle: Year2019.bundle)
 
     func test_basicFuelCalculation() {
         XCTAssertEqual(2, basicFuelCalculation(mass: 12))
@@ -26,7 +27,6 @@ class Day1Tests: XCTestCase {
     }
     
     func test_calculateFuelRequirement() throws {
-        guard let input = try readInput(filename: "Day1.input", delimiter: "\n", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { return XCTFail() }
         let sum = calculateFuelRequired(input: input)
         // XCTAssertEqual(3226822, sum) Part 1 solution
         XCTAssertEqual(4837367, sum)

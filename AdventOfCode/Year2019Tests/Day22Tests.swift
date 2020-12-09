@@ -11,10 +11,9 @@ import InputReader
 @testable import Year2019
 
 class Day22Tests: XCTestCase {
+    let input = try! readInputAsStrings(filename: "Day22.input", bundle: Year2019.bundle)
 
     func test_part1() throws {
-        let input = try readInput(filename: "Day22.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
-        
         let shuffler = DeckShuffle(sizeOfDeck: 10007)
         shuffler.process(input)
         
@@ -30,7 +29,6 @@ class Day22Tests: XCTestCase {
     }
     
     func test_part2() throws {
-        let input = try readInput(filename: "Day22.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
         // 119315717514047
         let shuffler = DeckShuffle(sizeOfDeck: 10007)
         var results = [Int:Int]()

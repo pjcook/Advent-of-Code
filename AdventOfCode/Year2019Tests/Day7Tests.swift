@@ -36,18 +36,17 @@ class Day7Tests: XCTestCase {
         XCTAssertEqual(120, generateCombinations([0,1,2,3,4]).count)
     }
     
-    func test_part1() throws {
-        guard let input = try readInput(filename: "Day7.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+    let input = try! readInputAsIntegers(filename: "Day7.input", delimiter: ",", bundle: Year2019.bundle)
+    
+    func test_part1() {
         XCTAssertEqual(212460, try findMaximumThrusterValue(phaseSettings: [0,1,2,3,4], input: input))
     }
     
-    func test_part2() throws {
-        guard let input = try readInput(filename: "Day7.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+    func test_part2() {
         XCTAssertEqual(21844737, try findMaximumThrusterValue(phaseSettings: [9,8,7,6,5], input: input, loop: true))
     }
     
-    func test_part2b() throws {
-        guard let input = try readInput(filename: "Day7.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+    func test_part2b() {
         XCTAssertEqual(21844737, try findMaximumThrusterValueStepped(phaseSettings: [9,8,7,6,5], input: input, loop: true))
     }
     

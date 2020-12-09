@@ -43,4 +43,23 @@ public struct Day9 {
         
         return 0
     }
+    
+    public func part2_chris(input: [Int], invalidNumber: Int = 257342611) -> Int {
+        for index in 0..<input.count {
+            var sum: Int = 0
+            var allValues: [Int] = []
+            for value in input[index ..< input.count] {
+                sum += value
+                allValues.append(value)
+                if sum == invalidNumber {
+                    let s = allValues.sorted()
+                    return s.first! + s.last!
+                } else if sum >= invalidNumber {
+                    break
+                }
+            }
+        }
+        
+        return -1
+    }
 }

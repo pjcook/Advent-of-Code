@@ -11,6 +11,7 @@ import InputReader
 @testable import Year2019
 
 class Day5Tests: XCTestCase {
+    let input = try! readInputAsIntegers(filename: "Day5.input", delimiter: ",", bundle: Year2019.bundle)
 
     func test_sample_data1() throws {
         let data = "1101,100,-1,4,0".split(separator: ",").compactMap { Int($0) }
@@ -40,14 +41,14 @@ class Day5Tests: XCTestCase {
     }
     
     func test_part1_chris() throws {
-        guard let data = try readInput(filename: "Day5_sample1.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: Day5Tests.self)) as? [Int] else { return XCTFail() }
+        let data = try readInputAsIntegers(filename: "Day5_sample1.input", delimiter: ",", bundle: Bundle(for: Day5Tests.self))
         let computer = AdvancedIntCodeComputer(data: data)
         let output = computer.process({ 5 })
         XCTAssertEqual(584126, output)
     }
     
     func test_part1_steppedIntComputer() throws {
-        guard let data = try readInput(filename: "Day5_sample1.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: Day5Tests.self)) as? [Int] else { return XCTFail() }
+        let data = try readInputAsIntegers(filename: "Day5_sample1.input", delimiter: ",", bundle: Bundle(for: Day5Tests.self))
         var output = 0
         let computer = SteppedIntComputer(
             id: 1,
@@ -63,10 +64,9 @@ class Day5Tests: XCTestCase {
         }
         XCTAssertEqual(584126, output)
     }
-    
-    func test_part1() throws {
-        guard let data = try readInput(filename: "Day5.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { return XCTFail() }
-        let computer = AdvancedIntCodeComputer(data: data)
+        
+    func test_part1() {
+        let computer = AdvancedIntCodeComputer(data: input)
         let output = computer.process({ 1 })
         XCTAssertEqual(9006673, output)
     }
@@ -151,17 +151,15 @@ class Day5Tests: XCTestCase {
         XCTAssertEqual(1001, computer.process({ 22 }))
     }
     
-    func test_part2() throws {
-        guard let data = try readInput(filename: "Day5.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { return XCTFail() }
-        let computer = AdvancedIntCodeComputer(data: data)
+    func test_part2() {
+        let computer = AdvancedIntCodeComputer(data: input)
         let output = computer.process({ 5 })
         XCTAssertEqual(3629692, output)
     }
     
-    func test_part2b() throws {
-        guard let data = try readInput(filename: "Day5.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { return XCTFail() }
+    func test_part2b() {
         var output = 0
-        let computer = SteppedIntComputer(id: 6, data: data, readInput: { 5 }, processOutput: { output = $0 }, completionHandler: {}, forceWriteMode: false)
+        let computer = SteppedIntComputer(id: 6, data: input, readInput: { 5 }, processOutput: { output = $0 }, completionHandler: {}, forceWriteMode: false)
         computer.process()
         XCTAssertEqual(3629692, output)
     }

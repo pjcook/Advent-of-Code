@@ -52,8 +52,10 @@ class Day2Tests: XCTestCase {
         XCTAssertEqual(30, computer.readData[0])
     }
     
+    let input = try! readInputAsIntegers(filename: "Day2.input", delimiter: ",", bundle: Year2019.bundle)
+    
     func test_calculate_day2_part1_result() throws {
-        guard var data = try readInput(filename: "Day2.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { return XCTFail() }
+        var data = input
         data[1] = 12
         data[2] = 2
         XCTAssertEqual(153, data.count)
@@ -62,11 +64,9 @@ class Day2Tests: XCTestCase {
     }
     
     func test_calculate_day2_part2_result() throws {
-        guard let data = try readInput(filename: "Day2.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { return XCTFail() }
-        let result = try calculateNounVerb(expectedResult: 19690720, data: data)
+        let result = try calculateNounVerb(expectedResult: 19690720, data: input)
         XCTAssertEqual(57, result.0)
         XCTAssertEqual(41, result.1)
         XCTAssertEqual(5741, 100*result.0+result.1)
     }
-    
 }

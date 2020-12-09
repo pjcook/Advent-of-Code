@@ -11,6 +11,7 @@ import InputReader
 @testable import Year2018
 
 class Day4Tests: XCTestCase {
+    let input = try! readInputAsStrings(filename: "Day4.input", bundle: Year2018.bundle)
 
     func test_reposeLineData() throws {
         let input = [
@@ -50,8 +51,6 @@ class Day4Tests: XCTestCase {
     }
     
     func test_part1() throws {
-        let input = try readInput(filename: "Day4.input", delimiter: "\n", cast: String.init, bundle: Year2018.bundle)
-        
         var data = [ReposeLineData]()
         for item in input {
             data.append(try ReposeLineData(item))
@@ -102,8 +101,6 @@ class Day4Tests: XCTestCase {
     }
     
     func test_part2() throws {
-        let input = try readInput(filename: "Day4.input", delimiter: "\n", cast: String.init, bundle: Year2018.bundle)
-        
         var data = [ReposeLineData]()
         for item in input {
             data.append(try ReposeLineData(item))

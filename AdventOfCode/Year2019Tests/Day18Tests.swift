@@ -79,14 +79,7 @@ class Day18Tests: XCTestCase {
         let result = pathFinder.calculateShortestPathToUnlockAllDoors()
         XCTAssertEqual(81, result)
     }
-    
-    func test_part1() throws {
-        let input = try readInput(filename: "Day18.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
-        let pathFinder = PathFinder(input)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
-        XCTAssertEqual(4248, result)
-    }
-    
+        
     func test_part2_sample_data1() throws {
         let input = [
         "#############",
@@ -141,8 +134,15 @@ class Day18Tests: XCTestCase {
         XCTAssertEqual(72, result)
     }
     
-    func test_remainigDoors() throws {
-        let input = try readInput(filename: "Day18.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
+    let input = try! readInputAsStrings(filename: "Day18.input", bundle: Year2019.bundle)
+
+    func test_part1() {
+        let pathFinder = PathFinder(input)
+        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
+        XCTAssertEqual(4248, result)
+    }
+
+    func test_remainigDoors() {
         let pathFinder = PathFinder(input)
         let keys = pathFinder.keys.map { $0.value.toAscii()! }.sorted().joined()
         let remaining = pathFinder.remainingDoors([99,102,107])
@@ -151,26 +151,22 @@ class Day18Tests: XCTestCase {
         XCTAssertEqual(keys.count, remainingKeys.count+3)
     }
     
-    func test_part2() throws {
-        let input = try readInput(filename: "Day18_Part2.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
-        
-        let pathFinder = MultiPathFinder(input)
+    let inputPart2 = try! readInputAsStrings(filename: "Day18_Part2.input", bundle: Year2019.bundle)
+
+    func test_part2() {
+        let pathFinder = MultiPathFinder(inputPart2)
         let result = pathFinder.calculateShortestPathToUnlockAllDoors()
         XCTAssertEqual(1878, result)
     }
     
-    func test_part2SingleThreaded() throws {
-        let input = try readInput(filename: "Day18_Part2.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
-        
-        let pathFinder = MultiPathFinder(input)
+    func test_part2SingleThreaded() {
+        let pathFinder = MultiPathFinder(inputPart2)
         let result = pathFinder.calculateShortestPathToUnlockAllDoorsSingleThreaded()
         XCTAssertEqual(1878, result)
     }
     
-    func test_part2BFS() throws {
-        let input = try readInput(filename: "Day18_Part2.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
-        
-        let pathFinder = MultiPathFinder(input)
+    func test_part2BFS() {
+        let pathFinder = MultiPathFinder(inputPart2)
         let result = pathFinder.calculateShortestPathToUnlockAllDoorsBFS()
         XCTAssertEqual(1878, result)
     }

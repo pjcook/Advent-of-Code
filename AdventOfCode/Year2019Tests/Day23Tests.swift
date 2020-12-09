@@ -11,10 +11,9 @@ import InputReader
 @testable import Year2019
 
 class Day23Tests: XCTestCase {
-
-    func test_part1() throws {
-        guard let input = try readInput(filename: "Day23.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
-        
+    let input = try! readInputAsIntegers(filename: "Day23.input", delimiter: ",", bundle: Year2019.bundle)
+    
+    func test_part1() {
         let network = ShipNetwork(input, numberOfComputers: 50)
         network.process()
         
@@ -22,9 +21,7 @@ class Day23Tests: XCTestCase {
         XCTAssertEqual(23886, output)
     }
     
-    func test_part2() throws {
-        guard let input = try readInput(filename: "Day23.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
-        
+    func test_part2() {
         let network = ShipNetwork(input, numberOfComputers: 50)
         network.isPart1 = false
         network.process()

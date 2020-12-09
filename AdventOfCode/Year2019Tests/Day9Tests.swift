@@ -74,16 +74,16 @@ class Day9Tests: XCTestCase {
         XCTAssertEqual(1125899906842624, result)
     }
     
-    func test_part1() throws {
-        guard let input = try readInput(filename: "Day9.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+    let input = try! readInputAsIntegers(filename: "Day9.input", delimiter: ",", bundle: Year2019.bundle)
+    
+    func test_part1() {
         let (result, output) = processSensorBoost(input, input: 1)
         XCTAssertEqual(2377080455, result)
         XCTAssertEqual([2377080455], output)
         if !output.isEmpty { print(output) }
     }
     
-    func test_part2() throws {
-        guard let input = try readInput(filename: "Day9.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+    func test_part2() {
         let (result, output) = processSensorBoost(input, input: 2)
         XCTAssertEqual(74917, result)
         XCTAssertEqual([74917], output)

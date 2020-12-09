@@ -11,6 +11,7 @@ import InputReader
 @testable import Year2019
 
 class Day16Tests: XCTestCase {
+    let input = try! readInputAsStrings(filename: "Day16.input", bundle: Year2019.bundle)
 
     func test_part1_sample_data1() throws {
         let input = "12345678".map { Int(String($0))! }
@@ -44,16 +45,14 @@ class Day16Tests: XCTestCase {
         XCTAssertEqual(52432133, answer)
     }
     
-    func test_part1() throws {
-        let input = try readInput(filename: "Day16.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
+    func test_part1() {
         let fft = FFT(input[0].map { Int(String($0))! })
         _ = fft.resolve(phases: 100)
         let answer = fft.result(0)
         XCTAssertEqual(30369587, answer)
     }
     
-    func test_part2() throws {
-        let input = try readInput(filename: "Day16.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
+    func test_part2() {
         var repeatedInput = ""
         for _ in 0..<10000 {
             repeatedInput += input[0]
@@ -66,8 +65,7 @@ class Day16Tests: XCTestCase {
         XCTAssertEqual(27683551, answer)
     }
     
-    func test_part2_Daniel() throws {
-        let input = try readInput(filename: "Day16.input", delimiter: "\n", cast: String.init, bundle: Year2019.bundle)
+    func test_part2_Daniel() {
         let string = input[0]
         let dropAmount = Int(String(string.prefix(7)))!
         let values = string

@@ -4,12 +4,7 @@ import InputReader
 
 class Day1Tests: XCTestCase {
     
-    var input: [Int] = []
-    
-    override func setUpWithError() throws {
-        let input = try Input("Day1.input", Year2020.bundle)
-        self.input = input.lines.compactMap(Int.init).sorted()
-    }
+    let input = Input("Day1.input", Year2020.bundle).lines.compactMap(Int.init).sorted()
 
     func test_part1() {
         XCTAssertEqual(381699, Day1.findMatch(input: input, value: 2020))

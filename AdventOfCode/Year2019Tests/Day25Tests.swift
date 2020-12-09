@@ -11,10 +11,9 @@ import InputReader
 @testable import Year2019
 
 class Day25Tests: XCTestCase {
-
+    let input = try! readInputAsIntegers(filename: "Day25.input", delimiter: ",", bundle: Year2019.bundle)
+    
     func test_part1() throws {
-        guard let input = try readInput(filename: "Day25.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
-        
         let droid = InvestigationDroid(input)
         droid.process()
         // Answer: 134807554

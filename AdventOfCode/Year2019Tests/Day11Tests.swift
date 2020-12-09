@@ -11,27 +11,25 @@ import InputReader
 @testable import Year2019
 
 class Day11Tests: XCTestCase {
+    let input = try! readInputAsIntegers(filename: "Day11.input", delimiter: ",", bundle: Year2019.bundle)
+    let inputChris = try! readInputAsIntegers(filename: "Day11_chris.input", delimiter: ",", bundle: Bundle(for: Day11Tests.self))
 
     func test_part1() throws {
-        guard let input = try readInput(filename: "Day11.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
         let result = paintWithRobot(input, startColor: 0)
         XCTAssertEqual(2238, result)
     }
     
     func test_part2_sample_data1() throws {
-        guard let input = try readInput(filename: "Day11_chris.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: Self.self)) as? [Int] else { throw Errors.invalidInput }
-        let result = paintWithRobot(input, startColor: 0)
+        let result = paintWithRobot(inputChris, startColor: 0)
         XCTAssertEqual(1686, result)
     }
     
     func test_part2_sample_data2() throws {
-        guard let input = try readInput(filename: "Day11_chris.input", delimiter: ",", cast: Int.init, bundle: Bundle(for: Self.self)) as? [Int] else { throw Errors.invalidInput }
         let result = paintWithRobot(input, startColor: 1)
         XCTAssertEqual(249, result)
     }
     
     func test_part2() throws {
-        guard let input = try readInput(filename: "Day11.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
         let result = paintWithRobot(input, startColor: 1)
         XCTAssertEqual(249, result)
     }

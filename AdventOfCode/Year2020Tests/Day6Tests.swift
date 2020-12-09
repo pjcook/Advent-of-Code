@@ -3,30 +3,25 @@ import InputReader
 @testable import Year2020
 
 class Day6Tests: XCTestCase {
-    var input: [String] = []
+    let input = Input("Day6.input", Year2020.bundle).lines
     
-    override func setUpWithError() throws {
-        let input = try Input("Day6.input", Year2020.bundle)
-        self.input = input.lines
-    }
-    
-    func test_part1() throws {
+    func test_part1() {
         XCTAssertEqual(6596, Day6.count(input: input, reduce: Day6.reduce_part1))
     }
     
-    func test_part2() throws {
+    func test_part2() {
         XCTAssertEqual(3219, Day6.count(input: input, reduce: Day6.reduce_part2))
     }
     
-    func test_part1_v2() throws {
+    func test_part1_v2() {
         XCTAssertEqual(6596, Day6.count(input: input, reduce: Day6.reduce_part1_v2))
     }
     
-    func test_part2_v2() throws {
+    func test_part2_v2() {
         XCTAssertEqual(3219, Day6.count(input: input, reduce: Day6.reduce_part2_v2))
     }
     
-    func test_part1_v3() throws {
+    func test_part1_v3() {
         XCTAssertEqual(6596, Day6.count(input: input, reduce: Day6.reduce_part1_v3))
     }
     

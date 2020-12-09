@@ -3,13 +3,13 @@ import InputReader
 @testable import Year2020
 
 class Day5Tests: XCTestCase {
-    let input = try! Input("Day5.input", Year2020.bundle)
+    let input = Input("Day5.input", Year2020.bundle)
             
-    func test_part1() throws {
+    func test_part1() {
         XCTAssertEqual(855, Day5.parse(input.lines).sorted().last)
     }
     
-    func test_part2() throws {
+    func test_part2() {
         let list = Day5.parse(input.lines).sorted()
         var i = 0
         var seat = list[0]
@@ -23,7 +23,7 @@ class Day5Tests: XCTestCase {
         XCTAssertEqual(552, seat)
     }
     
-    func test_part1_v2() throws {
+    func test_part1_v2() {
         let result = input.input
             .replacingOccurrences(of: "F", with: "0")
             .replacingOccurrences(of: "B", with: "1")
@@ -36,7 +36,7 @@ class Day5Tests: XCTestCase {
         XCTAssertEqual(855, result)
     }
     
-    func test_part2_v2() throws {
+    func test_part2_v2() {
         let list = input.input
             .replacingOccurrences(of: "F", with: "0")
             .replacingOccurrences(of: "B", with: "1")

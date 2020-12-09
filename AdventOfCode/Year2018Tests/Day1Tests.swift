@@ -11,14 +11,13 @@ import InputReader
 @testable import Year2018
 
 class Day1Tests: XCTestCase {
-
+    let input = try! readInputAsIntegers(filename: "Day1.input", bundle: Year2018.bundle)
+    
     func test_part1() throws {
-        guard let input = try readInput(filename: "Day1.input", delimiter: "\n", cast: Int.init, bundle: Year2018.bundle) as? [Int] else { return XCTFail() }
         XCTAssertEqual(486, processFrequencyChanges(input))
     }
     
     func test_part2() throws {
-        guard let input = try readInput(filename: "Day1.input", delimiter: "\n", cast: Int.init, bundle: Year2018.bundle) as? [Int] else { return XCTFail() }
         XCTAssertEqual(69285, findFirstDuplicateFrequency(input))
     }
     

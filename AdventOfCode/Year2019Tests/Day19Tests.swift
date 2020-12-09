@@ -11,23 +11,21 @@ import InputReader
 @testable import Year2019
 
 class Day19Tests: XCTestCase {
-
-    func test_part1() throws {
-        guard let input = try readInput(filename: "Day19.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+    let input = try! readInputAsIntegers(filename: "Day19.input", delimiter: ",", bundle: Year2019.bundle)
+    
+    func test_part1() {
         let computer = TractorBeamAnalyser(input: input, size: GridSize(width: 50, height: 50))
         let result = computer.calculate()
         XCTAssertEqual(206, result)
     }
     
-    func test_part2() throws {
-        guard let input = try readInput(filename: "Day19.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+    func test_part2() {
         let computer = TractorBeamAnalyser(input: input, size: GridSize(width: 100000, height: 100000))
         let result = computer.findTractorDistance(GridSize(width: 99, height: 99), startPosition: Point(x: 0, y: 5))
         XCTAssertEqual(6190948, result)
     }
     
-    func test_part2_sample() throws {
-        guard let input = try readInput(filename: "Day19.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
+    func test_part2_sample() {
         let computer = TractorBeamAnalyser(input: input, size: GridSize(width: 10000, height: 10000))
         let size = GridSize(width: 100, height: 100)
         let tl = Point(x: 625, y: 957)

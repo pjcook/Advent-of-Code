@@ -11,7 +11,8 @@ import InputReader
 @testable import Year2019
 
 class Day8Tests: XCTestCase {
-
+    let data = try! readInputAsStrings(filename: "Day8.input", bundle: Year2019.bundle)
+    
     func test_part1_sample_data1() {
         let input = "123456789012"
         let size = CGSize(width: 3, height: 2)
@@ -19,14 +20,12 @@ class Day8Tests: XCTestCase {
     }
     
     func test_part1() throws {
-        let data = try readInput(filename: "Day8.input", delimiter: ",", cast: String.init, bundle: Year2019.bundle)
         let size = CGSize(width: 25, height: 6)
         guard let input = data.first else { throw Errors.invalidInput }
         XCTAssertEqual(1677, decodeImageFindMultiplier(input, size: size))
     }
     
     func test_part2() throws {
-        let data = try readInput(filename: "Day8.input", delimiter: ",", cast: String.init, bundle: Year2019.bundle)
         let size = CGSize(width: 25, height: 6)
         guard let input = data.first else { throw Errors.invalidInput }
         renderImage(input, size: size)

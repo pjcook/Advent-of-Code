@@ -11,10 +11,9 @@ import InputReader
 @testable import Year2019
 
 class Day21Tests: XCTestCase {
-
-    func test_part1() throws {
-       guard let input = try readInput(filename: "Day21.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
-        
+    let input = try! readInputAsIntegers(filename: "Day21.input", delimiter: ",", bundle: Year2019.bundle)
+    
+    func test_part1() {
         let droid = SpringDroid(input)
         droid.process("""
         NOT A J
@@ -31,9 +30,7 @@ class Day21Tests: XCTestCase {
         XCTAssertEqual(19352638, output)
     }
     
-    func test_part2() throws {
-        guard let input = try readInput(filename: "Day21.input", delimiter: ",", cast: Int.init, bundle: Year2019.bundle) as? [Int] else { throw Errors.invalidInput }
-        
+    func test_part2() {        
         let droid = SpringDroid(input)
         droid.process(part2SpringScript)
         

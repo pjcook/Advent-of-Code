@@ -11,6 +11,7 @@ import InputReader
 @testable import Year2018
 
 class Day3Tests: XCTestCase {
+    let input = try! readInputAsStrings(filename: "Day3.input", bundle: Year2018.bundle)
 
     func test_part1_sample_data1() throws {
         let input = [
@@ -23,12 +24,10 @@ class Day3Tests: XCTestCase {
     }
     
     func test_part1() throws {
-        let input = try readInput(filename: "Day3.input", delimiter: "\n", cast: String.init, bundle: Year2018.bundle)
         XCTAssertEqual(116491, try mapClaims(input))
     }
     
     func test_part2() throws {
-        let input = try readInput(filename: "Day3.input", delimiter: "\n", cast: String.init, bundle: Year2018.bundle)
         XCTAssertEqual(707, try findUniqueClaim(input))
     }
 

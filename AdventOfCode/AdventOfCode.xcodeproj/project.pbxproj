@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2E0164ED257F67AA006E56E0 /* Instruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0164EC257F67AA006E56E0 /* Instruction.swift */; };
 		2E016503257FAEE0006E56E0 /* RegularExpressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E016502257FAEE0006E56E0 /* RegularExpressions.swift */; };
+		2E01654C2580B788006E56E0 /* QFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0165362580B4A7006E56E0 /* QFile.swift */; };
 		2E0F03AE256D3FAA005B3256 /* Day22Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0F03AD256D3FAA005B3256 /* Day22Tests.swift */; };
 		2E0F03B8256D3FAF005B3256 /* Day23Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0F03B7256D3FAF005B3256 /* Day23Tests.swift */; };
 		2E0F03C2256D3FB4005B3256 /* Day24Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0F03C1256D3FB4005B3256 /* Day24Tests.swift */; };
@@ -375,6 +376,7 @@
 /* Begin PBXFileReference section */
 		2E0164EC257F67AA006E56E0 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
 		2E016502257FAEE0006E56E0 /* RegularExpressions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularExpressions.swift; sourceTree = "<group>"; };
+		2E0165362580B4A7006E56E0 /* QFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QFile.swift; sourceTree = "<group>"; };
 		2E0671482578AD86003079FD /* Point.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
 		2E0671522578AFDD003079FD /* String+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Additions.swift"; sourceTree = "<group>"; };
 		2E0F03AD256D3FAA005B3256 /* Day22Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Day22Tests.swift; sourceTree = "<group>"; };
@@ -1506,6 +1508,7 @@
 			children = (
 				D5E3CB8D239A696800D39B5D /* InputReader.h */,
 				D5541C5C23EC018700EFFD42 /* InputReader.swift */,
+				2E0165362580B4A7006E56E0 /* QFile.swift */,
 				D5E3CB8E239A696800D39B5D /* Info.plist */,
 			);
 			path = InputReader;
@@ -1964,7 +1967,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1220;
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = Software101;
 				TargetAttributes = {
 					2E99D559256D3D3700088D9C = {
@@ -2425,6 +2428,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D5541C5D23EC018700EFFD42 /* InputReader.swift in Sources */,
+				2E01654C2580B788006E56E0 /* QFile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2820,6 +2824,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -2880,6 +2885,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
