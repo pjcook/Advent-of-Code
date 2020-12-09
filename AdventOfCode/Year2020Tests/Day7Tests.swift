@@ -6,24 +6,18 @@ class Day7Tests: XCTestCase {
     let input = try! Input("Day7.input", Year2020.bundle)
     
     func test_part1() {
-        measure {
-            let day = Day7()
-            XCTAssertEqual(224, day.part1(input.lines))
-        }
+        let day = Day7()
+        XCTAssertEqual(224, day.part1(input.lines))
     }
     
     func test_part2() {
-        measure {
-            let day = Day7()
-            XCTAssertEqual(1488, day.part2(input.lines))
-        }
+        let day = Day7()
+        XCTAssertEqual(1488, day.part2(input.lines))
     }
     
     func test_part1_v2() {
-        measure {
-            let day = Day7()
-            XCTAssertEqual(224, day.part1_v2(input.lines))
-        }
+        let day = Day7()
+        XCTAssertEqual(224, day.part1_v2(input.lines))
     }
     
     func test_part1_v2_example() {
@@ -38,34 +32,28 @@ class Day7Tests: XCTestCase {
         faded blue bags contain no other bags.
         dotted black bags contain no other bags.
         """
-        measure {
-            let day = Day7()
-            XCTAssertEqual(4, day.part1_v2(input.lines))
-        }
+        let day = Day7()
+        XCTAssertEqual(4, day.part1_v2(input.lines))
     }
     
     func test_parsingToRules_v2() {
         //        For the bag I used ^([a-z ]+) bags contain
         //        For its contents I used ([0-9]+) ([a-z ]+) bag
-        measure {
-            let input = "light red bags contain 1 bright white bag, 2 muted yellow bags."
-            let range = NSRange(location: 0, length: input.utf16.count)
-            let rule = Day7.ruleRegex.firstMatch(in: input, options: [], range: range)!
-            let contents = Day7.contentRegex.matches(in: input, options: [], range: range)
-            
-            XCTAssertEqual("light red", input[Range(rule.range, in: input)!])
-            XCTAssertEqual(2, contents.count)
-            XCTAssertEqual("1 bright white", input[Range(contents[0].range, in: input)!])
-            XCTAssertEqual("2 muted yellow", input[Range(contents[1].range, in: input)!])
-        }
+        let input = "light red bags contain 1 bright white bag, 2 muted yellow bags."
+        let range = NSRange(location: 0, length: input.utf16.count)
+        let rule = Day7.ruleRegex.firstMatch(in: input, options: [], range: range)!
+        let contents = Day7.contentRegex.matches(in: input, options: [], range: range)
+        
+        XCTAssertEqual("light red", input[Range(rule.range, in: input)!])
+        XCTAssertEqual(2, contents.count)
+        XCTAssertEqual("1 bright white", input[Range(contents[0].range, in: input)!])
+        XCTAssertEqual("2 muted yellow", input[Range(contents[1].range, in: input)!])
     }
     
     func test_parsingToRules_v3() {
-        measure {
-            let day = Day7()
-            let rules = day.parse(input.lines)
-            XCTAssertEqual(594, rules.count)
-        }
+        let day = Day7()
+        let rules = day.parse(input.lines)
+        XCTAssertEqual(594, rules.count)
     }
     
     func test_parsingToRules_v3_data() {
@@ -85,45 +73,41 @@ class Day7Tests: XCTestCase {
     }
     
     func test_parsingToRules() {
-        measure {
-            let rules = input.lines.map(Day7.Rule.init)
-            XCTAssertEqual(594, rules.count)
-        }
+        let rules = input.lines.map(Day7.Rule.init)
+        XCTAssertEqual(594, rules.count)
     }
     
     func test_parsingToRules_chris() {
-        measure {
-            let rules = getBags(input: input.lines)
-            XCTAssertEqual(594, rules.count)
-        }
+        let rules = getBags(input: input.lines)
+        XCTAssertEqual(594, rules.count)
     }
-        
+    
     struct BagRule {
         let bag: String
         let amount: Int
     }
     
     func getBags(input: [String]) -> [String: [BagRule]] {
-            var bagsAndRules: [String: [BagRule]] = [:]
-            
-            input.forEach { line in
-                let words = line.components(separatedBy: " ")
-                let bag = words.prefix(2).joined()
-                var rules: [BagRule] = []
-                for index in stride(from: 0, through: words.count, by: 4) {
-                    if (index + 4) < words.count {
-                        if let amount = Int(words[index + 4]) {
-                            let bag = words[index + 5] + words[index + 6]
-                            rules.append(BagRule(bag: bag, amount: amount))
-                        }
+        var bagsAndRules: [String: [BagRule]] = [:]
+        
+        input.forEach { line in
+            let words = line.components(separatedBy: " ")
+            let bag = words.prefix(2).joined()
+            var rules: [BagRule] = []
+            for index in stride(from: 0, through: words.count, by: 4) {
+                if (index + 4) < words.count {
+                    if let amount = Int(words[index + 4]) {
+                        let bag = words[index + 5] + words[index + 6]
+                        rules.append(BagRule(bag: bag, amount: amount))
                     }
                 }
-                
-                bagsAndRules[bag] = rules
             }
             
-            return bagsAndRules
+            bagsAndRules[bag] = rules
         }
+        
+        return bagsAndRules
+    }
     
     func test_part1_example() {
         let input = """

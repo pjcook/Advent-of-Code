@@ -12,16 +12,13 @@ import InputReader
 
 class Day5Tests: XCTestCase {
     let input = try! Input("Day5.input", Year2018.bundle)
-
+    
     func test_part1() {
-        measure {
-            let day = Day5()
-            XCTAssertEqual(11636, day.part1(input: input.input).count)
-        }
+        let day = Day5()
+        XCTAssertEqual(11636, day.part1(input: input.input).count)
     }
     
     func test_part2() {
-//        measure {
         let filters = "abcdefghijklmnopqrstuvwxyz"
         let day = Day5()
         var min = 11636
@@ -36,21 +33,16 @@ class Day5Tests: XCTestCase {
         }
         
         XCTAssertEqual(5302, min)
-//        }
     }
     
     func test_part1_daniel() {
-        measure {
-            let day = Day5()
-            XCTAssertEqual(11636, day.part1_daniel(input: input.input))
-        }
+        let day = Day5()
+        XCTAssertEqual(11636, day.part1_daniel(input: input.input))
     }
     
     func test_part2_daniel() {
-        measure {
-            let day = Day5()
-            XCTAssertEqual(5302, day.part2_daniel(input: input.input))
-        }
+        let day = Day5()
+        XCTAssertEqual(5302, day.part2_daniel(input: input.input))
     }
     
     func test_part1_react() {
