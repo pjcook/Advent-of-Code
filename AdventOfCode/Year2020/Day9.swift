@@ -35,6 +35,8 @@ public struct Day9 {
                     let min = rangedValues.min()!
                     let max = rangedValues.max()!
                     return min + max
+                } else if sum > sumsTo {
+                    pt2 = input.count
                 }
                 pt2 += 1
             }
