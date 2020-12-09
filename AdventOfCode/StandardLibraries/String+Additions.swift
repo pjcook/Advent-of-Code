@@ -24,3 +24,10 @@ public extension String {
         return String(self[start ..< end])
     }
 }
+
+public enum Alphabet {
+    public static let letters = "abcdefghijklmnopqrstuvwxyz"
+    public static let lettersList: [Character] = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+    public static var Uppercased: String { letters.uppercased() }
+    public static var lettersUppercasedList: [Character] { lettersList.map({ Character($0.uppercased()) }) }
+}
