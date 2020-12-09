@@ -31,10 +31,8 @@ public struct Day9 {
             while pt2 < input.count {
                 sum += input[pt2]
                 if sum == sumsTo {
-                    let rangedValues = input[pt1...pt2]
-                    let min = rangedValues.min()!
-                    let max = rangedValues.max()!
-                    return min + max
+                    let rangedValues = input[pt1...pt2].sorted()
+                    return rangedValues.first! + rangedValues.last!
                 } else if sum > sumsTo {
                     pt2 = input.count
                 }
