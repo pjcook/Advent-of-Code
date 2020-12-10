@@ -6,17 +6,13 @@ class Day10Tests: XCTestCase {
     let input = Input("Day10.input", Year2020.bundle).integers.sorted()
 
     func test_part1() throws {
-        measure {
         let day = Day10()
         XCTAssertEqual(2812, day.part1(input))
-        }
     }
     
     func test_part2() throws {
-        measure {
         let day = Day10()
         XCTAssertEqual(386869246296064, day.part2(input))
-        }
     }
     
     func test_part1_example1() throws {
