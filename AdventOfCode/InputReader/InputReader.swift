@@ -16,6 +16,10 @@ public struct Input {
         input = try! String(contentsOf: url).trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
+    public init(_ input: String) {
+        self.input = input
+    }
+    
     public var lines: [String] {
         input.lines
     }
