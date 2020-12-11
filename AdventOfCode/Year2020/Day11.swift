@@ -12,14 +12,14 @@ import StandardLibraries
 public struct Day11 {
     
     public func part1(_ input: [[Character]]) -> Int {
-        return calculate(input, countOccupied: countOccupied_part1)
+        return calculate(input, visibleSeats: 4, countOccupied: countOccupied_part1)
     }
     
     public func part2(_ input: [[Character]]) -> Int {
         return calculate(input, visibleSeats: 5, countOccupied: countOccupied_part2)
     }
     
-    func calculate(_ input: [[Character]], visibleSeats: Int = 4, countOccupied: (Point, Point, [[Character]]) -> Int) -> Int {
+    func calculate(_ input: [[Character]], visibleSeats: Int, countOccupied: (Point, Point, [[Character]]) -> Int) -> Int {
         var previous = input
         var isSame = true
         var count = 0
