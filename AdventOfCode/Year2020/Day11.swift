@@ -49,19 +49,12 @@ public struct Day11 {
             for x in 0..<max.x {
                 let point = Point(x: x, y: y)
                 let value = input[y][x]
-                switch value {
-                case "L":
-                    if countOccupied(point, max, input) == 0 {
-                        output[y][x] = "#"
-                    }
-                    
-                case "#":
-                    if countOccupied(point, max, input) >= visibleSeats {
-                        output[y][x] = "L"
-                    }
-                    
-                default:
-                    break
+                guard value != "." else { continue }
+                let count = countOccupied(point, max, input)
+                if value == "L", count == 0 {
+                    output[y][x] = "#"
+                } else if value == "#", count >= visibleSeats {
+                    output[y][x] = "L"
                 }
             }
         }
@@ -69,8 +62,8 @@ public struct Day11 {
         return output
     }
     
+    let positions: [Position] = [.tl, .t, .tr, .l, .r, .bl, .b, .br]
     func countOccupied_part1(_ point: Point, max: Point, input: [[Character]]) -> Int {
-        let positions: [Position] = [.tl, .t, .tr, .l, .r, .bl, .b, .br]
         return positions
             .compactMap({ point.adjacent($0, .zero, max) })
             .map({ input[$0.y][$0.x] == "#" ? 1 : 0 })
@@ -79,7 +72,6 @@ public struct Day11 {
     
     func countOccupied_part2(_ point: Point, max: Point, input: [[Character]]) -> Int {
         var count = 0
-        let positions: [Position] = [.tl, .t, .tr, .l, .r, .bl, .b, .br]
         for position in positions {
             var exit = false
             var pos = point
