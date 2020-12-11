@@ -72,7 +72,7 @@ public struct Day11 {
     
     func countOccupied_part2(_ point: Point, max: Point, input: [[Character]]) -> Int {
         var count = 0
-        for position in positions {
+        outerLoop: for position in positions {
             var exit = false
             var pos = point
             while !exit {
@@ -87,6 +87,9 @@ public struct Day11 {
                     }
                 } else {
                     exit = true
+                }
+                if count >= 5 {
+                    break outerLoop
                 }
             }
         }
