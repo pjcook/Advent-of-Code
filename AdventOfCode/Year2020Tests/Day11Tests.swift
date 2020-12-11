@@ -93,4 +93,60 @@ class Day11Tests: XCTestCase {
         let day = Day11_v2()
         XCTAssertEqual(2027, day.part2(inputDict))
     }
+    
+    func test_part1_example_v3() {
+        let input = """
+        L.LL.LL.LL
+        LLLLLLL.LL
+        L.L.L..L..
+        LLLL.LL.LL
+        L.LL.LL.LL
+        L.LLLLL.LL
+        ..L.L.....
+        LLLLLLLLLL
+        L.LLLLLL.L
+        L.LLLLL.LL
+        """.lines
+        let day = Day11_v3()
+        XCTAssertEqual(37, day.part1(input))
+    }
+    
+    func test_part1_v3() {
+        let day = Day11_v3()
+        let input = Input("Day11.input", Year2020.bundle).lines
+        XCTAssertEqual(2243, day.part1(input))
+    }
+    
+    func test_part2_example_v3() {
+        let input = """
+        L.LL.LL.LL
+        LLLLLLL.LL
+        L.L.L..L..
+        LLLL.LL.LL
+        L.LL.LL.LL
+        L.LLLLL.LL
+        ..L.L.....
+        LLLLLLLLLL
+        L.LLLLLL.L
+        L.LLLLL.LL
+        """.lines
+        let day = Day11_v3()
+        XCTAssertEqual(26, day.part2(input))
+    }
+    
+    func test_part2_v3() {
+        let day = Day11_v3()
+        let input = Input("Day11.input", Year2020.bundle).lines
+        XCTAssertEqual(2027, day.part2(input))
+    }
+    
+    func test_parsing_to_array() {
+        let input = Input("Day11.input", Year2020.bundle).lines.compactMap({ $0.compactMap({ Character(extendedGraphemeClusterLiteral: $0) }) })
+        XCTAssertNotNil(input)
+    }
+    
+    func test_parsing_to_dictionary() {
+        let input = Day11_v2.toDict(Input("Day11.input", Year2020.bundle).lines)
+        XCTAssertNotNil(input)
+    }
 }

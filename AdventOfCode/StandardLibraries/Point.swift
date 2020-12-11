@@ -21,6 +21,10 @@ public extension Point {
         return point
     }
     
+    func isValid(max: Point) -> Bool {
+        return x >= 0 && x < max.x && y >= 0 && y < max.y
+    }
+    
     static func + (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
     }

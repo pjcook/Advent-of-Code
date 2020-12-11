@@ -67,11 +67,14 @@ public struct Day11_v2 {
                     continue
                 }
                 if value != "." {
-                    count += value == "#" ? 1 : 0
-                    exit = true
-                    if count >= 5 {
-                        break outerLoop
+                    if value == "#" {
+                        count += 1
+                        if count > 4 {
+                            break outerLoop
+                        }
+
                     }
+                    exit = true
                 }
             }
         }
