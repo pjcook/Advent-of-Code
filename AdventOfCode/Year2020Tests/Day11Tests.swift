@@ -6,13 +6,17 @@ class Day11Tests: XCTestCase {
     let input = Input("Day11.input", Year2020.bundle).lines.compactMap({ $0.compactMap({ Character(extendedGraphemeClusterLiteral: $0) }) })
 
     func test_part1() throws {
+//        measure {
         let day = Day11()
         XCTAssertEqual(2243, day.part1(input))
+//        }
     }
     
     func test_part2() throws {
+//        measure {
         let day = Day11()
         XCTAssertEqual(2027, day.part2(input))
+//        }
     }
     
     func test_part1_example() {

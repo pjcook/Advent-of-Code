@@ -5,7 +5,13 @@ public extension String {
     }
 
     subscript (i: Int) -> String {
-        return self[i ..< i + 1]
+        get {
+            return self[i ..< i + 1]
+        }
+        set {
+            let lower = index(startIndex, offsetBy: i)
+            replaceSubrange(lower...lower, with: newValue)
+        }
     }
 
     func substring(fromIndex: Int) -> String {

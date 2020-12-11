@@ -12,11 +12,19 @@ import StandardLibraries
 public struct Day11 {
     
     public func part1(_ input: [[Character]]) -> Int {
+        return calculate(input, countOccupied: countOccupied_part1)
+    }
+    
+    public func part2(_ input: [[Character]]) -> Int {
+        return calculate(input, visibleSeats: 5, countOccupied: countOccupied_part2)
+    }
+    
+    func calculate(_ input: [[Character]], visibleSeats: Int = 4, countOccupied: (Point, Point, [[Character]]) -> Int) -> Int {
         var previous = input
         var isSame = true
         var count = 0
         while isSame {
-            let updated = step(previous, countOccupied: countOccupied_part1)
+            let updated = step(previous, visibleSeats: visibleSeats, countOccupied: countOccupied)
             isSame = updated != previous
             previous = updated
             count += 1
@@ -26,7 +34,7 @@ public struct Day11 {
             .compactMap({ $0.compactMap({ $0 == "#" ? 1 : 0 }).reduce(0, +) })
             .reduce(0, +)
     }
-    
+
     func draw(_ input: [[Character]]) {
         input.forEach {
             print($0.map { String($0) }.joined())
@@ -92,21 +100,5 @@ public struct Day11 {
         }
                 
         return count
-    }
-    
-    public func part2(_ input: [[Character]]) -> Int {
-        var previous = input
-        var isSame = true
-        var count = 0
-        while isSame {
-            let updated = step(previous, visibleSeats: 5, countOccupied: countOccupied_part2)
-            isSame = updated != previous
-            previous = updated
-            count += 1
-        }
-        
-        return previous
-            .compactMap({ $0.compactMap({ $0 == "#" ? 1 : 0 }).reduce(0, +) })
-            .reduce(0, +)
     }
 }
