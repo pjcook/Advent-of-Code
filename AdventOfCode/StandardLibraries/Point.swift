@@ -28,6 +28,52 @@ public extension Point {
     static func + (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
     }
+    
+    static func - (lhs: Point, rhs: Point) -> Point {
+        return Point(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+    }
+    
+    func add(direction: Direction, distance: Int) -> Point {
+        switch direction {
+        case .n: return Point(x: x, y: y + distance)
+        case .s: return Point(x: x, y: y - distance)
+        case .e: return Point(x: x + distance, y: y)
+        case .w: return Point(x: x - distance, y: y)
+        }
+    }
+    
+//    func rotateLeft(angle: Double) -> Point {
+//        let theta = tan(Double(y / x)) - angle
+//        let radius = sqrt(Double(x * x + y * y))
+//        let x = radius * cos(theta)
+//        let y = radius * sin(theta)
+//        return Point(x: Int(x), y: Int(y))
+//    }
+//
+//    func rotateRight(angle: Double) -> Point {
+//        let theta = tan(Double(y / x)) + angle
+//        let radius = sqrt(Double(x * x + y * y))
+//        let x = radius * cos(theta)
+//        let y = radius * sin(theta)
+//        return Point(x: Int(x), y: Int(y))
+//    }
+    func rotateLeft(angle: Int) -> Point {
+        switch angle / 90 {
+        case 1: return Point(x: -y, y: x)
+        case 2: return Point(x: -x, y: -y)
+        case 3: return Point(x: y, y: -x)
+        default: return self
+        }
+    }
+
+    func rotateRight(angle: Int) -> Point {
+        switch angle / 90 {
+        case 1: return Point(x: y, y: -x)
+        case 2: return Point(x: -x, y: -y)
+        case 3: return Point(x: -y, y: x)
+        default: return self
+        }
+    }
 }
 
 public enum Position {
@@ -46,6 +92,30 @@ public enum Position {
         case .bl: return Point(x: -1, y: 1)
         case .b: return Point(x: 0, y: 1)
         case .br: return Point(x: 1, y: 1)
+        }
+    }
+}
+
+public enum Direction {
+    case n, s, e, w
+}
+
+public extension Direction {
+    func rotateLeft() -> Direction {
+        switch self {
+        case .n: return .w
+        case .s: return .e
+        case .e: return .n
+        case .w: return .s
+        }
+    }
+    
+    func rotateRight() -> Direction {
+        switch self {
+        case .n: return .e
+        case .s: return .w
+        case .e: return .s
+        case .w: return .n
         }
     }
 }
