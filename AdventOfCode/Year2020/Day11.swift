@@ -54,23 +54,33 @@ public struct Day11 {
         return output
     }
     
-    let positions: [Position] = [.tl, .t, .tr, .l, .r, .bl, .b, .br]
+    let points: [Point] = [
+        Point(x: -1, y: -1),
+        Point(x: 0, y: -1),
+        Point(x: 1, y: -1),
+        Point(x: -1, y: 0),
+        Point(x: 1, y: 0),
+        Point(x: -1, y: 1),
+        Point(x: 0, y: 1),
+        Point(x: 1, y: 1),
+    ]
     func countOccupied_part1(_ point: Point, max: Point, input: [[Character]]) -> Int {
-        return positions
-            .compactMap({ point.adjacent($0, .zero, max) })
-            .map({ input[$0.y][$0.x] == "#" ? 1 : 0 })
-            .reduce(0, +)
+        return points
+            .map { point + $0 }
+            .filter { $0.isValid(max: max) }
+            .filter { input[$0.y][$0.x] == "#" }
+            .count
     }
     
     func countOccupied_part2(_ point: Point, max: Point, input: [[Character]]) -> Int {
         var count = 0
-        outerLoop: for position in positions {
+        outerLoop: for position in points {
             var exit = false
             var pos = point
             while !exit {
-                if let p = pos.adjacent(position, .zero, max) {
-                    pos = p
-                    let value = input[p.y][p.x]
+                pos = pos + position
+                if pos.isValid(max: max) {
+                    let value = input[pos.y][pos.x]
                     if value == "#" {
                         count += 1
                         exit = true

@@ -62,10 +62,10 @@ public struct Day11_v3 {
     ]
     func countOccupied_part1(_ point: Point, max: Point, input: [String]) -> Int {
         return points
-            .compactMap({ point + $0 })
+            .map({ point + $0 })
             .filter { $0.isValid(max: max) }
-            .map({ input[$0.y][$0.x] == "#" ? 1 : 0 })
-            .reduce(0, +)
+            .filter({ input[$0.y][$0.x] == "#" })
+            .count
     }
 
     func countOccupied_part2(_ point: Point, max: Point, input: [String]) -> Int {
@@ -74,10 +74,9 @@ public struct Day11_v3 {
             var exit = false
             var pos = point
             while !exit {
-                let p = pos + position
-                if p.isValid(max: max) {
-                    pos = p
-                    let value = input[p.y][p.x]
+                pos = pos + position
+                if pos.isValid(max: max) {
+                    let value = input[pos.y][pos.x]
                     if value == "#" {
                         count += 1
                         exit = true
