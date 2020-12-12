@@ -92,6 +92,20 @@ public extension Point {
     }
 }
 
+public extension Point {
+    static let adjacentPoints: [Point] = [
+        Point(x: -1, y: -1),
+        Point(x: 0, y: -1),
+        Point(x: 1, y: -1),
+        Point(x: -1, y: 0),
+        Point(x: 1, y: 0),
+        Point(x: -1, y: 1),
+        Point(x: 0, y: 1),
+        Point(x: 1, y: 1),
+    ]
+
+}
+
 public enum Position {
     case tl, t, tr
     case l, m, r

@@ -1,52 +1,48 @@
 import Foundation
 import StandardLibraries
 
-public class Day11 {
-    public func part1(_ input: [[Character]]) -> Int {
+public class Day11_v4 {
+    public enum Option: Character {
+        case emptySeat = "L", occupiedSeat = "#", floor = "."
+    }
+    
+    public func part1(_ input: [[Option]]) -> Int {
         return calculate(input, visibleSeats: 4, buildAdjacent: findAdjacent_part1)
     }
     
-    public func part2(_ input: [[Character]]) -> Int {
+    public func part2(_ input: [[Option]]) -> Int {
         return calculate(input, visibleSeats: 5, buildAdjacent: findAdjacent_part2)
     }
     
-    func calculate(_ input: [[Character]], visibleSeats: Int, buildAdjacent: (Point, [[Character]]) -> Void) -> Int {
+    func calculate(_ input: [[Option]], visibleSeats: Int, buildAdjacent: (Point, [[Option]]) -> Void) -> Int {
         let max = Point(x: input[0].count, y: input.count)
         buildAdjacent(max, input)
         var previous = input
         var isSame = true
-        var count = 0
         while isSame {
             let updated = step(previous, visibleSeats: visibleSeats, max: max)
             isSame = updated != previous
             previous = updated
-            count += 1
         }
         
         return previous
-            .compactMap({ $0.compactMap({ $0 == "#" ? 1 : 0 }).reduce(0, +) })
+            .compactMap({ $0.compactMap({ $0 == .occupiedSeat ? 1 : 0 }).reduce(0, +) })
             .reduce(0, +)
     }
 
-    func draw(_ input: [[Character]]) {
-        input.forEach {
-            print($0.map { String($0) }.joined())
-        }
-    }
-    
-    public func step(_ input: [[Character]], visibleSeats: Int = 4, max: Point) -> [[Character]] {
+    public func step(_ input: [[Option]], visibleSeats: Int = 4, max: Point) -> [[Option]] {
         var output = input
         
         for y in 0..<max.y {
             for x in 0..<max.x {
                 let point = Point(x: x, y: y)
                 let value = input[y][x]
-                guard value != "." else { continue }
+                guard value != .floor else { continue }
                 let count = countOccupied(point, input: input)
-                if value == "L", count == 0 {
-                    output[y][x] = "#"
-                } else if value == "#", count >= visibleSeats {
-                    output[y][x] = "L"
+                if value == .emptySeat, count == 0 {
+                    output[y][x] = .occupiedSeat
+                } else if value == .occupiedSeat, count >= visibleSeats {
+                    output[y][x] = .emptySeat
                 }
             }
         }
@@ -55,7 +51,7 @@ public class Day11 {
     }
 
     var adjacent = [Point:[Point]]()
-    func findAdjacent_part1(max: Point, input: [[Character]]) {
+    func findAdjacent_part1(max: Point, input: [[Option]]) {
         let points = Point.adjacentPoints
         for y in 0..<max.y {
             for x in 0..<max.x {
@@ -67,7 +63,7 @@ public class Day11 {
         }
     }
     
-    func findAdjacent_part2(max: Point, input: [[Character]]) {
+    func findAdjacent_part2(max: Point, input: [[Option]]) {
         let points = Point.adjacentPoints
         for y in 0..<max.y {
             for x in 0..<max.x {
@@ -82,7 +78,7 @@ public class Day11 {
                             exit = true
                             continue outerLoop
                         }
-                        if input[pos.y][pos.x] != "." {
+                        if input[pos.y][pos.x] != .floor {
                             validPoints.append(pos)
                             exit = true
                         }
@@ -94,7 +90,7 @@ public class Day11 {
         }
     }
     
-    func countOccupied(_ point: Point, input: [[Character]]) -> Int {
-        return adjacent[point]!.filter { input[$0.y][$0.x] == "#" }.count
+    func countOccupied(_ point: Point, input: [[Option]]) -> Int {
+        return adjacent[point]!.filter { input[$0.y][$0.x] == .occupiedSeat }.count
     }
 }
