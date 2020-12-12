@@ -2,6 +2,8 @@ import Foundation
 import StandardLibraries
 
 public class Day11 {
+    public init() {}
+    
     public func part1(_ input: [[Character]]) -> Int {
         return calculate(input, visibleSeats: 4, buildAdjacent: findAdjacent_part1)
     }

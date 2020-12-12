@@ -2,6 +2,8 @@ import Foundation
 import StandardLibraries
 
 public class Day11_v4 {
+    public init() {}
+    
     public enum Option: Character {
         case emptySeat = "L", occupiedSeat = "#", floor = "."
     }

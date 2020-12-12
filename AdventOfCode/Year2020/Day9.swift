@@ -1,6 +1,8 @@
 import Foundation
 
 public struct Day9 {
+    public init() {}
+    
     public func part1(_ input: [Int], step: Int = 25) -> Int {
         for i in step..<input.count {
             let previousStep = Set(input[i-step..<i])

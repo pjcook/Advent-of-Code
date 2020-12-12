@@ -2,7 +2,14 @@ import Foundation
 import StandardLibraries
 
 public struct Day3 {
+    public init() {}
+    
     public struct Traversal {
+        public init(right: Int, down: Int) {
+            self.right = right
+            self.down = down
+        }
+        
         let right: Int
         let down: Int
     }

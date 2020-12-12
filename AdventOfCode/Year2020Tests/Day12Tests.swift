@@ -1,17 +1,35 @@
 import XCTest
 import InputReader
-@testable import Year2020
+import Year2020
 
 class Day12Tests: XCTestCase {
     let input = Input("Day12.input", Year2020.bundle).lines
     let day = Day12()
 
     func test_part1() {
+        measure {
         XCTAssertEqual(1319, day.part1(input))
+        }
     }
     
     func test_part2() {
+        measure {
         XCTAssertEqual(62434, day.part2(input))
+        }
+    }
+    
+    func test_part1_v2() {
+        measure {
+        let day = Day12_v2()
+        XCTAssertEqual(1319, day.part1(input))
+        }
+    }
+    
+    func test_part2_v2() {
+        measure {
+        let day = Day12_v2()
+        XCTAssertEqual(62434, day.part2(input))
+        }
     }
     
     func test_part1_example() {

@@ -1,6 +1,8 @@
 import Foundation
 
 public struct Day2 {
+    public init() {}
+    
     public struct PasswordItem {
         let min: Int
         let max: Int

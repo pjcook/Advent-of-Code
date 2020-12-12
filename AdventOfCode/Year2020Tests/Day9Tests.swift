@@ -1,6 +1,6 @@
 import XCTest
 import InputReader
-@testable import Year2020
+import Year2020
 
 class Day9Tests: XCTestCase {
     let input = Input("Day9.input", Year2020.bundle)

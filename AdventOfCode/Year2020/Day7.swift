@@ -1,6 +1,8 @@
 import Foundation
 
 public struct Day7 {
+    public init() {}
+    
     public func part1(_ input: [String], color: String = "shiny gold") -> Int {
         let rules = Set<Rule>(parse(input).filter { !$0.contents.isEmpty })
         return rules

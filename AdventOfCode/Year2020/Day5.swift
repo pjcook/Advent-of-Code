@@ -1,6 +1,8 @@
 import Foundation
 
 public struct Day5 {
+    public init() {}
+    
     public static func parse(_ input: [String], rows: Int = 128, columns: Int = 8) -> [Int] {
         return input
             .map {

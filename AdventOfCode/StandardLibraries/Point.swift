@@ -90,6 +90,24 @@ public extension Point {
         default: return self
         }
     }
+    
+    func rotateLeft(times: Int) -> Point {
+        switch times {
+        case 1: return Point(x: -y, y: x)
+        case 2: return Point(x: -x, y: -y)
+        case 3: return Point(x: y, y: -x)
+        default: return self
+        }
+    }
+
+    func rotateRight(times: Int) -> Point {
+        switch times {
+        case 1: return Point(x: y, y: -x)
+        case 2: return Point(x: -x, y: -y)
+        case 3: return Point(x: -y, y: x)
+        default: return self
+        }
+    }
 }
 
 public extension Point {

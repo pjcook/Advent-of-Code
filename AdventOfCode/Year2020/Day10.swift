@@ -2,6 +2,8 @@ import Foundation
 import StandardLibraries
 
 public struct Day10 {
+    public init() {}
+    
     public func part1(_ input: [Int]) -> Int {
         var input = input, count1 = 0, count3 = 1, previous = 0
         while !input.isEmpty {

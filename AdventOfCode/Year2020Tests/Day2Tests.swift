@@ -1,6 +1,6 @@
 import XCTest
 import InputReader
-@testable import Year2020
+import Year2020
 
 class Day2Tests: XCTestCase {
     let input = Input("Day2.input", Year2020.bundle).lines.compactMap(Day2.PasswordItem.init)

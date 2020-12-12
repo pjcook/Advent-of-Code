@@ -1,6 +1,8 @@
 import Foundation
 
 public struct Day6 {
+    public init() {}
+    
     public static func count(input: [String], reduce: (_ input: Array<String>.SubSequence) -> Int) -> Int {
         return input
             .split(whereSeparator: { $0.isEmpty })

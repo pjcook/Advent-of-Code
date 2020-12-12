@@ -1,6 +1,6 @@
 import Foundation
 
-public enum Day1 {
+public enum Day1 {    
     public static func findMatch(input: [Int], value: Int) -> Int {
         var pt1 = 0
         

@@ -1,6 +1,8 @@
 import Foundation
 
 public struct Day8 {
+    public init() {}
+    
     /*
      Instructions: acc, jmp, nop
      acc increases or decreases a single global value called the accumulator by the value given in the argument. For example, acc +7 would increase the accumulator by 7. The accumulator starts at 0. After an acc instruction, the instruction immediately below it is executed next.

@@ -2,6 +2,8 @@ import Foundation
 import StandardLibraries
 
 public struct Day11_v3 {
+    public init() {}
+    
     public func part1(_ input: [String]) -> Int {
         return calculate(input, visibleSeats: 4, useFilter: true, countOccupied: countOccupied_part1)
     }
