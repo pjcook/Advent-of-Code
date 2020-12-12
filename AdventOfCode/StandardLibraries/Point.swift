@@ -13,6 +13,10 @@ public struct Point: Hashable {
 }
 
 public extension Point {
+    var manhattanDistance: Int {
+        abs(x) + abs(y)
+    }
+    
     func adjacent(_ position: Position, _ min: Point, _ max: Point) -> Point? {
         let point = self + position.point
         guard point.x >= min.x && point.x < max.x && point.y >= min.y && point.y < max.y else {
@@ -31,6 +35,18 @@ public extension Point {
     
     static func - (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+    }
+    
+    static func / (lhs: Point, rhs: Point) -> Point {
+        return Point(x: lhs.x / rhs.x, y: lhs.y / rhs.y)
+    }
+    
+    static func * (lhs: Point, rhs: Point) -> Point {
+        return Point(x: lhs.x * rhs.x, y: lhs.y * rhs.y)
+    }
+    
+    static func * (lhs: Point, rhs: Int) -> Point {
+        return Point(x: lhs.x * rhs, y: lhs.y * rhs)
     }
     
     func add(direction: Direction, distance: Int) -> Point {
@@ -96,8 +112,8 @@ public enum Position {
     }
 }
 
-public enum Direction {
-    case n, s, e, w
+public enum Direction: Int {
+    case n = 0, e = 1, s = 2, w = 3
 }
 
 public extension Direction {
@@ -117,5 +133,14 @@ public extension Direction {
         case .e: return .s
         case .w: return .n
         }
+    }
+    
+    func rotateLeft(times: Int) -> Direction {
+        print((4 + (rawValue - (times % 4))) % 4)
+        return Direction(rawValue: (4 + (rawValue - (times % 4))) % 4) ?? self
+    }
+    
+    func rotateRight(times: Int) -> Direction {
+        return Direction(rawValue: (rawValue + times) % 4) ?? self
     }
 }

@@ -16,23 +16,14 @@ public struct Day12 {
             case "S": point = point.add(direction: .s, distance: value)
             case "E": point = point.add(direction: .e, distance: value)
             case "W": point = point.add(direction: .w, distance: value)
-                
-            case "L":
-                for _ in 0..<value / 90 {
-                    direction = direction.rotateLeft()
-                }
-                
-            case "R":
-                for _ in 0..<value / 90 {
-                    direction = direction.rotateRight()
-                }
-                
+            case "L": direction = direction.rotateLeft(times: value / 90)
+            case "R": direction = direction.rotateRight(times: value / 90)
             case "F": point = point.add(direction: direction, distance: value)
             default: break
             }
         }
         
-        return abs(point.x) + abs(point.y)
+        return point.manhattanDistance
     }
     
     public func part2(_ input: [String]) -> Int {
@@ -51,16 +42,11 @@ public struct Day12 {
             case "W": wayPoint = wayPoint.add(direction: .w, distance: value)
             case "L": wayPoint = wayPoint.rotateLeft(angle: value)
             case "R": wayPoint = wayPoint.rotateRight(angle: value)
-
-            case "F":
-                for _ in 0..<value {
-                    point = point + wayPoint
-                }
-                
+            case "F": point = point + wayPoint * value
             default: break
             }
         }
         
-        return abs(point.x) + abs(point.y)
+        return point.manhattanDistance
     }
 }
