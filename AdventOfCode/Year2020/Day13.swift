@@ -18,11 +18,11 @@ public struct Day13 {
     
     public struct Bus {
         public let id: Int
-        public let start: Int
+        public let startAddition: Int
         public init?(input: (offset: Int, element: String)) {
             guard let num = Int(input.1) else { return nil }
             self.id = num
-            self.start = input.0
+            self.startAddition = input.0
         }
     }
     
@@ -31,14 +31,14 @@ public struct Day13 {
         let busses = input.enumerated().compactMap(Bus.init)
 
         var runningTime = busses.first!.id
-        var product = 1
+        var strideByValue = 1
         for bus in busses {
-            let strides = stride(from: runningTime, to: .max, by: product)
+            let strides = stride(from: runningTime, to: .max, by: strideByValue)
             runningTime = strides
                 .first(where: { time in
-                    return (time + bus.start).isMultiple(of: bus.id)
+                    return (time + bus.startAddition).isMultiple(of: bus.id)
                 })!
-            product *= bus.id
+            strideByValue *= bus.id
         }
 
         return runningTime
