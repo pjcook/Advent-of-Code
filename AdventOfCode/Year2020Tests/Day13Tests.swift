@@ -7,10 +7,18 @@ class Day13Tests: XCTestCase {
     let day = Day13()
 
     func test_part1() {
-        XCTAssertEqual(0, day.part1(input))
+        XCTAssertEqual(2995, day.part1(input))
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+        XCTAssertEqual(1012171816131114, day.part2(input))
+    }
+    
+    func test_part2_example() {
+        let input = """
+        939
+        7,13,x,x,59,x,31,19
+        """.lines
+        XCTAssertEqual(1068781, day.part2(input))
     }
 }
