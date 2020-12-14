@@ -13,6 +13,10 @@ public extension String {
             replaceSubrange(lower...lower, with: newValue)
         }
     }
+    
+    subscript (i: Int, l: Int) -> String {
+        return self[i ..< i + l]
+    }
 
     func substring(fromIndex: Int) -> String {
         return self[min(fromIndex, length) ..< length]
