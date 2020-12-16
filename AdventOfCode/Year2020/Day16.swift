@@ -31,7 +31,7 @@ public struct Day16 {
     
     public struct Parser {
         public init() {}
-        public let fieldRegex = try! RegularExpression(pattern: #"^([a-z]+.[a-z]+): ([0-9]+)-([0-9]+) or ([0-9]+)-([0-9]+)$"#)
+        public let fieldRegex = try! RegularExpression(pattern: #"^([a-z ]+): ([0-9]+)-([0-9]+) or ([0-9]+)-([0-9]+)$"#)
         
         public func parse(_ input: [String]) throws -> ([Instruction], [Ticket]) {
             var instructions = [Instruction]()

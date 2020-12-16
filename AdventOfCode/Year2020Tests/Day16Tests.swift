@@ -8,13 +8,17 @@ class Day16Tests: XCTestCase {
     let parser = Day16.Parser()
 
     func test_part1() {
+        measure {
         let results = try! parser.parse(input)
         XCTAssertEqual(23115, day.part1(instructions: results.0, tickets: results.1))
+        }
     }
     
     func test_part2() {
+        measure {
         let results = try! parser.parse(input)
         XCTAssertEqual(239727793813, day.part2(instructions: results.0, tickets: results.1))
+        }
     }
     
     func test_parsingWholeFile() throws {
