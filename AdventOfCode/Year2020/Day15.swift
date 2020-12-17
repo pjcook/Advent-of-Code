@@ -26,23 +26,4 @@ public struct Day15 {
         
         return lastSpoken
     }
-//    
-//    public func solve2(_ input: [Int], maxTime: Int = 2020) -> Int {
-//        var numbers = input
-//        numbers.append(0)
-//        
-//        while numbers.count < maxTime {
-//            let lastSpoken = numbers.last!
-//            var spoken = 0
-//            for i in (0..<numbers.count-1).reversed() {
-//                if numbers[i] == lastSpoken {
-//                    spoken = numbers.count - (i + 1)
-//                    break
-//                }
-//            }
-//            numbers.append(spoken)
-//            print(numbers.count, spoken)
-//        }
-//        return numbers.last!
-//    }
 }
