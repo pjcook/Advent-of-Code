@@ -57,22 +57,6 @@ public extension Point {
         case .w: return Point(x: x - distance, y: y)
         }
     }
-    
-//    func rotateLeft(angle: Double) -> Point {
-//        let theta = tan(Double(y / x)) - angle
-//        let radius = sqrt(Double(x * x + y * y))
-//        let x = radius * cos(theta)
-//        let y = radius * sin(theta)
-//        return Point(x: Int(x), y: Int(y))
-//    }
-//
-//    func rotateRight(angle: Double) -> Point {
-//        let theta = tan(Double(y / x)) + angle
-//        let radius = sqrt(Double(x * x + y * y))
-//        let x = radius * cos(theta)
-//        let y = radius * sin(theta)
-//        return Point(x: Int(x), y: Int(y))
-//    }
     func rotateLeft(angle: Int) -> Point {
         switch angle / 90 {
         case 1: return Point(x: -y, y: x)
