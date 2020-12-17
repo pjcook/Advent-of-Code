@@ -58,7 +58,7 @@ public class Day11 {
 
     var adjacent = [Point:[Point]]()
     func findAdjacent_part1(max: Point, input: [[Character]]) {
-        let points = Point.adjacentPoints
+        let points = Point.adjacent
         for y in 0..<max.y {
             for x in 0..<max.x {
                 let point = Point(x: x, y: y)
@@ -70,7 +70,7 @@ public class Day11 {
     }
     
     func findAdjacent_part2(max: Point, input: [[Character]]) {
-        let points = Point.adjacentPoints
+        let points = Point.adjacent
         for y in 0..<max.y {
             for x in 0..<max.x {
                 var validPoints = [Point]()

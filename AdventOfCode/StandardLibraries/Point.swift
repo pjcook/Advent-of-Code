@@ -65,7 +65,7 @@ public extension Point {
         default: return self
         }
     }
-
+    
     func rotateRight(angle: Int) -> Point {
         switch angle / 90 {
         case 1: return Point(x: y, y: -x)
@@ -83,7 +83,7 @@ public extension Point {
         default: return self
         }
     }
-
+    
     func rotateRight(times: Int) -> Point {
         switch times {
         case 1: return Point(x: y, y: -x)
@@ -95,17 +95,16 @@ public extension Point {
 }
 
 public extension Point {
-    static let adjacentPoints: [Point] = [
-        Point(x: -1, y: -1),
-        Point(x: 0, y: -1),
-        Point(x: 1, y: -1),
-        Point(x: -1, y: 0),
-        Point(x: 1, y: 0),
-        Point(x: -1, y: 1),
-        Point(x: 0, y: 1),
-        Point(x: 1, y: 1),
-    ]
-
+    static var adjacent: Set<Point> = {
+        var items = Set<Point>()
+        for y in (-1...1) {
+            for x in (-1...1) {
+                items.insert(Point(x: x, y: y))
+            }
+        }
+        items.remove(.zero)
+        return items
+    }()
 }
 
 public enum Position {

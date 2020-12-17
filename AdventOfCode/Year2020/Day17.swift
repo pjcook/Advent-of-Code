@@ -69,6 +69,12 @@ public struct Day17 {
     }
 }
 
+extension Vector {
+    func findActive(_ input: [Vector: Day17.State]) -> Int {
+        return Vector.adjacent.filter { input[self + $0] == .active }.count
+    }
+}
+
 extension Day17 {
     public func draw(_ input: [Vector: State], length: Int, cycle: Int) {
         print("Cycle", cycle)
@@ -85,12 +91,6 @@ extension Day17 {
             }
             print("")
         }
-    }
-}
-
-extension Vector {
-    func findActive(_ input: [Vector: Day17.State]) -> Int {
-        return Vector.adjacent.filter { input[self + $0] == .active }.count
     }
 }
 

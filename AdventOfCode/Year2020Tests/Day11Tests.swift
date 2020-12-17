@@ -113,11 +113,11 @@ class Day11Tests: XCTestCase {
         XCTAssertEqual(37, day.part1(input))
     }
     
-    func test_part1_v3() {
-        let day = Day11_v3()
-        let input = Input("Day11.input", Year2020.bundle).lines
-        XCTAssertEqual(2243, day.part1(input))
-    }
+//    func test_part1_v3() {
+//        let day = Day11_v3()
+//        let input = Input("Day11.input", Year2020.bundle).lines
+//        XCTAssertEqual(2243, day.part1(input))
+//    }
     
     func test_part2_example_v3() {
         let input = """
@@ -136,11 +136,11 @@ class Day11Tests: XCTestCase {
         XCTAssertEqual(26, day.part2(input))
     }
     
-    func test_part2_v3() {
-        let day = Day11_v3()
-        let input = Input("Day11.input", Year2020.bundle).lines
-        XCTAssertEqual(2027, day.part2(input))
-    }
+//    func test_part2_v3() {
+//        let day = Day11_v3()
+//        let input = Input("Day11.input", Year2020.bundle).lines
+//        XCTAssertEqual(2027, day.part2(input))
+//    }
     
     func test_part1_v4() throws {
         let day = Day11_v4()

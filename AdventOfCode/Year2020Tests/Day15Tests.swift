@@ -15,15 +15,11 @@ class Day15Tests: XCTestCase {
     }
 
 //    func test_part1_v2() {
-//        measure {
 //        XCTAssertEqual(468, day.solve2(input))
-//        }
 //    }
 //    
 //    func test_part2_v2() {
-////        measure {
 //        XCTAssertEqual(1801753, day.solve2(input, maxTime: 30000000))
-////        }
 //    }
 
     func test_part1_example1() {

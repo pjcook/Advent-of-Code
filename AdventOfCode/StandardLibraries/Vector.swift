@@ -23,34 +23,18 @@ public extension Vector {
 }
 
 public extension Vector {
-    static let adjacent: [Vector] = [
-        Vector(x: -1, y: -1, z: -1),
-        Vector(x: 0, y: -1, z: -1),
-        Vector(x: 1, y: -1, z: -1),
-        Vector(x: -1, y: 0, z: -1),
-        Vector(x: 1, y: 0, z: -1),
-        Vector(x: -1, y: 1, z: -1),
-        Vector(x: 0, y: 1, z: -1),
-        Vector(x: 1, y: 1, z: -1),
-        Vector(x: 0, y: 0, z: -1),
-
-        Vector(x: -1, y: -1, z: 0),
-        Vector(x: 0, y: -1, z: 0),
-        Vector(x: 1, y: -1, z: 0),
-        Vector(x: -1, y: 0, z: 0),
-        Vector(x: 1, y: 0, z: 0),
-        Vector(x: -1, y: 1, z: 0),
-        Vector(x: 0, y: 1, z: 0),
-        Vector(x: 1, y: 1, z: 0),
-
-        Vector(x: -1, y: -1, z: 1),
-        Vector(x: 0, y: -1, z: 1),
-        Vector(x: 1, y: -1, z: 1),
-        Vector(x: -1, y: 0, z: 1),
-        Vector(x: 1, y: 0, z: 1),
-        Vector(x: -1, y: 1, z: 1),
-        Vector(x: 0, y: 1, z: 1),
-        Vector(x: 1, y: 1, z: 1),
-        Vector(x: 0, y: 0, z: 1),
-    ]
+    static let zero = Vector(x: 0, y: 0, z: 0)
+    
+    static var adjacent: Set<Vector> = {
+        var items = Set<Vector>()
+            for z in (-1...1) {
+                for y in (-1...1) {
+                    for x in (-1...1) {
+                        items.insert(Vector(x: x, y: y, z: z))
+                    }
+                }
+            }
+        items.remove(.zero)
+        return items
+    }()
 }
