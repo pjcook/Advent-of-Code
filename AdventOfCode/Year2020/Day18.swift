@@ -47,6 +47,14 @@ public struct Day18 {
             return total ?? 0
         }
         
+        private func value(from element: Element) -> Int {
+            switch element {
+            case let .number(value): return value
+            case let .calculation(calculation): return calculation.sum2()
+            default: return 0
+            }
+        }
+
         public func sum2() -> Int {
             // do additions first
             var reduced = [Int]()
@@ -57,47 +65,21 @@ public struct Day18 {
                 
                 if case .operation("+") = element {
                     let last = reduced.removeLast()
-                    switch operation {
-                    case let .number(value): reduced.append(value + last)
-                    case let .calculation(calculation): reduced.append(calculation.sum2() + last)
-                    default: break
-                    }
+                    reduced.append(last + value(from: operation))
                 } else  if case .operation("*") = element {
-                    switch operation {
-                    case let .number(value): reduced.append(value)
-                    case let .calculation(calculation): reduced.append(calculation.sum2())
-                    default: break
-                    }
+                    reduced.append(value(from: operation))
                 } else  if case .operation("+") = operation {
                     let anotherElement = elements[i+2]
+                    reduced.append(value(from: element) + value(from: anotherElement))
                     i += 1
-                    var value1 = 0, value2 = 0
-                    switch element {
-                    case let .number(value): value1 = value
-                    case let .calculation(calculation): value1 = calculation.sum2()
-                    default: break
-                    }
-                    switch anotherElement {
-                    case let .number(value): value2 = value
-                    case let .calculation(calculation): value2 = calculation.sum2()
-                    default: break
-                    }
-                    reduced.append(value1 + value2)
                 } else {
-                    switch element {
-                    case let .number(value): reduced.append(value)
-                    case let .calculation(calculation): reduced.append(calculation.sum2())
-                    default: break
-                    }
+                    reduced.append(value(from: element))
                 }
                 i += 2
             }
+            
             if i < elements.count {
-                switch elements.last {
-                case let .number(value): reduced.append(value)
-                case let .calculation(calculation): reduced.append(calculation.sum2())
-                default: break
-                }
+                reduced.append(value(from: elements.last!))
             }
             
             // handle multiplication
