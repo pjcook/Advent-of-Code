@@ -64,8 +64,7 @@ public struct Day18 {
 
 // MARK: - Part 1
 extension Day18.Calculation {
-    private func process(_ next: Int, total: Int?, lastOperation: Day18.Operator?) -> Int {
-        let total = total ?? 0
+    private func process(_ next: Int, total: Int, lastOperation: Day18.Operator?) -> Int {
         switch lastOperation {
         case .addition:
             return total + next
@@ -77,7 +76,7 @@ extension Day18.Calculation {
     }
 
     public func sum_part1() -> Int {
-        var total: Int?, lastOperation: Day18.Operator?
+        var total: Int = 0, lastOperation: Day18.Operator?
         
         for element in elements {
             switch element {
@@ -93,7 +92,7 @@ extension Day18.Calculation {
             }
         }
         
-        return total ?? 0
+        return total
     }
 }
 
