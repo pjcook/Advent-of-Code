@@ -36,7 +36,7 @@ public struct Day18 {
             let c = input.removeFirst()
             switch c {
             case "+", "*": elements.append(.operation(Operator(rawValue: c)!))
-            case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9": elements.append(.number(Int(String(c))!))
+
             case "(":
                 let calculation = processCalculation(&input)
                 elements.append(.calculation(calculation))
@@ -44,7 +44,10 @@ public struct Day18 {
             case ")":
                 return Calculation(elements: elements)
                 
-            default: break
+            default:
+                if let value = Int(String(c)) {
+                    elements.append(.number(value))
+                }
             }
         }
         
