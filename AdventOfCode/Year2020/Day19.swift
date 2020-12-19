@@ -8,7 +8,6 @@ public class Day19 {
     
     public func part1(rules: [Int: Rule], messages: [String]) -> Int {
         let patterns = Set(buildRule(0, rules: rules))
-        // print(patterns.count) // 2097152
         var count = 0
         for message in messages {
             count += patterns.contains(message) ? 1 : 0
@@ -17,286 +16,34 @@ public class Day19 {
     }
     
     public func part2(rules: [Int: Rule], messages: [String]) -> Int {
-        print(Date(), "Start")
-        var rules2 = rules
-        rules2[500] = .character("x")
-        rules2[501] = .character("y")
-        rules2[8] = .optionalLists([42], [42, 500])
-        rules2[11] = .optionalLists([42, 31], [42, 501, 31])
-        print(Date(), "Build rules")
-        let patterns = Set(buildRule(0, rules: rules2))
+        var count = 0
+        _ = Set(buildRule(0, rules: rules))
+        let rule42 = ruleCache[42]!
+        let rule31 = ruleCache[31]!
+        let patternLength = rule31[0].count
         
-        var basicPatterns = [String]()
-        var patternsX = [String]()
-        var patternsY = [String]()
-        var patternsXY = [String]()
-        var multiPattern = [String]()
-        
-        print(Date(), "Split patterns")
-        for pattern in patterns {
-            var x = 0
-            var y = 0
-            for c in pattern {
-                if c == "x" {
-                    x += 1
-                } else if c == "y" {
-                    y += 1
-                }
-            }
-            switch (x, y) {
-            case (0,0): basicPatterns.append(pattern)
-            case (1,0): patternsX.append(pattern)
-            case (0,1): patternsY.append(pattern)
-            case (1,1): patternsXY.append(pattern)
-            default: multiPattern.append(pattern)
-            }
-        }
-        
-        var matches = [String]()
-        var messages = Set(messages)
-
-        var temp = Set<String>()
-        
-        for pattern in patternsXY {
-            let indexX = pattern.firstIndex(of: "x")!
-            let prefix = pattern.prefix(upTo: indexX)
-
-            let indexY = pattern.firstIndex(of: "y")!
-            let suffix = pattern.suffix(from: pattern.index(indexY, offsetBy: 1))
-
-            let filteredMessages = messages.filter { $0.hasPrefix(prefix) && $0.hasSuffix(suffix) }
-            
-            for message in filteredMessages {
-                temp.insert(message)
-                messages.remove(message)
-            }
-        }
-        
-        for pattern in basicPatterns {
-            let filteredMessages = messages.filter { $0 == pattern }
-            for message in filteredMessages {
-                temp.insert(message)
-                messages.remove(message)
-            }
-        }
-        
-        return temp.count
-        
-        
-        
-        
-        // match basic
-        print(Date(), "Match basic")
-        var maxMessageLength = messages.reduce(0) { $0 > $1.count ? $0 : $1.count }
-        var filteredPatterns = basicPatterns.filter { $0.count < maxMessageLength }
         for message in messages {
-            if filteredPatterns.contains(message) {
-                matches.append(message)
-                messages.remove(message)
+            let originalMessage = message
+            var message = message
+            var count31 = 0
+            while !message.isEmpty, rule31.first(where: { message.hasSuffix($0) }) != nil {
+                message.removeLast(patternLength)
+                count31 += 1
             }
-        }
-        
-        // matchX
-        print(Date(), "Match X")
-        maxMessageLength = messages.reduce(0) { $0 > $1.count ? $0 : $1.count }
-        filteredPatterns = patternsX.filter { $0.count < maxMessageLength }
-
-        for pattern in filteredPatterns {
-            let parts = pattern.components(separatedBy: "x")
-            let filteredMessages = messages.filter { $0.hasPrefix(parts[0]) && $0.hasSuffix(parts[1]) }
-            
-            for message in filteredMessages {
-                var remainder = message
-                remainder.removeFirst(parts[0].count)
-                remainder.removeLast(parts[1].count)
-                if checkRemainder42(remainder) {
-                    matches.append(message)
-                    messages.remove(message)
+                        
+            if message == originalMessage || message.count / patternLength <= count31 {
+                continue
+            }
+            while !message.isEmpty, rule42.first(where: { message.hasPrefix($0) }) != nil {
+                message.removeFirst(patternLength)
+                if message.isEmpty {
+                    count += 1
+                    break
                 }
             }
-            
-            if messages.isEmpty {
-                break
-            }
         }
         
-        // matchY
-        print(Date(), "Build rule 4231")
-        var pattern4231 = [String]()
-        let rule42 = ruleCache[42]!
-        let rule31 = ruleCache[31]!
-        for x in rule42 {
-            for y in rule31 {
-                pattern4231.append(x + y)
-            }
-        }
-        ruleCache[4231] = pattern4231
-        
-        print(Date(), "Match Y")
-        maxMessageLength = messages.reduce(0) { $0 > $1.count ? $0 : $1.count }
-        filteredPatterns = patternsY.filter { $0.count < maxMessageLength }
-        
-        for pattern in filteredPatterns {
-            let parts = pattern.components(separatedBy: "y")
-            let filteredMessages = messages.filter { $0.hasPrefix(parts[0]) && $0.hasSuffix(parts[1]) }
-            
-            for message in filteredMessages {
-                var remainder = message
-                remainder.removeFirst(parts[0].count)
-                remainder.removeLast(parts[1].count)
-                if checkRemainder11(remainder) {
-                    matches.append(message)
-                    messages.remove(message)
-                }
-            }
-            
-            if messages.isEmpty {
-                break
-            }
-        }
-        
-        // matchXY
-        print(Date(), "Match XY")
-        maxMessageLength = messages.reduce(0) { $0 > $1.count ? $0 : $1.count }
-        filteredPatterns = patternsXY.filter { $0.count < maxMessageLength }
-        
-        for pattern in filteredPatterns {
-            let indexX = pattern.firstIndex(of: "x")!
-            let prefix = pattern.prefix(upTo: indexX)
-
-            let indexY = pattern.firstIndex(of: "y")!
-            let suffix = pattern.suffix(from: pattern.index(indexY, offsetBy: 1))
-
-            let filteredMessages = messages.filter { $0.hasPrefix(prefix) && $0.hasSuffix(suffix) }
-            
-            for message in filteredMessages {
-                var remainder = message
-                remainder.removeFirst(prefix.count)
-                remainder.removeLast(suffix.count)
-                let substring = pattern[pattern.index(indexX, offsetBy: 1)..<indexY]
-                let parts = remainder.components(separatedBy: substring)
-
-                if
-                    parts.count == 2,
-                    !parts[0].isEmpty,
-                    !parts[1].isEmpty,
-                    checkRemainder42(parts[0]),
-                    checkRemainder11(parts[1])
-                {
-                    matches.append(message)
-                    messages.remove(message)
-                }
-            }
-            
-            if messages.isEmpty {
-                break
-            }
-        }
-        
-        print(matches)
-        return matches.count
-    }
-    
-    var cacheRemainder42 = [String: Bool]()
-    private func checkRemainder42(_ remainder: String) -> Bool {
-        if let cache = cacheRemainder42[remainder] {
-            return cache
-        }
-
-        let originalRemainder = remainder
-        let rule42 = Set(ruleCache[42]!)
-        if rule42.contains(remainder) {
-            cacheRemainder42[originalRemainder] = true
-            return true
-        }
-        
-        var remainder = remainder
-        while !remainder.isEmpty {
-            var matched = false
-            for pattern in rule42 {
-                if remainder.hasPrefix(pattern) {
-                    remainder.removeFirst(pattern.count)
-                    if remainder.isEmpty {
-                        cacheRemainder42[originalRemainder] = true
-                        return true
-                    } else {
-                        matched = true
-                        continue
-                    }
-                }
-            }
-            if remainder.isEmpty {
-                cacheRemainder42[originalRemainder] = true
-                return true
-            }
-            if !matched {
-                cacheRemainder42[originalRemainder] = false
-                return false
-            }
-        }
-        cacheRemainder42[originalRemainder] = false
-        return false
-    }
-    
-    var cacheRemainder11 = [String: Bool]()
-    private func checkRemainder11(_ remainder: String) -> Bool {
-        if let cache = cacheRemainder11[remainder] {
-            return cache
-        }
-        
-        let originalRemainder = remainder
-        let rule42 = ruleCache[42]!
-        let rule31 = ruleCache[31]!
-        let rule4231 = ruleCache[4231]!
-        var remainder = remainder
-        mainLoop: while !remainder.isEmpty {
-            var matched = false
-
-            // match left rule
-            for pattern in rule4231 {
-                if remainder.hasPrefix(pattern) {
-                    remainder.removeFirst(pattern.count)
-                    if remainder.isEmpty {
-                        cacheRemainder11[originalRemainder] = true
-                        return true
-                    } else {
-                        matched = true
-                        continue mainLoop
-                    }
-                }
-            }
-            
-            // match right rule
-            outerLoop: for left in rule42 {
-                for right in rule31 {
-                    guard
-                        remainder.count >= left.count + right.count,
-                        remainder.hasPrefix(left),
-                        remainder.hasSuffix(right)
-                    else { continue }
-                    
-                    var check = remainder
-                    check.removeFirst(left.count)
-                    check.removeLast(right.count)
-                    if checkRemainder11(check) {
-                        remainder.removeFirst(check.count)
-                        matched = true
-                        break outerLoop
-                    }
-                }
-            }
-            
-            if remainder.isEmpty {
-                cacheRemainder11[originalRemainder] = true
-                return true
-            }
-            if !matched {
-                cacheRemainder11[originalRemainder] = false
-                return false
-            }
-        }
-        cacheRemainder11[originalRemainder] = false
-        return false
+        return count
     }
 }
 

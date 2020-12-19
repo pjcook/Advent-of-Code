@@ -13,8 +13,7 @@ class Day19Tests: XCTestCase {
     
     func test_part2() {
         let parsed = try! day.parse(input)
-        // between 322 and 392
-        XCTAssertEqual(134, day.part2(rules: parsed.0, messages: parsed.1))
+        XCTAssertEqual(377, day.part2(rules: parsed.0, messages: parsed.1))
     }
     
     func test_part1_example() throws {
@@ -70,7 +69,6 @@ class Day19Tests: XCTestCase {
         7: 14 5 | 1 21
         24: 14 1
 
-        abbbbbabbbaaaababbaabbbbabababbbabbbbbbabaaaa
         bbabbbbaabaabba
         babbbbaabbbbbabbbbbbaabaaabaaa
         aaabbbbbbaaaabaababaabababbabaaabbababababaaa
@@ -85,6 +83,7 @@ class Day19Tests: XCTestCase {
         aaaabbaabbaaaaaaabbbabbbaaabbaabaaa
         babaaabbbaaabaababbaabababaaab
         aabbbbbaabbbaaaaaabbbbbababaaaaabbaaabba
+        abbbbbabbbaaaababbaabbbbabababbbabbbbbbabaaaa
         """.lines
         let parsed = try day.parse(input)
         XCTAssertEqual(12, day.part2(rules: parsed.0, messages: parsed.1))
