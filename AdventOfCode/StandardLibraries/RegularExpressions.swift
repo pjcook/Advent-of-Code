@@ -13,7 +13,7 @@ public struct RegularExpression {
         guard
             let result = expression.firstMatch(in: string, options: [], range: range)
         else {
-            throw NoMatch()
+            throw NoMatch(input: string)
         }
         return Match(string: string, result: result)
     }
@@ -33,7 +33,7 @@ public struct RegularExpression {
 
 // MARK: - Errors
 extension RegularExpression {
-    struct NoMatch: Error {}
+    struct NoMatch: Error { let input: String }
     struct OutOfBounds: Error {}
     struct NotAnInteger: Error {}
 }
@@ -84,7 +84,7 @@ extension RegularExpression.Match {
         range = Range(result.range, in: string)!
         captureGroups = (1..<result.numberOfRanges)
             .map { result.range(at: $0) }
-            .map { Range($0, in: string)! }
+            .compactMap { Range($0, in: string) }
             .map { RegularExpression.CaptureGroup(string: string, range: $0) }
     }
 }
