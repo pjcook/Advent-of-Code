@@ -175,4 +175,11 @@ class Day20Tests: XCTestCase {
         let match = try seaMonster.regex.match(input)
         XCTAssertEqual("#.##.###.#.##.##.###", try match.string(at: 0))
     }
+    
+    func test_regex() throws {
+        let input = "#.....#...###....##....####..#.#..##.##.......#.#.#..###...##...####......#.....##.....#.#..#..."
+        let seaMonster = Day20.SeaMonster()
+        let match = seaMonster.regex.matches(in: input)
+        XCTAssertEqual(2, match.count)
+    }
 }

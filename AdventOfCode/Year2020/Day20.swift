@@ -106,12 +106,12 @@ public struct Day20 {
             }
         }
         
-        var largeGrid = constructBigGrid(tiles, size: size)
+//        var largeGrid = constructBigGrid(tiles, size: size)
 //        // to reverse the grid use this loop
 //        for y in 0..<largeGrid.count {
 //            largeGrid[y] = largeGrid[y].reversed()
 //        }
-        draw(largeGrid)
+//        draw(largeGrid)
         
         // Trim tile edges
         // no longer needed, each tile has an edgeless property
@@ -130,23 +130,22 @@ public struct Day20 {
         for _ in 0..<4 {
             for y in 0..<grid.count {
                 let line = grid[y].joined()
-                if let match = try? monster.regex.match(line) {
-                    for captureGroup in match.captureGroups {
-                        let x = captureGroup.range.lowerBound.utf16Offset(in: line)
-                        let tail = Point(x: x, y: y)
-                        var points = monster.abovePoints(tailStart: tail)
-                        points += monster.belowPoints(tailStart: tail)
-                        var count = 0
-                        for point in points {
-                            if grid[point.y][point.x] == "#" {
-                                count += 1
-                            } else {
-                                break
-                            }
+                let match = monster.regex.matches(in: line)
+                for match in match {
+                    let x = match.range.lowerBound.utf16Offset(in: line)
+                    let tail = Point(x: x, y: y)
+                    var points = monster.abovePoints(tailStart: tail)
+                    points += monster.belowPoints(tailStart: tail)
+                    var count = 0
+                    for point in points {
+                        if grid[point.y][point.x] == "#" {
+                            count += 1
+                        } else {
+                            break
                         }
-                        if points.count == count {
-                            matches += 1
-                        }
+                    }
+                    if points.count == count {
+                        matches += 1
                     }
                 }
             }
@@ -165,8 +164,8 @@ public struct Day20 {
                 for y in 0..<grid.count {
                     let line = grid[y].joined()
                     if let match = try? monster.regex.match(line) {
-                        for captureGroup in match.captureGroups {
-                            let x = captureGroup.range.lowerBound.utf16Offset(in: line)
+                        for match in match.captureGroups {
+                            let x = match.range.lowerBound.utf16Offset(in: line)
                             let tail = Point(x: x, y: y)
                             var points = monster.abovePoints(tailStart: tail)
                             points += monster.belowPoints(tailStart: tail)
@@ -192,39 +191,38 @@ public struct Day20 {
             }
         }
         
-        let hashesBeforeSearch = grid.reduce(0) {
-            $0 + ($1.reduce(0) { $0 + ($1 == "#" ? 1 : 0) })
-        }
+//        let hashesBeforeSearch = grid.reduce(0) {
+//            $0 + ($1.reduce(0) { $0 + ($1 == "#" ? 1 : 0) })
+//        }
         
         // Search for sea monsters
-        draw(grid)
+//        draw(grid)
         for y in 0..<grid.count {
             let line = grid[y].joined()
-            if let match = try? monster.regex.match(line) {
-                for captureGroup in match.captureGroups {
-                    let x = captureGroup.range.lowerBound.utf16Offset(in: line)
-                    let tail = Point(x: x, y: y)
-                    var points = monster.abovePoints(tailStart: tail)
-                    points += monster.belowPoints(tailStart: tail)
-                    var count = 0
-                    for point in points {
-                        if grid[point.y][point.x] == "#" {
-                            count += 1
-                        } else {
-                            break
-                        }
+            let match = monster.regex.matches(in: line)
+            for match in match {
+                let x = match.range.lowerBound.utf16Offset(in: line)
+                let tail = Point(x: x, y: y)
+                var points = monster.abovePoints(tailStart: tail)
+                points += monster.belowPoints(tailStart: tail)
+                var count = 0
+                for point in points {
+                    if grid[point.y][point.x] == "#" {
+                        count += 1
+                    } else {
+                        break
                     }
-                    if points.count == count {
-                        let monsterPoints = monster.allPoints(tailStart: tail)
-                        for point in monsterPoints {
-                            grid[point.y][point.x] = "O"
-                        }
+                }
+                if points.count == count {
+                    let monsterPoints = monster.allPoints(tailStart: tail)
+                    for point in monsterPoints {
+                        grid[point.y][point.x] = "O"
                     }
                 }
             }
         }
         
-        draw(grid)
+//        draw(grid)
                 
         return grid.reduce(0) {
             $0 + ($1.reduce(0) { $0 + ($1 == "#" ? 1 : 0) })
@@ -237,7 +235,7 @@ public extension Day20 {
         public let above  = "                  #"
         public let search = "#    ##    ##    ###"
         public let below  = " #  #  #  #  #  #"
-        public let regex = try! RegularExpression(pattern: #"(#....##....##....###*)"#)
+        public let regex = try! RegularExpression(pattern: "(#....##....##....###)+")
         
         public init() {}
         
@@ -298,39 +296,6 @@ public extension Day20 {
         }
         
         return output
-    }
-    
-    func countSeaMonsters(_ grid: [[String]]) -> Int {
-        var grid = grid
-        let monster = SeaMonster()
-        for y in 1..<grid.count-1 {
-            let line = grid[y].joined()
-            if
-                let match = try? monster.regex.match(line),
-                let x = match.captureGroups.first?.range.lowerBound.utf16Offset(in: line)
-            {
-                let tail = Point(x: x, y: y)
-                var points = monster.abovePoints(tailStart: tail)
-                points += monster.belowPoints(tailStart: tail)
-                var count = 0
-                for point in points {
-                    if grid[point.y][point.x] == "#" {
-                        count += 1
-                    } else {
-                        break
-                    }
-                }
-                if points.count == count {
-                    let monsterPoints = monster.allPoints(tailStart: tail)
-                    for point in monsterPoints {
-                        grid[point.y][point.x] = "O"
-                    }
-                }
-            }
-        }
-        return grid.reduce(0) {
-            $0 + ($1.reduce(0) { $0 + ($1 == "#" ? 1 : 0) })
-        }
     }
     
     func constructBigGrid(_ tiles: [Point: Tile], size: Int) -> [[String]] {
