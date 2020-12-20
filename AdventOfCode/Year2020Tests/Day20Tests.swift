@@ -7,10 +7,17 @@ class Day20Tests: XCTestCase {
     let day = Day20()
 
     func test_part1() {
-        XCTAssertEqual(0, day.part1(input))
+        let parsed = try! day.parse(input)
+        XCTAssertEqual(8425574315321, day.part1(parsed))
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+        let parsed = try! day.parse(input)
+        XCTAssertEqual(0, day.part2(parsed))
+    }
+    
+    func test_parsing() throws {
+        let parsed = try day.parse(input)
+        XCTAssertEqual(144, parsed.count)
     }
 }
