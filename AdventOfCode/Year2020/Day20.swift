@@ -1,4 +1,5 @@
 import Foundation
+import InputReader
 import StandardLibraries
 
 public struct Day20 {
@@ -22,8 +23,8 @@ public struct Day20 {
             topLeft = topLeft.rotate
         }
 
-        var tiles = [Point: [Tile]]()
-        tiles[.zero] = [topLeft]
+        var tiles = [Point: Tile]()
+        tiles[.zero] = topLeft
         
         func indexOf(_ tile: Tile, items: [Tile]) -> Int {
             for i in 0..<items.count {
@@ -42,7 +43,7 @@ public struct Day20 {
             let options = tiles[point + Position.l.point]!
             let possible = findTiles(top: nil, left: options, tiles: edgeTiles)
             tiles[point] = possible
-            edgeTiles.remove(at: indexOf(possible[0], items: edgeTiles))
+            edgeTiles.remove(at: indexOf(possible, items: edgeTiles))
         }
         
         // top right corner
@@ -50,7 +51,7 @@ public struct Day20 {
         var options = tiles[point + Position.l.point]!
         var possible = findTiles(top: nil, left: options, tiles: cornerTiles)
         tiles[point] = possible
-        cornerTiles.remove(at: indexOf(possible[0], items: cornerTiles))
+        cornerTiles.remove(at: indexOf(possible, items: cornerTiles))
         
         // fill in left column
         for y in 1..<size-1 {
@@ -58,7 +59,7 @@ public struct Day20 {
             let options = tiles[point + Position.t.point]!
             let possible = findTiles(top: options, left: nil, tiles: edgeTiles)
             tiles[point] = possible
-            edgeTiles.remove(at: indexOf(possible[0], items: edgeTiles))
+            edgeTiles.remove(at: indexOf(possible, items: edgeTiles))
         }
         
         // bottom left corner
@@ -66,7 +67,7 @@ public struct Day20 {
         options = tiles[point + Position.t.point]!
         possible = findTiles(top: options, left: nil, tiles: cornerTiles)
         tiles[point] = possible
-        cornerTiles.remove(at: indexOf(possible[0], items: cornerTiles))
+        cornerTiles.remove(at: indexOf(possible, items: cornerTiles))
         
         // fill in right column
         for y in 1..<size-1 {
@@ -74,7 +75,7 @@ public struct Day20 {
             let options = tiles[point + Position.t.point]!
             let possible = findTiles(top: options, left: nil, tiles: edgeTiles)
             tiles[point] = possible
-            edgeTiles.remove(at: indexOf(possible[0], items: edgeTiles))
+            edgeTiles.remove(at: indexOf(possible, items: edgeTiles))
         }
         
         // fill in bottom row
@@ -83,7 +84,7 @@ public struct Day20 {
             let options = tiles[point + Position.l.point]!
             let possible = findTiles(top: nil, left: options, tiles: edgeTiles)
             tiles[point] = possible
-            edgeTiles.remove(at: indexOf(possible[0], items: edgeTiles))
+            edgeTiles.remove(at: indexOf(possible, items: edgeTiles))
         }
         
         // bottom right corner
@@ -91,7 +92,7 @@ public struct Day20 {
         options = tiles[point + Position.l.point]!
         possible = findTiles(top: nil, left: options, tiles: cornerTiles)
         tiles[point] = possible
-        cornerTiles.remove(at: indexOf(possible[0], items: cornerTiles))
+        cornerTiles.remove(at: indexOf(possible, items: cornerTiles))
         
         // middle tiles
         for y in 1..<size-1 {
@@ -101,37 +102,239 @@ public struct Day20 {
                 let topOptions = tiles[point + Position.t.point]!
                 let possible = findTiles(top: topOptions, left: leftOptions, tiles: middleTiles)
                 tiles[point] = possible
-                middleTiles.remove(at: indexOf(possible[0], items: middleTiles))
+                middleTiles.remove(at: indexOf(possible, items: middleTiles))
             }
         }
         
-        print("Hello")
+        // Trim tile edges
+        // no longer needed, each tile has an edgeless property
         
-        return 0
+        // Construct main grid
+        let dataSize = topLeft.data.count
+        let gridSize = dataSize*dataSize
+        var grid: [[String]] = Array(repeating: Array(repeating: ".", count: gridSize), count: gridSize)
+        let smallerSize = dataSize-2
+
+        for y in 0..<size {
+            for x in 0..<size {
+                let point = Point(x: x, y: y)
+                let tile = tiles[point]!
+                let edgeless = tile.edgeless
+                for y2 in 0..<smallerSize {
+                    for x2 in 0..<smallerSize {
+                        let character = edgeless[y2][x2]
+                        let gp = Point(x: (x * smallerSize) + x2, y: (y * smallerSize) + y2)
+                        grid[gp.y][gp.x] = character
+                    }
+                }
+            }
+        }
+        
+        // view grid
+        draw(grid)
+
+        // build sea monster
+        let monster = SeaMonster()
+
+        // Orient the grid
+        var matches = 0
+        for _ in 0..<4 {
+            for y in 1..<grid.count-1 {
+                let line = grid[y].joined()
+                if
+                    let match = try? monster.regex.match(line),
+                    let x = match.captureGroups.first?.range.lowerBound.utf16Offset(in: line)
+                {
+                    let tail = Point(x: x, y: y)
+                    var points = monster.abovePoints(tailStart: tail)
+                    points += monster.belowPoints(tailStart: tail)
+                    var count = 0
+                    for point in points {
+                        if grid[point.y][point.x] == "#" {
+                            count += 1
+                        } else {
+                            break
+                        }
+                    }
+                    if points.count == count {
+                        matches += 1
+                    }
+                }
+            }
+            if matches > 0 {
+                break
+            }
+            
+            grid = rotate(grid)
+        }
+        if matches == 0 {
+            for y in 0..<grid.count {
+                grid[y] = grid[y].reversed()
+            }
+            
+            for _ in 0..<4 {
+                for y in 1..<grid.count-1 {
+                    let line = grid[y].joined()
+                    if
+                        let match = try? monster.regex.match(line),
+                        let x = match.captureGroups.first?.range.lowerBound.utf16Offset(in: line)
+                    {
+                        let tail = Point(x: x, y: y)
+                        var points = monster.abovePoints(tailStart: tail)
+                        points += monster.belowPoints(tailStart: tail)
+                        var count = 0
+                        for point in points {
+                            if grid[point.y][point.x] == "#" {
+                                count += 1
+                            } else {
+                                break
+                            }
+                        }
+                        if points.count == count {
+                            matches += 1
+                        }
+                    }
+                }
+                if matches > 0 {
+                    break
+                }
+                
+                grid = rotate(grid)
+                draw(grid)
+            }
+        }
+        
+        // Search for sea monsters
+        for y in 1..<grid.count-1 {
+            let line = grid[y].joined()
+            if
+                let match = try? monster.regex.match(line),
+                let x = match.captureGroups.first?.range.lowerBound.utf16Offset(in: line)
+            {
+                let tail = Point(x: x, y: y)
+                var points = monster.abovePoints(tailStart: tail)
+                points += monster.belowPoints(tailStart: tail)
+                var count = 0
+                for point in points {
+                    if grid[point.y][point.x] == "#" {
+                        count += 1
+                    } else {
+                        break
+                    }
+                }
+                if points.count == count {
+                    let monsterPoints = monster.allPoints(tailStart: tail)
+                    for point in monsterPoints {
+                        grid[point.y][point.x] = "O"
+                    }
+                }
+            }
+        }
+        
+        return grid.reduce(0) {
+            $0 + ($1.reduce(0) { $0 + ($1 == "#" ? 1 : 0) })
+        }
     }
 }
 
-public extension Day20 {    
-    func findTiles(top: [Tile]?, left: [Tile]?, tiles: [Tile]) -> [Tile] {
+public extension Day20 {
+    struct SeaMonster {
+        public let above  = "                  #"
+        public let search = "#    ##    ##    ###"
+        public let below  = " #  #  #  #  #  #"
+        public let regex = try! RegularExpression(pattern: #"^.*(#....##....##....###).*$"#)
+        
+        public init() {}
+        
+        public func abovePoints(tailStart: Point) -> [Point] {
+            return [tailStart + Point(x: 18, y: -1)]
+        }
+        
+        public func belowPoints(tailStart: Point) -> [Point] {
+            return [
+                tailStart + Point(x: 1, y: 1),
+                tailStart + Point(x: 4, y: 1),
+                tailStart + Point(x: 7, y: 1),
+                tailStart + Point(x: 10, y: 1),
+                tailStart + Point(x: 13, y: 1),
+                tailStart + Point(x: 16, y: 1),
+            ]
+        }
+        
+        public func allPoints(tailStart: Point) -> [Point] {
+            return [
+                tailStart,
+                tailStart + Point(x: 5, y: 0),
+                tailStart + Point(x: 6, y: 0),
+                tailStart + Point(x: 11, y: 0),
+                tailStart + Point(x: 12, y: 0),
+                tailStart + Point(x: 17, y: 0),
+                tailStart + Point(x: 18, y: 0),
+                tailStart + Point(x: 19, y: 0),
+            ]
+            + abovePoints(tailStart: tailStart)
+            + belowPoints(tailStart: tailStart)
+        }
+    }
+}
+
+public extension Day20 {
+    func draw(_ grid: [[String]]) {
+        for row in grid {
+            var line = ""
+            for value in row {
+                line.append(value)
+            }
+            print(line)
+        }
+        print()
+    }
+    
+    func rotate(_ grid: [[String]]) -> [[String]] {
+        var output = [[String]]()
+        let size = grid.count
+        
+        for x in 0..<size {
+            var line = [String]()
+            for y in 0..<size {
+                line.append((grid[size - 1 - y][x]))
+            }
+            output.append(line)
+        }
+        
+        return output
+    }
+    /*
+     public var rotate: Tile {
+         var rotatedData = [String]()
+         let size = data[0].count
+         for x in 0..<size {
+             var line = ""
+             for y in 0..<size {
+                 line.append(data[size - 1 - y][x])
+             }
+             rotatedData.append(line)
+         }
+         
+         return Tile(id: id, data: rotatedData)
+     }
+     */
+    
+    func findTiles(top: Tile?, left: Tile?, tiles: [Tile]) -> Tile {
         var existingTiles = Set<Int>()
-        var foundTiles = [Tile]()
         var allTop = Set<String>()
         var allLeft = Set<String>()
 
         var visibleSides = [String]()
         if let top = top {
-            for t in top {
-                visibleSides.append(t.bottom)
-                allTop.insert(t.bottom)
-                existingTiles.insert(t.id)
-            }
+            visibleSides.append(top.bottom)
+            allTop.insert(top.bottom)
+            existingTiles.insert(top.id)
         }
         if let left = left {
-            for t in left {
-                visibleSides.append(t.right)
-                allLeft.insert(t.right)
-                existingTiles.insert(t.id)
-            }
+            visibleSides.append(left.right)
+            allLeft.insert(left.right)
+            existingTiles.insert(left.id)
         }
 
         for tile in tiles {
@@ -142,16 +345,14 @@ public extension Day20 {
                 }
             }
             if count >= min(2, visibleSides.count) {
-                foundTiles.append(tile)
+                return rotate(tile, top: allTop, left: allLeft)
             }
         }
-        
-        return foundTiles.compactMap {
-            rotate($0, top: allTop, left: allLeft)
-        }
+        assertionFailure("Where is my tile?")
+        return Tile(id: -1, data: [])
     }
     
-    func rotate(_ tile: Tile, top: Set<String>, left: Set<String>) -> Tile? {
+    func rotate(_ tile: Tile, top: Set<String>, left: Set<String>) -> Tile {
         var tile = tile
         for _ in 0..<4 {
             if (top.isEmpty || top.contains(tile.top)) && (left.isEmpty || left.contains(tile.left)) {
@@ -166,7 +367,8 @@ public extension Day20 {
             }
             tile = tile.rotate
         }
-        return nil
+        assertionFailure("Where is my tile?")
+        return Tile(id: -1, data: [])
     }
     
     func allSides(_ input: [Tile]) -> [String: [Tile]] {
@@ -292,7 +494,7 @@ public extension Day20 {
         
         public var rotate: Tile {
             var rotatedData = [String]()
-            let size = data[0].count
+            let size = data.count
             for x in 0..<size {
                 var line = ""
                 for y in 0..<size {
@@ -315,6 +517,20 @@ public extension Day20 {
         
         public func edgeFlipped(_ direction: Direction) -> String {
             return String(edge(direction).reversed())
+        }
+        
+        public var edgeless: [String] {
+            var lines = [String]()
+            let size = data.count
+            for y in 1..<size-1 {
+                let oldLine = data[y]
+                var line = ""
+                for x in 1..<size-1 {
+                    line.append(oldLine[x])
+                }
+                lines.append(line)
+            }
+            return lines
         }
     }
 }
