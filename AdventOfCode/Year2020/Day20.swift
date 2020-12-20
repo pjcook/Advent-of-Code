@@ -130,23 +130,23 @@ public struct Day20 {
         for _ in 0..<4 {
             for y in 0..<grid.count {
                 let line = grid[y].joined()
-                if
-                    let match = try? monster.regex.match(line),
-                    let x = match.captureGroups.first?.range.lowerBound.utf16Offset(in: line)
-                {
-                    let tail = Point(x: x, y: y)
-                    var points = monster.abovePoints(tailStart: tail)
-                    points += monster.belowPoints(tailStart: tail)
-                    var count = 0
-                    for point in points {
-                        if grid[point.y][point.x] == "#" {
-                            count += 1
-                        } else {
-                            break
+                if let match = try? monster.regex.match(line) {
+                    for captureGroup in match.captureGroups {
+                        let x = captureGroup.range.lowerBound.utf16Offset(in: line)
+                        let tail = Point(x: x, y: y)
+                        var points = monster.abovePoints(tailStart: tail)
+                        points += monster.belowPoints(tailStart: tail)
+                        var count = 0
+                        for point in points {
+                            if grid[point.y][point.x] == "#" {
+                                count += 1
+                            } else {
+                                break
+                            }
                         }
-                    }
-                    if points.count == count {
-                        matches += 1
+                        if points.count == count {
+                            matches += 1
+                        }
                     }
                 }
             }
@@ -164,23 +164,23 @@ public struct Day20 {
             for _ in 0..<4 {
                 for y in 0..<grid.count {
                     let line = grid[y].joined()
-                    if
-                        let match = try? monster.regex.match(line),
-                        let x = match.captureGroups.first?.range.lowerBound.utf16Offset(in: line)
-                    {
-                        let tail = Point(x: x, y: y)
-                        var points = monster.abovePoints(tailStart: tail)
-                        points += monster.belowPoints(tailStart: tail)
-                        var count = 0
-                        for point in points {
-                            if grid[point.y][point.x] == "#" {
-                                count += 1
-                            } else {
-                                break
+                    if let match = try? monster.regex.match(line) {
+                        for captureGroup in match.captureGroups {
+                            let x = captureGroup.range.lowerBound.utf16Offset(in: line)
+                            let tail = Point(x: x, y: y)
+                            var points = monster.abovePoints(tailStart: tail)
+                            points += monster.belowPoints(tailStart: tail)
+                            var count = 0
+                            for point in points {
+                                if grid[point.y][point.x] == "#" {
+                                    count += 1
+                                } else {
+                                    break
+                                }
                             }
-                        }
-                        if points.count == count {
-                            matches += 1
+                            if points.count == count {
+                                matches += 1
+                            }
                         }
                     }
                 }
@@ -200,25 +200,25 @@ public struct Day20 {
         draw(grid)
         for y in 0..<grid.count {
             let line = grid[y].joined()
-            if
-                let match = try? monster.regex.match(line),
-                let x = match.captureGroups.first?.range.lowerBound.utf16Offset(in: line)
-            {
-                let tail = Point(x: x, y: y)
-                var points = monster.abovePoints(tailStart: tail)
-                points += monster.belowPoints(tailStart: tail)
-                var count = 0
-                for point in points {
-                    if grid[point.y][point.x] == "#" {
-                        count += 1
-                    } else {
-                        break
+            if let match = try? monster.regex.match(line) {
+                for captureGroup in match.captureGroups {
+                    let x = captureGroup.range.lowerBound.utf16Offset(in: line)
+                    let tail = Point(x: x, y: y)
+                    var points = monster.abovePoints(tailStart: tail)
+                    points += monster.belowPoints(tailStart: tail)
+                    var count = 0
+                    for point in points {
+                        if grid[point.y][point.x] == "#" {
+                            count += 1
+                        } else {
+                            break
+                        }
                     }
-                }
-                if points.count == count {
-                    let monsterPoints = monster.allPoints(tailStart: tail)
-                    for point in monsterPoints {
-                        grid[point.y][point.x] = "O"
+                    if points.count == count {
+                        let monsterPoints = monster.allPoints(tailStart: tail)
+                        for point in monsterPoints {
+                            grid[point.y][point.x] = "O"
+                        }
                     }
                 }
             }
@@ -237,7 +237,7 @@ public extension Day20 {
         public let above  = "                  #"
         public let search = "#    ##    ##    ###"
         public let below  = " #  #  #  #  #  #"
-        public let regex = try! RegularExpression(pattern: #".*(#....##....##....###).*"#)
+        public let regex = try! RegularExpression(pattern: #"(#....##....##....###*)"#)
         
         public init() {}
         
