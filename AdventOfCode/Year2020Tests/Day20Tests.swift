@@ -14,7 +14,24 @@ class Day20Tests: XCTestCase {
     func test_part2() {
         let parsed = try! day.parse(input)
         // 1871 too high
-        XCTAssertEqual(0, day.part2(parsed))
+        XCTAssertEqual(1871, day.part2(parsed))
+    }
+    
+    func test_countHashes() {
+        let parsed = try! day.parse(input)
+        var hashCount = 0
+
+        for tile in parsed {
+            for line in tile.edgeless {
+                for c in line {
+                    if c == "#" {
+                        hashCount += 1
+                    }
+                }
+            }
+        }
+        
+        XCTAssertEqual(2201, hashCount)
     }
     
     func test_part2_example() {
