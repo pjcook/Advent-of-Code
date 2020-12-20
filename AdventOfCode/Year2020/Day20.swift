@@ -128,7 +128,7 @@ public struct Day20 {
         // Orient the grid
         var matches = 0
         for _ in 0..<4 {
-            for y in 1..<grid.count-1 {
+            for y in 0..<grid.count {
                 let line = grid[y].joined()
                 if
                     let match = try? monster.regex.match(line),
@@ -162,7 +162,7 @@ public struct Day20 {
             }
 
             for _ in 0..<4 {
-                for y in 1..<grid.count-1 {
+                for y in 0..<grid.count {
                     let line = grid[y].joined()
                     if
                         let match = try? monster.regex.match(line),
@@ -198,7 +198,7 @@ public struct Day20 {
         
         // Search for sea monsters
         draw(grid)
-        for y in 1..<grid.count-1 {
+        for y in 0..<grid.count {
             let line = grid[y].joined()
             if
                 let match = try? monster.regex.match(line),
@@ -237,7 +237,7 @@ public extension Day20 {
         public let above  = "                  #"
         public let search = "#    ##    ##    ###"
         public let below  = " #  #  #  #  #  #"
-        public let regex = try! RegularExpression(pattern: #"^.*(#....##....##....###).*$"#)
+        public let regex = try! RegularExpression(pattern: #".*(#....##....##....###).*"#)
         
         public init() {}
         
