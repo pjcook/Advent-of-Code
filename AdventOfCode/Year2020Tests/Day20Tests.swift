@@ -20,4 +20,13 @@ class Day20Tests: XCTestCase {
         let parsed = try day.parse(input)
         XCTAssertEqual(144, parsed.count)
     }
+    
+    func test_rotate() throws {
+        let parsed = try day.parse(input)
+        let tile = parsed.first!
+        let rotated = tile.rotate
+        
+        print(tile.data)
+        print(rotated.data)
+    }
 }

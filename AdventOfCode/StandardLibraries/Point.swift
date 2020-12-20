@@ -112,7 +112,7 @@ public enum Position {
     case l, m, r
     case bl, b, br
     
-    var point: Point {
+    public var point: Point {
         switch self {
         case .tl: return Point(x: -1, y: -1)
         case .t: return Point(x: 0, y: -1)
