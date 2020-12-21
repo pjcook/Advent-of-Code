@@ -7,7 +7,7 @@ public struct Day20 {
     
     public func part1(_ input: [Tile]) -> Int {
         let sides = allSides(input)
-        let cornerTiles = self.cornerTiles(input, sides: sides)
+        let (cornerTiles, _) = self.cornerAndEdgeTiles(input, sides: sides)
         return cornerTiles.reduce(1) { $0 * $1.id }
     }
     
@@ -140,8 +140,7 @@ public extension Day20 {
     
     func solveJigsaw(_ size: Int, input: [Tile]) -> [Point: Tile] {
         let sides = allSides(input)
-        var cornerTiles = self.cornerTiles(input, sides: sides)
-        var edgeTiles = self.edgeTiles(input, sides: sides)
+        var (cornerTiles, edgeTiles) = self.cornerAndEdgeTiles(input, sides: sides)
         var middleTiles = input.filter { !cornerTiles.contains($0) && !edgeTiles.contains($0) }
         var topLeft = input.first(where: { $0.id == cornerTiles.first!.id })!
         while sides[topLeft.top]!.count != 1 || sides[topLeft.left]!.count != 1 {
@@ -247,60 +246,43 @@ public extension Day20 {
     }
     
     func findTiles(top: Tile?, left: Tile?, tiles: [Tile]) -> Tile {
-        var allTop = Set<String>()
-        var allLeft = Set<String>()
-        var visibleSides = [String]()
+        var visibleSides = Set<String>()
         
         if let top = top {
-            visibleSides.append(top.bottom)
-            allTop.insert(top.bottom)
+            visibleSides.insert(top.bottom)
         }
         
         if let left = left {
-            visibleSides.append(left.right)
-            allLeft.insert(left.right)
+            visibleSides.insert(left.right)
         }
-
-        for tile in tiles {
-            var count = 0
-            for side in visibleSides {
-                if tile.sides.contains(side) {
-                    count += 1
-                }
-            }
-            
-            if count >= min(2, visibleSides.count) {
-                return rotate(tile, top: allTop, left: allLeft)
-            }
-        }
-        assertionFailure("Where is my tile?")
-        return Tile(id: -1, data: [])
+        
+        let tile = tiles.first(where: { $0.sides.intersection(visibleSides).count >= min(2, visibleSides.count) })!
+        return rotate(tile, top: top?.bottom, left: left?.right)
     }
     
-    func rotate(_ tile: Tile, top: Set<String>, left: Set<String>) -> Tile {
+    func rotate(_ tile: Tile, top: String?, left: String?) -> Tile {
         var tile = tile
-        for _ in 0..<4 {
-            if (top.isEmpty || top.contains(tile.top)) && (left.isEmpty || left.contains(tile.left)) {
-                return tile
+        func rotate() -> Tile? {
+            for _ in 0..<4 {
+                if (top == nil || top == tile.top) && (left == nil || left == tile.left) {
+                    return tile
+                }
+                tile = tile.rotate
             }
-            tile = tile.rotate
+            return nil
+        }
+        if let tile = rotate() {
+            return tile
         }
         tile = tile.flip
-        for _ in 0..<4 {
-            if (top.isEmpty || top.contains(tile.top)) && (left.isEmpty || left.contains(tile.left)) {
-                return tile
-            }
-            tile = tile.rotate
-        }
-        assertionFailure("Where is my tile?")
-        return Tile(id: -1, data: [])
+        return rotate()!
     }
     
     func allSides(_ input: [Tile]) -> [String: [Tile]] {
         var sides = [String: [Tile]]()
         for tile in input {
             for side in tile.sides {
-                var tiles = sides[side] ?? []
+                var tiles = sides[side, default: []]
                 tiles.append(tile)
                 sides[side] = tiles
             }
@@ -308,8 +290,9 @@ public extension Day20 {
         return sides
     }
     
-    func cornerTiles(_ input: [Tile], sides: [String: [Tile]]) -> [Tile] {
+    func cornerAndEdgeTiles(_ input: [Tile], sides: [String: [Tile]]) -> ([Tile], [Tile]) {
         var cornerTiles = [Tile]()
+        var edgeTiles = [Tile]()
         for tile in input {
             var count1 = 0
             var count2 = 0
@@ -322,28 +305,11 @@ public extension Day20 {
             }
             if count1 == 2 && count2 == 2 {
                 cornerTiles.append(tile)
+            } else if count1 == 1 && count2 == 3 {
+                edgeTiles.append(tile)
             }
         }
-        return cornerTiles
-    }
-    
-    func edgeTiles(_ input: [Tile], sides: [String: [Tile]]) -> [Tile] {
-        var cornerTiles = [Tile]()
-        for tile in input {
-            var count1 = 0
-            var count2 = 0
-            for side in [tile.top, tile.bottom, tile.left, tile.right] {
-                if sides[side]!.count == 1 {
-                    count1 += 1
-                } else if sides[side]!.count == 2 {
-                    count2 += 1
-                }
-            }
-            if count1 == 1 && count2 == 3 {
-                cornerTiles.append(tile)
-            }
-        }
-        return cornerTiles
+        return (cornerTiles, edgeTiles)
     }
 }
 
@@ -372,7 +338,10 @@ public extension Day20 {
         for line in input {
             try processLine(line)
         }
-        try processLine("")
+        
+        if !data.isEmpty {
+            try processLine("")
+        }
         
         return tiles
     }
@@ -393,7 +362,7 @@ public extension Day20 {
         public var flippedLeft: String { String(left.reversed()) }
         public var flippedRight: String { String(right.reversed()) }
         
-        public var sides: [String] {
+        public var sides: Set<String> {
             [top, bottom, left, right, flippedTop, flippedBottom, flippedLeft, flippedRight]
         }
         
