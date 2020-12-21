@@ -69,7 +69,7 @@ public extension Day21 {
     func countIngredients(_ recipe: Day21.Recipe, allIngredients: [String : Int]) -> [String : Int] {
         var allIngredients = allIngredients
         for ingredient in recipe.ingredients {
-            var count = allIngredients[ingredient] ?? 0
+            var count = allIngredients[ingredient, default: 0]
             count += 1
             allIngredients[ingredient] = count
         }
@@ -81,7 +81,7 @@ public extension Day21 {
         for alegen in recipe.alegens {
             let otherRecipes = findRecipesWithAlegen(alegen, recipes: recipes)
             let matches = findMatchesInAll(recipe, recipes: otherRecipes)
-            let previousMatches = alegens[alegen] ?? []
+            let previousMatches = alegens[alegen, default: []]
             alegens[alegen] = Set(matches + previousMatches)
         }
         return alegens

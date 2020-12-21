@@ -25,7 +25,7 @@ public struct Day10 {
             let value = input[i]
             let lowerBound = max(i-3, 0)
             let possiblePaths = input[lowerBound..<i].filter { $0 >= value - 3 }
-            let count = possiblePaths.reduce(0) { $0 + (items[$1] ?? 1) }
+            let count = possiblePaths.reduce(0) { $0 + (items[$1, default: 1]) }
             if value > 0 {
                 items[value] = count
             }

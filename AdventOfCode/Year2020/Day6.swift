@@ -29,7 +29,7 @@ public struct Day6 {
         var responses = [UnicodeScalar:Int]()
         input.forEach {
             $0.unicodeScalars.forEach {
-                responses[$0] = (responses[$0] ?? 0) + 1
+                responses[$0] = (responses[$0, default: 0]) + 1
             }
         }
         return responses
@@ -42,7 +42,7 @@ public struct Day6 {
         var responses = [UnicodeScalar:Int]()
         input
             .joined(separator: "")
-            .unicodeScalars.forEach { responses[$0] = (responses[$0] ?? 0) + 1 }
+            .unicodeScalars.forEach { responses[$0] = (responses[$0, default: 0]) + 1 }
             
         return responses
             .filter { $0.value == groupMemberCount }

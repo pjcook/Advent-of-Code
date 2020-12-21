@@ -7,17 +7,13 @@ class Day20Tests: XCTestCase {
     let day = Day20()
 
     func test_part1() {
-        measure {
         let parsed = try! day.parse(input)
         XCTAssertEqual(8425574315321, day.part1(parsed))
-        }
     }
     
     func test_part2() {
-        measure {
         let parsed = try! day.parse(input)
         XCTAssertEqual(1841, day.part2(parsed))
-        }
     }
     
     func test_part2_chris_input_file() {
