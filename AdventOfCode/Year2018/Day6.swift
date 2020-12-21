@@ -27,7 +27,7 @@ public struct Day6 {
         }
         
         let counts = dict
-            .reduce(into: [Point:Int]()) { $0[$1.value] = ($0[$1.value] ?? 0) + 1 }
+            .reduce(into: [Point:Int]()) { $0[$1.value] = ($0[$1.value, default: 0]) + 1 }
             .sorted(by: { $0.value > $1.value  })
             
         return counts

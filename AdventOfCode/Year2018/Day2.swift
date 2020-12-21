@@ -14,7 +14,7 @@ func calculateChecksum(_ data: [String]) -> Int {
         var output = [Character:Int]()
         while !input.isEmpty {
             let value = input.removeLast()
-            output[value] = (output[value] ?? 0) + 1
+            output[value] = (output[value, default: 0]) + 1
         }
         return output
     }

@@ -55,7 +55,7 @@ func mapClaimData(_ claims: [Int : FabricClaim]) throws -> [CGPoint:[Int]] {
         for x in claim.x ..< claim.x + claim.width {
             for y in claim.y ..< claim.y + claim.height {
                 let point = CGPoint(x: x, y: y)
-                var list = map[point] ?? []
+                var list = map[point, default: []]
                 list.append(claim.id)
                 map[point] = list
             }
@@ -78,7 +78,7 @@ func findUniqueClaim(_ input: [String]) throws -> Int {
     var singleTileData = [Int:Int]()
     singleTiles.forEach {
         guard let id = $0.value.first else { return }
-        singleTileData[id] = (singleTileData[id] ?? 0) + 1
+        singleTileData[id] = (singleTileData[id, default: 0]) + 1
     }
     
     for (id, count) in singleTileData {
