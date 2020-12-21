@@ -11,10 +11,10 @@ public class Day21 {
 
         for recipe in recipes {
             // Find alegens
-            findAlegens(recipe: recipe, recipes: recipes, alegens: &alegens)
+            alegens = findAlegens(recipe: recipe, recipes: recipes, alegens: alegens)
             
             // Build ingredients list for later
-            countIngredients(recipe, allIngredients: &allIngredients)
+            allIngredients = countIngredients(recipe, allIngredients: allIngredients)
         }
 
         // Find list of alegen words in foreign language
@@ -36,11 +36,11 @@ public class Day21 {
 
         for recipe in recipes {
             // Find alegens
-            findAlegens(recipe: recipe, recipes: recipes, alegens: &alegens)
+            alegens = findAlegens(recipe: recipe, recipes: recipes, alegens: alegens)
         }
 
         // Reduce alegens list until each alegen can only map to 1 word
-        matchAlegens(&alegens)
+        alegens = matchAlegens(alegens)
         
         // Sort English alegen names
         return alegens.keys.sorted()
@@ -52,7 +52,8 @@ public class Day21 {
 }
 
 public extension Day21 {
-    func matchAlegens(_ alegens: inout [String : Set<String>]) {
+    func matchAlegens(_ alegens: [String : Set<String>]) -> [String : Set<String>] {
+        var alegens = alegens
         while alegens.map({ $0.value }).reduce([], { $0 + $1 }).count > alegens.count {
             for alegen in alegens.filter({ $0.value.count == 1 }) {
                 for alegen2 in alegens.filter({ $0.value.count > 1 && $0.value.intersection(alegen.value).count == 1 }) {
@@ -62,23 +63,28 @@ public extension Day21 {
                 }
             }
         }
+        return alegens
     }
     
-    func countIngredients(_ recipe: Day21.Recipe, allIngredients: inout [String : Int]) {
+    func countIngredients(_ recipe: Day21.Recipe, allIngredients: [String : Int]) -> [String : Int] {
+        var allIngredients = allIngredients
         for ingredient in recipe.ingredients {
             var count = allIngredients[ingredient] ?? 0
             count += 1
             allIngredients[ingredient] = count
         }
+        return allIngredients
     }
     
-    func findAlegens(recipe: Recipe, recipes: [Recipe], alegens: inout [String: Set<String>]) {
+    func findAlegens(recipe: Recipe, recipes: [Recipe], alegens: [String: Set<String>]) -> [String: Set<String>] {
+        var alegens = alegens
         for alegen in recipe.alegens {
             let otherRecipes = findRecipesWithAlegen(alegen, recipes: recipes)
             let matches = findMatchesInAll(recipe, recipes: otherRecipes)
             let previousMatches = alegens[alegen] ?? []
             alegens[alegen] = Set(matches + previousMatches)
         }
+        return alegens
     }
     
     func findRecipesWithAlegen(_ alegen: String, recipes: [Recipe]) -> [Recipe] {
