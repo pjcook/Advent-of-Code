@@ -91,7 +91,7 @@ class SteppedIntComputer: Hashable {
 
 extension SteppedIntComputer {
     private func readData(_ index: Int) -> Int {
-        return data[index] ?? 0
+        return data[index, default: 0]
     }
     
     private func writeData(_ index: Int, _ value: Int) {

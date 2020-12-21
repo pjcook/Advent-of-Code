@@ -30,7 +30,7 @@ class GKMapper {
         for y in minY..<maxY-minY {
             for x in minX..<maxX-minX {
                 let point = Point(x: x, y: y)
-                let item = rawMap[point] ?? Int.max
+                let item = rawMap[point, default: Int.max]
                 if !options.contains(item), let node = map.node(atGridPosition: point.vector) {
                     nodesToRemove.append(node)
                 }

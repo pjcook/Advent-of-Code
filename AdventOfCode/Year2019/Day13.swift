@@ -88,7 +88,7 @@ func drawGameBoard(_ instruction: [Point:BlockTile], score: Int) {
         for x in 0...maxX - minX {
             let dx = x + minX
             let dy = y + minY
-            let value = instruction[Point(x: dx, y: dy)] ?? .empty
+            let value = instruction[Point(x: dx, y: dy), default: .empty]
             switch value {
                 case .empty: row += "⚫️"
                 case .wall: row += "🟤"

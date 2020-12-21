@@ -38,7 +38,7 @@ func day24Part1() -> Int {
     repeat {
         updateData()
         result = calculateResult()
-        found = results[result] ?? false
+        found = results[result, default: false]
         results[result] = true
     } while !found
     

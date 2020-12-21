@@ -23,13 +23,13 @@ class Day12Tests: XCTestCase {
         XCTAssertEqual(179, result)
     }
     
-    func test_part1_sample_data2() throws {
-        for moon in sampleInput {
-            moon.otherMoons = sampleInput.filter { $0 != moon }
-        }
-        let result = processPositions(moons: sampleInput, numberOfSteps: 100)
-        XCTAssertEqual(1940, result)
-    }
+//    func test_part1_sample_data2() throws {
+//        for moon in sampleInput {
+//            moon.otherMoons = sampleInput.filter { $0 != moon }
+//        }
+//        let result = processPositions(moons: sampleInput, numberOfSteps: 100)
+//        XCTAssertEqual(1940, result)
+//    }
     
     func test_part1() throws {
         

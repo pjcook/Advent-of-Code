@@ -87,7 +87,7 @@ class PortalMaze {
         for y in minY..<maxY {
             for x in minX..<maxX {
                 let point = Point(x: x, y: y)
-                let value = rawMap[point] ?? 0
+                let value = rawMap[point, default: 0]
                 if [0,2].contains(value),
                     let node = map.node(atGridPosition: point.vector) {
                     nodesToRemove.append(node)

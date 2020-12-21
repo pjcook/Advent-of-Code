@@ -35,7 +35,7 @@ class Day22Tests: XCTestCase {
         for _ in 0 ..< 101741582076661 {
             shuffler.process(input)
             let card = shuffler.cards[2020]
-            let count = (results[card] ?? 0) + 1
+            let count = (results[card, default: 0]) + 1
             results[card] = count
             if count > 10 {
                 print(card)

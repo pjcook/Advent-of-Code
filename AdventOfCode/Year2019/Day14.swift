@@ -70,7 +70,7 @@ class OreCalculator {
         
         while !queue.isEmpty {
             let key = queue.removeFirst()
-            let value = spare[key] ?? 0
+            let value = spare[key, default: 0]
             if value > 0 {
                 let recipe = findRecipe(key)
                 let multiplier = Int(value / recipe.ingredient.value)
@@ -81,7 +81,7 @@ class OreCalculator {
                     if ingredient.id == IngredientID.ore {
                         ore += recipe.requiredIngredients.first!.value * multiplier
                     } else {
-                        let currentAmount = spare[ingredient.id] ?? 0
+                        let currentAmount = spare[ingredient.id, default: 0]
                         spare[ingredient.id] = currentAmount + (ingredient.value * multiplier)
                         if currentAmount + (ingredient.value * multiplier) > ingredient.value {
                             queue.append(ingredient.id)
@@ -105,7 +105,7 @@ class OreCalculator {
             fuelCount += iterations * ingredient.value
             remainingOre -= ore * iterations
             basicSpares.forEach {
-                spare[$0.key] = (spare[$0.key] ?? 0) + ($0.value * iterations)
+                spare[$0.key] = (spare[$0.key, default: 0]) + ($0.value * iterations)
             }
             remainingOre += disassembleSpares()
 //            print(fuelCount, remainingOre)
@@ -127,7 +127,7 @@ class OreCalculator {
                 multiplier += 1
             }
             let spareWork = (recipe.ingredient.value * multiplier) - work.value
-            let currentSpare = spare[work.key] ?? 0
+            let currentSpare = spare[work.key, default: 0]
             spare[work.key] = currentSpare + spareWork
             
             for ingredient in recipe.requiredIngredients {
@@ -141,7 +141,7 @@ class OreCalculator {
                 if requiredAmount < 0 {
                     spare[ingredient.id] = abs(requiredAmount)
                 } else {
-                    let outstandingAmount = required[ingredient.id] ?? 0
+                    let outstandingAmount = required[ingredient.id, default: 0]
                     required[ingredient.id] = outstandingAmount + requiredAmount
                 }
             }

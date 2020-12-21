@@ -68,7 +68,7 @@ func paintWithRobot(_ program: [Int], startColor: Int) -> Int {
     var direction = Direction.N
     var hasOutputColor = false
     _ = computer.process({
-        output[position] ?? 0
+        output[position, default: 0]
     }, processOutput: {
         rawData.append($0)
         if hasOutputColor {
@@ -99,7 +99,7 @@ func drawShipRegistration(_ output: [Point:Int]) {
         for x in 0...maxX - minX {
             let dx = x + minX
             let dy = y + minY
-            let value = output[Point(x: dx, y: dy)] ?? 0
+            let value = output[Point(x: dx, y: dy), default: 0]
             if value == 1 { row += "⚪️" }
             else { row += "⚫️" }
         }

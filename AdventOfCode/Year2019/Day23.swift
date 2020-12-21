@@ -76,11 +76,11 @@ class ShipNetwork {
     private var sentByNat = [Int:Int]()
     func readingEmptyInput(_ id: Int) {
         natQueue.async {
-            self.idleComputers[id] = (self.idleComputers[id] ?? 0) + 1
+            self.idleComputers[id] = (self.idleComputers[id, default: 0]) + 1
             if self.isNetworkIdle() && self.y != 0 {
                 self.idleComputers.removeAll()
                 self.sendMessage(address: 0, x: self.x, y: self.y)
-                let count = (self.sentByNat[self.y] ?? 0) + 1
+                let count = (self.sentByNat[self.y, default: 0]) + 1
                 if count > 1 {
                     self.finalOutput = self.y
                     self.stopNetworkComputers()

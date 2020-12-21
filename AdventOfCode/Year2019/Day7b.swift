@@ -15,7 +15,7 @@ func processAmplifiersLooped(_ settings: [Int], _ input: [Int]) throws -> Int {
     var lastOutput = 0
     
     func readInput(index: Int) -> Int? {
-        var inputs = amplifiers[orderedAmplifiers[index]] ?? []
+        var inputs = amplifiers[orderedAmplifiers[index], default: []]
         guard !inputs.isEmpty else { return nil }
         let input = inputs.removeFirst()
         amplifiers[orderedAmplifiers[index]] = inputs
@@ -24,7 +24,7 @@ func processAmplifiersLooped(_ settings: [Int], _ input: [Int]) throws -> Int {
     
     func processOutput(value: Int, index: Int) {
         let newIndex = index+1 < settings.count ? index+1 : 0
-        var inputs = amplifiers[orderedAmplifiers[newIndex]] ?? []
+        var inputs = amplifiers[orderedAmplifiers[newIndex], default: []]
         inputs.append(value)
         amplifiers[orderedAmplifiers[newIndex]] = inputs
         lastOutput = value
