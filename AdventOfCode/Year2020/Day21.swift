@@ -11,6 +11,7 @@ public struct Day21 {
         var allIngredients = [String:Int]()
 
         for recipe in recipes {
+            // Find alegens
             for alegen in recipe.alegens {
                 let otherRecipes = findRecipesWithAlegen(alegen, recipes: recipes)
                 let matches = findMatchesInAll(recipe, recipes: otherRecipes)
@@ -18,6 +19,7 @@ public struct Day21 {
                 alegens[alegen] = matches + previousMatches
             }
             
+            // Build ingredients list for later
             for ingredient in recipe.ingredients {
                 var count = allIngredients[ingredient] ?? 0
                 count += 1
@@ -25,11 +27,15 @@ public struct Day21 {
             }
         }
 
+        // Find list of alegen words in foreign language
         let alegenFood = Set(alegens.map { $0.value }.reduce([]) { $0 + $1 })
+        
+        // Remove words from main ingredient list
         for alegen in alegenFood {
             allIngredients.removeValue(forKey: alegen)
         }
         
+        // Count remaining words
         return allIngredients.map { $0.value }.reduce(0, +)
     }
     
@@ -39,6 +45,7 @@ public struct Day21 {
         var alegens = [String: Set<String>]()
 
         for recipe in recipes {
+            // Find alegens
             for alegen in recipe.alegens {
                 let otherRecipes = findRecipesWithAlegen(alegen, recipes: recipes)
                 let matches = findMatchesInAll(recipe, recipes: otherRecipes)
@@ -47,6 +54,7 @@ public struct Day21 {
             }
         }
 
+        // Reduce alegens list until each alegen can only map to 1 word
         while alegens.map({ $0.value }).reduce([], { $0 + $1 }).count > alegens.count {
             for alegen in alegens.filter({ $0.value.count == 1 }) {
                 for alegen2 in alegens.filter({ $0.value.count > 1 && $0.value.intersection(alegen.value).count == 1 }) {
@@ -57,13 +65,16 @@ public struct Day21 {
             }
         }
         
+        // Sort English alegen names
         let alegenNames = alegens.keys.sorted()
         var output = [String]()
         
+        // Sort foreign alegen names by sorted English name
         for name in alegenNames {
             output.append(alegens[name]!.first!)
         }
         
+        // Return foreign alegen names comma separated
         return output.joined(separator: ",")
     }
 }
