@@ -13,11 +13,136 @@ public struct Day20 {
     
     public func part2(_ input: [Tile]) -> Int {
         let size = Int(sqrt(Double(input.count)))
+        let tiles = solveJigsaw(size, input: input)
+        
+//        draw(constructBigGrid(tiles, size: size))
+                
+        // Construct main grid
+        var grid = constructGrid(tiles, size: size)
+        
+        // Orient the grid
+        let matches = orientAndScanForMonsters(&grid)
+
+        // Search for sea monsters
+        return grid.reduce(0) { $0 + ($1.reduce(0) { $0 + ($1 == "#" ? 1 : 0) }) } - (matches * 15)
+    }
+}
+
+public extension Day20 {
+    /*
+                       #
+     #    ##    ##    ###
+      #  #  #  #  #  #
+     */
+    struct SeaMonster {
+        public init() {}
+        public let regex = try! RegularExpression(pattern: "(#....##....##....###)+")
+                
+        public func allPoints(from tail: Point) -> [Point] {
+            return [
+                tail + Point(x: 18, y: -1),
+                tail + Point(x: 1, y: 1),
+                tail + Point(x: 4, y: 1),
+                tail + Point(x: 7, y: 1),
+                tail + Point(x: 10, y: 1),
+                tail + Point(x: 13, y: 1),
+                tail + Point(x: 16, y: 1),
+            ]
+        }
+    }
+}
+
+public extension Day20 {
+    func draw(_ grid: [[String]]) {
+        for row in grid {
+            print(row.joined())
+        }
+        print()
+    }
+    
+    func rotate(_ grid: [[String]]) -> [[String]] {
+        let size = grid.count
+        return (0..<size).map { x in
+            (0..<size).map { y in
+                grid[size - 1 - y][x]
+            }
+        }
+    }
+    
+    func orientAndScanForMonsters(_ grid: inout [[String]]) -> Int {
+        let monster = SeaMonster()
+        var matches = scanForMonsters(&grid, monster)
+        if matches == 0 {
+            grid = flip(grid: grid)
+            matches = scanForMonsters(&grid, monster)
+        }
+        return matches
+    }
+    
+    func scanForMonsters(_ grid: inout [[String]], _ monster: Day20.SeaMonster) -> Int {
+        var matches = 0
+        for _ in 0..<4 {
+            for y in 0..<grid.count {
+                let line = grid[y].joined()
+                let match = monster.regex.matches(in: line)
+                for match in match {
+                    let x = match.range.lowerBound.utf16Offset(in: line)
+                    let tail = Point(x: x, y: y)
+                    if monster.allPoints(from: tail)
+                        .first(where: { grid[$0.y][$0.x] != "#" }) != nil {
+                        break
+                    }
+                    matches += 1
+                }
+            }
+            if matches > 0 {
+                break
+            }
+            
+            grid = rotate(grid)
+        }
+        return matches
+    }
+    
+    func constructBigGrid(_ tiles: [Point: Tile], size: Int) -> [[String]] {
+        let smallerSize = tiles.first!.value.data.count
+        let gridSize = size*smallerSize
+        var grid: [[String]] = Array(repeating: Array(repeating: ".", count: gridSize), count: gridSize)
+
+        for y in 0..<size {
+            for x in 0..<size {
+                let point = Point(x: x, y: y)
+                let tile = tiles[point]!
+                let edgeless = tile.data
+                for y2 in 0..<smallerSize {
+                    for x2 in 0..<smallerSize {
+                        let character = edgeless[y2][x2]
+                        let gp = Point(x: (x * smallerSize) + x2, y: (y * smallerSize) + y2)
+                        grid[gp.y][gp.x] = character
+                    }
+                }
+            }
+        }
+        return grid
+    }
+    
+    func indexOf(_ tile: Tile, items: [Tile]) -> Int {
+        return items.enumerated().first(where: { $0.1.id == tile.id })!.0
+    }
+    
+    func flip(grid: [[String]]) -> [[String]] {
+        var grid = grid
+        for y in 0..<grid.count {
+            grid[y] = grid[y].reversed()
+        }
+        return grid
+    }
+    
+    func solveJigsaw(_ size: Int, input: [Tile]) -> [Point: Tile] {
         let sides = allSides(input)
         var cornerTiles = self.cornerTiles(input, sides: sides)
         var edgeTiles = self.edgeTiles(input, sides: sides)
         var middleTiles = input.filter { !cornerTiles.contains($0) && !edgeTiles.contains($0) }
-        assert(cornerTiles.count + edgeTiles.count + middleTiles.count == input.count)
         var topLeft = input.first(where: { $0.id == cornerTiles.first!.id })!
         while sides[topLeft.top]!.count != 1 || sides[topLeft.left]!.count != 1 {
             topLeft = topLeft.rotate
@@ -25,15 +150,6 @@ public struct Day20 {
 
         var tiles = [Point: Tile]()
         tiles[.zero] = topLeft
-        
-        func indexOf(_ tile: Tile, items: [Tile]) -> Int {
-            for i in 0..<items.count {
-                if items[i].id == tile.id {
-                    return i
-                }
-            }
-            return -1
-        }
         
         cornerTiles.remove(at: indexOf(topLeft, items: cornerTiles))
         
@@ -105,219 +221,7 @@ public struct Day20 {
                 middleTiles.remove(at: indexOf(possible, items: middleTiles))
             }
         }
-        
-//        var largeGrid = constructBigGrid(tiles, size: size)
-//        // to reverse the grid use this loop
-//        for y in 0..<largeGrid.count {
-//            largeGrid[y] = largeGrid[y].reversed()
-//        }
-//        draw(largeGrid)
-        
-        // Trim tile edges
-        // no longer needed, each tile has an edgeless property
-        
-        // Construct main grid
-        var grid = constructGrid(tiles, size: size)
-        
-        // view grid
-//        draw(grid)
-
-        // build sea monster
-        let monster = SeaMonster()
-
-        // Orient the grid
-        var matches = 0
-        for _ in 0..<4 {
-            for y in 0..<grid.count {
-                let line = grid[y].joined()
-                let match = monster.regex.matches(in: line)
-                for match in match {
-                    let x = match.range.lowerBound.utf16Offset(in: line)
-                    let tail = Point(x: x, y: y)
-                    var points = monster.abovePoints(tailStart: tail)
-                    points += monster.belowPoints(tailStart: tail)
-                    var count = 0
-                    for point in points {
-                        if grid[point.y][point.x] == "#" {
-                            count += 1
-                        } else {
-                            break
-                        }
-                    }
-                    if points.count == count {
-                        matches += 1
-                    }
-                }
-            }
-            if matches > 0 {
-                break
-            }
-            
-            grid = rotate(grid)
-        }
-        if matches == 0 {
-            for y in 0..<grid.count {
-                grid[y] = grid[y].reversed()
-            }
-
-            for _ in 0..<4 {
-                for y in 0..<grid.count {
-                    let line = grid[y].joined()
-                    if let match = try? monster.regex.match(line) {
-                        for match in match.captureGroups {
-                            let x = match.range.lowerBound.utf16Offset(in: line)
-                            let tail = Point(x: x, y: y)
-                            var points = monster.abovePoints(tailStart: tail)
-                            points += monster.belowPoints(tailStart: tail)
-                            var count = 0
-                            for point in points {
-                                if grid[point.y][point.x] == "#" {
-                                    count += 1
-                                } else {
-                                    break
-                                }
-                            }
-                            if points.count == count {
-                                matches += 1
-                            }
-                        }
-                    }
-                }
-                if matches > 0 {
-                    break
-                }
-                
-                grid = rotate(grid)
-            }
-        }
-        
-//        let hashesBeforeSearch = grid.reduce(0) {
-//            $0 + ($1.reduce(0) { $0 + ($1 == "#" ? 1 : 0) })
-//        }
-        
-        // Search for sea monsters
-//        draw(grid)
-        for y in 0..<grid.count {
-            let line = grid[y].joined()
-            let match = monster.regex.matches(in: line)
-            for match in match {
-                let x = match.range.lowerBound.utf16Offset(in: line)
-                let tail = Point(x: x, y: y)
-                var points = monster.abovePoints(tailStart: tail)
-                points += monster.belowPoints(tailStart: tail)
-                var count = 0
-                for point in points {
-                    if grid[point.y][point.x] == "#" {
-                        count += 1
-                    } else {
-                        break
-                    }
-                }
-                if points.count == count {
-                    let monsterPoints = monster.allPoints(tailStart: tail)
-                    for point in monsterPoints {
-                        grid[point.y][point.x] = "O"
-                    }
-                }
-            }
-        }
-        
-//        draw(grid)
-                
-        return grid.reduce(0) {
-            $0 + ($1.reduce(0) { $0 + ($1 == "#" ? 1 : 0) })
-        }
-    }
-}
-
-public extension Day20 {
-    struct SeaMonster {
-        public let above  = "                  #"
-        public let search = "#    ##    ##    ###"
-        public let below  = " #  #  #  #  #  #"
-        public let regex = try! RegularExpression(pattern: "(#....##....##....###)+")
-        
-        public init() {}
-        
-        public func abovePoints(tailStart: Point) -> [Point] {
-            return [tailStart + Point(x: 18, y: -1)]
-        }
-        
-        public func belowPoints(tailStart: Point) -> [Point] {
-            return [
-                tailStart + Point(x: 1, y: 1),
-                tailStart + Point(x: 4, y: 1),
-                tailStart + Point(x: 7, y: 1),
-                tailStart + Point(x: 10, y: 1),
-                tailStart + Point(x: 13, y: 1),
-                tailStart + Point(x: 16, y: 1),
-            ]
-        }
-        
-        public func allPoints(tailStart: Point) -> [Point] {
-            return [
-                tailStart,
-                tailStart + Point(x: 5, y: 0),
-                tailStart + Point(x: 6, y: 0),
-                tailStart + Point(x: 11, y: 0),
-                tailStart + Point(x: 12, y: 0),
-                tailStart + Point(x: 17, y: 0),
-                tailStart + Point(x: 18, y: 0),
-                tailStart + Point(x: 19, y: 0),
-            ]
-            + abovePoints(tailStart: tailStart)
-            + belowPoints(tailStart: tailStart)
-        }
-    }
-}
-
-public extension Day20 {
-    func draw(_ grid: [[String]]) {
-        for row in grid {
-            var line = ""
-            for value in row {
-                line.append(value)
-            }
-            print(line)
-        }
-        print()
-    }
-    
-    func rotate(_ grid: [[String]]) -> [[String]] {
-        var output = [[String]]()
-        let size = grid.count
-        
-        for x in 0..<size {
-            var line = [String]()
-            for y in 0..<size {
-                line.append((grid[size - 1 - y][x]))
-            }
-            output.append(line)
-        }
-        
-        return output
-    }
-    
-    func constructBigGrid(_ tiles: [Point: Tile], size: Int) -> [[String]] {
-        let smallerSize = tiles.first!.value.data.count
-        let gridSize = size*smallerSize
-        var grid: [[String]] = Array(repeating: Array(repeating: ".", count: gridSize), count: gridSize)
-
-        for y in 0..<size {
-            for x in 0..<size {
-                let point = Point(x: x, y: y)
-                let tile = tiles[point]!
-                let edgeless = tile.data
-                for y2 in 0..<smallerSize {
-                    for x2 in 0..<smallerSize {
-                        let character = edgeless[y2][x2]
-                        let gp = Point(x: (x * smallerSize) + x2, y: (y * smallerSize) + y2)
-                        grid[gp.y][gp.x] = character
-                    }
-                }
-            }
-        }
-        return grid
+        return tiles
     }
 
     func constructGrid(_ tiles: [Point: Tile], size: Int) -> [[String]] {
@@ -343,20 +247,18 @@ public extension Day20 {
     }
     
     func findTiles(top: Tile?, left: Tile?, tiles: [Tile]) -> Tile {
-        var existingTiles = Set<Int>()
         var allTop = Set<String>()
         var allLeft = Set<String>()
-
         var visibleSides = [String]()
+        
         if let top = top {
             visibleSides.append(top.bottom)
             allTop.insert(top.bottom)
-            existingTiles.insert(top.id)
         }
+        
         if let left = left {
             visibleSides.append(left.right)
             allLeft.insert(left.right)
-            existingTiles.insert(left.id)
         }
 
         for tile in tiles {
@@ -366,6 +268,7 @@ public extension Day20 {
                     count += 1
                 }
             }
+            
             if count >= min(2, visibleSides.count) {
                 return rotate(tile, top: allTop, left: allLeft)
             }
