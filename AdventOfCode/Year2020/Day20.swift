@@ -53,9 +53,29 @@ public extension Day20 {
 }
 
 public extension Day20 {
-    func draw(_ grid: [[String]]) {
+    func printTileGrid(_ tiles: [Point: Tile], size: Int) {
+        var grid = [[String]]()
+        
+        for y in 0..<size {
+            var items = [String]()
+            for x in 0..<size {
+                let point = Point(x: x, y: y)
+                items.append(String(tiles[point]!.id))
+            }
+            grid.append(items)
+        }
+        
+        grid = flip(grid: grid)
+        grid = rotate(grid)
+        grid = rotate(grid)
+        grid = rotate(grid)
+        
+        draw(grid, separator: ",")
+    }
+    
+    func draw(_ grid: [[String]], separator: String = "") {
         for row in grid {
-            print(row.joined())
+            print(row.joined(separator: separator))
         }
         print()
     }

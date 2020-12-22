@@ -14,6 +14,16 @@ class Day22Tests: XCTestCase {
         XCTAssertEqual(32665, day.part2(input))
     }
     
+    func test_part2_paul() {
+        let input = Input("Day22_Paul.input", Year2020.bundle).lines
+        XCTAssertEqual(32018, day.part2(input))
+    }
+    
+    func test_part2_david() {
+        let input = Input("Day22_David.input", Year2020.bundle).lines
+        XCTAssertEqual(31596, day.part2(input))
+    }
+    
     func test_part1_example() {
         let input = """
         Player 1:
