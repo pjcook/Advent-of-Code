@@ -7,10 +7,52 @@ class Day22Tests: XCTestCase {
     let day = Day22()
 
     func test_part1() {
-        XCTAssertEqual(0, day.part1(input))
+        measure {
+        XCTAssertEqual(32495, day.part1(input))
+        }
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+        measure {
+        XCTAssertEqual(32665, day.part2(input))
+        }
+    }
+    
+    func test_part1_example() {
+        let input = """
+        Player 1:
+        9
+        2
+        6
+        3
+        1
+
+        Player 2:
+        5
+        8
+        4
+        7
+        10
+        """.lines
+        XCTAssertEqual(306, day.part1(input))
+    }
+    
+    func test_part2_example() {
+        let input = """
+        Player 1:
+        9
+        2
+        6
+        3
+        1
+
+        Player 2:
+        5
+        8
+        4
+        7
+        10
+        """.lines
+        XCTAssertEqual(291, day.part2(input))
     }
 }
