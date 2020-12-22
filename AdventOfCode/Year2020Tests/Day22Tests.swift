@@ -7,15 +7,11 @@ class Day22Tests: XCTestCase {
     let day = Day22()
 
     func test_part1() {
-        measure {
         XCTAssertEqual(32495, day.part1(input))
-        }
     }
     
     func test_part2() {
-        measure {
         XCTAssertEqual(32665, day.part2(input))
-        }
     }
     
     func test_part1_example() {
