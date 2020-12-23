@@ -14,6 +14,14 @@ class Day23Tests: XCTestCase {
         XCTAssertEqual(111057672960, day.part2(input))
     }
     
+    func test_part2_mike() {
+        XCTAssertEqual(149245887792, day.part2([3,8,9,1,2,5,4,6,7]))
+    }
+    
+    func test_part2_chris() {
+        XCTAssertEqual(418819514477, day.part2([7,8,4,2,3,5,9,1,6]))
+    }
+    
     func test_part1_example() {
         XCTAssertEqual(67384529, day.part1([3,8,9,1,2,5,4,6,7]))
     }
