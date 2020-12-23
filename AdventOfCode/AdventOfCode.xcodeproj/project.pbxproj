@@ -27,6 +27,7 @@
 		2E90580E258FAD8A00D6A8CD /* Day20_Chris.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E90580D258FAD8A00D6A8CD /* Day20_Chris.input */; };
 		2E90583C25922B4000D6A8CD /* Day22_Paul.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E90583B25922B4000D6A8CD /* Day22_Paul.input */; };
 		2E90585C25922C3C00D6A8CD /* Day22_David.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E90585B25922C3C00D6A8CD /* Day22_David.input */; };
+		2E90586825934FCF00D6A8CD /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E90586725934FCF00D6A8CD /* LinkedList.swift */; };
 		2E9122A72575A6A800517A30 /* Bundler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9122A62575A6A800517A30 /* Bundler.swift */; };
 		2E9122C125760A2100517A30 /* Day1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D27D256D201700088D9C /* Day1.swift */; };
 		2E9122CA25760A2500517A30 /* Day1.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E99D286256D202C00088D9C /* Day1.input */; };
@@ -430,6 +431,7 @@
 		2E90580D258FAD8A00D6A8CD /* Day20_Chris.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day20_Chris.input; sourceTree = "<group>"; };
 		2E90583B25922B4000D6A8CD /* Day22_Paul.input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Day22_Paul.input; sourceTree = "<group>"; };
 		2E90585B25922C3C00D6A8CD /* Day22_David.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day22_David.input; sourceTree = "<group>"; };
+		2E90586725934FCF00D6A8CD /* LinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedList.swift; sourceTree = "<group>"; };
 		2E9122952575A59C00517A30 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
 		2E9122A62575A6A800517A30 /* Bundler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundler.swift; sourceTree = "<group>"; };
 		2E99D248256CF37100088D9C /* Year2020.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Year2020.h; sourceTree = "<group>"; };
@@ -1199,6 +1201,7 @@
 				2E4765D32584910500F22D1F /* Math.swift */,
 				2E0671482578AD86003079FD /* Point.swift */,
 				2E905561258B273800D6A8CD /* Vector.swift */,
+				2E90586725934FCF00D6A8CD /* LinkedList.swift */,
 				2E0671522578AFDD003079FD /* String+Additions.swift */,
 				2E3934842588A50F00E5CB2C /* Leaderboard.swift */,
 				2EC9EF332587588900E4E7E0 /* Int+Additions.swift */,
@@ -2417,6 +2420,7 @@
 				2E905562258B273800D6A8CD /* Vector.swift in Sources */,
 				2EC9EF342587588900E4E7E0 /* Int+Additions.swift in Sources */,
 				2EE7EE0A258131EC00C9FA25 /* RegularExpressions.swift in Sources */,
+				2E90586825934FCF00D6A8CD /* LinkedList.swift in Sources */,
 				2E4765DF2584911400F22D1F /* Math.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
