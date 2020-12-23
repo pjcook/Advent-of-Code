@@ -3,7 +3,7 @@ import StandardLibraries
 
 public struct Day23 {
     public init() {}
-       public func part1(_ input: [Int]) -> Int {
+    public func part1(_ input: [Int]) -> Int {
         var cups = [Int: LinkedNode]()
         let head = LinkedNode(value: input.first!)
         var next = head
@@ -40,7 +40,7 @@ public struct Day23 {
             next = node
             cups[node.value] = node
         }
-
+        
         next.next = head
         return solve(head, cups.count, cups, turns: 10_000_000)
     }
