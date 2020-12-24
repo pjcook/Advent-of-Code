@@ -14,44 +14,29 @@ public struct Day24 {
         // .white with 2 adjacent .black == .black
         var floor = layFloor(input)
         
-        for i in 0..<100 {
-            floor = pad(floor)
+        for _ in 0..<100 {
+            let blackTiles = Set(floor.compactMap({ $0.value == .black ? $0.key : nil }))
+            let points = Set(blackTiles.reduce([], { $0 + adjacent($1) }) + blackTiles)
             var newFloor = floor
             
-            for tile in floor {
-                let adjacentBlackTileCount = adjacent(tile.key)
-                    .compactMap { floor[$0] }
-                    .filter { $0 == .black }
+            for point in points {
+                let adjacentBlackTileCount = adjacent(point)
+                    .filter { blackTiles.contains($0) }
                     .count
                 
-                switch tile.value {
+                switch floor[point, default: .white] {
                 case .black:
-                    newFloor[tile.key] = [1,2].contains(adjacentBlackTileCount) ? .black : .white
+                    newFloor[point] = [1,2].contains(adjacentBlackTileCount) ? .black : .white
                     
                 case .white:
-                    newFloor[tile.key] = adjacentBlackTileCount == 2 ? .black : .white
+                    newFloor[point] = adjacentBlackTileCount == 2 ? .black : .white
                 }
             }
             
             floor = newFloor
-            print(i+1, floor.reduce(0) { $0 + ($1.value == .black ? 1 : 0) })
         }
         
         return floor.reduce(0) { $0 + ($1.value == .black ? 1 : 0) }
-    }
-    
-    func pad(_ floor: [Pointf: Color]) -> [Pointf: Color] {
-        var padded = floor
-        
-        for tile in floor {
-            for point in adjacent(tile.key) {
-                if padded[point] == nil {
-                    padded[point] = .white
-                }
-            }
-        }
-        
-        return padded
     }
     
     func adjacent(_ tile: Pointf) -> [Pointf] {
