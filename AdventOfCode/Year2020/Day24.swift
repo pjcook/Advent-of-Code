@@ -2,14 +2,17 @@ import Foundation
 import StandardLibraries
 
 public struct Day24 {
+    public typealias Floor = [Pointf: Color]
+    public typealias Instructions = [[HexDirection]]
+    
     public init() {}
     
-    public func part1(_ input: [[HexDirection]]) -> Int {
+    public func part1(_ input: Instructions) -> Int {
         // start white
-        return layFloor(input).reduce(0) { $0 + ($1.value == .black ? 1 : 0) }
+        return countBlackTiles(layFloor(input))
     }
     
-    public func part2(_ input: [[HexDirection]]) -> Int {
+    public func part2(_ input: Instructions) -> Int {
         // .black with 0 of > 2 .black adjacent == .white
         // .white with 2 adjacent .black == .black
         var floor = layFloor(input)
@@ -36,6 +39,10 @@ public struct Day24 {
             floor = newFloor
         }
         
+        return countBlackTiles(floor)
+    }
+    
+    func countBlackTiles(_ floor: Floor) -> Int {
         return floor.reduce(0) { $0 + ($1.value == .black ? 1 : 0) }
     }
     
@@ -45,8 +52,8 @@ public struct Day24 {
 }
 
 public extension Day24 {
-    func layFloor(_ input: [[HexDirection]]) -> [Pointf: Color] {
-        var floor = [Pointf: Color]()
+    func layFloor(_ input: Instructions) -> Floor {
+        var floor = Floor()
         for instruction in input {
             var point = Pointf.zero
             for direction in instruction {
@@ -58,22 +65,32 @@ public extension Day24 {
         return floor
     }
     
-    func parse(_ input: [String]) -> [[HexDirection]] {
-        var instructions = [[HexDirection]]()
+    func parse(_ input: [String]) -> Instructions {
+        var instructions = Instructions()
         
-        for line in input {
+        for var line in input {
             var directions = [HexDirection]()
-            var i = 0
-            while i < line.count {
-                if i < line.count-1, let direction = HexDirection(rawValue: line[i] + line[i+1]) {
-                    directions.append(direction)
-                    i += 2
-                } else {
-                    let direction = HexDirection(rawValue: line[i])!
-                    directions.append(direction)
-                    i += 1
+            
+            while !line.isEmpty {
+                switch line.removeFirst() {
+                case "e": directions.append(.east)
+                case "w": directions.append(.west)
+                case "n":
+                    switch line.removeFirst() {
+                    case "e": directions.append(.northeast)
+                    case "w": directions.append(.northwest)
+                    default: break
+                    }
+                case "s":
+                    switch line.removeFirst() {
+                    case "e": directions.append(.southeast)
+                    case "w": directions.append(.southwest)
+                    default: break
+                    }
+                default: break
                 }
             }
+            
             instructions.append(directions)
         }
         
@@ -87,10 +104,6 @@ public extension Day24 {
         
         public var flipped: Color {
             self == .white ? .black : .white
-        }
-        
-        public var character: Character {
-            self == .white ? "⬢" : "⬡"
         }
     }
     

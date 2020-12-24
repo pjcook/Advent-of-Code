@@ -20,6 +20,12 @@ class Day24Tests: XCTestCase {
         }
     }
     
+    func test_parsing_time() {
+        measure {
+            _ = day.parse(input)
+        }
+    }
+    
     func test_part2_example() {
         let input = """
         sesenwnenenewseeswwswswwnenewsewsw
