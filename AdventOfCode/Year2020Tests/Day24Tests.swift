@@ -7,10 +7,95 @@ class Day24Tests: XCTestCase {
     let day = Day24()
 
     func test_part1() {
-        XCTAssertEqual(0, day.part1(input))
+        let instructions = day.parse(input)
+        XCTAssertEqual(282, day.part1(instructions))
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+        let instructions = day.parse(input)
+        XCTAssertEqual(3445, day.part2(instructions))
+    }
+    
+    func test_part2_example() {
+        let input = """
+        sesenwnenenewseeswwswswwnenewsewsw
+        neeenesenwnwwswnenewnwwsewnenwseswesw
+        seswneswswsenwwnwse
+        nwnwneseeswswnenewneswwnewseswneseene
+        swweswneswnenwsewnwneneseenw
+        eesenwseswswnenwswnwnwsewwnwsene
+        sewnenenenesenwsewnenwwwse
+        wenwwweseeeweswwwnwwe
+        wsweesenenewnwwnwsenewsenwwsesesenwne
+        neeswseenwwswnwswswnw
+        nenwswwsewswnenenewsenwsenwnesesenew
+        enewnwewneswsewnwswenweswnenwsenwsw
+        sweneswneswneneenwnewenewwneswswnese
+        swwesenesewenwneswnwwneseswwne
+        enesenwswwswneneswsenwnewswseenwsese
+        wnwnesenesenenwwnenwsewesewsesesew
+        nenewswnwewswnenesenwnesewesw
+        eneswnwswnwsenenwnwnwwseeswneewsenese
+        neswnwewnwnwseenwseesewsenwsweewe
+        wseweeenwnesenwwwswnew
+        """.lines
+        let instructions = day.parse(input)
+        XCTAssertEqual(2208, day.part2(instructions))
+    }
+    
+    func test_part1_example() {
+        let input = """
+        sesenwnenenewseeswwswswwnenewsewsw
+        neeenesenwnwwswnenewnwwsewnenwseswesw
+        seswneswswsenwwnwse
+        nwnwneseeswswnenewneswwnewseswneseene
+        swweswneswnenwsewnwneneseenw
+        eesenwseswswnenwswnwnwsewwnwsene
+        sewnenenenesenwsewnenwwwse
+        wenwwweseeeweswwwnwwe
+        wsweesenenewnwwnwsenewsenwwsesesenwne
+        neeswseenwwswnwswswnw
+        nenwswwsewswnenenewsenwsenwnesesenew
+        enewnwewneswsewnwswenweswnenwsenwsw
+        sweneswneswneneenwnewenewwneswswnese
+        swwesenesewenwneswnwwneseswwne
+        enesenwswwswneneswsenwnewswseenwsese
+        wnwnesenesenenwwnenwsewesewsesesew
+        nenewswnwewswnenesenwnesewesw
+        eneswnwswnwsenenwnwnwwseeswneewsenese
+        neswnwewnwnwseenwseesewsenwsweewe
+        wseweeenwnesenwwwswnew
+        """.lines
+        let instructions = day.parse(input)
+        XCTAssertEqual(10, day.part1(instructions))
+    }
+
+    func test_parsing() {
+        let input = """
+        sesenwnenenewseeswwswswwnenewsewsw
+        neeenesenwnwwswnenewnwwsewnenwseswesw
+        seswneswswsenwwnwse
+        nwnwneseeswswnenewneswwnewseswneseene
+        swweswneswnenwsewnwneneseenw
+        eesenwseswswnenwswnwnwsewwnwsene
+        sewnenenenesenwsewnenwwwse
+        wenwwweseeeweswwwnwwe
+        wsweesenenewnwwnwsenewsenwwsesesenwne
+        neeswseenwwswnwswswnw
+        nenwswwsewswnenenewsenwsenwnesesenew
+        enewnwewneswsewnwswenweswnenwsenwsw
+        sweneswneswneneenwnewenewwneswswnese
+        swwesenesewenwneswnwwneseswwne
+        enesenwswwswneneswsenwnewswseenwsese
+        wnwnesenesenenwwnenwsewesewsesesew
+        nenewswnwewswnenesenwnesewesw
+        eneswnwswnwsenenwnwnwwseeswneewsenese
+        neswnwewnwnwseenwseesewsenwsweewe
+        wseweeenwnesenwwwswnew
+        """.lines
+        let instructions = day.parse(input)
+        XCTAssertEqual(20, instructions.count)
+        XCTAssertEqual(20, instructions[0].count)
+        XCTAssertEqual(15, instructions[19].count)
     }
 }

@@ -12,12 +12,12 @@ public struct Point: Hashable {
     public static let zero: Point = Point(x: 0, y: 0)
 }
 
-public extension Point {
-    var manhattanDistance: Int {
+extension Point {
+    public var manhattanDistance: Int {
         abs(x) + abs(y)
     }
     
-    func adjacent(_ position: Position, _ min: Point, _ max: Point) -> Point? {
+    public func adjacent(_ position: Position, _ min: Point, _ max: Point) -> Point? {
         let point = self + position.point
         guard point.x >= min.x && point.x < max.x && point.y >= min.y && point.y < max.y else {
             return nil
@@ -25,31 +25,31 @@ public extension Point {
         return point
     }
     
-    func isValid(max: Point) -> Bool {
+    public func isValid(max: Point) -> Bool {
         return x >= 0 && x < max.x && y >= 0 && y < max.y
     }
     
-    static func + (lhs: Point, rhs: Point) -> Point {
+    public static func + (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
     }
-    
-    static func - (lhs: Point, rhs: Point) -> Point {
+        
+    public static func - (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
     }
     
-    static func / (lhs: Point, rhs: Point) -> Point {
+    public static func / (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x / rhs.x, y: lhs.y / rhs.y)
     }
     
-    static func * (lhs: Point, rhs: Point) -> Point {
+    public static func * (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x * rhs.x, y: lhs.y * rhs.y)
     }
     
-    static func * (lhs: Point, rhs: Int) -> Point {
+    public static func * (lhs: Point, rhs: Int) -> Point {
         return Point(x: lhs.x * rhs, y: lhs.y * rhs)
     }
     
-    func add(direction: Direction, distance: Int) -> Point {
+    public func add(direction: Direction, distance: Int) -> Point {
         switch direction {
         case .n: return Point(x: x, y: y + distance)
         case .s: return Point(x: x, y: y - distance)
@@ -57,7 +57,8 @@ public extension Point {
         case .w: return Point(x: x - distance, y: y)
         }
     }
-    func rotateLeft(angle: Int) -> Point {
+    
+    public func rotateLeft(angle: Int) -> Point {
         switch angle / 90 {
         case 1: return Point(x: -y, y: x)
         case 2: return Point(x: -x, y: -y)
@@ -66,7 +67,7 @@ public extension Point {
         }
     }
     
-    func rotateRight(angle: Int) -> Point {
+    public func rotateRight(angle: Int) -> Point {
         switch angle / 90 {
         case 1: return Point(x: y, y: -x)
         case 2: return Point(x: -x, y: -y)
@@ -75,7 +76,7 @@ public extension Point {
         }
     }
     
-    func rotateLeft(times: Int) -> Point {
+    public func rotateLeft(times: Int) -> Point {
         switch times {
         case 1: return Point(x: -y, y: x)
         case 2: return Point(x: -x, y: -y)
@@ -84,7 +85,7 @@ public extension Point {
         }
     }
     
-    func rotateRight(times: Int) -> Point {
+    public func rotateRight(times: Int) -> Point {
         switch times {
         case 1: return Point(x: y, y: -x)
         case 2: return Point(x: -x, y: -y)
