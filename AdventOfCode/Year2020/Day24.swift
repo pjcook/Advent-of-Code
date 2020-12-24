@@ -9,7 +9,7 @@ public struct Day24 {
     
     public func part1(_ input: Instructions) -> Int {
         // start white
-        return countBlackTiles(layFloor(input))
+        return layFloor(input).count
     }
     
     public func part2(_ input: Instructions) -> Int {
@@ -18,7 +18,7 @@ public struct Day24 {
         var floor = layFloor(input)
         
         for _ in 0..<100 {
-            let blackTiles = Set(floor.compactMap({ $0.value == .black ? $0.key : nil }))
+            let blackTiles = Set(floor.keys)
             let points = Set(blackTiles.reduce([], { $0 + adjacent($1) }) + blackTiles)
             var newFloor = floor
             
@@ -26,24 +26,19 @@ public struct Day24 {
                 let adjacentBlackTileCount = adjacent(point)
                     .filter { blackTiles.contains($0) }
                     .count
-                
-                switch floor[point, default: .white] {
-                case .black:
-                    newFloor[point] = [1,2].contains(adjacentBlackTileCount) ? .black : .white
-                    
-                case .white:
-                    newFloor[point] = adjacentBlackTileCount == 2 ? .black : .white
+                if blackTiles.contains(point) {
+                    if adjacentBlackTileCount == 0 || adjacentBlackTileCount > 2 {
+                        newFloor.removeValue(forKey: point)
+                    }
+                } else if adjacentBlackTileCount == 2 {
+                    newFloor[point] = .black
                 }
             }
             
             floor = newFloor
         }
         
-        return countBlackTiles(floor)
-    }
-    
-    func countBlackTiles(_ floor: Floor) -> Int {
-        return floor.reduce(0) { $0 + ($1.value == .black ? 1 : 0) }
+        return floor.count
     }
     
     func adjacent(_ tile: Pointf) -> [Pointf] {
@@ -59,8 +54,11 @@ public extension Day24 {
             for direction in instruction {
                 point = point + direction.point
             }
-            let color = floor[point, default: .white]
-            floor[point] = color.flipped
+            if floor[point, default: .white] == .white {
+                floor[point] = .black
+            } else {
+                floor.removeValue(forKey: point)
+            }
         }
         return floor
     }
