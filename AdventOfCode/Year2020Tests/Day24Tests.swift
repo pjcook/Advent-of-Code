@@ -7,17 +7,23 @@ class Day24Tests: XCTestCase {
     let day = Day24()
 
     func test_part1() {
+        measure {
         let instructions = day.parse(input)
         XCTAssertEqual(282, day.part1(instructions))
+        }
     }
     
     func test_part2() {
+        measure {
         let instructions = day.parse(input)
         XCTAssertEqual(3445, day.part2(instructions))
+        }
     }
     
     func test_parsing_time() {
+        measure {
         _ = day.parse(input)
+        }
     }
     
     func test_part2_example() {

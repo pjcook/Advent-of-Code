@@ -2,36 +2,39 @@ import Foundation
 import StandardLibraries
 
 public struct Day24 {
-    public typealias Floor = [Pointf: Color]
+    public typealias Floor = Set<Pointf>
     public typealias Instructions = [[HexDirection]]
     
     public init() {}
     
     public func part1(_ input: Instructions) -> Int {
-        // start white
         return layFloor(input).count
     }
     
     public func part2(_ input: Instructions) -> Int {
-        // .black with 0 of > 2 .black adjacent == .white
-        // .white with 2 adjacent .black == .black
         var floor = layFloor(input)
         
         for _ in 0..<100 {
-            let blackTiles = Set(floor.keys)
-            let points = Set(blackTiles.reduce([], { $0 + adjacent($1) }) + blackTiles)
+            let points = Set(floor.reduce([], { $0 + adjacent($1) }) + floor)
             var newFloor = floor
             
             for point in points {
-                let adjacentBlackTileCount = adjacent(point)
-                    .filter { blackTiles.contains($0) }
-                    .count
-                if blackTiles.contains(point) {
-                    if adjacentBlackTileCount == 0 || adjacentBlackTileCount > 2 {
-                        newFloor.removeValue(forKey: point)
+                var count = 0
+                for adjacent in HexDirection.adjacent {
+                    if floor.contains(point + adjacent) {
+                        count += 1
+                        if count > 2 {
+                            break
+                        }
                     }
-                } else if adjacentBlackTileCount == 2 {
-                    newFloor[point] = .black
+                }
+
+                if floor.contains(point) {
+                    if count == 0 || count > 2 {
+                        newFloor.remove(point)
+                    }
+                } else if count == 2 {
+                    newFloor.insert(point)
                 }
             }
             
@@ -41,8 +44,8 @@ public struct Day24 {
         return floor.count
     }
     
-    func adjacent(_ tile: Pointf) -> [Pointf] {
-        return HexDirection.adjacent.map { tile + $0 }
+    func adjacent(_ tile: Pointf) -> Set<Pointf> {
+        return Set(HexDirection.adjacent.map { tile + $0 })
     }
 }
 
@@ -50,14 +53,11 @@ public extension Day24 {
     func layFloor(_ input: Instructions) -> Floor {
         var floor = Floor()
         for instruction in input {
-            var point = Pointf.zero
-            for direction in instruction {
-                point = point + direction.point
-            }
-            if floor[point, default: .white] == .white {
-                floor[point] = .black
+            let point = instruction.reduce(.zero) { $0 + $1.point }
+            if floor.contains(point) {
+                floor.remove(point)
             } else {
-                floor.removeValue(forKey: point)
+                floor.insert(point)
             }
         }
         return floor
