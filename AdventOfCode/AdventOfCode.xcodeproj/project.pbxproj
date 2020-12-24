@@ -422,14 +422,6 @@
 		2E3934842588A50F00E5CB2C /* Leaderboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Leaderboard.swift; sourceTree = "<group>"; };
 		2E3934902588AAF300E5CB2C /* LeaderboardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardTests.swift; sourceTree = "<group>"; };
 		2E39349C2588AB0400E5CB2C /* Leaderboard.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Leaderboard.json; sourceTree = "<group>"; };
-		2E3BD49A259474C600F13E60 /* Drawing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Drawing.h; sourceTree = "<group>"; };
-		2E3BD49B259474C600F13E60 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2E3BD4A5259474C600F13E60 /* DrawingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingTests.swift; sourceTree = "<group>"; };
-		2E3BD4A7259474C600F13E60 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2E3BD4DE2594755200F13E60 /* Day24.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day24.swift; sourceTree = "<group>"; };
-		2E3BD4EC2594758000F13E60 /* Day24.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day24.swift; sourceTree = "<group>"; };
-		2E3BD5122594762400F13E60 /* Pointf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pointf.swift; sourceTree = "<group>"; };
-		2E3BD5202594764600F13E60 /* String+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Additions.swift"; sourceTree = "<group>"; };
 		2E47616C258388BB00F22D1F /* Day11_v2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11_v2.swift; sourceTree = "<group>"; };
 		2E4761782583B35500F22D1F /* Day11_v3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11_v3.swift; sourceTree = "<group>"; };
 		2E4765D32584910500F22D1F /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
@@ -848,28 +840,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2E3BD499259474C600F13E60 /* Drawing */ = {
-			isa = PBXGroup;
-			children = (
-				2E3BD49A259474C600F13E60 /* Drawing.h */,
-				2E3BD49B259474C600F13E60 /* Info.plist */,
-				2E3BD4DE2594755200F13E60 /* Day24.swift */,
-				2E3BD5202594764600F13E60 /* String+Additions.swift */,
-				2E3BD5122594762400F13E60 /* Pointf.swift */,
-			);
-			path = Drawing;
-			sourceTree = "<group>";
-		};
-		2E3BD4A4259474C600F13E60 /* DrawingTests */ = {
-			isa = PBXGroup;
-			children = (
-				2E3BD4A5259474C600F13E60 /* DrawingTests.swift */,
-				2E3BD4EC2594758000F13E60 /* Day24.swift */,
-				2E3BD4A7259474C600F13E60 /* Info.plist */,
-			);
-			path = DrawingTests;
-			sourceTree = "<group>";
-		};
 		2E99D247256CF37100088D9C /* Year2020 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1403,8 +1373,6 @@
 				2E99D566256D3D3700088D9C /* TempTests */,
 				2EA0438A257D0628003A2742 /* StandardLibraries */,
 				2EA04395257D0628003A2742 /* StandardLibrariesTests */,
-				2E3BD499259474C600F13E60 /* Drawing */,
-				2E3BD4A4259474C600F13E60 /* DrawingTests */,
 				D5E3CAFB2397AB7F00D39B5D /* Products */,
 				D5E3CBB3239A6B9800D39B5D /* Frameworks */,
 			);
