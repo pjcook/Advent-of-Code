@@ -56,9 +56,10 @@ public struct Day22 {
         let startpos = BInt(2020)
         var pos = startpos
         var t = 0
+        var olda: BInt?, oldb: BInt?
 
         while true {
-            var a = BInt(2), b = BInt(0)
+            var a = BInt(1), b = BInt(0)
             for technique in techniques {
                 switch technique {
                 case .dealNewStack:
@@ -75,38 +76,29 @@ public struct Day22 {
                     b += n2
                     
                 case let .dealWithIncrement(n):
-                    let ninv = primeModInverse(BInt(n), len)
+                    let ninv = modinv(BInt(n), len)
                     a *= ninv
                     b *= ninv
+                    pos = (ninv * pos) % len
                 }
             }
             a %= len
             b %= len
             t += 1
+            if let olda = olda {
+                assert(a == olda && b == oldb)
+            }
+            olda = a
+            oldb = b
             if t > 10 || t == times {
-                let answer = (startpos * modpow(a, times, len) + (modpow(a, times, len) - 1) * b * primeModInverse(a-1, len)) % len
-                print(answer, Int(answer))
+                let answer = (startpos * modpow(a, times, len) + (modpow(a, times, len) - 1) * b * modinv(a-1, len)) % len
                 return Int(answer)
             }
         }
     }
 }
 
-public func primeModInverse(_ a: Int, _ m: Int) -> Int {
-    return modpow(a, m - 2, m)
-}
-
-public func modpow(_ b: Int, _ e: Int, _ m: Int) -> Int {
-    if e == 0 {
-        return 1
-    } else if e % 2 == 0 {
-        return modpow((b * b) % m, e / 2, m)
-    } else {
-        return (b * modpow(b, e - 1, m)) % m
-    }
-}
-
-public func primeModInverse(_ a: BInt, _ m: BInt) -> BInt {
+public func modinv(_ a: BInt, _ m: BInt) -> BInt {
     return modpow(a, m - 2, m)
 }
 
