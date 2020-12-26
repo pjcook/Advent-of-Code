@@ -5,17 +5,18 @@ public struct Day25 {
     public init() {}
     
     public func part1(cardKey: Int, doorKey: Int) -> Int {
-        var value = 1
-        var loops = 0
+        var value = 1, loops = 0
+        
         while value != cardKey {
             loops += 1
-            value = (value * 7) % 20201227
+            value = value * 7 % 20201227
         }
         
         value = 1
         for _ in 0..<loops {
             value = (doorKey * value) % 20201227
         }
+        
         return value
     }
     
