@@ -30,7 +30,7 @@ extension Collection {
     }
 }
 
-func decodeImageFindMultiplier(_ data: String, size: CGSize) -> Int {
+public func decodeImageFindMultiplier(_ data: String, size: CGSize) -> Int {
     let layers = data.compactMap { Int(String($0)) }.chunked(into: Int(size.width * size.height))
     var selectedLayer = [Int]()
     var zeroCount = Int.max
@@ -48,7 +48,7 @@ func decodeImageFindMultiplier(_ data: String, size: CGSize) -> Int {
     return count1 * count2
 }
 
-func renderImage(_ data: String, size: CGSize) {
+public func renderImage(_ data: String, size: CGSize) {
     let layers = data.compactMap { Int(String($0)) }.chunked(into: Int(size.width * size.height))
     var finalImageData = [Int]()
     

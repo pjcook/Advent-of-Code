@@ -8,7 +8,7 @@
 
 import Foundation
 
-func processSensorBoost(_ program: [Int], input: Int) -> (Int,[Int]) {
+public func processSensorBoost(_ program: [Int], input: Int) -> (Int,[Int]) {
     let bigProgram = program + Array(repeating: 0, count: 1000)
     let computer = AdvancedIntCodeComputer(data: bigProgram)
     var output = [Int]()

@@ -9,7 +9,7 @@
 import Foundation
 import InputReader
 
-func processThrusterSettings(_ settings: [Int], _ input: [Int]) throws -> Int {
+public func processThrusterSettings(_ settings: [Int], _ input: [Int]) throws -> Int {
     var programInputs = [0]
     
     func readInput() -> Int {
@@ -28,27 +28,27 @@ func processThrusterSettings(_ settings: [Int], _ input: [Int]) throws -> Int {
     return output
 }
 
-class ChainedComputer {
+public class ChainedComputer {
     private let program: [Int]
     private var inputs: [Int]
     private var amplifier: AdvancedIntCodeComputer
     private let id: String
     
-    var lastOutput: Int?
-    var shouldStopProcessing = false
+    public var lastOutput: Int?
+    public var shouldStopProcessing = false
     
     deinit {
         shouldStopProcessing = true
     }
     
-    init(id: String, inputs: [Int], program: [Int]) {
+    public init(id: String, inputs: [Int], program: [Int]) {
         self.id = id
         self.program = program
         self.inputs = inputs
         amplifier = AdvancedIntCodeComputer(data: program)
     }
     
-    func run(writeInput: ((Int)->Void)?) throws {
+    public func run(writeInput: ((Int)->Void)?) throws {
         shouldStopProcessing = false
         lastOutput = amplifier.process(readInput, processOutput: { input in
             writeInput?(input)
@@ -64,7 +64,7 @@ class ChainedComputer {
         return inputs.removeFirst()
     }
     
-    func writeInput(_ input: Int) {
+    public func writeInput(_ input: Int) {
         inputs.append(input)
 //        print(id, input)
     }
@@ -74,7 +74,7 @@ class ChainedComputer {
     }
 }
 
-func processThrusterSettingsLooped(_ settings: [Int], _ input: [Int]) throws -> Int {
+public func processThrusterSettingsLooped(_ settings: [Int], _ input: [Int]) throws -> Int {
     let completeGroup = DispatchGroup()
 
     let computer1 = ChainedComputer(id: "1", inputs: [settings[0], 0], program: input)
@@ -132,7 +132,7 @@ func processThrusterSettingsLooped(_ settings: [Int], _ input: [Int]) throws -> 
     return finalOutput
 }
 
-func generateCombinations(_ possibleValues: [Int]) -> [[Int]] {
+public func generateCombinations(_ possibleValues: [Int]) -> [[Int]] {
     var combinations = [[Int]]()
 
     for value in possibleValues {
@@ -151,7 +151,7 @@ func generateCombinations(_ possibleValues: [Int]) -> [[Int]] {
     return combinations
 }
 
-func findMaximumThrusterValue(phaseSettings: [Int], input: [Int], loop: Bool = false) throws -> Int {
+public func findMaximumThrusterValue(phaseSettings: [Int], input: [Int], loop: Bool = false) throws -> Int {
     var maxValue = 0
     
     for combination in generateCombinations(phaseSettings) {
@@ -165,7 +165,7 @@ func findMaximumThrusterValue(phaseSettings: [Int], input: [Int], loop: Bool = f
     return maxValue
 }
 
-func findMaximumThrusterValueStepped(phaseSettings: [Int], input: [Int], loop: Bool = false) throws -> Int {
+public func findMaximumThrusterValueStepped(phaseSettings: [Int], input: [Int], loop: Bool = false) throws -> Int {
     var maxValue = 0
     for combination in generateCombinations(phaseSettings) {
         maxValue = max(try processAmplifiersLooped(combination, input), maxValue)

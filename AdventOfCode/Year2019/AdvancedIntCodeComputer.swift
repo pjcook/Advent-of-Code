@@ -9,11 +9,11 @@
 import Foundation
 import InputReader
 
-class AdvancedIntCodeComputer {
+public class AdvancedIntCodeComputer {
     private var data: [Int]
-    var readData: [Int] { return data }
+    public var readData: [Int] { return data }
     
-    init(data: [Int]) {
+    public init(data: [Int]) {
         self.data = data
     }
     
@@ -25,7 +25,7 @@ class AdvancedIntCodeComputer {
         data[index] = value
     }
     
-    func process(_ readInput: ()->Int, processOutput: ((Int)->())? = nil, finished: (()->Void)? = nil, forceWriteMode: Bool = true) -> Int {
+    public func process(_ readInput: ()->Int, processOutput: ((Int)->())? = nil, finished: (()->Void)? = nil, forceWriteMode: Bool = true) -> Int {
         
         var instructionIndex = 0
         var output = -1
@@ -64,8 +64,8 @@ class AdvancedIntCodeComputer {
     }
 }
 
-struct Instruction {
-    enum OpCode: Int {
+public struct Instruction {
+    public enum OpCode: Int {
         case add = 1
         case multiply = 2
         case input = 3
@@ -77,7 +77,7 @@ struct Instruction {
         case adjustRelativeBase = 9
         case finished = 99
         
-        func incrementPosition(_ instructionIndex: Int) -> Int {
+        public func incrementPosition(_ instructionIndex: Int) -> Int {
             switch self {
             case .jumpIfTrue, .jumpIfFalse: return instructionIndex
             case .add, .multiply, .lessThan, .equals: return instructionIndex + 4
@@ -87,17 +87,17 @@ struct Instruction {
         }
     }
     
-    enum Mode: Int {
+    public enum Mode: Int {
         case position = 0
         case immediate = 1
         case relative = 2
     }
     
-    let opCode: OpCode
-    let instructionIndex: Int
-    let relativeBase: Int
+    public let opCode: OpCode
+    public let instructionIndex: Int
+    public let relativeBase: Int
     
-    init(
+    public init(
         readData: (Int)->Int,
         writeData: (Int, Int)->Void,
         finished: ()->Void,

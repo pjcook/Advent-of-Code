@@ -8,12 +8,12 @@
 
 import Foundation
 
-class InvestigationDroid {
+public class InvestigationDroid {
     private var computer: SteppedIntComputer?
     private var inputs = [Int]()
     private var outputs = [Int]()
 
-    init(_ input: [Int]) {
+    public init(_ input: [Int]) {
         computer = SteppedIntComputer(
             id: 6,
             data: input,
@@ -24,7 +24,7 @@ class InvestigationDroid {
         )
     }
     
-    func process() {
+    public func process() {
         computer?.process()
     }
     
@@ -62,8 +62,8 @@ class InvestigationDroid {
 }
 
 extension InvestigationDroid {
-    enum Action {
-        enum Movement: String {
+    public enum Action {
+        public enum Movement: String {
             case north, south, east, west
         }
         

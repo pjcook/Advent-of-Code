@@ -8,7 +8,7 @@
 
 import Foundation
 
-func day24Part2(bugGrid: BugGrid, iterations: Int) -> Int {
+public func day24Part2(bugGrid: BugGrid, iterations: Int) -> Int {
     for _ in 0..<iterations {
 //        print("Level", i)
         updateGrid(bugGrid)
@@ -42,7 +42,7 @@ private func debugPrint(_ bugGrid: BugGrid) {
     bugGrid.debugPrintParent()
 }
 
-extension BugGrid {
+public extension BugGrid {
     func sample1() {
         e = true
         f = true
@@ -122,7 +122,7 @@ extension BugGrid {
     }
 }
 
-class BugGrid {
+public class BugGrid {
     private(set) var a = false
     private(set) var b = false
     private(set) var c = false
@@ -183,13 +183,15 @@ class BugGrid {
     private(set) var x2 = false
     private(set) var y2 = false
     
-    var parent: BugGrid?
-    var child: BugGrid?
+    public var parent: BugGrid?
+    public var child: BugGrid?
     
     private var parentH: Bool { return parent?.h ?? false }
     private var parentN: Bool { return parent?.n ?? false }
     private var parentR: Bool { return parent?.r ?? false }
     private var parentL: Bool { return parent?.l ?? false }
+    
+    public init() {}
     
     private var childTop: Int {
         return
@@ -227,28 +229,28 @@ class BugGrid {
             ((child?.y ?? false) ? 1 : 0)
     }
     
-    var bugCount: Int {
+    public var bugCount: Int {
         let count = [a,b,c,d,e,f,g,h,i,j,k,l,n,o,p,q,r,s,t,u,v,w,x,y].reduce(0) { $0 + ($1 ? 1 : 0) }
 //        print("Bug count:", count)
         return count
     }
     
-    var parentBugCount: Int {
+    public var parentBugCount: Int {
         return (parent?.bugCount ?? 0) + (parent?.parentBugCount ?? 0)
     }
     
-    var childBugCount: Int {
+    public var childBugCount: Int {
         return (child?.bugCount ?? 0) + (child?.childBugCount ?? 0)
     }
     
-    func processParent() {
+    public func processParent() {
         createParentIfNeeded()
         createChildIfNeeded()
         parent?.updateData()
         parent?.processParent()
     }
     
-    func processChild() {
+    public func processChild() {
         createParentIfNeeded()
         createChildIfNeeded()
         child?.updateData()
@@ -259,7 +261,7 @@ class BugGrid {
         return items.reduce(0) { $0 + ($1 ? 1 : 0) }
     }
     
-    func updateData() {
+    public func updateData() {
         a2 = isAlive(currentValue: a, count: count([b, f, parentH, parentL]))
         b2 = isAlive(currentValue: b, count: count([a, c, parentH, g]))
         c2 = isAlive(currentValue: c, count: count([b, d, parentH, h]))
@@ -291,7 +293,7 @@ class BugGrid {
         y2 = isAlive(currentValue: y, count: count([x, t, parentN, parentR]))
     }
     
-    func finishProcessing() {
+    public func finishProcessing() {
         a = a2
         b = b2
         c = c2
@@ -318,12 +320,12 @@ class BugGrid {
         y = y2
     }
     
-    func finishProcessingParent() {
+    public func finishProcessingParent() {
         parent?.finishProcessing()
         parent?.finishProcessingParent()
     }
     
-    func finishProcessingChild() {
+    public func finishProcessingChild() {
         child?.finishProcessing()
         child?.finishProcessingChild()
     }

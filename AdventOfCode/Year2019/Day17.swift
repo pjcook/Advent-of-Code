@@ -8,14 +8,14 @@
 
 import Foundation
 
-class VacuumRobot {
+public class VacuumRobot {
     private var computer: SteppedIntComputer?
     private let tiles = [35:"🟤", 46:"⚫️", 10:"⚪️", 65:"A", 66:"B", 67:"C", 82:"R", 76:"L", 94:"🔼", 118:"🔽", 60:"◀️", 62:"▶️", 401:"⚪️"]
-    var map: [Point:CalibrationInput] = [:]
-    var position = Point.zero
-    var collectedDust = 0
+    public var map: [Point:CalibrationInput] = [:]
+    public var position = Point.zero
+    public var collectedDust = 0
     
-    enum CalibrationInput: Int {
+    public enum CalibrationInput: Int {
         case scaffold = 35  // #
         case empty = 46     // .
         case newLine = 10   // newline
@@ -31,7 +31,7 @@ class VacuumRobot {
         case visited = 401
     }
 
-    init(_ input: [Int]) {
+    public init(_ input: [Int]) {
         computer = SteppedIntComputer(
             id: 6,
             data: input,
@@ -45,21 +45,21 @@ class VacuumRobot {
         )
     }
     
-    func calibrate() -> Int {
+    public func calibrate() -> Int {
         computer?.process()
         let points = findIntersects()
         return sumIntersects(points)
     }
     
-    func sumIntersects(_ points: [Point]) -> Int {
+    public func sumIntersects(_ points: [Point]) -> Int {
         return points.reduce(0) { $0 + ($1.x * $1.y) }
     }
     
-    func findIntersects() -> [Point] {
+    public func findIntersects() -> [Point] {
         return map.filter { isIntersectPoint($0.key) }.map { $0.key }
     }
     
-    func isIntersectPoint(_ point: Point) -> Bool {
+    public func isIntersectPoint(_ point: Point) -> Bool {
         var count = 0
         count += (map[point + Direction.N.point] ?? .empty) == .scaffold ? 1 : 0
         count += (map[point + Direction.S.point] ?? .empty) == .scaffold ? 1 : 0
@@ -68,16 +68,16 @@ class VacuumRobot {
         return count == 4
     }
 
-    var inputPointer = 0
-    var inputInstructions = [Int]()
+    public var inputPointer = 0
+    public var inputInstructions = [Int]()
     
-    func populateInstructions(_ input: String) {
+    public func populateInstructions(_ input: String) {
         inputInstructions = input.toAscii()
         inputPointer = 0
     }
     
-    var storeOutput = false
-    var storedOutput = ""
+    public var storeOutput = false
+    public var storedOutput = ""
     
     private func readInput() -> Int {
 //        if !storeOutput {
@@ -134,7 +134,7 @@ class VacuumRobot {
 //        print("Output:", status, value, position)
     }
     
-    func drawMapInConsole() {
+    public func drawMapInConsole() {
         var rawMap = [Point:Int]()
         _ = map.map { rawMap[$0] = $1.rawValue }
         drawMap(rawMap, tileMap: tiles)

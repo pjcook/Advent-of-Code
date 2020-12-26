@@ -8,7 +8,7 @@
 
 import XCTest
 import InputReader
-@testable import Year2019
+import Year2019
 
 class Day12Tests: XCTestCase {
     let sampleInput = parseMoonInput(try! readInputAsStrings(filename: "Day12_sample_data1.input", bundle: Bundle(for: Day12Tests.self))).map { Moon($0) }

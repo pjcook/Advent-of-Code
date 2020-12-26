@@ -9,21 +9,21 @@
 import Foundation
 import InputReader
 
-struct IntCodeComputer {
-    enum OpCode: Int {
+public struct IntCodeComputer {
+    public enum OpCode: Int {
         case add = 1
         case multiply = 2
         case finished = 99
     }
 
     private var data: [Int]
-    var readData: [Int] { return data }
+    public var readData: [Int] { return data }
     
-    init(data: [Int]) {
+    public init(data: [Int]) {
         self.data = data
     }
     
-    mutating func process() throws {
+    public mutating func process() throws {
         guard !data.isEmpty else { throw Errors.intCodeNoData }
         var position = 0
         let dataCount = data.count
@@ -47,14 +47,14 @@ struct IntCodeComputer {
         }
     }
     
-    static func computeProgram(data: [Int]) throws -> Int {
+    public static func computeProgram(data: [Int]) throws -> Int {
         var computer = IntCodeComputer(data: data)
         try computer.process()
         return computer.readData[0]
     }
 }
 
-func calculateNounVerb(expectedResult: Int, data: [Int]) throws -> (Int, Int) {
+public func calculateNounVerb(expectedResult: Int, data: [Int]) throws -> (Int, Int) {
     var data = data
     
     for noun in 3..<99 {

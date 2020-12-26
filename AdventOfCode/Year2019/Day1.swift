@@ -8,16 +8,16 @@
 
 import Foundation
 
-func basicFuelCalculation(mass: Int) -> Int {
+public func basicFuelCalculation(mass: Int) -> Int {
     return (mass / 3) - 2
 }
 
-func calculateFuelRequired(mass: Int) -> Int {
+public func calculateFuelRequired(mass: Int) -> Int {
     let fuel = basicFuelCalculation(mass: mass)
     guard fuel > 0 else { return 0 }
     return fuel + calculateFuelRequired(mass: fuel)
 }
 
-func calculateFuelRequired(input: [Int]) -> Int {
+public func calculateFuelRequired(input: [Int]) -> Int {
     return input.reduce(0) { $0 + calculateFuelRequired(mass: $1) }
 }

@@ -8,15 +8,15 @@
 
 import Foundation
 
-enum Direction: CustomDebugStringConvertible {
+public enum Direction: CustomDebugStringConvertible {
     case N
     case E
     case S
     case W
     
-    static let all: [Direction] = [.N, .E, .S, .W]
+    public static let all: [Direction] = [.N, .E, .S, .W]
     
-    var point: Point {
+    public var point: Point {
         switch self {
             case .N: return Point(x: 0, y: 1)
             case .E: return Point(x: 1, y: 0)
@@ -25,12 +25,12 @@ enum Direction: CustomDebugStringConvertible {
         }
     }
     
-    func rotate(_ value: Int) -> Direction {
+    public func rotate(_ value: Int) -> Direction {
         if value == 0 { return rotateLeft() }
         return rotateRight()
     }
     
-    func rotateLeft() -> Direction {
+    public func rotateLeft() -> Direction {
         switch self {
         case .N: return .W
         case .E: return .N
@@ -39,7 +39,7 @@ enum Direction: CustomDebugStringConvertible {
         }
     }
     
-    func rotateRight() -> Direction {
+    public func rotateRight() -> Direction {
         switch self {
         case .N: return .E
         case .E: return .S
@@ -48,7 +48,7 @@ enum Direction: CustomDebugStringConvertible {
         }
     }
     
-    var debugDescription: String {
+    public var debugDescription: String {
         switch self {
             case .N: return "N"
             case .E: return "E"
@@ -58,7 +58,7 @@ enum Direction: CustomDebugStringConvertible {
     }
 }
 
-func paintWithRobot(_ program: [Int], startColor: Int) -> Int {
+public func paintWithRobot(_ program: [Int], startColor: Int) -> Int {
     let bigProgram = program + Array(repeating: 0, count: 1000)
     let computer = AdvancedIntCodeComputer(data: bigProgram)
     var output = [Point.zero:startColor]
@@ -87,7 +87,7 @@ func paintWithRobot(_ program: [Int], startColor: Int) -> Int {
     return output.count
 }
 
-func drawShipRegistration(_ output: [Point:Int]) {
+public func drawShipRegistration(_ output: [Point:Int]) {
     let minX = output.reduce(0) { min($0,$1.key.x) }
     let minY = output.reduce(0) { min($0,$1.key.y) }
     let maxX = output.reduce(0) { max($0,$1.key.x) }

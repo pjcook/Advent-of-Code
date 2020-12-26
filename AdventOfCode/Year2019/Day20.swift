@@ -8,7 +8,7 @@
 
 import GameplayKit
 
-func parsePlutoMap(_ input: [String]) -> ([Point:Int], [Point:String]) {
+public func parsePlutoMap(_ input: [String]) -> ([Point:Int], [Point:String]) {
     var map = [Point:Int]()
     var portals = [Point:String]()
     let width = input.reduce(0) { max($0, $1.count)}
@@ -62,14 +62,14 @@ func parsePlutoMap(_ input: [String]) -> ([Point:Int], [Point:String]) {
     return (map, portals)
 }
 
-class PortalMaze {
-    let map: GKGridGraph<GKGridGraphNode>
-    let rawMap: [Point:Int]
-    let keys: [Point:String]
-    let startingPoint: Point
-    let endPoint: Point
+public class PortalMaze {
+    public let map: GKGridGraph<GKGridGraphNode>
+    public let rawMap: [Point:Int]
+    public let keys: [Point:String]
+    public let startingPoint: Point
+    public let endPoint: Point
     
-    init(rawMap: [Point:Int], keys: [Point:String]) {
+    public init(rawMap: [Point:Int], keys: [Point:String]) {
         self.rawMap = rawMap
         self.keys = keys
         startingPoint = keys.first(where: { $0.value == "AA" })!.key
@@ -114,7 +114,7 @@ class PortalMaze {
         }
     }
     
-    func findShortestRoute() -> Int {
+    public func findShortestRoute() -> Int {
         let startNode = map.node(atGridPosition: startingPoint.vector)!
         let endNode = map.node(atGridPosition: endPoint.vector)!
 //        let startNode = map.node(atGridPosition: Point(x: 9, y: 5).vector)!

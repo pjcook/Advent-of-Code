@@ -8,12 +8,12 @@
 
 import Foundation
 
-class FFT {
-    let basePattern = [0, 1, 0, -1]
-    var input = [Int]()
-    var output = [Int]()
+public class FFT {
+    public let basePattern = [0, 1, 0, -1]
+    public var input = [Int]()
+    public var output = [Int]()
     
-    init(_ input: [Int]) {
+    public init(_ input: [Int]) {
         self.input = input
     }
     
@@ -41,15 +41,15 @@ class FFT {
         return result
     }
     
-    func sumNegativeSlice(_ start: Int, _ end: Int) -> Int {
+    public func sumNegativeSlice(_ start: Int, _ end: Int) -> Int {
         return input[start..<end].reduce(0) { $0 + ($1 * -1) }
     }
     
-    func sumSlice(_ start: Int, _ end: Int) -> Int {
+    public func sumSlice(_ start: Int, _ end: Int) -> Int {
         return input[start..<end].reduce(0, +)
     }
     
-    func resolve2(phases: Int) -> [Int] {
+    public func resolve2(phases: Int) -> [Int] {
         output = (1...phases)
             .reduce(input) { values, _ -> [Int] in
                 var total = values.reduce(0, +)
@@ -61,7 +61,7 @@ class FFT {
         return output
     }
     
-    func resolve(phases: Int) -> [Int] {
+    public func resolve(phases: Int) -> [Int] {
         let length = input.count
         let halfLength = length / 2
                 
@@ -89,7 +89,7 @@ class FFT {
         return output
     }
     
-    func result(_ startIndex: Int) -> Int {
+    public func result(_ startIndex: Int) -> Int {
         var answer = 0
         answer += output[startIndex + 0] * 10000000
         answer += output[startIndex + 1] * 1000000
@@ -102,7 +102,7 @@ class FFT {
         return answer
     }
     
-    func multiplier(_ y: Int, _ x: Int) -> Int {
+    public func multiplier(_ y: Int, _ x: Int) -> Int {
         let numberOfPatterns = basePattern.count
         let remainder = (x+1) / (y+1)
         return basePattern[remainder%numberOfPatterns]

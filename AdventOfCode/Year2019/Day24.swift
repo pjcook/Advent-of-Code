@@ -16,13 +16,13 @@ import Foundation
 #.#.#
  */
 
-struct Info {
-    let alive: Bool
-    let value: Int
+public struct Info {
+    public let alive: Bool
+    public let value: Int
 }
 
-var data = [Point:Info]()
-func day24Part1() -> Int {
+public var data = [Point:Info]()
+public func day24Part1() -> Int {
     var results = [Int:Bool]()
 
     data = [
@@ -45,12 +45,12 @@ func day24Part1() -> Int {
     return result
 }
 
-func snapshotValue(_ point: Point) -> Bool {
+public func snapshotValue(_ point: Point) -> Bool {
     guard let info = data[point] else { return false }
     return info.alive
 }
 
-func isAlive(_ point: Point, _ info: Info) -> Bool {
+public func isAlive(_ point: Point, _ info: Info) -> Bool {
     var count = 0
     count += snapshotValue(point + Direction.N.point) ? 1 : 0
     count += snapshotValue(point + Direction.E.point) ? 1 : 0
@@ -64,7 +64,7 @@ func isAlive(_ point: Point, _ info: Info) -> Bool {
     }
 }
 
-func updateData() {
+public func updateData() {
     var newData = [Point:Info]()
     _ = data.map {
         let info = Info(alive: isAlive($0.key, $0.value), value: $0.value.value)
@@ -73,7 +73,7 @@ func updateData() {
     data = newData
 }
 
-func calculateResult() -> Int {
+public func calculateResult() -> Int {
     return data.reduce(0) { $0 + (
         $1.value.alive ? $1.value.value : 0
         ) }

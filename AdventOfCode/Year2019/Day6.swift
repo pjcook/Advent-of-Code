@@ -7,21 +7,21 @@
 //
 
 import Foundation
-typealias PlanetID = String
+public typealias PlanetID = String
 
-extension PlanetID {
+public extension PlanetID {
     static let centerOfMass = PlanetID("COM")
     static let you = PlanetID("YOU")
     static let santa = PlanetID("SAN")
 }
 
-struct UniversalOrbitMap {
+public struct UniversalOrbitMap {
     private var orbits: [PlanetID:PlanetID] = [:]
-    var totalOrbits: Int {
+    public var totalOrbits: Int {
         return orbits.reduce(0) { $0 + countOrbitChain($1.key) }
     }
     
-    init(_ data: [String]) {
+    public init(_ data: [String]) {
         var orbits = [PlanetID:PlanetID]()
         for value in data {
             let items = value.split(separator: ")").map { PlanetID($0) }
@@ -33,7 +33,7 @@ struct UniversalOrbitMap {
         self.orbits = orbits
     }
     
-    func distance(of: PlanetID, to: PlanetID) -> Int {
+    public func distance(of: PlanetID, to: PlanetID) -> Int {
         let chain1 = chain(of)
         let chain2 = chain(to)
 

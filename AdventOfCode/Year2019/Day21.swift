@@ -8,13 +8,13 @@
 
 import Foundation
 
-class SpringDroid {
+public class SpringDroid {
     private var computer: SteppedIntComputer?
     private var springScript = [Int]()
     private var output = [String]()
-    var finalOutput = 0
+    public var finalOutput = 0
     
-    init(_ input: [Int]) {
+    public init(_ input: [Int]) {
         computer = SteppedIntComputer(
             id: 6,
             data: input,
@@ -25,7 +25,7 @@ class SpringDroid {
         )
     }
     
-    func process(_ input: String) {
+    public func process(_ input: String) {
         springScript = input.compactMap {
             if let ascii = $0.asciiValue {
                 return Int(ascii)
@@ -43,7 +43,7 @@ class SpringDroid {
         return value
     }
     
-    var tempOutput = ""
+    public var tempOutput = ""
     private func processOutput(_ value: Int) {
         guard let asciiValue = value.toAscii() else {
             print("OUTPUT:", value)

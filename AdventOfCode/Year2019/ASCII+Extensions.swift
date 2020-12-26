@@ -9,7 +9,7 @@
 import Foundation
 
 extension String {
-    func toAscii() -> [Int] {
+    public func toAscii() -> [Int] {
         var output = [Int]()
         for c in utf8 {
             output.append(Int(c))
@@ -19,7 +19,7 @@ extension String {
 }
 
 extension Int {
-    func toAscii() -> String? {
+    public func toAscii() -> String? {
         guard self >= 0 else { return nil }
         if let us = UnicodeScalar(self) {
             return String(Character(us))

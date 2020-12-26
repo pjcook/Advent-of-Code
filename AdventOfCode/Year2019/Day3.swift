@@ -9,15 +9,15 @@
 import Foundation
 import InputReader
 
-struct ManhattanInstruction {
-    enum Direction: String {
+public struct ManhattanInstruction {
+    public enum Direction: String {
         case R,L,U,D
     }
     
-    let direction: Direction
-    let distance: Int
+    public let direction: Direction
+    public let distance: Int
     
-    init(_ value: String) throws {
+    public init(_ value: String) throws {
         var value = value
         guard
             let direction = Direction(rawValue: String(value.removeFirst())),
@@ -30,25 +30,32 @@ struct ManhattanInstruction {
     }
 }
 
-struct GridRef: Hashable {
-    let x: Int
-    let y: Int
+public struct GridRef: Hashable {
+    public let x: Int
+    public let y: Int
 }
 
-struct WireData {
-    struct DirectionRange {
-        let up: Int
-        let down: Int
-        let left: Int
-        let right: Int
+public struct WireData {
+    public struct DirectionRange {
+        public let up: Int
+        public let down: Int
+        public let left: Int
+        public let right: Int
         
-        var maxX: Int { return left + right + 1 }
-        var maxY: Int { return up + down + 1 }
-        var origin: GridRef {
+        public init(up: Int, down: Int, left: Int, right: Int) {
+            self.up = up
+            self.down = down
+            self.left = left
+            self.right = right
+        }
+        
+        public var maxX: Int { return left + right + 1 }
+        public var maxY: Int { return up + down + 1 }
+        public var origin: GridRef {
             return GridRef(x: left, y: up)
         }
         
-        func maxRange(_ range: DirectionRange) -> DirectionRange {
+        public func maxRange(_ range: DirectionRange) -> DirectionRange {
             return DirectionRange(
                 up: max(up, range.up),
                 down: max(down, range.down),
@@ -57,19 +64,18 @@ struct WireData {
             )
         }
         
-        static let zero = DirectionRange(up: 0, down: 0, left: 0, right: 0)
+        public static let zero = DirectionRange(up: 0, down: 0, left: 0, right: 0)
     }
     
-    let data: [ManhattanInstruction]
-    let range: DirectionRange
+    public let data: [ManhattanInstruction]
+    public let range: DirectionRange
     
-    
-    init(_ input: String) throws {
+    public init(_ input: String) throws {
         data = try input.split(separator: ",").compactMap { try ManhattanInstruction(String($0))}
         range = Self.calculateRange(data)
     }
     
-    static func calculateRange(_ data: [ManhattanInstruction]) -> DirectionRange {
+    public static func calculateRange(_ data: [ManhattanInstruction]) -> DirectionRange {
         var up = 0
         var down = 0
         var left = 0
@@ -104,20 +110,20 @@ struct WireData {
     }
 }
 
-struct ManhattanMap {
+public struct ManhattanMap {
     private var points = [GridRef:Int]()
     private let range: WireData.DirectionRange
     private let columns: Int
     private let rows: Int
     private var wireData = [WireData]()
     
-    init(_ range: WireData.DirectionRange) {
+    public init(_ range: WireData.DirectionRange) {
         columns = range.maxX
         rows = range.maxY
         self.range = range
     }
     
-    func minManhattanDistance() -> Int? {
+    public func minManhattanDistance() -> Int? {
         var distance = Int.max
         let lineCount = wireData.count
         
@@ -133,7 +139,7 @@ struct ManhattanMap {
         return distance
     }
     
-    func fewestSteps() -> Int? {
+    public func fewestSteps() -> Int? {
         var steps = [Int]()
         let lineCount = wireData.count
         for item in points where item.value == lineCount {
@@ -147,7 +153,7 @@ struct ManhattanMap {
         return steps.sorted().first
     }
     
-    func plot(_ data: WireData, to point: GridRef) -> Int {
+    public func plot(_ data: WireData, to point: GridRef) -> Int {
         var stepCount = 0
         var x = range.origin.x
         var y = range.origin.y
@@ -189,7 +195,7 @@ struct ManhattanMap {
         return stepCount
     }
     
-    mutating func plot(_ data: WireData) {
+    public mutating func plot(_ data: WireData) {
         wireData.append(data)
         var x = range.origin.x
         var y = range.origin.y

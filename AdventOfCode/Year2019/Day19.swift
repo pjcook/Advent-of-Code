@@ -8,12 +8,16 @@
 
 import Foundation
 
-struct GridSize {
-    let width: Int
-    let height: Int
+public struct GridSize {
+    public let width: Int
+    public let height: Int
+    public init(width: Int, height: Int) {
+        self.width = width
+        self.height = height
+    }
 }
 
-class TractorBeamAnalyser {
+public class TractorBeamAnalyser {
     private var inputs: [Int] = []
     private var outputs: [Point: Int] = [:]
     private var position = Point.zero
@@ -21,17 +25,17 @@ class TractorBeamAnalyser {
     private let size: GridSize
     private let input: [Int]
     
-    init(input: [Int], size: GridSize) {
+    public init(input: [Int], size: GridSize) {
         self.size = size
         self.input = input
     }
     
-    enum HorizontalTractorState {
+    public enum HorizontalTractorState {
         case looking, found
     }
-    var state: HorizontalTractorState = .looking
+    public var state: HorizontalTractorState = .looking
 
-    func calculate() -> Int {
+    public func calculate() -> Int {
         position = Point.zero
         inputs = [position.x,position.y]
         outputs = [:]
@@ -44,7 +48,7 @@ class TractorBeamAnalyser {
         return outputs.reduce(0) { $0 + $1.value }
     }
     
-    func printGridFor(_ size: GridSize, startPosition: Point) {
+    public func printGridFor(_ size: GridSize, startPosition: Point) {
         for y in 0..<size.height {
             for x in 0..<size.width {
                 _ = checkPosition(Point(x: x+startPosition.x, y: y+startPosition.y))
@@ -53,7 +57,7 @@ class TractorBeamAnalyser {
         drawOutputs()
     }
     
-    func findTractorDistance(_ size: GridSize, startPosition: Point) -> Int {
+    public func findTractorDistance(_ size: GridSize, startPosition: Point) -> Int {
         position = startPosition
         inputs = [position.x,position.y]
         outputs = [:]
@@ -98,11 +102,11 @@ class TractorBeamAnalyser {
         return position.x * 10000 + position.y
     }
     
-    func drawOutputs() {
+    public func drawOutputs() {
         drawMap(outputs, tileMap: [0: "⚫️", 1: "🟣"], filename: "Day19.output")
     }
     
-    func checkPosition(_ point: Point) -> Int {
+    public func checkPosition(_ point: Point) -> Int {
         if let value = outputs[point] {
             return value
         }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum BlockTile: Int {
+public enum BlockTile: Int {
     case empty = 0
     case wall = 1
     case block = 2
@@ -16,13 +16,13 @@ enum BlockTile: Int {
     case ball = 4
 }
 
-enum Joystick: Int {
+public enum Joystick: Int {
     case neutral = 0
     case left = -1
     case right = 1
 }
 
-func runGame(_ input: [Int]) -> Int {
+public func runGame(_ input: [Int]) -> Int {
     let bigInput = input + Array(repeating: 0, count: 2000)
     var output = [Int]()
     let computer = AdvancedIntCodeComputer(data: bigInput)
@@ -37,7 +37,7 @@ func runGame(_ input: [Int]) -> Int {
 }
 
 
-func playGame(_ input: [Int], drawBoard: Bool = false) -> Int {
+public func playGame(_ input: [Int], drawBoard: Bool = false) -> Int {
     let bigInput = input + Array(repeating: 0, count: 2000)
     var output = [Int]()
     let computer = AdvancedIntCodeComputer(data: bigInput)
@@ -76,7 +76,7 @@ func playGame(_ input: [Int], drawBoard: Bool = false) -> Int {
     return score
 }
 
-func drawGameBoard(_ instruction: [Point:BlockTile], score: Int) {
+public func drawGameBoard(_ instruction: [Point:BlockTile], score: Int) {
     let minX = instruction.reduce(0) { min($0,$1.key.x) }
     let minY = instruction.reduce(0) { min($0,$1.key.y) }
     let maxX = instruction.reduce(0) { max($0,$1.key.x) }

@@ -8,16 +8,16 @@
 
 import Foundation
 
-class ShipNetwork {
+public class ShipNetwork {
     private var computers = [Int:NetworkComputer]()
     private let numberOfComputers: Int
     private let natQueue = DispatchQueue(label: "NAT")
-    var finalOutput = 0
-    let group = DispatchGroup()
-    var queues = [DispatchQueue]()
-    var isPart1 = true
+    public var finalOutput = 0
+    public let group = DispatchGroup()
+    public var queues = [DispatchQueue]()
+    public var isPart1 = true
 
-    init(_ input: [Int], numberOfComputers: Int) {
+    public init(_ input: [Int], numberOfComputers: Int) {
         self.numberOfComputers = numberOfComputers
         for i in 0..<numberOfComputers {
             let computer = NetworkComputer(input, id: i, network: self)
@@ -25,7 +25,7 @@ class ShipNetwork {
         }
     }
     
-    func process() {
+    public func process() {
         computers.forEach { item in
             let queue = DispatchQueue(label: String(item.value.id))
             queue.async {
@@ -47,9 +47,9 @@ class ShipNetwork {
         }
     }
     
-    var x = 0
-    var y = 0
-    func sendMessage(address: Int, x: Int, y: Int) {
+    public var x = 0
+    public var y = 0
+    public func sendMessage(address: Int, x: Int, y: Int) {
 //        print("sendMessage", address, x, y)
         if isPart1 && address == 255 {
             finalOutput = y
@@ -74,7 +74,7 @@ class ShipNetwork {
     
     private var idleComputers = [Int:Int]()
     private var sentByNat = [Int:Int]()
-    func readingEmptyInput(_ id: Int) {
+    public func readingEmptyInput(_ id: Int) {
         natQueue.async {
             self.idleComputers[id] = (self.idleComputers[id, default: 0]) + 1
             if self.isNetworkIdle() && self.y != 0 {
@@ -90,23 +90,23 @@ class ShipNetwork {
         }
     }
     
-    func computerFinished(address: Int) {
+    public func computerFinished(address: Int) {
         guard let computer = computers[address] else { return }
         computer.leaveGroup(group)
         computers.removeValue(forKey: address)
     }
 }
 
-class NetworkComputer {
+public class NetworkComputer {
     private var computer: SteppedIntComputer?
     private var inputs = [Int]()
     private var outputs = [Int]()
     private let network: ShipNetwork
     
-    var id: Int { return computer!.id }
-    var hasInputs: Bool { return !inputs.isEmpty }
+    public var id: Int { return computer!.id }
+    public var hasInputs: Bool { return !inputs.isEmpty }
     
-    init(_ input: [Int], id: Int, network: ShipNetwork) {
+    public init(_ input: [Int], id: Int, network: ShipNetwork) {
         self.network = network
         inputs.append(id)
         computer = SteppedIntComputer(
@@ -119,20 +119,20 @@ class NetworkComputer {
         )
     }
     
-    func process() {
+    public func process() {
         computer?.process()
     }
     
-    func addInput(x: Int, y: Int) {
+    public func addInput(x: Int, y: Int) {
         inputs.append(x)
         inputs.append(y)
     }
     
-    func enterGroup(_ group: DispatchGroup) {
+    public func enterGroup(_ group: DispatchGroup) {
         group.enter()
     }
     
-    func leaveGroup(_ group: DispatchGroup) {
+    public func leaveGroup(_ group: DispatchGroup) {
         group.leave()
     }
     

@@ -8,27 +8,27 @@
 
 import GameplayKit
 
-struct Path {
-    let start: Point
-    let end: Point
-    let distance: Int
-    let doors: [Int]
-    let path: [Point]
+public struct Path {
+    public let start: Point
+    public let end: Point
+    public let distance: Int
+    public let doors: [Int]
+    public let path: [Point]
 }
 
-struct Job {
-    let remainingKeys: [Point: Int]
-    let visitedKeys: [Int]
-    let distance: Int
+public struct Job {
+    public let remainingKeys: [Point: Int]
+    public let visitedKeys: [Int]
+    public let distance: Int
 }
 
-class MultiPathFinder {
+public class MultiPathFinder {
     private var rawMap = [Point:Int]()
     private let keys: [Point:Int]
     private var pathFinders = [PathFinder]()
     private var tempResult = Int.max //1886
 
-    init(_ input: [String]) {
+    public init(_ input: [String]) {
         for y in 0..<input.count {
             var row = input[y]
             for x in 0..<input[0].count {
@@ -53,12 +53,12 @@ class MultiPathFinder {
         keys = allKeys
     }
 
-    let group = DispatchGroup()
-    var queues = [DispatchQueue]()
+    public let group = DispatchGroup()
+    public var queues = [DispatchQueue]()
     
-    var queue = OperationQueue()
-    var journeyDistance = Int.max
-    func addOperationsToQueue(_ job: Job) {
+    public var queue = OperationQueue()
+    public var journeyDistance = Int.max
+    public func addOperationsToQueue(_ job: Job) {
         if self.queue.operationCount % 1000000 == 0 {
             print("@@@", "VisitedKeys", job.visitedKeys.count, (job.visitedKeys).map({ $0.toAscii()! }).joined(), "Distance", job.distance, self.tempResult, "Queue", self.queue.operationCount)
         }
@@ -100,7 +100,7 @@ class MultiPathFinder {
         }
     }
     
-    func calculateShortestPathToUnlockAllDoorsBFS() -> Int {
+    public func calculateShortestPathToUnlockAllDoorsBFS() -> Int {
         queue.maxConcurrentOperationCount = 8
         let job = Job(remainingKeys: keys, visitedKeys: [], distance: 0)
         group.enter()
@@ -112,14 +112,14 @@ class MultiPathFinder {
         return journeyDistance
     }
     
-    func calculateShortestPathToUnlockAllDoorsSingleThreaded() -> Int {
+    public func calculateShortestPathToUnlockAllDoorsSingleThreaded() -> Int {
         let analyser = Analyser(findValidKeys: self.findValidKeys, generateCacheID: generateCacheID, group: self.group)
         let result = analyser.calculate(remainingKeys: keys, visitedKeys: [], distance: 0)
         analyser.leaveGroup()
         return result
     }
     
-    func calculateShortestPathToUnlockAllDoors() -> Int {
+    public func calculateShortestPathToUnlockAllDoors() -> Int {
         let validKeys = findValidKeys(remainingKeys: keys, visitedKeys: [], distance: 0)
         
         var journeyDistance = Int.max
@@ -170,30 +170,30 @@ class MultiPathFinder {
     }
 }
 
-var tempResult = Int.max
-var cachedResults = [String:Int]()
-let semaphore = DispatchSemaphore(value: 1)
-class Analyser {
-    typealias FindKeys = (_ remainingKeys: [Point: Int], _ visitedKeys: [Int], _ d: Int) -> [Point: (Int,Int)]
-    typealias GenerateCacheID = (_ cost: Int, _ remainingKeys: [Int]) -> String
+public var tempResult = Int.max
+public var cachedResults = [String:Int]()
+public let semaphore = DispatchSemaphore(value: 1)
+public class Analyser {
+    public typealias FindKeys = (_ remainingKeys: [Point: Int], _ visitedKeys: [Int], _ d: Int) -> [Point: (Int,Int)]
+    public typealias GenerateCacheID = (_ cost: Int, _ remainingKeys: [Int]) -> String
     
-    let findValidKeys: FindKeys
-    let generateCacheID: GenerateCacheID
-    let group: DispatchGroup
+    public let findValidKeys: FindKeys
+    public let generateCacheID: GenerateCacheID
+    public let group: DispatchGroup
     
-    init(findValidKeys: @escaping FindKeys, generateCacheID: @escaping GenerateCacheID, group: DispatchGroup) {
+    public init(findValidKeys: @escaping FindKeys, generateCacheID: @escaping GenerateCacheID, group: DispatchGroup) {
         self.findValidKeys = findValidKeys
         self.generateCacheID = generateCacheID
         self.group = group
         group.enter()
     }
     
-    func leaveGroup() {
+    public func leaveGroup() {
         group.leave()
     }
         
     private var tick = 0
-    func calculate(remainingKeys: [Point: Int], visitedKeys: [Int], distance d: Int) -> Int {
+    public func calculate(remainingKeys: [Point: Int], visitedKeys: [Int], distance d: Int) -> Int {
         var journeyDistance = Int.max
         tick += 1
         if tick % 1000000 == 0 {
@@ -250,24 +250,24 @@ class Analyser {
     }
 }
 
-class PathFinder {
-    let id: Int
-    var rawMap = [Point:Int]()
-    var startingPoint: Point?
+public class PathFinder {
+    public let id: Int
+    public var rawMap = [Point:Int]()
+    public var startingPoint: Point?
     
-    let start = "@".toAscii().first!
-    let wall = "#".toAscii().first!
-    let empty = ".".toAscii().first!
+    public let start = "@".toAscii().first!
+    public let wall = "#".toAscii().first!
+    public let empty = ".".toAscii().first!
     
-    var keys = [Point:Int]()
-    var doorsData = [Point:Int]()
-    var isFinished = false
-    var visitedKeys = [Int]()
+    public var keys = [Point:Int]()
+    public var doorsData = [Point:Int]()
+    public var isFinished = false
+    public var visitedKeys = [Int]()
     private var cachedPaths = [Path]()
-    let keyToDoor: [Int:Int]
-    let doorToKey: [Int:Int]
+    public let keyToDoor: [Int:Int]
+    public let doorToKey: [Int:Int]
 
-    init(id: Int) {
+    public init(id: Int) {
         self.id = id
         var keyToDoor: [Int:Int] = [:]
         var doorToKey: [Int:Int] = [:]
@@ -283,7 +283,7 @@ class PathFinder {
         self.doorToKey = doorToKey
     }
     
-    convenience init(_ input: [String]) {
+    public convenience init(_ input: [String]) {
         self.init(id: 1)
         
         for y in 0..<input.count {
@@ -297,24 +297,24 @@ class PathFinder {
         parseMap()
     }
     
-    convenience init(_ input: [Point:Int], id: Int = 1) {
+    public convenience init(_ input: [Point:Int], id: Int = 1) {
         self.init(id: id)
         rawMap = input
         parseMap()
     }
     
-    func calculateShortestPathToUnlockAllDoors() -> Int {
+    public func calculateShortestPathToUnlockAllDoors() -> Int {
         guard let startingPoint = startingPoint else { return -1 }
         let journeyDistance = calculate(startingPoint: startingPoint, remainingKeys: keys, visitedKeys: [])
         return journeyDistance
     }
     
-    func calculatePosition(_ visited: [Int]) -> Point {
+    public func calculatePosition(_ visited: [Int]) -> Point {
         guard let value = visited.reversed().first(where: { keys.values.contains($0) }) else { return startingPoint! }
         return keys.first(where: { $0.value == value })?.key ?? startingPoint!
     }
     
-    var cachedResults = [String:Int]()
+    public var cachedResults = [String:Int]()
     internal func calculate(startingPoint: Point, remainingKeys: [Point : Int], visitedKeys: [Int]) -> Int {
         var journeyDistance = Int.max
         for key in remainingKeys {
@@ -352,16 +352,16 @@ class PathFinder {
         return journeyDistance
     }
     
-    func generateCacheID(_ keys: [Point:Int], position: Point) -> String {
+    public func generateCacheID(_ keys: [Point:Int], position: Point) -> String {
         let prefix = "id:\(id):x:\(position.x):y:\(position.y)"
         return prefix + keys.map({ $0.value.toAscii()! }).sorted().joined()
     }
     
-    func remainingDoors(_ visited: [Int]) -> [Int] {
+    public func remainingDoors(_ visited: [Int]) -> [Int] {
         return doorsData.compactMap({ visited.contains(doorToKey[$0.value]!) ? nil : $0.value })
     }
     
-    func distance(_ start: Point, _ end: Point, _ visited: [Int]) -> Int {
+    public func distance(_ start: Point, _ end: Point, _ visited: [Int]) -> Int {
         let remainingDoors = self.remainingDoors(visited)
         guard let path = cachedPaths.first(where: { $0.start == start && $0.end == end }) else {
             print("ERROR", start, end, visited)
@@ -459,7 +459,7 @@ extension PathFinder {
 
 // Draw map to console
 extension PathFinder {
-    func drawGridMap(position: Point) {
+    public func drawGridMap(position: Point) {
         var rawData = rawMap
         rawData[position] = 2
         

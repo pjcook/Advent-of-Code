@@ -8,27 +8,27 @@
 
 import Foundation
 
-struct Vector: Hashable, CustomDebugStringConvertible {
-    let x: Int
-    let y: Int
-    let z: Int
+public struct Vector: Hashable, CustomDebugStringConvertible {
+    public let x: Int
+    public let y: Int
+    public let z: Int
     
-    static let zero = Vector(x: 0, y: 0, z: 0)
+    public static let zero = Vector(x: 0, y: 0, z: 0)
     
-    static func + (lhs: Vector, rhs: Vector) -> Vector {
+    public static func + (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
     }
     
-    var debugDescription: String {
+    public var debugDescription: String {
         "x:\(x),y:\(y),z:\(z)"
     }
     
-    var sumOfAbsoluteValues: Int {
+    public var sumOfAbsoluteValues: Int {
         return abs(x) + abs(y) + abs(z)
     }
 }
 
-func parseMoonInput(_ input: String) -> Vector {
+public func parseMoonInput(_ input: String) -> Vector {
     var input = input
     _ = input.removeFirst()
     _ = input.removeLast()
@@ -40,7 +40,7 @@ func parseMoonInput(_ input: String) -> Vector {
     return Vector(x: values[0], y: values[1], z: values[2])
 }
 
-func parseMoonInput(_ input: [String]) -> [Vector] {
+public func parseMoonInput(_ input: [String]) -> [Vector] {
     var moons = [Vector]()
     for item in input {
         moons.append(parseMoonInput(item))
@@ -48,19 +48,19 @@ func parseMoonInput(_ input: [String]) -> [Vector] {
     return moons
 }
 
-class Moon: Hashable, CustomDebugStringConvertible {
-    let startPosition: Vector
-    var position: Vector
-    var velocity = Vector.zero
-    var otherMoons = [Moon]()
-    var nextVelocity = Vector.zero
+public class Moon: Hashable, CustomDebugStringConvertible {
+    public let startPosition: Vector
+    public var position: Vector
+    public var velocity = Vector.zero
+    public var otherMoons = [Moon]()
+    public var nextVelocity = Vector.zero
     
-    init(_ startPosition: Vector) {
+    public init(_ startPosition: Vector) {
         self.startPosition = startPosition
         position = startPosition
     }
     
-    func calculateNextVelocity() {
+    public func calculateNextVelocity() {
         var x = 0
         var y = 0
         var z = 0
@@ -74,23 +74,23 @@ class Moon: Hashable, CustomDebugStringConvertible {
         nextVelocity = Vector(x: x, y: y, z: z) + velocity
     }
     
-    func calculateVelocity(a: Int, b: Int) -> Int {
+    public func calculateVelocity(a: Int, b: Int) -> Int {
         if a > b { return -1 }
         if a < b { return 1 }
         return 0
     }
     
-    func applyNextVelocity() {
+    public func applyNextVelocity() {
         position = position + nextVelocity
         velocity = nextVelocity
         nextVelocity = .zero
     }
     
-    var debugDescription: String {
+    public var debugDescription: String {
         return "\(position):\(velocity)\n"
     }
     
-    static func == (lhs: Moon, rhs: Moon) -> Bool {
+    public static func == (lhs: Moon, rhs: Moon) -> Bool {
         lhs.startPosition == rhs.startPosition
     }
     
@@ -99,7 +99,7 @@ class Moon: Hashable, CustomDebugStringConvertible {
     }
 }
 
-func processPositions(moons: [Moon], numberOfSteps steps: Int) -> Int {
+public func processPositions(moons: [Moon], numberOfSteps steps: Int) -> Int {
     for _ in 0..<steps {
         _ = moons.map { $0.calculateNextVelocity() }
         _ = moons.map { $0.applyNextVelocity() }
@@ -107,9 +107,9 @@ func processPositions(moons: [Moon], numberOfSteps steps: Int) -> Int {
     return moons.reduce(0) { $0 + ($1.position.sumOfAbsoluteValues * $1.velocity.sumOfAbsoluteValues) }
 }
 
-struct SetData: Hashable, Equatable {
-    let position: Int
-    let velocity: Int
+public struct SetData: Hashable, Equatable {
+    public let position: Int
+    public let velocity: Int
 }
 
 fileprivate func calculateSetData(_ moons: [Moon], _ xDict: inout [Moon : SetData], _ yDict: inout [Moon : SetData], _ zDict: inout [Moon : SetData], _ xSet: inout Set<[Moon : SetData]>, _ ySet: inout Set<[Moon : SetData]>, _ zSet: inout Set<[Moon : SetData]>) {
@@ -124,7 +124,7 @@ fileprivate func calculateSetData(_ moons: [Moon], _ xDict: inout [Moon : SetDat
     zSet.insert(zDict)
 }
 
-func findRepeatingOrbits(moons: [Moon], numberOfSteps steps: Int) -> Int {
+public func findRepeatingOrbits(moons: [Moon], numberOfSteps steps: Int) -> Int {
     var xSet = Set<[Moon: SetData]>()
     var ySet = Set<[Moon: SetData]>()
     var zSet = Set<[Moon: SetData]>()
@@ -159,11 +159,11 @@ func findRepeatingOrbits(moons: [Moon], numberOfSteps steps: Int) -> Int {
     return lowestCommonMultiple(xCount, lowestCommonMultiple(yCount, zCount))
 }
 
-func lowestCommonMultiple(_ value1: Int, _ value2: Int) -> Int {
+public func lowestCommonMultiple(_ value1: Int, _ value2: Int) -> Int {
     return (value1 * value2) / greatestCommonDivisor(value1, value2)
 }
 
-func greatestCommonDivisor(_ value1: Int, _ value2: Int) -> Int {
+public func greatestCommonDivisor(_ value1: Int, _ value2: Int) -> Int {
     var i = 0
     var j = max(value1, value2)
     var result = min(value1, value2)

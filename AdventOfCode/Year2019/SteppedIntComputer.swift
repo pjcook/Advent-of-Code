@@ -9,21 +9,21 @@
 import Foundation
 import InputReader
 
-class SteppedIntComputer: Hashable {
-    typealias ReadInput = ()->Int?
-    typealias ProcessOutput = (Int)->Void
-    typealias CompletionHandler = ()->Void
+public class SteppedIntComputer: Hashable {
+    public typealias ReadInput = ()->Int?
+    public typealias ProcessOutput = (Int)->Void
+    public typealias CompletionHandler = ()->Void
     
-    enum State {
+    public enum State {
         case waiting
         case waitingForInput
         case running
         case finished
     }
     
-    let id: Int
+    public let id: Int
     private var data: [Int:Int]
-    private(set) var state = State.waiting
+    public private(set) var state = State.waiting
     private var instructionIndex = 0
     private var relativeBase = 0
     private let readInput: ReadInput
@@ -31,7 +31,7 @@ class SteppedIntComputer: Hashable {
     private let completionHandler: CompletionHandler
     private let forceWriteMode: Bool
     
-    init(
+    public init(
         id: Int,
         data: [Int],
         readInput: @escaping ReadInput,
@@ -51,7 +51,7 @@ class SteppedIntComputer: Hashable {
         self.forceWriteMode = forceWriteMode
     }
     
-    func process() {
+    public func process() {
         state = .running
         while state == .running {
             let instruction = Instruction(
@@ -80,11 +80,11 @@ class SteppedIntComputer: Hashable {
         }
     }
     
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
     
-    static func == (lhs: SteppedIntComputer, rhs: SteppedIntComputer) -> Bool {
+    public static func == (lhs: SteppedIntComputer, rhs: SteppedIntComputer) -> Bool {
         lhs.id == rhs.id
     }
 }

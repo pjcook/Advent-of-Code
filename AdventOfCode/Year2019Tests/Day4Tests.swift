@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import Year2019
+import Year2019
 
 class Day4Tests: XCTestCase {
 

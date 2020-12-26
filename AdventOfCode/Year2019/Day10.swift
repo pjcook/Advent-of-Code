@@ -8,26 +8,31 @@
 
 import GameplayKit
 
-struct Point {
-    let x: Int
-    let y: Int
+public struct Point {
+    public let x: Int
+    public let y: Int
+    
+    public init(x: Int, y: Int) {
+        self.x = x
+        self.y = y
+    }
 }
 
-extension Point {
+public extension Point {
     var vector: vector_int2 {
         return [Int32(x),Int32(y)]
     }
 }
 
 extension Point: Hashable, CustomDebugStringConvertible {
-    func angle(to point: Point, _ startAngle: Double = 0) -> Double {
+    public func angle(to point: Point, _ startAngle: Double = 0) -> Double {
         let dx = point.x - x
         let dy = point.y - y
         let angle = atan2(Double(dy), Double(dx)) + .pi / 2
         return (angle + 2 * .pi).truncatingRemainder(dividingBy: 2 * .pi)
     }
     
-    func distance(to point: Point) -> Double {
+    public func distance(to point: Point) -> Double {
         let dx = Double(point.x - x)
         let dy = Double(point.y - y)
         return sqrt(dx * dx + dy * dy)
@@ -38,34 +43,34 @@ extension Point: Hashable, CustomDebugStringConvertible {
         hasher.combine(y)
     }
     
-    static let zero = Point(x: 0, y: 0)
+    public static let zero = Point(x: 0, y: 0)
     
-    static func + (lhs: Point, rhs: Point) -> Point {
+    public static func + (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
     }
     
-    var debugDescription: String {
+    public var debugDescription: String {
         return "(\(x):\(y))"
     }
     
-    func addY(_ value: Int) -> Point {
+    public func addY(_ value: Int) -> Point {
         return Point(x: x, y: y + value)
     }
     
-    func addX(_ value: Int) -> Point {
+    public func addX(_ value: Int) -> Point {
         return Point(x: x + value, y: y)
     }
 }
 
-func radiansToDegrees(_ number: Double) -> Double {
+public func radiansToDegrees(_ number: Double) -> Double {
     return number * 180 / .pi
 }
 
-func degreesToRadians(_ number: Double) -> Double {
+public func degreesToRadians(_ number: Double) -> Double {
     return number * .pi / 180
 }
 
-func readAsteroidMap(_ input: [[String]]) -> [Point] {
+public func readAsteroidMap(_ input: [[String]]) -> [Point] {
     var asteroidPoints = [Point]()
     for y in 0..<input.count {
         for x in 0..<input[y].count {
@@ -77,7 +82,7 @@ func readAsteroidMap(_ input: [[String]]) -> [Point] {
     return asteroidPoints
 }
 
-func calculateBestAsteroidBaseCount(_ asteroidPoints: [Point]) -> (Int, Point) {
+public func calculateBestAsteroidBaseCount(_ asteroidPoints: [Point]) -> (Int, Point) {
     var bestAsteroid = Point.zero
     var bestCount = 0
     for asteroid in asteroidPoints {
@@ -99,7 +104,7 @@ func calculateBestAsteroidBaseCount(_ asteroidPoints: [Point]) -> (Int, Point) {
     return (bestCount, bestAsteroid)
 }
 
-extension Array where Element: Hashable {
+public extension Array where Element: Hashable {
     func removingDuplicates() -> [Element] {
         var dict = [Element: Bool]()
         return filter { dict.updateValue(true, forKey: $0) == nil }
@@ -110,7 +115,7 @@ extension Array where Element: Hashable {
     }
 }
 
-func drawStarMap(size: CGSize, points: [Point], dead: [Point], station: Point) {
+public func drawStarMap(size: CGSize, points: [Point], dead: [Point], station: Point) {
     var map = ""
     for y in 0..<Int(size.height) {
         var row = ""
@@ -131,7 +136,7 @@ func drawStarMap(size: CGSize, points: [Point], dead: [Point], station: Point) {
     print(map + "\n")
 }
 
-func vaporizeAsteroids(_ asteroidPoints: [Point], stationCoords: Point, mapSize: CGSize) -> [Point] {
+public func vaporizeAsteroids(_ asteroidPoints: [Point], stationCoords: Point, mapSize: CGSize) -> [Point] {
     var count = 0
     var otherAsteroids = [Point:(Double, Double)]()
     var deadAsteroids = [Point]()

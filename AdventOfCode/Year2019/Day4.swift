@@ -8,8 +8,10 @@
 
 import Foundation
 
-struct VenusPasswordCalculator {
-    func howManyValidPasswordsInRange(min: Int, max: Int) -> Int {
+public struct VenusPasswordCalculator {
+    public init() {}
+    
+    public func howManyValidPasswordsInRange(min: Int, max: Int) -> Int {
         var count = 0
         
         for i in min...max {
@@ -19,7 +21,7 @@ struct VenusPasswordCalculator {
         return count
     }
     
-    func isValidPassword(input: Int) -> Bool {
+    public func isValidPassword(input: Int) -> Bool {
         let password = String(input)
         let characters = password.compactMap { $0 }
         guard characters == characters.sorted() else { return false }
@@ -27,7 +29,7 @@ struct VenusPasswordCalculator {
         return hasOnlyTwoAdjacentIntegers(characters)
     }
     
-    func hasOnlyTwoAdjacentIntegers(_ characters: [String.Element]) -> Bool {
+    public func hasOnlyTwoAdjacentIntegers(_ characters: [String.Element]) -> Bool {
         var hasDouble = false
         let count = characters.count
         var ignoreCharacter: Character? = nil

@@ -8,41 +8,18 @@
 
 import XCTest
 import InputReader
-@testable import Year2019
+import Year2019
 
 class Day22Tests: XCTestCase {
     let input = try! readInputAsStrings(filename: "Day22.input", bundle: Year2019.bundle)
 
     func test_part1() throws {
         let shuffler = DeckShuffle(sizeOfDeck: 10007)
-        shuffler.process(input)
-        
-        var result = 0
-        for i in 0..<shuffler.cards.count {
-            if shuffler.cards[i] == 2019 {
-                result = i
-                break
-            }
-        }
-        XCTAssertEqual(2558, result)
-        print(shuffler.cards)
+        XCTAssertEqual(2558, shuffler.process(input))
     }
     
     func test_part2() throws {
-        // 119315717514047
-        let shuffler = DeckShuffle(sizeOfDeck: 10007)
-        var results = [Int:Int]()
-        for _ in 0 ..< 101741582076661 {
-            shuffler.process(input)
-            let card = shuffler.cards[2020]
-            let count = (results[card, default: 0]) + 1
-            results[card] = count
-            if count > 10 {
-                print(card)
-            }
-        }
-        
-        XCTAssertEqual(1, shuffler.cards[2020])
+        let shuffler = DeckShuffle(sizeOfDeck: 119_315_717_514_047)
+        XCTAssertEqual(66036767136129, shuffler.process(input))
     }
-
 }

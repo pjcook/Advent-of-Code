@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Direction {
+public extension Direction {
     var moveValue: Int {
         switch self {
             case .N: return 1
@@ -28,7 +28,7 @@ extension Direction {
     }
 }
 
-extension Point {
+public extension Point {
     func directionTo(_ point: Point) -> Direction {
         if x < point.x { return .E }
         if x > point.x { return .W }
@@ -37,14 +37,14 @@ extension Point {
     }
 }
 
-enum MoveStatus: Int {
+public enum MoveStatus: Int {
     case hitWall = 0
     case moved = 1
     case movedFoundOxygenSystem = 2
     case unknown = -1
     case start = 4
     
-    var sortOrder: Int {
+    public var sortOrder: Int {
         switch self {
         case .unknown: return 0
         case .moved, .start: return 1
@@ -54,27 +54,27 @@ enum MoveStatus: Int {
     }
 }
 
-struct MapPointStatus {
-    let point: Point
-    let state: MoveStatus
-    let options: Set<Direction>
+public struct MapPointStatus {
+    public let point: Point
+    public let state: MoveStatus
+    public let options: Set<Direction>
 }
 
-class Mapper {
-    private(set) var map: [Point:MapPointStatus] = [.zero:MapPointStatus(point: .zero, state: .start, options: [])]
-    var computer: SteppedIntComputer?
-    let tiles = [-1:"⚪️",0:"🟤", 1:"⚫️", 2:"🟠",3:"🟣",4:"🔴"]
+public class Mapper {
+    public private(set) var map: [Point:MapPointStatus] = [.zero:MapPointStatus(point: .zero, state: .start, options: [])]
+    public var computer: SteppedIntComputer?
+    public let tiles = [-1:"⚪️",0:"🟤", 1:"⚫️", 2:"🟠",3:"🟣",4:"🔴"]
     
-    let startPosition = Point.zero
-    private(set) var currentPosition = Point.zero
+    public let startPosition = Point.zero
+    public private(set) var currentPosition = Point.zero
     private var moveValue: Direction = .E
     private var lastStatus: MoveStatus = .moved
     private var finished = false
     private var started = false
     private var route = [Direction]()
-    var processEntireSpace = false
+    public var processEntireSpace = false
     
-    init(_ input: [Int]) {
+    public init(_ input: [Int]) {
         computer = SteppedIntComputer(
             id: 1,
             data: input,
@@ -87,11 +87,11 @@ class Mapper {
         )
     }
     
-    func start() {
+    public func start() {
         computer?.process()
     }
     
-    func createMapper() -> GKMapper {
+    public func createMapper() -> GKMapper {
         var newMap = [Point:Int]()
         _ = map.map {
             newMap[$0.key] = $0.value.state.rawValue
@@ -101,7 +101,7 @@ class Mapper {
         return mapper
     }
     
-    func fillWithOxygen() -> Int {
+    public func fillWithOxygen() -> Int {
         var isFull = false
         var minutes = 0
         while !isFull {
@@ -211,7 +211,7 @@ class Mapper {
 //        drawMapInConsole()
     }
     
-    func drawMapInConsole() {
+    public func drawMapInConsole() {
         var rawMap = [Point:Int]()
         _ = map.map { rawMap[$0] = $1.state.rawValue }
         rawMap[startPosition] = 3
@@ -220,7 +220,7 @@ class Mapper {
     }
 }
 
-func drawMap(_ output: [Point:Int], tileMap: [Int:String], filename: String? = nil) {
+public func drawMap(_ output: [Point:Int], tileMap: [Int:String], filename: String? = nil) {
     let (minX,minY,maxX,maxY) = calculateMapDimensions(output)
     var map = ""
 
@@ -232,7 +232,7 @@ func drawMap(_ output: [Point:Int], tileMap: [Int:String], filename: String? = n
     if filename == nil { print(map + "\n") }
 }
 
-func drawMapReversed(_ output: [Point:Int], tileMap: [Int:String], filename: String? = nil) {
+public func drawMapReversed(_ output: [Point:Int], tileMap: [Int:String], filename: String? = nil) {
     let (minX,minY,maxX,maxY) = calculateMapDimensions(output)
     var map = ""
 
@@ -244,7 +244,7 @@ func drawMapReversed(_ output: [Point:Int], tileMap: [Int:String], filename: Str
     if filename == nil { print(map + "\n") }
 }
 
-func writeMapRow(_ maxX: Int, _ minX: Int, _ y: Int, _ minY: Int, _ output: [Point : Int], _ tileMap: [Int : String], _ map: inout String) {
+public func writeMapRow(_ maxX: Int, _ minX: Int, _ y: Int, _ minY: Int, _ output: [Point : Int], _ tileMap: [Int : String], _ map: inout String) {
     var row = ""
     for x in 0...maxX - minX {
         let dx = x + minX
@@ -256,7 +256,7 @@ func writeMapRow(_ maxX: Int, _ minX: Int, _ y: Int, _ minY: Int, _ output: [Poi
     map += row + "\n"
 }
 
-func writeMapToFile(_ filename: String?, _ map: String) {
+public func writeMapToFile(_ filename: String?, _ map: String) {
     if let filename = filename {
         let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
         do {
@@ -266,7 +266,7 @@ func writeMapToFile(_ filename: String?, _ map: String) {
     }
 }
 
-func calculateMapDimensions(_ output: [Point:Int]) -> (Int,Int,Int,Int) {
+public func calculateMapDimensions(_ output: [Point:Int]) -> (Int,Int,Int,Int) {
     let minX = output.reduce(Int.max) { min($0,$1.key.x) }
     let minY = output.reduce(Int.max) { min($0,$1.key.y) }
     let maxX = output.reduce(0) { max($0,$1.key.x) }

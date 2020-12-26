@@ -1,9 +1,9 @@
 import GameplayKit
-class GKMapper {
+public class GKMapper {
     private var rawMap = [Point:Int]()
-    let map: GKGridGraph<GKGridGraphNode>
+    public let map: GKGridGraph<GKGridGraphNode>
     
-    init(_ rawMap: [Point:Int], wallID: Int) {
+    public init(_ rawMap: [Point:Int], wallID: Int) {
         self.rawMap = rawMap
         let (minX,minY,maxX,maxY) = calculateMapDimensions(rawMap)
         map = GKGridGraph(
@@ -24,7 +24,7 @@ class GKMapper {
         map.remove(nodesToRemove)
     }
     
-    func removeTilesNotIn(_ options: [Int]) {
+    public func removeTilesNotIn(_ options: [Int]) {
         let (minX,minY,maxX,maxY) = calculateMapDimensions(rawMap)
         var nodesToRemove = [GKGridGraphNode]()
         for y in minY..<maxY-minY {
@@ -39,7 +39,7 @@ class GKMapper {
         map.remove(nodesToRemove)
     }
     
-    func route(_ startPoint: Point, _ endPoint: Point) -> [Point] {
+    public func route(_ startPoint: Point, _ endPoint: Point) -> [Point] {
         guard let start = map.node(atGridPosition: startPoint.vector),
             let end = map.node(atGridPosition: endPoint.vector) else { return [] }
         guard let path = map.findPath(from: start, to: end) as? [GKGridGraphNode] else { return [] }

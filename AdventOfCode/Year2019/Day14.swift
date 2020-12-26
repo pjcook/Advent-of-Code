@@ -8,17 +8,17 @@
 
 import Foundation
 
-typealias IngredientID = String
+public typealias IngredientID = String
 
-struct Recipe {
-    let ingredient: Ingredient
-    let requiredIngredients: [Ingredient]
+public struct Recipe {
+    public let ingredient: Ingredient
+    public let requiredIngredients: [Ingredient]
     
-    var isBaseRecipe: Bool {
+    public var isBaseRecipe: Bool {
         return requiredIngredients.first { $0.id == .ore } != nil
     }
     
-    init(_ parts: [String]) {
+    public init(_ parts: [String]) {
         let finalIngredient = parts[1].split(separator: " ")
         ingredient = Ingredient(id: String(finalIngredient[1]), value: Int(String(finalIngredient[0]))!)
         
@@ -34,17 +34,17 @@ struct Recipe {
     }
 }
 
-struct Ingredient {
-    let id: IngredientID
-    let value: Int
+public struct Ingredient {
+    public let id: IngredientID
+    public let value: Int
 }
 
-extension IngredientID {
+public extension IngredientID {
     static let ore = "ORE"
     static let fuel = "FUEL"
 }
 
-func parseMineralInput(_ input: [String]) -> [Recipe] {
+public func parseMineralInput(_ input: [String]) -> [Recipe] {
     var recipes = [Recipe]()
     
     for line in input {
@@ -55,12 +55,12 @@ func parseMineralInput(_ input: [String]) -> [Recipe] {
     return recipes
 }
 
-class OreCalculator {
-    let recipes: [Recipe]
+public class OreCalculator {
+    public let recipes: [Recipe]
     private var required = [IngredientID:Int]()
     private var spare = [IngredientID:Int]()
 
-    init(recipes: [Recipe]) {
+    public init(recipes: [Recipe]) {
         self.recipes = recipes
     }
     
@@ -94,7 +94,7 @@ class OreCalculator {
         return ore
     }
     
-    func calculateMaxFuel(_ ingredient: Ingredient, _ maxOre: Int) -> Int {
+    public func calculateMaxFuel(_ ingredient: Ingredient, _ maxOre: Int) -> Int {
         let ore = calculate(ingredient)
         let basicSpares = spare
         var remainingOre = maxOre
@@ -114,7 +114,7 @@ class OreCalculator {
         return fuelCount
     }
         
-    func calculate(_ ingredient: Ingredient) -> Int {
+    public func calculate(_ ingredient: Ingredient) -> Int {
         let initialItem = findRecipe(ingredient.id)
         var ore = 0
         required[initialItem.ingredient.id] = initialItem.ingredient.value
@@ -150,7 +150,7 @@ class OreCalculator {
         return ore
     }
     
-    func findRecipe(_ id: IngredientID) -> Recipe {
+    public func findRecipe(_ id: IngredientID) -> Recipe {
         return recipes.first { $0.ingredient.id == id }!
     }
 }
