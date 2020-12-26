@@ -17,6 +17,7 @@
 		2E3934852588A50F00E5CB2C /* Leaderboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3934842588A50F00E5CB2C /* Leaderboard.swift */; };
 		2E3934912588AAF300E5CB2C /* LeaderboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3934902588AAF300E5CB2C /* LeaderboardTests.swift */; };
 		2E39349D2588AB0400E5CB2C /* Leaderboard.json in Resources */ = {isa = PBXBuildFile; fileRef = 2E39349C2588AB0400E5CB2C /* Leaderboard.json */; };
+		2E3BD5B525975CE800F13E60 /* Swift-Big-Number-Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3BD5B425975CE800F13E60 /* Swift-Big-Number-Core.swift */; };
 		2E47616D258388BB00F22D1F /* Day11_v2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E47616C258388BB00F22D1F /* Day11_v2.swift */; };
 		2E4761792583B35500F22D1F /* Day11_v3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4761782583B35500F22D1F /* Day11_v3.swift */; };
 		2E4765DF2584911400F22D1F /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4765D32584910500F22D1F /* Math.swift */; };
@@ -422,6 +423,7 @@
 		2E3934842588A50F00E5CB2C /* Leaderboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Leaderboard.swift; sourceTree = "<group>"; };
 		2E3934902588AAF300E5CB2C /* LeaderboardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardTests.swift; sourceTree = "<group>"; };
 		2E39349C2588AB0400E5CB2C /* Leaderboard.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Leaderboard.json; sourceTree = "<group>"; };
+		2E3BD5B425975CE800F13E60 /* Swift-Big-Number-Core.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Swift-Big-Number-Core.swift"; sourceTree = "<group>"; };
 		2E47616C258388BB00F22D1F /* Day11_v2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11_v2.swift; sourceTree = "<group>"; };
 		2E4761782583B35500F22D1F /* Day11_v3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11_v3.swift; sourceTree = "<group>"; };
 		2E4765D32584910500F22D1F /* Math.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
@@ -1311,6 +1313,7 @@
 				D5A8779F23BC83D9004A21CD /* Day22_Readme.md */,
 				D5A877A023BC83E2004A21CD /* Day22.input */,
 				D5A877A223BC83F2004A21CD /* Day22.swift */,
+				2E3BD5B425975CE800F13E60 /* Swift-Big-Number-Core.swift */,
 			);
 			name = Day22;
 			sourceTree = "<group>";
@@ -2451,6 +2454,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2E3BD5B525975CE800F13E60 /* Swift-Big-Number-Core.swift in Sources */,
 				D58A3B4123C88DBA004393AC /* GKMapper.swift in Sources */,
 				D5E3CB3B2397AC5400D39B5D /* Day1.swift in Sources */,
 				D53642EF239FFD1F001DD179 /* Day11.swift in Sources */,
