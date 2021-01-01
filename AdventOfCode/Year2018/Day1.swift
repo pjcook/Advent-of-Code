@@ -8,11 +8,11 @@
 
 import Foundation
 
-func processFrequencyChanges(_ data: [Int]) -> Int {
+public func processFrequencyChanges(_ data: [Int]) -> Int {
     return data.reduce(0) { $0 + $1 }
 }
 
-func findFirstDuplicateFrequency(_ data: [Int]) -> Int {
+public func findFirstDuplicateFrequency(_ data: [Int]) -> Int {
     var additives = [0:0]
     let itemCount = data.count
     var value = 0

@@ -2,12 +2,12 @@ import Foundation
 
 public struct ComponentizedDate {
     
-    let date: Date
-    let year: Int
-    let month: Int
-    let day: Int
-    let hours: Int
-    let minutes: Int
+    public let date: Date
+    public let year: Int
+    public let month: Int
+    public let day: Int
+    public let hours: Int
+    public let minutes: Int
     
     public init(_ date: Date) {
         let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)

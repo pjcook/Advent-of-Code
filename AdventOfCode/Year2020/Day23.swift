@@ -4,7 +4,7 @@ import StandardLibraries
 public struct Day23 {
     public init() {}
     public func part1(_ input: [Int]) -> Int {
-        var cups = [Int: LinkedNode]()
+        var cups = [Int: LinkedNode<Int>]()
         let head = LinkedNode(value: input.first!)
         var next = head
         cups[head.value] = head
@@ -21,7 +21,7 @@ public struct Day23 {
     }
     
     public func part2(_ input: [Int]) -> Int {
-        var cups = [Int: LinkedNode]()
+        var cups = [Int: LinkedNode<Int>]()
         let head = LinkedNode(value: input.first!)
         var next = head
         cups[head.value] = head
@@ -45,7 +45,7 @@ public struct Day23 {
         return solve(head, cups.count, cups, turns: 10_000_000)
     }
     
-    func solve(_ head: LinkedNode, _ maxValue: Int, _ cups: [Int : Day23.LinkedNode], turns: Int) -> Int {
+    func solve(_ head: LinkedNode<Int>, _ maxValue: Int, _ cups: [Int : LinkedNode<Int>], turns: Int) -> Int {
         var current = head
         
         for _ in 0..<turns {
@@ -79,14 +79,6 @@ public struct Day23 {
             let num1 = one.next!.value
             let num2 = one.next!.next!.value
             return num1 * num2
-        }
-    }
-    
-    class LinkedNode {
-        let value: Int
-        var next: LinkedNode?
-        init(value: Int) {
-            self.value = value
         }
     }
 }

@@ -1,7 +1,7 @@
 import XCTest
 import InputReader
 import StandardLibraries
-@testable import Year2018
+import Year2018
 
 class Day8Tests: XCTestCase {
     let input = Input("Day8.input", Year2018.bundle).input.split(separator: " ").compactMap({ Int(String($0)) })

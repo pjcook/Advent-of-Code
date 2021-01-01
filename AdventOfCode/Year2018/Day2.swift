@@ -8,7 +8,7 @@
 
 import Foundation
 
-func calculateChecksum(_ data: [String]) -> Int {
+public func calculateChecksum(_ data: [String]) -> Int {
     func disassembleString(_ input: String) -> [Character:Int] {
         var input = input
         var output = [Character:Int]()
@@ -46,7 +46,7 @@ func extractNonMatchingCharacters(_ value1: String, _ value2: String) -> String 
     return output
 }
 
-func matchBoxIDs(_ data: [String]) -> String {
+public func matchBoxIDs(_ data: [String]) -> String {
     var data = data
     var string = ""
     var value1 = ""

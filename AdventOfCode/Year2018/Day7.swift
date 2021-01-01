@@ -10,6 +10,7 @@ import Foundation
 import StandardLibraries
 
 public struct Day7 {
+    public init() {}
     
     public class Node {
         let id: Character
@@ -33,7 +34,7 @@ public struct Day7 {
         }
     }
     
-    let regex = try! RegularExpression(pattern: #"^Step ([A-Z]{1}) must be finished before step ([A-Z]{1}) can begin."#)
+    public let regex = try! RegularExpression(pattern: #"^Step ([A-Z]{1}) must be finished before step ([A-Z]{1}) can begin."#)
     
     public func parse(_ input: [String]) throws -> [(Character, Character)] {
         try input

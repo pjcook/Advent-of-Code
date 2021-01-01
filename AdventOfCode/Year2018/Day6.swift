@@ -2,6 +2,8 @@ import Foundation
 import StandardLibraries
 
 public struct Day6 {
+    public init() {}
+    
     public func part1(_ input: [String]) -> Int {
         let points = input.map { $0.components(separatedBy: ", ") }
             .map { Point(x: Int($0[0])!, y: Int($0[1])!) }

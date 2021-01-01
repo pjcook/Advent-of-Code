@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum Errors: Error {
+public enum Errors: Error {
     case invalidFabricCode
     case noUniqueClaimFound
     case dateContersionFailed

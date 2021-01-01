@@ -1,6 +1,8 @@
 import Foundation
 
 public struct Day8 {
+    public init() {}
+    
     class Node {
         let childNodes: Int
         let metaCount: Int

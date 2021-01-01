@@ -14,13 +14,13 @@ let reposeDateTimeFormatter: DateFormatter = {
     return formatter
 }()
 
-struct ReposeLineData {
-    enum LineDataType: Equatable {
+public struct ReposeLineData {
+    public enum LineDataType: Equatable {
         case beginShift(Int)
         case awake
         case asleep
         
-        var id: Int {
+        public var id: Int {
             switch self {
             case .beginShift(let id): return id
             default: return -1
@@ -28,15 +28,15 @@ struct ReposeLineData {
         }
     }
     
-    let date: ComponentizedDate
-    let content: String
-    let dataType: LineDataType
+    public let date: ComponentizedDate
+    public let content: String
+    public let dataType: LineDataType
     
-    var minutes: Int {
+    public var minutes: Int {
         date.minutes
     }
     
-    init(_ input: String) throws {
+    public init(_ input: String) throws {
         var input = input
         _ = input.removeFirst()
         var d = ""
@@ -66,7 +66,7 @@ struct ReposeLineData {
 }
 
 extension ReposeLineData: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         var output = reposeDateTimeFormatter.string(from: date.date)
         output += " \(dataType)"
         return output
@@ -74,7 +74,7 @@ extension ReposeLineData: CustomStringConvertible {
 }
 
 extension ReposeLineData.LineDataType: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         switch self {
         case .asleep: return "asleep"
         case .awake: return "awake"
@@ -83,17 +83,22 @@ extension ReposeLineData.LineDataType: CustomStringConvertible {
     }
 }
 
-struct Guard {
-    let id: Int
-    var sleepTimes: [SleepTime]
+public struct Guard {
+    public let id: Int
+    public var sleepTimes: [SleepTime]
     
-    var totalSleep: Int {
+    public init(id: Int, sleepTimes: [SleepTime]) {
+        self.id = id
+        self.sleepTimes = sleepTimes
+    }
+    
+    public var totalSleep: Int {
         sleepTimes.reduce(0) { $0 + ($1.end.minutes - $1.start.minutes) }
     }
     
     
     /// Return sleepiest minute and count
-    var sleepiestMinute: (Int, Int) {
+    public var sleepiestMinute: (Int, Int) {
         var minutes = Array(repeating: 0, count: 60)
 
         sleepTimes.forEach {
@@ -115,13 +120,17 @@ struct Guard {
     }
 }
 
-struct SleepTime {
-    let start: ComponentizedDate
-    let end: ComponentizedDate
+public struct SleepTime {
+    public let start: ComponentizedDate
+    public let end: ComponentizedDate
+    public init(start: ComponentizedDate, end: ComponentizedDate) {
+        self.start = start
+        self.end = end
+    }
 }
 
 extension Guard: CustomStringConvertible {
-    var description: String {
+    public var description: String {
         var output = ""
         var times = sleepTimes
         var currentMonth = 0

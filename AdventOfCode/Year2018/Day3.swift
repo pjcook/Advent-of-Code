@@ -65,13 +65,13 @@ func mapClaimData(_ claims: [Int : FabricClaim]) throws -> [CGPoint:[Int]] {
     return map
 }
 
-func mapClaims(_ input: [String]) throws -> Int {
+public func mapClaims(_ input: [String]) throws -> Int {
     let claims = try parseFabricClaims(input)
     let map = try mapClaimData(claims)
     return map.reduce(0) { $0 + ($1.value.count > 1 ? 1 : 0) }
 }
 
-func findUniqueClaim(_ input: [String]) throws -> Int {
+public func findUniqueClaim(_ input: [String]) throws -> Int {
     let claims = try parseFabricClaims(input)
     let map = try mapClaimData(claims)
     let singleTiles = map.filter { $0.value.count == 1 }

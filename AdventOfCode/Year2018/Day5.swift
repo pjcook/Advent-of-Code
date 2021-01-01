@@ -2,6 +2,8 @@ import Foundation
 import StandardLibraries
 
 public struct Day5 {
+    public init() {}
+    
     public func part1(input: String) -> String {
         var input = input
         var remaining = [input.removeFirst()]
