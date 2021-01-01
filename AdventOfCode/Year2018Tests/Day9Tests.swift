@@ -5,17 +5,13 @@ import Year2018
 
 class Day9Tests: XCTestCase {
     func test_part1() {
-        measure {
         let day = Day9()
         XCTAssertEqual(398048, day.solve(71307, players: 458))
-        }
     }
     
     func test_part2() {
-        measure {
         let day = Day9()
         XCTAssertEqual(3180373421, day.solve(7130700, players: 458))
-        }
     }
     
     func test_part1_example1() {
