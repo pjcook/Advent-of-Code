@@ -420,7 +420,7 @@ public extension Day20 {
             return Tile(id: id, data: rotatedData)
         }
         
-        public func edge(_ direction: Direction) -> String {
+        public func edge(_ direction: CompassDirection) -> String {
             switch direction {
             case .n: return top
             case .e: return right
@@ -429,7 +429,7 @@ public extension Day20 {
             }
         }
         
-        public func edgeFlipped(_ direction: Direction) -> String {
+        public func edgeFlipped(_ direction: CompassDirection) -> String {
             return String(edge(direction).reversed())
         }
         

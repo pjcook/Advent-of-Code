@@ -49,7 +49,7 @@ extension Point {
         return Point(x: lhs.x * rhs, y: lhs.y * rhs)
     }
     
-    public func add(direction: Direction, distance: Int) -> Point {
+    public func add(direction: CompassDirection, distance: Int = 1) -> Point {
         switch direction {
         case .n: return Point(x: x, y: y + distance)
         case .s: return Point(x: x, y: y - distance)
@@ -128,12 +128,12 @@ public enum Position {
     }
 }
 
-public enum Direction: Int {
+public enum CompassDirection: Int {
     case n = 0, e = 1, s = 2, w = 3
 }
 
-public extension Direction {
-    func rotateLeft() -> Direction {
+public extension CompassDirection {
+    func rotateLeft() -> CompassDirection {
         switch self {
         case .n: return .w
         case .s: return .e
@@ -142,7 +142,7 @@ public extension Direction {
         }
     }
     
-    func rotateRight() -> Direction {
+    func rotateRight() -> CompassDirection {
         switch self {
         case .n: return .e
         case .s: return .w
@@ -151,12 +151,16 @@ public extension Direction {
         }
     }
     
-    func rotateLeft(times: Int) -> Direction {
+    func rotateLeft(times: Int) -> CompassDirection {
         print((4 + (rawValue - (times % 4))) % 4)
-        return Direction(rawValue: (4 + (rawValue - (times % 4))) % 4) ?? self
+        return CompassDirection(rawValue: (4 + (rawValue - (times % 4))) % 4) ?? self
     }
     
-    func rotateRight(times: Int) -> Direction {
-        return Direction(rawValue: (rawValue + times) % 4) ?? self
+    func rotateRight(times: Int) -> CompassDirection {
+        return CompassDirection(rawValue: (rawValue + times) % 4) ?? self
     }
+}
+
+public enum Direction: Int {
+    case left, right, straight
 }

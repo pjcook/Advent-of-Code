@@ -11,9 +11,13 @@ public enum InputErrors: Error {
 
 public struct Input {
     public let input: String
-    public init(_ filename: String, with withExtension: String? = nil, _ bundle: Bundle = Bundler.bundle) {
+    public init(_ filename: String, with withExtension: String? = nil, _ bundle: Bundle = Bundler.bundle, trimming: Bool = true) {
         let url = bundle.url(forResource: filename, withExtension: withExtension)!
-        input = try! String(contentsOf: url).trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimming {
+            input = try! String(contentsOf: url).trimmingCharacters(in: .whitespacesAndNewlines)
+        } else {
+            input = try! String(contentsOf: url)
+        }
     }
     
     public init(_ input: String) {

@@ -11,7 +11,7 @@ import XCTest
 class DirectionTests: XCTestCase {
 
     func test_rotateWithTimes() {
-        let direction = Direction.e
+        let direction = CompassDirection.e
     
         // RIGHT
         XCTAssertEqual(.e, direction.rotateRight(times: 0))

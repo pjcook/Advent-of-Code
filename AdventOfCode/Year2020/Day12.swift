@@ -6,7 +6,7 @@ public struct Day12 {
     
     public func part1(_ input: [String]) -> Int {
         var point = Point.zero
-        var direction = Direction.e
+        var direction = CompassDirection.e
         
         for instruction in input {
             var instruction = instruction

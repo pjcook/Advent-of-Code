@@ -6,7 +6,7 @@ public struct Day12_v2 {
     
     public enum Instruction {
         case forward(Int)
-        case move(Direction, Int)
+        case move(CompassDirection, Int)
         case turnLeft(Int)
         case turnRight(Int)
         
@@ -36,7 +36,7 @@ public struct Day12_v2 {
     public func part1(_ input: [String]) -> Int {
         let instructions = parse(input)
         var point = Point.zero
-        var direction = Direction.e
+        var direction = CompassDirection.e
         
         for instruction in instructions {
             switch instruction {

@@ -41,7 +41,7 @@ extension Pointf {
         return Pointf(x: lhs.x * rhs, y: lhs.y * rhs)
     }
     
-    public func add(direction: Direction, distance: Float) -> Pointf {
+    public func add(direction: CompassDirection, distance: Float) -> Pointf {
         switch direction {
         case .n: return Pointf(x: x, y: y + distance)
         case .s: return Pointf(x: x, y: y - distance)
