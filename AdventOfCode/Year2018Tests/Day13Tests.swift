@@ -16,7 +16,7 @@ class Day13Tests: XCTestCase {
         let day = Day13()
         let position = day.part2(input)
         // "55,21" "44,80"
-        XCTAssertEqual("44,80", "\(position.x),\(position.y)")
+        XCTAssertEqual("88,64", "\(position.x),\(position.y)")
     }
     
     func test_part1_example() {

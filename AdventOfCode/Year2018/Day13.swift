@@ -104,10 +104,12 @@ public struct Day13 {
         
         public func step2() {
             let carts = orderedCarts
+            var currentPositions = Set(carts.map { $0.position })
             var cartPositions = Set<Point>()
             for cart in carts {
+                currentPositions.remove(cart.position)
                 move(cart)
-                if cartPositions.contains(cart.position) {
+                if cartPositions.contains(cart.position) || currentPositions.contains(cart.position) {
                     removeCarts(at: cart.position)
                 }
                 cartPositions.insert(cart.position)
