@@ -11,6 +11,13 @@ public struct Day15 {
         return board.score
     }
     
+    public func part2(_ input: [String]) -> Int {
+        let board = parse(input)
+        board.play()
+        board.results()
+        return board.score
+    }
+    
     public func parse(_ input: [String]) -> Board {
         var tiles = [Point:Tile]()
         var players = Set<Player>()
@@ -46,16 +53,16 @@ public struct Day15 {
         
         public func play() {
             guard !playing else { return }
-//            draw(tiles)
+            draw(tiles)
             var loop = true
             while loop {
-                let playingRound = players.sorted(by: { $0.position.x < $1.position.x }).sorted(by: { $0.position.y < $1.position.y })
+                let playingRound = players
+                    .sorted(by: { $0.position.x < $1.position.x })
+                    .sorted(by: { $0.position.y < $1.position.y })
                 var fullRound = true
                 for player in playingRound {
                     guard let player = players.first(where: { $0.id == player.id }) else { continue }
-                    let (updatedPlayer, complete) = update(player)
-                    players.update(with: updatedPlayer)
-                    if !complete {
+                    if !update(player) {
                         fullRound = false
                         break
                     }
@@ -63,7 +70,7 @@ public struct Day15 {
                 if fullRound {
                     turns += 1
                 }
-                print(turns)
+//                print(turns)
                 draw(tiles)
 //                results()
                 let elfCount = players.filter({ $0.race == .elf }).count
@@ -71,52 +78,19 @@ public struct Day15 {
             }
         }
         
-        public func results() {
-            print("Turns:", turns)
-            for player in players {
-                print(player.race == .elf ? "Elf" : "Gob", player.health, player.position)
-            }
-        }
-        
-        private func floorTiles(in board: [Point:Tile]) -> Set<Point> {
-            return Set(board.filter { $0.value == .floor }.map { $0.key })
-        }
-        
-        private func floorTiles(in options: Set<Point>, positions: [Point]) -> Set<Point> {
-            return positions.reduce(into: Set<Point>()) { (result, position) in
-                result = Player
-                    .adjacent
-                    .map({ $0 + position })
-                    .compactMap({ options.contains($0) ? $0 : nil })
-                    .reduce(into: result, { $0.insert($1) })
-            }
-        }
-        
-        private func findValidAttacks(_ player: Player) -> [Player] {
-            let attackTile = player.race == .elf ? Tile.goblin : Tile.elf
-            return Player
-                .adjacent
-                .map({ $0 + player.position })
-                .compactMap({ tiles[$0] == attackTile ? $0 : nil })
-                .compactMap({ point in
-                    return players.first(where: { $0.position == point })
-                })
-        }
-        
-        public func update(_ player: Player) -> (Player, Bool) {
-//            print(player.race == .elf ? "Elf" : "Gob", player.position)
-            var player = player
+        public func update(_ player: Player) -> Bool {
+            let player = player
             var board = tiles
             var options = floorTiles(in: board)
             let validMoves = floorTiles(in: options, positions: [player.position])
             
             let enemies = players.filter({ $0.race == player.race.opposite })
             if enemies.isEmpty {
-                return (player, false)
+                return false
             }
             var validAttacks = findValidAttacks(player)
             
-            // if cannot attach && valid moves try to move
+            // if cannot attack && valid moves try to move
             if validAttacks.isEmpty, !validMoves.isEmpty {
                 var inRange = floorTiles(in: options, positions: enemies.map { $0.position })
                 
@@ -158,16 +132,47 @@ public struct Day15 {
                 .sorted(by: { $0.position.y < $1.position.y })
                 .sorted(by: { $0.health < $1.health })
 
-            if var first = validAttacks.first {
+            if let first = validAttacks.first {
                 first.health -= player.attack
-                players.update(with: first)
                 if first.health <= 0 {
                     tiles[first.position] = .floor
                     players.remove(first)
                 }
             }
             
-            return (player, true)
+            return true
+        }
+        
+        private func floorTiles(in board: [Point:Tile]) -> Set<Point> {
+            return Set(board.filter { $0.value == .floor }.map { $0.key })
+        }
+        
+        private func floorTiles(in options: Set<Point>, positions: [Point]) -> Set<Point> {
+            return positions.reduce(into: Set<Point>()) { (result, position) in
+                result = Player
+                    .adjacent
+                    .map({ $0 + position })
+                    .compactMap({ options.contains($0) ? $0 : nil })
+                    .reduce(into: result, { $0.insert($1) })
+            }
+        }
+        
+        private func findValidAttacks(_ player: Player) -> [Player] {
+            let attackTile = player.race == .elf ? Tile.goblin : Tile.elf
+            return Player
+                .adjacent
+                .map({ $0 + player.position })
+                .compactMap({ tiles[$0] == attackTile ? $0 : nil })
+                .compactMap({ point in
+                    return players.first(where: { $0.position == point })
+                })
+        }
+        
+        public func results() {
+            print("Turns:", turns)
+            for player in players {
+                print(player.race == .elf ? "Elf" : "Gob", player.health, player.position)
+            }
         }
         
         public var score: Int {
@@ -203,7 +208,7 @@ public struct Day15 {
         }
     }
     
-    public struct Player: Hashable {
+    public class Player: Hashable {
         public enum Race: String {
             case goblin = "G"
             case elf = "E"
@@ -226,10 +231,10 @@ public struct Day15 {
         }
         
         public static let adjacent = [
-            Point(x: 1, y: 0),
+            Point(x: 0, y: -1),
             Point(x: -1, y: 0),
-            Point(x: 0, y: 1),
-            Point(x: 0, y: -1)
+            Point(x: 1, y: 0),
+            Point(x: 0, y: 1)
         ]
         
         public func hash(into hasher: inout Hasher) {

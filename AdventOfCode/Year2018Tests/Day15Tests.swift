@@ -10,8 +10,24 @@ class Day15Tests: XCTestCase {
         let day = Day15()
         // Too low
         // 212597, 209836, 215358
-        XCTAssertEqual(209836, day.part1(input))
+        XCTAssertEqual(220480, day.part1(input))
     }
+    
+    func test_part2() {
+        let day = Day15()
+        XCTAssertEqual(53576, day.part2(input))
+    }
+    
+//    func test_part1_stoggles_code() {
+//        let input = Input("Day15.input", Year2018.bundle).input
+//        XCTAssertEqual(226688, 🗓1️⃣5️⃣(input: input, part2: true))
+//    }
+//    
+//    func test_part1_stoggles() {
+//        let day = Day15()
+//        let input = Input("Day15-2.input", Year2018.bundle).lines
+//        XCTAssertEqual(226688, day.part1(input))
+//    }
     
     func test_part1_example1() {
         let day = Day15()
