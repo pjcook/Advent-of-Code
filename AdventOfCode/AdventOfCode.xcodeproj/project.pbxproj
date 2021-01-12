@@ -113,7 +113,6 @@
 		2E91233325760A9300517A30 /* Day2.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E99D2A1256D204B00088D9C /* Day2.input */; };
 		2E91233425760A9300517A30 /* Day2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D298256D204100088D9C /* Day2.swift */; };
 		2E92842025ABA4630074AFE0 /* Day15-2.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E92841F25ABA4630074AFE0 /* Day15-2.input */; };
-		2E92843125ABA6250074AFE0 /* Day15v2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E92843025ABA6250074AFE0 /* Day15v2.swift */; };
 		2E99D563256D3D3700088D9C /* Temp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E99D55A256D3D3700088D9C /* Temp.framework */; };
 		2E99D568256D3D3700088D9C /* TempTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D567256D3D3700088D9C /* TempTests.swift */; };
 		2E99D56A256D3D3700088D9C /* Temp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E99D55C256D3D3700088D9C /* Temp.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -509,7 +508,6 @@
 		2E9122952575A59C00517A30 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
 		2E9122A62575A6A800517A30 /* Bundler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundler.swift; sourceTree = "<group>"; };
 		2E92841F25ABA4630074AFE0 /* Day15-2.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Day15-2.input"; sourceTree = "<group>"; };
-		2E92843025ABA6250074AFE0 /* Day15v2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day15v2.swift; sourceTree = "<group>"; };
 		2E99D248256CF37100088D9C /* Year2020.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Year2020.h; sourceTree = "<group>"; };
 		2E99D249256CF37100088D9C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2E99D255256CF37200088D9C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -933,7 +931,6 @@
 			isa = PBXGroup;
 			children = (
 				2E09FA0E25AA714C00C3269F /* Day15.swift */,
-				2E92843025ABA6250074AFE0 /* Day15v2.swift */,
 				2E09FA2625AA718500C3269F /* Day15.input */,
 				2E09FA3E25AAE8E200C3269F /* Day15_example1.input */,
 				2E09FA4A25AB029500C3269F /* Day15_example2.input */,
@@ -2727,7 +2724,6 @@
 				D5E3CBBE239A6E6800D39B5D /* Day1.swift in Sources */,
 				2E0FB8B125A5B7720074F30D /* Day12.swift in Sources */,
 				2E09F9D625A9C5E700C3269F /* Day14.swift in Sources */,
-				2E92843125ABA6250074AFE0 /* Day15v2.swift in Sources */,
 				D5E3CBE0239AC35700D39B5D /* Day4.swift in Sources */,
 				D5E3CBD7239A8F8700D39B5D /* Errors.swift in Sources */,
 				2E3BD5D1259F116A00F13E60 /* Day9.swift in Sources */,

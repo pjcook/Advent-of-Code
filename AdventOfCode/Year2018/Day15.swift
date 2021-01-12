@@ -7,15 +7,30 @@ public struct Day15 {
     public func part1(_ input: [String]) -> Int {
         let board = parse(input)
         board.play()
-        board.results()
+//        board.results()
         return board.score
     }
     
     public func part2(_ input: [String]) -> Int {
-        let board = parse(input)
-        board.play()
-        board.results()
-        return board.score
+        var elfAttackPower = 3
+
+        outerloop: while true {
+            elfAttackPower += 1
+//            print("Attack power", elfAttackPower)
+
+            let board = parse(input)
+            let originalElfCount = board.players.filter({ $0.race == .elf }).count
+            
+            for player in board.players where player.race == .elf {
+                player.attack = elfAttackPower
+            }
+
+            board.playPart2()
+            
+            if originalElfCount == board.players.filter({ $0.race == .elf }).count {
+                return board.score
+            }
+        }
     }
     
     public func parse(_ input: [String]) -> Board {
@@ -30,7 +45,8 @@ public struct Day15 {
                 let tile = Tile(rawValue: line[x])!
                 tiles[point] = tile
                 if [.elf, .goblin].contains(tile) {
-                    players.insert(Player(race: Player.Race(rawValue: line[x])!, position: point))
+                    let race = Player.Race(rawValue: line[x])!
+                    players.insert(Player(race: race, position: point))
                 }
             }
         }
@@ -41,8 +57,7 @@ public struct Day15 {
     public class Board {
         private var size: Point
         private var tiles: [Point:Tile]
-        private var players: Set<Player>
-        private var playing = false
+        var players: Set<Player>
         private var turns = 0
         
         public init(_ tiles: [Point:Tile], _ size: Point, _ players: Set<Player>) {
@@ -52,8 +67,6 @@ public struct Day15 {
         }
         
         public func play() {
-            guard !playing else { return }
-            draw(tiles)
             var loop = true
             while loop {
                 let playingRound = players
@@ -70,18 +83,43 @@ public struct Day15 {
                 if fullRound {
                     turns += 1
                 }
-//                print(turns)
-                draw(tiles)
-//                results()
                 let elfCount = players.filter({ $0.race == .elf }).count
+                loop = players.count != elfCount && elfCount != 0
+            }
+        }
+        
+        public func playPart2() {
+            let originalElfCount = players.filter({ $0.race == .elf }).count
+
+            var loop = true
+            while loop {
+                let playingRound = players
+                    .sorted(by: { $0.position.x < $1.position.x })
+                    .sorted(by: { $0.position.y < $1.position.y })
+                var fullRound = true
+                for player in playingRound {
+                    guard let player = players.first(where: { $0.id == player.id }) else { continue }
+                    if !update(player) {
+                        fullRound = false
+                        break
+                    }
+                }
+                if fullRound {
+                    turns += 1
+                }
+                let elfCount = players.filter({ $0.race == .elf }).count
+                if originalElfCount != elfCount {
+                    loop = false
+                    continue
+                }
+//                draw(tiles)
                 loop = players.count != elfCount && elfCount != 0
             }
         }
         
         public func update(_ player: Player) -> Bool {
             let player = player
-            var board = tiles
-            var options = floorTiles(in: board)
+            let options = floorTiles(in: tiles)
             let validMoves = floorTiles(in: options, positions: [player.position])
             
             let enemies = players.filter({ $0.race == player.race.opposite })
@@ -92,37 +130,66 @@ public struct Day15 {
             
             // if cannot attack && valid moves try to move
             if validAttacks.isEmpty, !validMoves.isEmpty {
-                var inRange = floorTiles(in: options, positions: enemies.map { $0.position })
-                
                 // plot reachable paths
-                var i = 1
-                var moves = [Point:Int]()
-                var minMoves = Int.max
-                while !options.isEmpty && !inRange.isEmpty && i < minMoves {
-                    for point in inRange {
-                        board[point] = .move
-                        moves[point] = min(moves[point, default: Int.max], i)
-                        if validMoves.contains(point) && i < minMoves {
-                            minMoves = i
+                var steps = [(Point,Int)]()
+                var routes = [Point:Point]()
+                let enemyPoints = Set(enemies.map { $0.position })
+                steps.append((player.position, 0))
+                var finishedSearching = false
+                var maxSteps = Int.max
+                route: while !steps.isEmpty {
+                    let (current, stepCount) = steps.removeFirst()
+                    if stepCount > maxSteps { continue }
+                    var pendingMoves = [Point]()
+
+                    for additive in Player.adjacent {
+                        let point = current + additive
+                        
+                        // check if enemy in range
+                        if enemyPoints.contains(point) {
+                            if stepCount < maxSteps {
+                                maxSteps = stepCount
+                            }
+                            finishedSearching = true
+                            if routes[point] == nil {
+                                routes[point] = current
+                            }
+                            continue route
+                        }
+                        
+                        if tiles[point] == .floor && routes[point] == nil && point != player.position {
+                            pendingMoves.append(point)
                         }
                     }
-                    options = floorTiles(in: board)
-                    inRange = floorTiles(in: options, positions: inRange.map { $0 })
-                    i = i+1
-//                    draw(board, moves: moves)
+                    
+                    if !finishedSearching {
+                        for point in pendingMoves {
+                            if routes[point] == nil {
+                                routes[point] = current
+                                steps.append((point, stepCount + 1))
+                            }
+                        }
+                    }
                 }
                 
-                // find nearest
-                if let movement =
-                    validMoves
-                    .sorted(by: { $0.x < $1.x })
-                    .sorted(by: { $0.y < $1.y })
-                    .filter({ moves[$0] != nil })
-                    .sorted(by: { moves[$0]! < moves[$1]! })
+                if let destination =
+                    routes
+                    .filter({ enemyPoints.contains($0.key) })
+                    .sorted(by: { $0.key.x < $1.key.x })
+                    .sorted(by: { $0.key.y < $1.key.y })
                     .first {
+                    var point = destination.key
+                    while true {
+                        let next = routes[point]!
+                        if next != player.position {
+                            point = next
+                        } else {
+                            break
+                        }
+                    }
                     tiles[player.position] = .floor
-                    tiles[movement] = player.race == .elf ? .elf : .goblin
-                    player.position = movement
+                    tiles[point] = player.race == .elf ? .elf : .goblin
+                    player.position = point
                 }
             }
             
@@ -220,7 +287,7 @@ public struct Day15 {
         public let id = UUID().uuidString
         public let race: Race
         public var health: Int
-        public let attack: Int
+        public var attack: Int
         public var position: Point
         
         public init(race: Race, position: Point, health: Int = 200, attack: Int = 3) {
