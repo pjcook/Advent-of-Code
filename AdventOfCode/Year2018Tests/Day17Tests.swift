@@ -21,4 +21,16 @@ class Day17Tests: XCTestCase {
         let input = Input("Day17example1.input", Year2018.bundle).lines
         XCTAssertEqual(57, day.part1(input))
     }
+    
+    func test_part1_example2() {
+        let day = Day17()
+        let input = Input("Day17example2.input", Year2018.bundle).lines
+        XCTAssertEqual(31949, day.part1(input))
+    }
+    
+    func test_parsing() {
+        let day = Day17()
+        let map = day.parse(input)
+        XCTAssertEqual(25414, map.count)
+    }
 }

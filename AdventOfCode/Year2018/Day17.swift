@@ -129,15 +129,24 @@ extension Day17 {
         let minX = map.keys.sorted(by: { $0.x < $1.x }).first!.x
         let maxX = map.keys.sorted(by: { $0.x > $1.x }).first!.x + 1
         let maxY = map.keys.sorted(by: { $0.y > $1.y }).first!.y
-        
+        var falling = 0
+        var settled = 0
         for y in (0...maxY) {
             var line = String(format: "%04i", y)
             for x in (minX...maxX) {
                 let point = Point(x, y)
-                line += map[point, default: .sand].rawValue
+                let tile = map[point, default: .sand]
+                line += tile.rawValue
+                if tile == .fallingWater {
+                    falling += 1
+                } else if tile == .settledWater {
+                    settled += 1
+                }
             }
             print(line)
         }
+        print()
+        print(falling, settled, falling + settled)
         print()
     }
 }
@@ -151,8 +160,8 @@ extension Day17 {
     }
     
     public func parse(_ input: [String]) -> Map {
-        let regX = try! RegularExpression(pattern: #"x=([\d]*),\sy=([\d]*)..([\d]*)"#)
-        let regY = try! RegularExpression(pattern: #"y=([\d]*),\sx=([\d]*)..([\d]*)"#)
+        let regX = try! RegularExpression(pattern: #"x=([\d]*),\sy=([\d]*)\.\.([\d]*)"#)
+        let regY = try! RegularExpression(pattern: #"y=([\d]*),\sx=([\d]*)\.\.([\d]*)"#)
         var map = Map()
         
         for line in input {
@@ -171,6 +180,8 @@ extension Day17 {
                 for x in (x1...x2) {
                     map[Point(x, y)] = .clay
                 }
+            } else {
+                print("oops", line)
             }
         }
         

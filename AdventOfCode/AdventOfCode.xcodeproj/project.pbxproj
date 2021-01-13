@@ -176,6 +176,7 @@
 		2EC9EF282585015500E4E7E0 /* Day4_v2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC9EF272585013B00E4E7E0 /* Day4_v2.swift */; };
 		2EC9EF342587588900E4E7E0 /* Int+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC9EF332587588900E4E7E0 /* Int+Additions.swift */; };
 		2ECC08C625AE3B1000514474 /* Day17example1.input in Resources */ = {isa = PBXBuildFile; fileRef = 2ECC08C525AE3B1000514474 /* Day17example1.input */; };
+		2ECC092B25AF1C3600514474 /* Day17example2.input in Resources */ = {isa = PBXBuildFile; fileRef = 2ECC092A25AF1C3600514474 /* Day17example2.input */; };
 		2EE7EDCF25812F1A00C9FA25 /* Day7.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE7EDCE25812F1A00C9FA25 /* Day7.swift */; };
 		2EE7EDE525812F2400C9FA25 /* Day7.input in Resources */ = {isa = PBXBuildFile; fileRef = 2EE7EDE425812F2400C9FA25 /* Day7.input */; };
 		2EE7EDF125812F6000C9FA25 /* Day7_Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 2EE7EDF025812F6000C9FA25 /* Day7_Readme.md */; };
@@ -656,6 +657,7 @@
 		2EC9EF272585013B00E4E7E0 /* Day4_v2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day4_v2.swift; sourceTree = "<group>"; };
 		2EC9EF332587588900E4E7E0 /* Int+Additions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Additions.swift"; sourceTree = "<group>"; };
 		2ECC08C525AE3B1000514474 /* Day17example1.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day17example1.input; sourceTree = "<group>"; };
+		2ECC092A25AF1C3600514474 /* Day17example2.input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Day17example2.input; sourceTree = "<group>"; };
 		2EE7EDCE25812F1A00C9FA25 /* Day7.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day7.swift; sourceTree = "<group>"; };
 		2EE7EDE425812F2400C9FA25 /* Day7.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day7.input; sourceTree = "<group>"; };
 		2EE7EDF025812F6000C9FA25 /* Day7_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day7_Readme.md; sourceTree = "<group>"; };
@@ -1011,6 +1013,7 @@
 				2E88F75725AE155F00D99E72 /* Day17_Readme.md */,
 				2E88F76325AE157100D99E72 /* Day17.input */,
 				2ECC08C525AE3B1000514474 /* Day17example1.input */,
+				2ECC092A25AF1C3600514474 /* Day17example2.input */,
 			);
 			name = Day17;
 			sourceTree = "<group>";
@@ -2535,6 +2538,7 @@
 				2EE7EE3925815DB400C9FA25 /* Day8.input in Resources */,
 				2E0FD15E25A8561C0074F30D /* Day13.input in Resources */,
 				2E88F76425AE157100D99E72 /* Day17.input in Resources */,
+				2ECC092B25AF1C3600514474 /* Day17example2.input in Resources */,
 				D5E3CB85239A695300D39B5D /* Day1.input in Resources */,
 				2E0FB8BD25A5B95D0074F30D /* Day12_example1.input in Resources */,
 				2E3BD62C25A304B300F13E60 /* Day10_Readme.md in Resources */,
