@@ -59,7 +59,7 @@ public struct Day13 {
                 default:
                     break
                 }
-                track[point] = value
+                track[point] = String(value)
             }
         }
         

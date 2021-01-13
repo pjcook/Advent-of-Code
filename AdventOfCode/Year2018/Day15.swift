@@ -42,10 +42,10 @@ public struct Day15 {
             x = line.count
             for x in (0..<line.count) {
                 let point = Point(x: x, y: y)
-                let tile = Tile(rawValue: line[x])!
+                let tile = Tile(rawValue: String(line[x]))!
                 tiles[point] = tile
                 if [.elf, .goblin].contains(tile) {
-                    let race = Player.Race(rawValue: line[x])!
+                    let race = Player.Race(rawValue: String(line[x]))!
                     players.insert(Player(race: race, position: point))
                 }
             }

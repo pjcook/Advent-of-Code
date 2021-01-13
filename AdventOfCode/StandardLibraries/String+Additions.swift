@@ -1,10 +1,5 @@
 public extension String {
-
-    var length: Int {
-        return count
-    }
-
-    subscript (i: Int) -> String {
+    subscript (i: Int) -> SubSequence {
         get {
             return self[i ..< i + 1]
         }
@@ -13,25 +8,32 @@ public extension String {
             replaceSubrange(lower...lower, with: newValue)
         }
     }
+}
+
+public extension StringProtocol {
+
+    var length: Int {
+        return count
+    }
     
-    subscript (i: Int, l: Int) -> String {
+    subscript (i: Int, l: Int) -> SubSequence {
         return self[i ..< i + l]
     }
 
-    func substring(fromIndex: Int) -> String {
-        return self[min(fromIndex, length) ..< length]
+    func substring(fromIndex: Int) -> SubSequence {
+        return self[Swift.min(fromIndex, length) ..< length]
     }
 
-    func substring(toIndex: Int) -> String {
-        return self[0 ..< max(0, toIndex)]
+    func substring(toIndex: Int) -> SubSequence {
+        return self[0 ..< Swift.max(0, toIndex)]
     }
 
-    subscript (r: Range<Int>) -> String {
-        let range = Range(uncheckedBounds: (lower: max(0, min(length, r.lowerBound)),
-                                            upper: min(length, max(0, r.upperBound))))
+    subscript (r: Range<Int>) -> SubSequence {
+        let range = Range(uncheckedBounds: (lower: Swift.max(0, Swift.min(length, r.lowerBound)),
+                                            upper: Swift.min(length, Swift.max(0, r.upperBound))))
         let start = index(startIndex, offsetBy: range.lowerBound)
         let end = index(start, offsetBy: range.upperBound - range.lowerBound)
-        return String(self[start ..< end])
+        return self[start ..< end]
     }
 }
 

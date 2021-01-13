@@ -31,7 +31,7 @@ public struct Day12 {
         public init(_ input: [String]) {
             let initialState = input[0].replacingOccurrences(of: "initial state: ", with: "")
             for i in (0..<initialState.count) {
-                pots[i] = initialState[i]
+                pots[i] = String(initialState[i])
             }
             maxPot = initialState.count
             minPot = -2
@@ -39,7 +39,7 @@ public struct Day12 {
             var rules = Set<Pattern>()
             for i in (2..<input.count) {
                 let line = input[i]
-                let pattern = line[0..<5]
+                let pattern = String(line[0..<5])
                 let result = line[9]
                 if result == "#" {
                     rules.insert(pattern)

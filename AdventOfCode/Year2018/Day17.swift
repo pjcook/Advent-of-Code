@@ -4,10 +4,24 @@ import StandardLibraries
 public struct Day17 {
     public typealias Map = [Point: Strata]
     public init() {}
+
+    public func part1(_ input: [String]) -> Int {
+        let spring = Point(x: 500, y: 0)
+        var map = parse(input)
+        let minY = map.keys.sorted(by: { $0.y < $1.y }).first!.y
+        fillUpBuckets(&map, spring)
+        return map.filter({ $0.key.y >= minY }).values.filter([.fallingWater, .settledWater].contains).count
+    }
     
+    public func part2(_ input: [String]) -> Int {
+        let spring = Point(x: 500, y: 0)
+        var map = parse(input)
+        fillUpBuckets(&map, spring)
+        return map.values.filter({ $0 == .settledWater }).count
+    }
+
     fileprivate func fillUpBuckets(_ map: inout [Point : Day17.Strata], _ spring: Point) {
         let maxY = map.keys.sorted(by: { $0.y > $1.y }).first!.y
-        let maxX = map.keys.sorted(by: { $0.x > $1.x }).first!.x
         let down = Point(0, 1)
         let left = Point(-1, 0)
         let right = Point(1, 0)
@@ -17,7 +31,7 @@ public struct Day17 {
         var water = spring
         var foundLip = false
         var processedSprings = Set<Point>()
-        draw(map)
+//        draw(map)
         while water.y < maxY || !springs.isEmpty {
             //            draw(map)
             if water.y >= maxY || foundLip {
@@ -106,21 +120,7 @@ public struct Day17 {
             //            print(water)
         }
         
-        draw(map)
-    }
-    
-    public func part1(_ input: [String]) -> Int {
-        let spring = Point(x: 500, y: 0)
-        var map = parse(input)
-        fillUpBuckets(&map, spring)
-        return map.values.filter({ [.fallingWater, .settledWater].contains($0) }).count
-    }
-    
-    public func part2(_ input: [String]) -> Int {
-        let spring = Point(x: 500, y: 0)
-        var map = parse(input)
-        fillUpBuckets(&map, spring)
-        return map.values.filter({ [.settledWater].contains($0) }).count
+//        draw(map)
     }
 }
 
