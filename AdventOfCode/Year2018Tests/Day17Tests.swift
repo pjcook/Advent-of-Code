@@ -8,8 +8,12 @@ class Day17Tests: XCTestCase {
 
     func test_part1() {
         let day = Day17()
-        // too low 33031, 33035, 33056
-        XCTAssertEqual(33056, day.part1(input))
+        XCTAssertEqual(33052, day.part1(input))
+    }
+    
+    func test_part2() {
+        let day = Day17()
+        XCTAssertEqual(27068, day.part2(input))
     }
     
     func test_part1_example1() {
