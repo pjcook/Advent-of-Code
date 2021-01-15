@@ -6,13 +6,13 @@ public struct Day16 {
     
     public func part1(_ input: [String]) -> Int {
         let calculations = [
-            addr, addi,
-            mulr, muli,
-            banr, bani,
-            borr, bori,
-            setr, seti,
-            gtir, gtri, gtrr,
-            eqir, eqri, eqrr
+            OpCode.addr, OpCode.addi,
+            OpCode.mulr, OpCode.muli,
+            OpCode.banr, OpCode.bani,
+            OpCode.borr, OpCode.bori,
+            OpCode.setr, OpCode.seti,
+            OpCode.gtir, OpCode.gtri, OpCode.gtrr,
+            OpCode.eqir, OpCode.eqri, OpCode.eqrr
         ]
         
         let (manual, _) = parse(input)
@@ -39,22 +39,22 @@ public struct Day16 {
     
     public func part2(_ input: [String]) -> Int {
         let calculations = [
-            "addr": addr,
-            "addi": addi,
-            "mulr": mulr,
-            "muli": muli,
-            "banr": banr,
-            "bani": bani,
-            "borr": borr,
-            "bori": bori,
-            "setr": setr,
-            "seti": seti,
-            "gtir": gtir,
-            "gtri": gtri,
-            "gtrr": gtrr,
-            "eqir": eqir,
-            "eqri": eqri,
-            "eqrr": eqrr
+            "addr": OpCode.addr,
+            "addi": OpCode.addi,
+            "mulr": OpCode.mulr,
+            "muli": OpCode.muli,
+            "banr": OpCode.banr,
+            "bani": OpCode.bani,
+            "borr": OpCode.borr,
+            "bori": OpCode.bori,
+            "setr": OpCode.setr,
+            "seti": OpCode.seti,
+            "gtir": OpCode.gtir,
+            "gtri": OpCode.gtri,
+            "gtrr": OpCode.gtrr,
+            "eqir": OpCode.eqir,
+            "eqri": OpCode.eqri,
+            "eqrr": OpCode.eqrr
         ]
         
         let (manual, instructions) = parse(input)
@@ -101,16 +101,16 @@ public struct Day16 {
 }
 
 extension Day16 {
-    public func parse(_ input: [String]) -> (Manual, [Program]) {
+    public func parse(_ input: [String]) -> (Manual, [OpCode.Registers]) {
         let beforeRegEx = try! RegularExpression(pattern: #"Before:\s\[([\d]*),\s([\d]*),\s([\d]*),\s([\d]*)\]"#)
         let afterRegEx = try! RegularExpression(pattern: #"After:\s\s\[([\d]*),\s([\d]*),\s([\d]*),\s([\d]*)\]"#)
         var samples = [Sample]()
         
         var blank = false
         var i = 0
-        var before = Program()
-        var program = Program()
-        var after = Program()
+        var before = OpCode.Registers()
+        var program = OpCode.Instructions()
+        var after = OpCode.Registers()
         for line in input {
             i += 1
             if blank && line.isEmpty {
@@ -121,13 +121,13 @@ extension Day16 {
             }
             blank = false
             if let beforeMatch = try? beforeRegEx.match(line) {
-                before = Program()
+                before = OpCode.Registers()
                 before.append(try! beforeMatch.integer(at: 0))
                 before.append(try! beforeMatch.integer(at: 1))
                 before.append(try! beforeMatch.integer(at: 2))
                 before.append(try! beforeMatch.integer(at: 3))
             } else if let afterMatch = try? afterRegEx.match(line) {
-                after = Program()
+                after = OpCode.Registers()
                 after.append(try! afterMatch.integer(at: 0))
                 after.append(try! afterMatch.integer(at: 1))
                 after.append(try! afterMatch.integer(at: 2))
@@ -146,7 +146,7 @@ extension Day16 {
             }
         }
         
-        var instructions = [Program]()
+        var instructions = [OpCode.Registers]()
         for i in (i..<input.count) {
             let line = input[i]
             if !line.isEmpty {
@@ -156,7 +156,7 @@ extension Day16 {
         
         return (Manual(samples: samples), instructions)
     }
-    
+
     public struct Manual {
         public let samples: [Sample]
         public init(samples: [Sample]) {
@@ -165,160 +165,14 @@ extension Day16 {
     }
     
     public struct Sample {
-        public let before: Program
-        public let program: Program
-        public let after: Program
+        public let before: OpCode.Registers
+        public let program: OpCode.Instructions
+        public let after: OpCode.Registers
         
-        public init(before: Program, program: Program, after: Program) {
+        public init(before: OpCode.Registers, program: OpCode.Instructions, after: OpCode.Registers) {
             self.before = before
             self.program = program
             self.after = after
         }
-    }
-    
-    public typealias Program = [Int]
-}
-
-extension Day16 {
-    func addr(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] + input[b]
-        return input
-    }
-
-    func addi(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] + b
-        return input
-    }
-    
-    func mulr(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] * input[b]
-        return input
-    }
-    
-    func muli(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] * b
-        return input
-    }
-    
-    func banr(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] & input[b]
-        return input
-    }
-    
-    func bani(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] & b
-        return input
-    }
-    
-    func borr(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] | input[b]
-        return input
-    }
-    
-    func bori(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] | b
-        return input
-    }
-    
-    func setr(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let c = instruction[3]
-        input[c] = input[a]
-        return input
-    }
-    
-    func seti(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let c = instruction[3]
-        input[c] = a
-        return input
-    }
-    
-    func gtir(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = a > input[b] ? 1 : 0
-        return input
-    }
-    
-    func gtri(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] > b ? 1 : 0
-        return input
-    }
-    
-    func gtrr(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] > input[b] ? 1 : 0
-        return input
-    }
-    
-    func eqir(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = a == input[b] ? 1 : 0
-        return input
-    }
-    
-    func eqri(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] == b ? 1 : 0
-        return input
-    }
-    
-    func eqrr(_ input: Program, _ instruction: Program) -> Program {
-        var input = input
-        let a = instruction[1]
-        let b = instruction[2]
-        let c = instruction[3]
-        input[c] = input[a] == input[b] ? 1 : 0
-        return input
     }
 }
