@@ -15,9 +15,18 @@ public struct Point: Hashable {
     }
     
     public static let zero: Point = Point(x: 0, y: 0)
+    
+    public func up() -> Point { Point(x, y-1) }
+    public func down() -> Point { Point(x, y+1) }
+    public func left() -> Point { Point(x-1, y) }
+    public func right() -> Point { Point(x+1, y) }
 }
 
 extension Point {
+    public func distance(to other: Point) -> Int {
+        return abs(x - other.x) + abs(y - other.y)
+    }
+    
     public var manhattanDistance: Int {
         abs(x) + abs(y)
     }
@@ -37,7 +46,7 @@ extension Point {
     public static func + (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
     }
-        
+    
     public static func - (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
     }
@@ -52,6 +61,22 @@ extension Point {
     
     public static func * (lhs: Point, rhs: Int) -> Point {
         return Point(x: lhs.x * rhs, y: lhs.y * rhs)
+    }
+    
+    public static func < (lhs: Point, rhs: Point) -> Bool {
+        return lhs.x < rhs.x && lhs.y < rhs.y
+    }
+    
+    public static func <= (lhs: Point, rhs: Point) -> Bool {
+        return lhs.x <= rhs.x && lhs.y <= rhs.y
+    }
+    
+    public static func > (lhs: Point, rhs: Point) -> Bool {
+        return lhs.x > rhs.x && lhs.y > rhs.y
+    }
+    
+    public static func >= (lhs: Point, rhs: Point) -> Bool {
+        return lhs.x >= rhs.x && lhs.y >= rhs.y
     }
     
     public func add(direction: CompassDirection, distance: Int = 1) -> Point {
@@ -111,6 +136,16 @@ public extension Point {
         items.remove(.zero)
         return items
     }()
+    
+    func cardinalNeighbors(_ allowNegative: Bool = false) -> Set<Point> {
+        return Set([
+            Point(x, y-1),
+            Point(x-1, y),
+            Point(x+1, y),
+            Point(x, y+1)
+        ].filter({ allowNegative || $0.x >= 0 && $0.y >= 0 })
+        )
+    }
 }
 
 public enum Position {
