@@ -37,4 +37,9 @@ public extension Vector {
         items.remove(.zero)
         return items
     }()
+    
+    // Manhattan distance
+    func distance(to: Vector) -> Int {
+        return abs(x - to.x) + abs(y - to.y) + abs(z - to.z)
+    }
 }
