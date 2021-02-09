@@ -4,10 +4,50 @@ public struct Day24 {
     public init() {}
     
     public func part1(_ input: [String]) -> Int {
-        var groups = parse(input)
+        let groups = parse(input)
+        let (count, _) = solve(groups)
+        return count
+    }
+    
+    public func part2(_ input: [String]) -> Int {
+        var i = 0
+        var count = 0
+        var type = SystemType.infection
+        while type == .infection {
+            i += 1
+            let groups = parse(input)
+            let boostedGroups: [Group] = groups.map {
+                if $0.type == .immune {
+                    return Group($0, boost: i)
+                } else {
+                    return $0
+                }
+            }
+            (count, type) = solve(boostedGroups)
+            print("Result", type.rawValue, count, i)
+        }
+        
+        return count
+    }
+    
+    public func testPart2(_ input: [String], boost: Int = 1570) -> Int {
+        let groups = parse(input)
+        let boostedGroups: [Group] = groups.map {
+            if $0.type == .immune {
+                return Group($0, boost: boost)
+            } else {
+                return $0
+            }
+        }
+        let (count, _) = solve(boostedGroups)
+        return count
+    }
+    
+    private func solve(_ groups: [Group]) -> (Int, SystemType) {
+        var groups = groups
         
         while multipleSystems(groups) {
-            summary(groups)
+//            summary(groups)
             var selectionGroups = groups
             let sortedGroups = groups.sorted(by: { $0.unit.initiative > $1.unit.initiative }).sorted(by: { $0.effectivePower > $1.effectivePower })
             
@@ -18,18 +58,25 @@ public struct Day24 {
                     break
                 }
             }
-            print()
+            
+            // Stop infinite loop
+            if sortedGroups.filter({ $0.target != nil && ($0.target?.targetValue($0) ?? 0) > 0 }).count == 0 {
+                return (-1, .infection)
+            }
+//            print()
             // attacking phase
             for group in sortedGroups.sorted(by: { $0.unit.initiative > $1.unit.initiative }) {
                 group.attack()
             }
-            print()
+//            print()
             // Clear out the dead
             groups = sortedGroups.filter({ $0.numberOfUnits > 0 })
-            print()
+//            print()
         }
         
-        return groups.reduce(0, { $0 + $1.numberOfUnits })
+        let count = groups.reduce(0, { $0 + $1.numberOfUnits })
+        let type = groups.first!.type
+        return (count, type)
     }
     
     func summary(_ groups: [Group]) {
@@ -113,6 +160,20 @@ class Group {
         numberOfUnits * unit.damage
     }
     
+    init(_ group: Group, boost: Int) {
+        self.id = group.id
+        self.type = group.type
+        self.numberOfUnits = group.numberOfUnits
+        self.unit = Unit(
+            hitPoints: group.unit.hitPoints,
+            attackType: group.unit.attackType,
+            damage: group.unit.damage + boost,
+            initiative: group.unit.initiative,
+            weakness: group.unit.weakness,
+            immunities: group.unit.immunities
+        )
+    }
+    
     init(_ input: String, _ type: SystemType, _ id: String) {
         self.id = id
         self.type = type
@@ -160,12 +221,14 @@ class Group {
         guard !groups.isEmpty else { return [] }
         let options = groups
             .filter({ $0.type != type && !$0.unit.immunities.contains(unit.attackType) })
+            .sorted(by: { $0.unit.initiative > $1.unit.initiative })
+            .sorted(by: { $0.effectivePower > $1.effectivePower })
             .sorted(by: { $0.calculateAttackDamage(self) > $1.calculateAttackDamage(self) })
         guard !options.isEmpty else { return groups }
         target = options.first
-        for option in options {
-            print(type == .immune ? "Immune System" : "Infection", id, "would deal defending", option.id, option.calculateAttackDamage(self), "damage")
-        }
+//        for option in options {
+//            print(type == .immune ? "Immune System" : "Infection", id, "would deal defending", option.id, option.calculateAttackDamage(self), "damage")
+//        }
         var groups = groups
         groups.remove(at: groups.firstIndex(where: { $0.id == target!.id && $0.type == target!.type })!)
         return groups
@@ -174,7 +237,7 @@ class Group {
     func attack() {
         guard numberOfUnits > 0, let target = target else { return }
         let attackValue = target.targetValue(self)
-        print(type == .immune ? "Immune System" : "Infection", id, "attacks defending", target.id, "killing", attackValue, "units")
+//        print(type == .immune ? "Immune System" : "Infection", id, "attacks defending", target.id, "killing", attackValue, "units")
         target.numberOfUnits -= attackValue
     }
     
