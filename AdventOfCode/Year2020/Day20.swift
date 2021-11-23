@@ -138,7 +138,7 @@ public extension Day20 {
                     for x2 in 0..<smallerSize {
                         let character = edgeless[y2][x2]
                         let gp = Point(x: (x * smallerSize) + x2, y: (y * smallerSize) + y2)
-                        grid[gp.y][gp.x] = character
+                        grid[gp.y][gp.x] = String(character)
                     }
                 }
             }
@@ -257,7 +257,7 @@ public extension Day20 {
                     for x2 in 0..<smallerSize {
                         let character = edgeless[y2][x2]
                         let gp = Point(x: (x * smallerSize) + x2, y: (y * smallerSize) + y2)
-                        grid[gp.y][gp.x] = character
+                        grid[gp.y][gp.x] = String(character)
                     }
                 }
             }
@@ -412,7 +412,7 @@ public extension Day20 {
             for x in 0..<size {
                 var line = ""
                 for y in 0..<size {
-                    line.append(data[size - 1 - y][x])
+                    line.append(String(data[size - 1 - y][x]))
                 }
                 rotatedData.append(line)
             }
@@ -440,7 +440,7 @@ public extension Day20 {
                 let oldLine = data[y]
                 var line = ""
                 for x in 1..<size-1 {
-                    line.append(oldLine[x])
+                    line.append(String(oldLine[x]))
                 }
                 lines.append(line)
             }

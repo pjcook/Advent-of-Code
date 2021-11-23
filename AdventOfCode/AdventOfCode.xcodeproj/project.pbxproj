@@ -58,7 +58,6 @@
 		2E3BD63825A304D900F13E60 /* Day10.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E3BD63725A304D900F13E60 /* Day10.input */; };
 		2E3BD64425A306D700F13E60 /* Day10Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E3BD64325A306D700F13E60 /* Day10Tests.swift */; };
 		2E47616D258388BB00F22D1F /* Day11_v2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E47616C258388BB00F22D1F /* Day11_v2.swift */; };
-		2E4761792583B35500F22D1F /* Day11_v3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4761782583B35500F22D1F /* Day11_v3.swift */; };
 		2E4765DF2584911400F22D1F /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4765D32584910500F22D1F /* Math.swift */; };
 		2E4766092584C77300F22D1F /* DirectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4766082584C77300F22D1F /* DirectionTests.swift */; };
 		2E4766292584EF2700F22D1F /* Day11_v4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4766282584EF2700F22D1F /* Day11_v4.swift */; };
@@ -88,15 +87,12 @@
 		2E9122DE25760A7500517A30 /* Day24.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D4EA256D22D000088D9C /* Day24.swift */; };
 		2E9122DF25760A7500517A30 /* Day22.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D4B4256D228A00088D9C /* Day22.swift */; };
 		2E9122E025760A7500517A30 /* Day20.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E99D487256D226900088D9C /* Day20.input */; };
-		2E9122E125760A7500517A30 /* Day20.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D47E256D225C00088D9C /* Day20.swift */; };
 		2E9122E225760A7500517A30 /* Day19.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D463256D224200088D9C /* Day19.swift */; };
-		2E9122E325760A7500517A30 /* Day17.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D42D256D220900088D9C /* Day17.swift */; };
 		2E9122E425760A7500517A30 /* Day14.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D3DC256D21BC00088D9C /* Day14.swift */; };
 		2E9122E525760A7500517A30 /* Day23.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D4CF256D22A300088D9C /* Day23.swift */; };
 		2E9122E625760A7500517A30 /* Day17.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E99D436256D221700088D9C /* Day17.input */; };
 		2E9122E725760A7500517A30 /* Day16.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D412256D21E300088D9C /* Day16.swift */; };
 		2E9122E825760A7500517A30 /* Day16.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E99D41B256D21F000088D9C /* Day16.input */; };
-		2E9122E925760A7500517A30 /* Day13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D3C1256D21A400088D9C /* Day13.swift */; };
 		2E9122EA25760A7500517A30 /* Day15.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E99D400256D21D800088D9C /* Day15.input */; };
 		2E9122EB25760A7500517A30 /* Day21.input in Resources */ = {isa = PBXBuildFile; fileRef = 2E99D4A2256D227E00088D9C /* Day21.input */; };
 		2E9122EC25760A7500517A30 /* Day18.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D448256D222600088D9C /* Day18.swift */; };
@@ -135,8 +131,6 @@
 		2E99D568256D3D3700088D9C /* TempTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D567256D3D3700088D9C /* TempTests.swift */; };
 		2E99D56A256D3D3700088D9C /* Temp.h in Headers */ = {isa = PBXBuildFile; fileRef = 2E99D55C256D3D3700088D9C /* Temp.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2E99D595256D3DC600088D9C /* Year2020.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E99D58C256D3DC600088D9C /* Year2020.framework */; };
-		2E99D5AC256D3DD500088D9C /* InputReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5E3CB8B239A696800D39B5D /* InputReader.framework */; };
-		2E99D5AD256D3DD500088D9C /* InputReader.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D5E3CB8B239A696800D39B5D /* InputReader.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2E99D5BE256D3E3700088D9C /* Day6_Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 2E99D5BB256D3E3700088D9C /* Day6_Readme.md */; };
 		2E99D5D9256D3E6600088D9C /* Day1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D5D8256D3E6600088D9C /* Day1Tests.swift */; };
 		2E99D5EB256D3E9700088D9C /* Day2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D5EA256D3E9700088D9C /* Day2Tests.swift */; };
@@ -170,8 +164,6 @@
 		2EA043AB257D0644003A2742 /* String+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E0671522578AFDD003079FD /* String+Additions.swift */; };
 		2EA043C0257D0659003A2742 /* StandardLibraries.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA04389257D0628003A2742 /* StandardLibraries.framework */; };
 		2EA043C1257D0659003A2742 /* StandardLibraries.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA04389257D0628003A2742 /* StandardLibraries.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		2EA043CE257D0662003A2742 /* StandardLibraries.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA04389257D0628003A2742 /* StandardLibraries.framework */; };
-		2EA043CF257D0662003A2742 /* StandardLibraries.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA04389257D0628003A2742 /* StandardLibraries.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2EA043F2257D6FDD003A2742 /* Day6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA043F1257D6FDD003A2742 /* Day6.swift */; };
 		2EA043FE257D6FEA003A2742 /* Day6_Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 2EA043FD257D6FE9003A2742 /* Day6_Readme.md */; };
 		2EA0440A257D6FFF003A2742 /* Day6.input in Resources */ = {isa = PBXBuildFile; fileRef = 2EA04409257D6FFF003A2742 /* Day6.input */; };
@@ -238,6 +230,14 @@
 		D53642EF239FFD1F001DD179 /* Day11.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642EE239FFD1F001DD179 /* Day11.swift */; };
 		D53642F1239FFD31001DD179 /* Day11Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642F0239FFD31001DD179 /* Day11Tests.swift */; };
 		D53642F523A0D51E001DD179 /* Day11_chris.input in Resources */ = {isa = PBXBuildFile; fileRef = D53642F423A0D51E001DD179 /* Day11_chris.input */; };
+		D536CCFB274D7F7300D20509 /* InputReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5E3CB8B239A696800D39B5D /* InputReader.framework */; };
+		D536CCFC274D7F7300D20509 /* InputReader.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D5E3CB8B239A696800D39B5D /* InputReader.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D536CCFE274D7F7400D20509 /* StandardLibraries.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA04389257D0628003A2742 /* StandardLibraries.framework */; };
+		D536CCFF274D7F7400D20509 /* StandardLibraries.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2EA04389257D0628003A2742 /* StandardLibraries.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D536CD00274D836700D20509 /* Day11_v3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E4761782583B35500F22D1F /* Day11_v3.swift */; };
+		D536CD01274D837100D20509 /* Day17.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D42D256D220900088D9C /* Day17.swift */; };
+		D536CD02274D838E00D20509 /* Day20.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D47E256D225C00088D9C /* Day20.swift */; };
+		D536CD03274D847400D20509 /* Day13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E99D3C1256D21A400088D9C /* Day13.swift */; };
 		D5541C5D23EC018700EFFD42 /* InputReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5541C5C23EC018700EFFD42 /* InputReader.swift */; };
 		D58A3B4123C88DBA004393AC /* GKMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58A3B4023C88DBA004393AC /* GKMapper.swift */; };
 		D5A8778423AAC43D004A21CD /* Day19.input in Resources */ = {isa = PBXBuildFile; fileRef = D5A8778323AAC43D004A21CD /* Day19.input */; };
@@ -447,14 +447,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		2E99D5B0256D3DD600088D9C /* Embed Frameworks */ = {
+		D536CCFD274D7F7300D20509 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2E99D5AD256D3DD500088D9C /* InputReader.framework in Embed Frameworks */,
-				2EA043CF257D0662003A2742 /* StandardLibraries.framework in Embed Frameworks */,
+				D536CCFC274D7F7300D20509 /* InputReader.framework in Embed Frameworks */,
+				D536CCFF274D7F7400D20509 /* StandardLibraries.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -925,8 +925,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E99D5AC256D3DD500088D9C /* InputReader.framework in Frameworks */,
-				2EA043CE257D0662003A2742 /* StandardLibraries.framework in Frameworks */,
+				D536CCFB274D7F7300D20509 /* InputReader.framework in Frameworks */,
+				D536CCFE274D7F7400D20509 /* StandardLibraries.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2259,7 +2259,7 @@
 				2E99D588256D3DC600088D9C /* Sources */,
 				2E99D589256D3DC600088D9C /* Frameworks */,
 				2E99D58A256D3DC600088D9C /* Resources */,
-				2E99D5B0256D3DD600088D9C /* Embed Frameworks */,
+				D536CCFD274D7F7300D20509 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2790,19 +2790,21 @@
 				2EC9EF282585015500E4E7E0 /* Day4_v2.swift in Sources */,
 				2E9122E525760A7500517A30 /* Day23.swift in Sources */,
 				2E91232425760A8C00517A30 /* Day5.swift in Sources */,
-				2E9122E925760A7500517A30 /* Day13.swift in Sources */,
 				2E4766412584FAD000F22D1F /* Day12_v2.swift in Sources */,
 				2E9122E725760A7500517A30 /* Day16.swift in Sources */,
 				2E91232925760A8C00517A30 /* Day10.swift in Sources */,
 				2E9122DF25760A7500517A30 /* Day22.swift in Sources */,
+				D536CD03274D847400D20509 /* Day13.swift in Sources */,
 				2E91233425760A9300517A30 /* Day2.swift in Sources */,
 				2E9122A72575A6A800517A30 /* Bundler.swift in Sources */,
 				2E91232225760A8C00517A30 /* Day7.swift in Sources */,
+				D536CD02274D838E00D20509 /* Day20.swift in Sources */,
+				D536CD00274D836700D20509 /* Day11_v3.swift in Sources */,
 				2E91232325760A8C00517A30 /* Day3.swift in Sources */,
-				2E4761792583B35500F22D1F /* Day11_v3.swift in Sources */,
 				2E91232625760A8C00517A30 /* Day9.swift in Sources */,
 				2E47616D258388BB00F22D1F /* Day11_v2.swift in Sources */,
 				2E9122DD25760A7500517A30 /* Day21.swift in Sources */,
+				D536CD01274D837100D20509 /* Day17.swift in Sources */,
 				2E91231E25760A8C00517A30 /* Day6.swift in Sources */,
 				2E4766292584EF2700F22D1F /* Day11_v4.swift in Sources */,
 				2E91231D25760A8C00517A30 /* Day12.swift in Sources */,
@@ -2813,10 +2815,8 @@
 				2E9122E225760A7500517A30 /* Day19.swift in Sources */,
 				2E9122F025760A7500517A30 /* Day15.swift in Sources */,
 				2E91231B25760A8C00517A30 /* Day8.swift in Sources */,
-				2E9122E325760A7500517A30 /* Day17.swift in Sources */,
 				2E9122DE25760A7500517A30 /* Day24.swift in Sources */,
 				2E91232125760A8C00517A30 /* Day4.swift in Sources */,
-				2E9122E125760A7500517A30 /* Day20.swift in Sources */,
 				2E9122D425760A5E00517A30 /* Day25.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3231,7 +3231,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Software101.Year2020;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -3261,7 +3260,6 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Software101.Year2020;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

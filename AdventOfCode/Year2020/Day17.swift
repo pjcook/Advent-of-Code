@@ -20,7 +20,7 @@ public struct Day17 {
         let half = count / 2
         for y in 0..<count {
             for x in 0..<count {
-                data[Vector(x: x - half, y: y - half, z: 0)] = State(rawValue: input[y][x])
+                data[Vector(x: x - half, y: y - half, z: 0)] = State(rawValue: String(input[y][x]))
             }
         }
         return data
@@ -102,7 +102,7 @@ public struct Day17Part2 {
         let half = count / 2
         for y in 0..<count {
             for x in 0..<count {
-                data[WeirdVector(w: 0, z: 0, y: y - half, x: x - half)] = Day17.State(rawValue: input[y][x])
+                data[WeirdVector(w: 0, z: 0, y: y - half, x: x - half)] = Day17.State(rawValue: String(input[y][x]))
             }
         }
         return data

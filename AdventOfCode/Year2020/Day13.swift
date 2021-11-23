@@ -7,13 +7,14 @@ public struct Day13 {
     public func part1(_ input: [String]) -> Int {
         let timestamp = Int(input[0])!
 
-        return
+        let result =
             input[1].components(separatedBy: ",")
             .compactMap { Int(String($0)) }
             .map { ($0 - (timestamp % $0), $0) }
             .sorted(by: { a, b in a.0 < b.0 })
-            .first
-            .map { $0.0 * $0.1 }!
+            .first!
+//            .map { $0.0 * $0.1 }!
+        return result.0 * result.1
     }
     
     public struct Bus {

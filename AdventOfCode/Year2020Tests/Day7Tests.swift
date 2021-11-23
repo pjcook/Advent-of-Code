@@ -6,18 +6,24 @@ class Day7Tests: XCTestCase {
     let input = Input("Day7.input", Year2020.bundle)
     
     func test_part1() {
+//        self.measure {
         let day = Day7()
         XCTAssertEqual(224, day.part1(input.lines))
+//        }
     }
     
     func test_part2() {
+//        self.measure {
         let day = Day7()
         XCTAssertEqual(1488, day.part2(input.lines))
+//        }
     }
     
     func test_part1_v2() {
+//        self.measure {
         let day = Day7()
         XCTAssertEqual(224, day.part1_v2(input.lines))
+//        }
     }
     
     func test_part1_v2_example() {

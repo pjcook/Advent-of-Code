@@ -6,11 +6,15 @@ class Day25Tests: XCTestCase {
     let day = Day25()
 
     func test_part1() {
+//        measure {
         XCTAssertEqual(4968512, day.part1(cardKey: 10604480, doorKey: 4126658))
+//        }
     }
     
     func test_part1_chris() {
+//        measure {
         XCTAssertEqual(4968512, day.part1_chris(cardKey: 10604480, doorKey: 4126658))
+//        }
     }
     
     func test_part1_example() {

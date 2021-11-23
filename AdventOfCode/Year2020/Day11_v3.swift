@@ -34,7 +34,7 @@ public struct Day11_v3 {
                 let point = Point(x: x, y: y)
                 let value = input[y][x]
                 guard value != "." else {
-                    line.append(value)
+                    line.append(String(value))
                     continue
                 }
                 let count = countOccupied(point, max, input)
@@ -43,7 +43,7 @@ public struct Day11_v3 {
                 } else if value == "#", count >= visibleSeats {
                     line.append("L")
                 } else {
-                    line.append(value)
+                    line.append(String(value))
                 }
             }
             output[y] = line.joined()
