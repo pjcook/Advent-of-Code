@@ -421,7 +421,7 @@
 		D536CF15274E2CC700D20509 /* Bundler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D536CEC8274E2CC400D20509 /* Bundler.swift */; };
 		D536CF16274E2CC700D20509 /* Day3.input in Resources */ = {isa = PBXBuildFile; fileRef = D536CEC9274E2CC400D20509 /* Day3.input */; };
 		D536CF17274E2CC700D20509 /* Day16.input in Resources */ = {isa = PBXBuildFile; fileRef = D536CECA274E2CC400D20509 /* Day16.input */; };
-		D536CF18274E2CC700D20509 /* Year2015.h in Headers */ = {isa = PBXBuildFile; fileRef = D536CECB274E2CC400D20509 /* Year2015.h */; };
+		D536CF18274E2CC700D20509 /* Year2015.h in Headers */ = {isa = PBXBuildFile; fileRef = D536CECB274E2CC400D20509 /* Year2015.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D536CF19274E2CC700D20509 /* Day15_Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = D536CECC274E2CC400D20509 /* Day15_Readme.md */; };
 		D536CF1A274E2CC700D20509 /* Day17_Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = D536CECD274E2CC400D20509 /* Day17_Readme.md */; };
 		D536CF1B274E2CC700D20509 /* Day12.swift in Sources */ = {isa = PBXBuildFile; fileRef = D536CECE274E2CC400D20509 /* Day12.swift */; };
@@ -524,7 +524,7 @@
 		D536CFE2274E2D5300D20509 /* Day20.input in Resources */ = {isa = PBXBuildFile; fileRef = D536CF95274E2D5000D20509 /* Day20.input */; };
 		D536CFE3274E2D5300D20509 /* Day3.swift in Sources */ = {isa = PBXBuildFile; fileRef = D536CF96274E2D5000D20509 /* Day3.swift */; };
 		D536CFE4274E2D5300D20509 /* Day7_Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = D536CF97274E2D5000D20509 /* Day7_Readme.md */; };
-		D536CFE5274E2D5300D20509 /* Year2016.h in Headers */ = {isa = PBXBuildFile; fileRef = D536CF98274E2D5000D20509 /* Year2016.h */; };
+		D536CFE5274E2D5300D20509 /* Year2016.h in Headers */ = {isa = PBXBuildFile; fileRef = D536CF98274E2D5000D20509 /* Year2016.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D536CFE6274E2D5300D20509 /* Day13.input in Resources */ = {isa = PBXBuildFile; fileRef = D536CF99274E2D5000D20509 /* Day13.input */; };
 		D536CFE7274E2D5300D20509 /* Day13.swift in Sources */ = {isa = PBXBuildFile; fileRef = D536CF9A274E2D5000D20509 /* Day13.swift */; };
 		D536CFE8274E2D5300D20509 /* Day17_Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = D536CF9B274E2D5000D20509 /* Day17_Readme.md */; };
@@ -631,7 +631,7 @@
 		D536D0B3274E2D8F00D20509 /* Day7_Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = D536D066274E2D8D00D20509 /* Day7_Readme.md */; };
 		D536D0B4274E2D8F00D20509 /* Day17.input in Resources */ = {isa = PBXBuildFile; fileRef = D536D067274E2D8D00D20509 /* Day17.input */; };
 		D536D0B5274E2D8F00D20509 /* Day2.input in Resources */ = {isa = PBXBuildFile; fileRef = D536D068274E2D8D00D20509 /* Day2.input */; };
-		D536D0B6274E2D8F00D20509 /* Year2017.h in Headers */ = {isa = PBXBuildFile; fileRef = D536D069274E2D8D00D20509 /* Year2017.h */; };
+		D536D0B6274E2D8F00D20509 /* Year2017.h in Headers */ = {isa = PBXBuildFile; fileRef = D536D069274E2D8D00D20509 /* Year2017.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D536D0B7274E2D8F00D20509 /* Day3.swift in Sources */ = {isa = PBXBuildFile; fileRef = D536D06A274E2D8D00D20509 /* Day3.swift */; };
 		D536D0B8274E2D8F00D20509 /* Day19.input in Resources */ = {isa = PBXBuildFile; fileRef = D536D06B274E2D8D00D20509 /* Day19.input */; };
 		D536D0B9274E2D8F00D20509 /* Day21_Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = D536D06C274E2D8D00D20509 /* Day21_Readme.md */; };
