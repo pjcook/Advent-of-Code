@@ -4,7 +4,8 @@ import Year2015
 
 class Day14Tests: XCTestCase {
     
-    let input = Input("Day14.input", Year2015.bundle)
+    let input = Input("Day14.input", Year2015.bundle).lines
+    let day = Day14()
 
     func test_part1() {
 //        XCTAssertEqual(381699, Day1.findMatch(input: input, value: 2020))
