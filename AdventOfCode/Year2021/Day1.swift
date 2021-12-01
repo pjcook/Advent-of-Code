@@ -3,6 +3,7 @@ import StandardLibraries
 
 public struct Day1 {
     public init() {}
+    
     public func part1(_ input: [Int]) -> Int {
         var count = 0
         for i in (1..<input.count) {
