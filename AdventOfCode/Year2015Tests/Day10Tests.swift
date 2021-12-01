@@ -3,14 +3,22 @@ import InputReader
 import Year2015
 
 class Day10Tests: XCTestCase {
-    
-    let input = Input("Day10.input", Year2015.bundle)
 
+    let day = Day10()
+    
     func test_part1() {
-//        XCTAssertEqual(381699, Day1.findMatch(input: input, value: 2020))
+        XCTAssertEqual(492982, day.part1([1,3,2,1,1,3,1,1,1,2]))
     }
     
     func test_part2() {
-//        XCTAssertEqual(111605670, Day1.findMatch2(input: input, value: 2020))
+        XCTAssertEqual(6989950, day.part2([1,3,2,1,1,3,1,1,1,2]))
+    }
+    
+    func test_examples() {
+        XCTAssertEqual([1,1], day.process([1]))
+        XCTAssertEqual([2,1], day.process([1,1]))
+        XCTAssertEqual([1,2,1,1], day.process([2,1]))
+        XCTAssertEqual([1,1,1,2,2,1], day.process([1,2,1,1]))
+        XCTAssertEqual([3,1,2,2,1,1], day.process([1,1,1,2,2,1]))
     }
 }
