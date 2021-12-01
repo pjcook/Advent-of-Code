@@ -2682,31 +2682,81 @@
 			isa = PBXGroup;
 			children = (
 				D536CD0D274E25D200D20509 /* Year2021.h */,
-				D536CDF3274E293800D20509 /* Day1 */,
-				D536CDF4274E294C00D20509 /* Day2 */,
-				D536CDF5274E295500D20509 /* Day3 */,
-				D536CDF6274E295E00D20509 /* Day4 */,
-				D536CDF7274E296600D20509 /* Day5 */,
-				D536CDF8274E296F00D20509 /* Day6 */,
-				D536CDF9274E297700D20509 /* Day7 */,
-				D536CDFA274E297E00D20509 /* Day8 */,
-				D536CDFB274E298500D20509 /* Day9 */,
-				D536CDFC274E298E00D20509 /* Day10 */,
-				D536CDFD274E299500D20509 /* Day11 */,
-				D536CDFE274E299D00D20509 /* Day12 */,
-				D536CDFF274E29A300D20509 /* Day13 */,
-				D536CE00274E29AB00D20509 /* Day14 */,
-				D536CE01274E29B300D20509 /* Day15 */,
-				D536CE02274E29BB00D20509 /* Day16 */,
-				D536CE03274E29C200D20509 /* Day17 */,
-				D536CE04274E29C900D20509 /* Day18 */,
-				D536CE05274E29D100D20509 /* Day19 */,
-				D536CE06274E29DA00D20509 /* Day20 */,
-				D536CE07274E29E700D20509 /* Day21 */,
-				D536CE08274E29F000D20509 /* Day22 */,
-				D536CE09274E29F800D20509 /* Day23 */,
-				D536CE0A274E29FF00D20509 /* Day24 */,
-				D536CE0B274E2A0700D20509 /* Day25 */,
+				D536CD68274E292E00D20509 /* Day1_Readme.md */,
+				D536CD77274E292E00D20509 /* Day1.input */,
+				D536CD96274E292F00D20509 /* Day1.swift */,
+				D536CD69274E292E00D20509 /* Day2_Readme.md */,
+				D536CD6F274E292E00D20509 /* Day2.input */,
+				D536CD6A274E292E00D20509 /* Day2.swift */,
+				D536CD78274E292E00D20509 /* Day3_Readme.md */,
+				D536CDA3274E293000D20509 /* Day3.input */,
+				D536CD72274E292E00D20509 /* Day3.swift */,
+				D536CDA5274E293000D20509 /* Day4_Readme.md */,
+				D536CD82274E292F00D20509 /* Day4.input */,
+				D536CD9C274E292F00D20509 /* Day4.swift */,
+				D536CD5D274E292D00D20509 /* Day5_Readme.md */,
+				D536CD9E274E293000D20509 /* Day5.input */,
+				D536CD6B274E292E00D20509 /* Day5.swift */,
+				D536CD86274E292F00D20509 /* Day6_Readme.md */,
+				D536CD7E274E292E00D20509 /* Day6.input */,
+				D536CD8F274E292F00D20509 /* Day6.swift */,
+				D536CD5E274E292D00D20509 /* Day7_Readme.md */,
+				D536CD83274E292F00D20509 /* Day7.input */,
+				D536CD8D274E292F00D20509 /* Day7.swift */,
+				D536CD7B274E292E00D20509 /* Day8_Readme.md */,
+				D536CD74274E292E00D20509 /* Day8.input */,
+				D536CD9F274E293000D20509 /* Day8.swift */,
+				D536CD8C274E292F00D20509 /* Day9_Readme.md */,
+				D536CD98274E292F00D20509 /* Day9.input */,
+				D536CD8B274E292F00D20509 /* Day9.swift */,
+				D536CD8A274E292F00D20509 /* Day10_Readme.md */,
+				D536CD92274E292F00D20509 /* Day10.input */,
+				D536CDA7274E293000D20509 /* Day10.swift */,
+				D536CD87274E292F00D20509 /* Day11_Readme.md */,
+				D536CD63274E292E00D20509 /* Day11.input */,
+				D536CD61274E292D00D20509 /* Day11.swift */,
+				D536CDA6274E293000D20509 /* Day12_Readme.md */,
+				D536CDA4274E293000D20509 /* Day12.input */,
+				D536CD9B274E292F00D20509 /* Day12.swift */,
+				D536CD79274E292E00D20509 /* Day13_Readme.md */,
+				D536CD91274E292F00D20509 /* Day13.input */,
+				D536CD9D274E293000D20509 /* Day13.swift */,
+				D536CD73274E292E00D20509 /* Day14_Readme.md */,
+				D536CD6C274E292E00D20509 /* Day14.input */,
+				D536CD6E274E292E00D20509 /* Day14.swift */,
+				D536CD7A274E292E00D20509 /* Day15_Readme.md */,
+				D536CD95274E292F00D20509 /* Day15.input */,
+				D536CD81274E292F00D20509 /* Day15.swift */,
+				D536CD7D274E292E00D20509 /* Day16_Readme.md */,
+				D536CD97274E292F00D20509 /* Day16.input */,
+				D536CD60274E292D00D20509 /* Day16.swift */,
+				D536CD66274E292E00D20509 /* Day17_Readme.md */,
+				D536CD64274E292E00D20509 /* Day17.input */,
+				D536CD70274E292E00D20509 /* Day17.swift */,
+				D536CD65274E292E00D20509 /* Day18_Readme.md */,
+				D536CD93274E292F00D20509 /* Day18.input */,
+				D536CD7C274E292E00D20509 /* Day18.swift */,
+				D536CD99274E292F00D20509 /* Day19_Readme.md */,
+				D536CD9A274E292F00D20509 /* Day19.input */,
+				D536CD88274E292F00D20509 /* Day19.swift */,
+				D536CD89274E292F00D20509 /* Day20_Readme.md */,
+				D536CD80274E292F00D20509 /* Day20.input */,
+				D536CD7F274E292F00D20509 /* Day20.swift */,
+				D536CD67274E292E00D20509 /* Day21_Readme.md */,
+				D536CD94274E292F00D20509 /* Day21.input */,
+				D536CD85274E292F00D20509 /* Day21.swift */,
+				D536CDA0274E293000D20509 /* Day22_Readme.md */,
+				D536CD71274E292E00D20509 /* Day22.input */,
+				D536CD84274E292F00D20509 /* Day22.swift */,
+				D536CD62274E292E00D20509 /* Day23_Readme.md */,
+				D536CD5F274E292D00D20509 /* Day23.input */,
+				D536CD8E274E292F00D20509 /* Day23.swift */,
+				D536CD76274E292E00D20509 /* Day24_Readme.md */,
+				D536CD75274E292E00D20509 /* Day24.input */,
+				D536CD6D274E292E00D20509 /* Day24.swift */,
+				D536CDA2274E293000D20509 /* Day25_Readme.md */,
+				D536CD90274E292F00D20509 /* Day25.input */,
+				D536CDA1274E293000D20509 /* Day25.swift */,
 				D536CD29274E264500D20509 /* Bundler.swift */,
 			);
 			path = Year2021;
@@ -2742,256 +2792,6 @@
 				D536CD59274E275C00D20509 /* Day25Tests.swift */,
 			);
 			path = Year2021Tests;
-			sourceTree = "<group>";
-		};
-		D536CDF3274E293800D20509 /* Day1 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD68274E292E00D20509 /* Day1_Readme.md */,
-				D536CD77274E292E00D20509 /* Day1.input */,
-				D536CD96274E292F00D20509 /* Day1.swift */,
-			);
-			name = Day1;
-			sourceTree = "<group>";
-		};
-		D536CDF4274E294C00D20509 /* Day2 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD69274E292E00D20509 /* Day2_Readme.md */,
-				D536CD6F274E292E00D20509 /* Day2.input */,
-				D536CD6A274E292E00D20509 /* Day2.swift */,
-			);
-			name = Day2;
-			sourceTree = "<group>";
-		};
-		D536CDF5274E295500D20509 /* Day3 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD78274E292E00D20509 /* Day3_Readme.md */,
-				D536CDA3274E293000D20509 /* Day3.input */,
-				D536CD72274E292E00D20509 /* Day3.swift */,
-			);
-			name = Day3;
-			sourceTree = "<group>";
-		};
-		D536CDF6274E295E00D20509 /* Day4 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CDA5274E293000D20509 /* Day4_Readme.md */,
-				D536CD82274E292F00D20509 /* Day4.input */,
-				D536CD9C274E292F00D20509 /* Day4.swift */,
-			);
-			name = Day4;
-			sourceTree = "<group>";
-		};
-		D536CDF7274E296600D20509 /* Day5 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD5D274E292D00D20509 /* Day5_Readme.md */,
-				D536CD9E274E293000D20509 /* Day5.input */,
-				D536CD6B274E292E00D20509 /* Day5.swift */,
-			);
-			name = Day5;
-			sourceTree = "<group>";
-		};
-		D536CDF8274E296F00D20509 /* Day6 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD86274E292F00D20509 /* Day6_Readme.md */,
-				D536CD7E274E292E00D20509 /* Day6.input */,
-				D536CD8F274E292F00D20509 /* Day6.swift */,
-			);
-			name = Day6;
-			sourceTree = "<group>";
-		};
-		D536CDF9274E297700D20509 /* Day7 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD5E274E292D00D20509 /* Day7_Readme.md */,
-				D536CD83274E292F00D20509 /* Day7.input */,
-				D536CD8D274E292F00D20509 /* Day7.swift */,
-			);
-			name = Day7;
-			sourceTree = "<group>";
-		};
-		D536CDFA274E297E00D20509 /* Day8 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD7B274E292E00D20509 /* Day8_Readme.md */,
-				D536CD74274E292E00D20509 /* Day8.input */,
-				D536CD9F274E293000D20509 /* Day8.swift */,
-			);
-			name = Day8;
-			sourceTree = "<group>";
-		};
-		D536CDFB274E298500D20509 /* Day9 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD8C274E292F00D20509 /* Day9_Readme.md */,
-				D536CD98274E292F00D20509 /* Day9.input */,
-				D536CD8B274E292F00D20509 /* Day9.swift */,
-			);
-			name = Day9;
-			sourceTree = "<group>";
-		};
-		D536CDFC274E298E00D20509 /* Day10 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD8A274E292F00D20509 /* Day10_Readme.md */,
-				D536CD92274E292F00D20509 /* Day10.input */,
-				D536CDA7274E293000D20509 /* Day10.swift */,
-			);
-			name = Day10;
-			sourceTree = "<group>";
-		};
-		D536CDFD274E299500D20509 /* Day11 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD87274E292F00D20509 /* Day11_Readme.md */,
-				D536CD63274E292E00D20509 /* Day11.input */,
-				D536CD61274E292D00D20509 /* Day11.swift */,
-			);
-			name = Day11;
-			sourceTree = "<group>";
-		};
-		D536CDFE274E299D00D20509 /* Day12 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CDA6274E293000D20509 /* Day12_Readme.md */,
-				D536CDA4274E293000D20509 /* Day12.input */,
-				D536CD9B274E292F00D20509 /* Day12.swift */,
-			);
-			name = Day12;
-			sourceTree = "<group>";
-		};
-		D536CDFF274E29A300D20509 /* Day13 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD79274E292E00D20509 /* Day13_Readme.md */,
-				D536CD91274E292F00D20509 /* Day13.input */,
-				D536CD9D274E293000D20509 /* Day13.swift */,
-			);
-			name = Day13;
-			sourceTree = "<group>";
-		};
-		D536CE00274E29AB00D20509 /* Day14 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD73274E292E00D20509 /* Day14_Readme.md */,
-				D536CD6C274E292E00D20509 /* Day14.input */,
-				D536CD6E274E292E00D20509 /* Day14.swift */,
-			);
-			name = Day14;
-			sourceTree = "<group>";
-		};
-		D536CE01274E29B300D20509 /* Day15 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD7A274E292E00D20509 /* Day15_Readme.md */,
-				D536CD95274E292F00D20509 /* Day15.input */,
-				D536CD81274E292F00D20509 /* Day15.swift */,
-			);
-			name = Day15;
-			sourceTree = "<group>";
-		};
-		D536CE02274E29BB00D20509 /* Day16 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD7D274E292E00D20509 /* Day16_Readme.md */,
-				D536CD97274E292F00D20509 /* Day16.input */,
-				D536CD60274E292D00D20509 /* Day16.swift */,
-			);
-			name = Day16;
-			sourceTree = "<group>";
-		};
-		D536CE03274E29C200D20509 /* Day17 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD66274E292E00D20509 /* Day17_Readme.md */,
-				D536CD64274E292E00D20509 /* Day17.input */,
-				D536CD70274E292E00D20509 /* Day17.swift */,
-			);
-			name = Day17;
-			sourceTree = "<group>";
-		};
-		D536CE04274E29C900D20509 /* Day18 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD65274E292E00D20509 /* Day18_Readme.md */,
-				D536CD93274E292F00D20509 /* Day18.input */,
-				D536CD7C274E292E00D20509 /* Day18.swift */,
-			);
-			name = Day18;
-			sourceTree = "<group>";
-		};
-		D536CE05274E29D100D20509 /* Day19 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD99274E292F00D20509 /* Day19_Readme.md */,
-				D536CD9A274E292F00D20509 /* Day19.input */,
-				D536CD88274E292F00D20509 /* Day19.swift */,
-			);
-			name = Day19;
-			sourceTree = "<group>";
-		};
-		D536CE06274E29DA00D20509 /* Day20 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD89274E292F00D20509 /* Day20_Readme.md */,
-				D536CD80274E292F00D20509 /* Day20.input */,
-				D536CD7F274E292F00D20509 /* Day20.swift */,
-			);
-			name = Day20;
-			sourceTree = "<group>";
-		};
-		D536CE07274E29E700D20509 /* Day21 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD67274E292E00D20509 /* Day21_Readme.md */,
-				D536CD94274E292F00D20509 /* Day21.input */,
-				D536CD85274E292F00D20509 /* Day21.swift */,
-			);
-			name = Day21;
-			sourceTree = "<group>";
-		};
-		D536CE08274E29F000D20509 /* Day22 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CDA0274E293000D20509 /* Day22_Readme.md */,
-				D536CD71274E292E00D20509 /* Day22.input */,
-				D536CD84274E292F00D20509 /* Day22.swift */,
-			);
-			name = Day22;
-			sourceTree = "<group>";
-		};
-		D536CE09274E29F800D20509 /* Day23 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD62274E292E00D20509 /* Day23_Readme.md */,
-				D536CD5F274E292D00D20509 /* Day23.input */,
-				D536CD8E274E292F00D20509 /* Day23.swift */,
-			);
-			name = Day23;
-			sourceTree = "<group>";
-		};
-		D536CE0A274E29FF00D20509 /* Day24 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CD76274E292E00D20509 /* Day24_Readme.md */,
-				D536CD75274E292E00D20509 /* Day24.input */,
-				D536CD6D274E292E00D20509 /* Day24.swift */,
-			);
-			name = Day24;
-			sourceTree = "<group>";
-		};
-		D536CE0B274E2A0700D20509 /* Day25 */ = {
-			isa = PBXGroup;
-			children = (
-				D536CDA2274E293000D20509 /* Day25_Readme.md */,
-				D536CD90274E292F00D20509 /* Day25.input */,
-				D536CDA1274E293000D20509 /* Day25.swift */,
-			);
-			name = Day25;
 			sourceTree = "<group>";
 		};
 		D536CE12274E2BC500D20509 /* Year2015 */ = {
