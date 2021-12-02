@@ -9,7 +9,7 @@ public struct Day2 {
         case down(Int)
         case forward(Int)
     }
-    
+        
     public func part1(_ input: [String]) -> Int {
         let commands = parse(input)
         var depth = 0
@@ -39,6 +39,23 @@ public struct Day2 {
             }
         }
         return depth * horizontal
+    }
+    
+    public func parse(_ input: [String]) -> [Command] {
+        var commands = [Command]()
+        for line in input {
+            if line.hasPrefix("forward ") {
+                let value = Int(String(line.last!))!
+                commands.append(.forward(value))
+            } else if line.hasPrefix("up ") {
+                let value = Int(String(line.last!))!
+                commands.append(.up(value))
+            } else if line.hasPrefix("down ") {
+                let value = Int(String(line.last!))!
+                commands.append(.down(value))
+            }
+        }
+        return commands
     }
     
     public func part1b(_ input: [String]) -> Int {
@@ -79,20 +96,43 @@ public struct Day2 {
         return depth * horizontal
     }
     
-    public func parse(_ input: [String]) -> [Command] {
-        var commands = [Command]()
+    public let regex = try! RegularExpression(pattern: "^(forward|up|down) (\\d+)$")
+
+    public func part1c(_ input: [String]) throws -> Int {
+        var depth = 0
+        var horizontal = 0
         for line in input {
-            if line.hasPrefix("forward ") {
-                let value = Int(String(line.last!))!
-                commands.append(.forward(value))
-            } else if line.hasPrefix("up ") {
-                let value = Int(String(line.last!))!
-                commands.append(.up(value))
-            } else if line.hasPrefix("down ") {
-                let value = Int(String(line.last!))!
-                commands.append(.down(value))
+            let match = try regex.match(line)
+            let command = try match.string(at: 0)
+            let value = try match.integer(at: 1)
+            if command == "forward" {
+                horizontal += value
+            } else if command == "up" {
+                depth -= value
+            } else if command == "down" {
+                depth += value
             }
         }
-        return commands
+        return depth * horizontal
+    }
+    
+    public func part2c(_ input: [String]) throws -> Int {
+        var depth = 0
+        var horizontal = 0
+        var aim = 0
+        for line in input {
+            let match = try regex.match(line)
+            let command = try match.string(at: 0)
+            let value = try match.integer(at: 1)
+            if command == "forward" {
+                horizontal += value
+                depth += value * aim
+            } else if command == "up" {
+                aim -= value
+            } else if command == "down" {
+                aim += value
+            }
+        }
+        return depth * horizontal
     }
 }
