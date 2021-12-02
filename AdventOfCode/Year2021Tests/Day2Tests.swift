@@ -4,13 +4,22 @@ import Year2021
 
 class Day2Tests: XCTestCase {
     
-    let input = Input("Day2.input", Year2021.bundle)
+    let input = Input("Day2.input", Year2021.bundle).lines
+    let day = Day2()
 
     func test_part1() {
-//        XCTAssertEqual(381699, Day1.findMatch(input: input, value: 2020))
+        measure {
+        XCTAssertEqual(1480518, day.part1(input))
+        }
     }
     
     func test_part2() {
-//        XCTAssertEqual(111605670, Day1.findMatch2(input: input, value: 2020))
+        measure {
+        XCTAssertEqual(1282809906, day.part2(input))
+        }
+    }
+    
+    func test_parsing() {
+        XCTAssertEqual(1000, day.parse(input).count)
     }
 }

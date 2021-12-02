@@ -11,9 +11,7 @@ If your secret key is pqrstuv, the lowest number it combines with to make an MD5
 
 Your puzzle input is iwrupvqb.
 
-Your puzzle answer was 346386.
-
-The first half of this puzzle is complete! It provides one gold star: *
+What is your answer?
 
 --- Part Two ---
 

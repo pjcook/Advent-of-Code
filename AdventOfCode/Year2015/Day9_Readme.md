@@ -21,10 +21,6 @@ The shortest of these is London -> Dublin -> Belfast = 605, and so the answer is
 
 What is the distance of the shortest route?
 
-Your puzzle answer was 207.
-
-The first half of this puzzle is complete! It provides one gold star: *
-
 --- Part Two ---
 
 The next year, just to show off, Santa decides to take the route with the longest distance instead.

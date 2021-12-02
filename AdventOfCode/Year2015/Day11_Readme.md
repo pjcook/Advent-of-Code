@@ -18,18 +18,9 @@ abbceffg meets the third requirement (because it repeats bb and ff) but fails th
 abbcegjk fails the third requirement, because it only has one double letter (bb).
 The next password after abcdefgh is abcdffaa.
 The next password after ghijklmn is ghjaabcc, because you eventually skip all the passwords that start with ghi..., since i is not allowed.
-Given Santa's current password (your puzzle input), what should his next password be?
 
-Your puzzle answer was vzbxxyzz.
+Given Santa's current password (your puzzle input), what should his next password be?
 
 --- Part Two ---
 
 Santa's password expired again. What's the next one?
-
-Your puzzle answer was vzcaabcc.
-
-Both parts of this puzzle are complete! They provide two gold stars: **
-
-At this point, you should return to your Advent calendar and try another puzzle.
-
-Your puzzle input was vzbxkghb.
