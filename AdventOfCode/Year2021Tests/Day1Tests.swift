@@ -4,7 +4,7 @@ import Year2021
 
 class Day1Tests: XCTestCase {
     
-    let input = Input("Day1.input", Year2021.bundle).lines.compactMap { Int($0) }
+    let input = Input("Day1.input", Year2021.bundle).integers
     let day = Day1()
 
     func test_part1() {
