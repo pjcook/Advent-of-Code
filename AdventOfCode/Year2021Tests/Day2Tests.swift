@@ -19,6 +19,18 @@ class Day2Tests: XCTestCase {
         }
     }
     
+    func test_part1b() {
+        measure {
+        XCTAssertEqual(1480518, day.part1b(input))
+        }
+    }
+    
+    func test_part2b() {
+        measure {
+        XCTAssertEqual(1282809906, day.part2b(input))
+        }
+    }
+    
     func test_parsing() {
         XCTAssertEqual(1000, day.parse(input).count)
     }

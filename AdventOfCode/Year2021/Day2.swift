@@ -41,6 +41,44 @@ public struct Day2 {
         return depth * horizontal
     }
     
+    public func part1b(_ input: [String]) -> Int {
+        var depth = 0
+        var horizontal = 0
+        for line in input {
+            if line.hasPrefix("forward") {
+                let value = Int(String(line.last!))!
+                horizontal += value
+            } else if line.hasPrefix("up") {
+                let value = Int(String(line.last!))!
+                depth -= value
+            } else if line.hasPrefix("down") {
+                let value = Int(String(line.last!))!
+                depth += value
+            }
+        }
+        return depth * horizontal
+    }
+    
+    public func part2b(_ input: [String]) -> Int {
+        var depth = 0
+        var horizontal = 0
+        var aim = 0
+        for line in input {
+            if line.hasPrefix("forward") {
+                let value = Int(String(line.last!))!
+                horizontal += value
+                depth += value * aim
+            } else if line.hasPrefix("up") {
+                let value = Int(String(line.last!))!
+                aim -= value
+            } else if line.hasPrefix("down") {
+                let value = Int(String(line.last!))!
+                aim += value
+            }
+        }
+        return depth * horizontal
+    }
+    
     public func parse(_ input: [String]) -> [Command] {
         var commands = [Command]()
         for line in input {
