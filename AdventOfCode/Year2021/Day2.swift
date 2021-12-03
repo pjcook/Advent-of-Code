@@ -44,14 +44,12 @@ public struct Day2 {
     public func parse(_ input: [String]) -> [Command] {
         var commands = [Command]()
         for line in input {
-            if line.hasPrefix("forward ") {
-                let value = Int(String(line.last!))!
+            let value = Int(String(line.last!))!
+            if line.hasPrefix("f") {
                 commands.append(.forward(value))
-            } else if line.hasPrefix("up ") {
-                let value = Int(String(line.last!))!
+            } else if line.hasPrefix("u") {
                 commands.append(.up(value))
-            } else if line.hasPrefix("down ") {
-                let value = Int(String(line.last!))!
+            } else if line.hasPrefix("d") {
                 commands.append(.down(value))
             }
         }
@@ -62,14 +60,12 @@ public struct Day2 {
         var depth = 0
         var horizontal = 0
         for line in input {
-            if line.hasPrefix("forward") {
-                let value = Int(String(line.last!))!
+            let value = Int(String(line.last!))!
+            if line.hasPrefix("f") {
                 horizontal += value
-            } else if line.hasPrefix("up") {
-                let value = Int(String(line.last!))!
+            } else if line.hasPrefix("u") {
                 depth -= value
-            } else if line.hasPrefix("down") {
-                let value = Int(String(line.last!))!
+            } else if line.hasPrefix("d") {
                 depth += value
             }
         }
@@ -81,15 +77,13 @@ public struct Day2 {
         var horizontal = 0
         var aim = 0
         for line in input {
-            if line.hasPrefix("forward") {
-                let value = Int(String(line.last!))!
+            let value = Int(String(line.last!))!
+            if line.hasPrefix("f") {
                 horizontal += value
                 depth += value * aim
-            } else if line.hasPrefix("up") {
-                let value = Int(String(line.last!))!
+            } else if line.hasPrefix("u") {
                 aim -= value
-            } else if line.hasPrefix("down") {
-                let value = Int(String(line.last!))!
+            } else if line.hasPrefix("d") {
                 aim += value
             }
         }
