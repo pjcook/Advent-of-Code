@@ -71,7 +71,7 @@ public struct Day3 {
                     count += 1
                 }
             }
-            let gammaSignificant = count > input.count / 2
+            let gammaSignificant = count > input.count - count
             gamma.append(gammaSignificant ? "1" : "0")
             epsilon.append(gammaSignificant ? "0" : "1")
         }

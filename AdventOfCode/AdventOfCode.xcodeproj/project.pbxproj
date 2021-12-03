@@ -785,6 +785,7 @@
 		D5F0F6AE23A99545004A5E4A /* Day18.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F0F6AD23A99545004A5E4A /* Day18.swift */; };
 		D5F0F6B023A99555004A5E4A /* Day18Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F0F6AF23A99555004A5E4A /* Day18Tests.swift */; };
 		D5F0F6B223A9F82F004A5E4A /* ASCII+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F0F6B123A9F82F004A5E4A /* ASCII+Extensions.swift */; };
+		D5F81B552759EC24008CA24B /* Day3b.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F81B542759EC24008CA24B /* Day3b.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1879,6 +1880,7 @@
 		D5F0F6AD23A99545004A5E4A /* Day18.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day18.swift; sourceTree = "<group>"; };
 		D5F0F6AF23A99555004A5E4A /* Day18Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day18Tests.swift; sourceTree = "<group>"; };
 		D5F0F6B123A9F82F004A5E4A /* ASCII+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASCII+Extensions.swift"; sourceTree = "<group>"; };
+		D5F81B542759EC24008CA24B /* Day3b.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day3b.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2691,6 +2693,7 @@
 				D536CD78274E292E00D20509 /* Day3_Readme.md */,
 				D536CDA3274E293000D20509 /* Day3.input */,
 				D536CD72274E292E00D20509 /* Day3.swift */,
+				D5F81B542759EC24008CA24B /* Day3b.swift */,
 				D536CDA5274E293000D20509 /* Day4_Readme.md */,
 				D536CD82274E292F00D20509 /* Day4.input */,
 				D536CD9C274E292F00D20509 /* Day4.swift */,
@@ -4891,6 +4894,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D5F81B552759EC24008CA24B /* Day3b.swift in Sources */,
 				D536CDB9274E293000D20509 /* Day14.swift in Sources */,
 				D536CDE7274E293000D20509 /* Day4.swift in Sources */,
 				D536CDD8274E293000D20509 /* Day7.swift in Sources */,
