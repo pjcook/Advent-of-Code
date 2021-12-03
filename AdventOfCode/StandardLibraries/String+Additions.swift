@@ -8,6 +8,10 @@ public extension String {
             replaceSubrange(lower...lower, with: newValue)
         }
     }
+    
+    var binary: Int? {
+        Int(self, radix: 2)
+    }
 }
 
 public extension StringProtocol {
