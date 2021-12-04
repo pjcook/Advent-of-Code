@@ -8,15 +8,15 @@ class Day4Tests: XCTestCase {
     let day = Day4()
 
     func test_part1() throws {
-        measure {
+//        measure {
         XCTAssertEqual(32844, try! day.part1(input))
-        }
+//        }
     }
     
     func test_part2() throws {
-        measure {
+//        measure {
         XCTAssertEqual(4920, try! day.part2(input))
-        }
+//        }
     }
     
     func test_parsing() throws {
@@ -41,11 +41,11 @@ class Day4Tests: XCTestCase {
 //22 11 13  6  5
 // 2  0 12  3  7
 //""".lines
-        measure {
+//        measure {
         let (numbers, boards) = try! day.parse(input)
         XCTAssertEqual(100, numbers.count)
         XCTAssertEqual(100, boards.count)
-        }
+//        }
     }
     
     func test_example() throws {

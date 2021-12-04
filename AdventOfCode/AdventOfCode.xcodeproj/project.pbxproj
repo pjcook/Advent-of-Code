@@ -217,6 +217,7 @@
 		2EE7EE4525815DC300C9FA25 /* Day8_Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 2EE7EE4425815DC300C9FA25 /* Day8_Readme.md */; };
 		2EE7EE512581606700C9FA25 /* Day8Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE7EE502581606700C9FA25 /* Day8Tests.swift */; };
 		D52BE531275A2B7700768B0A /* Day3_Chris.input in Resources */ = {isa = PBXBuildFile; fileRef = D52BE530275A2B7700768B0A /* Day3_Chris.input */; };
+		D52BE533275B74A200768B0A /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52BE532275B74A200768B0A /* Grid.swift */; };
 		D53642D9239EF190001DD179 /* Day10.input in Resources */ = {isa = PBXBuildFile; fileRef = D53642D8239EF190001DD179 /* Day10.input */; };
 		D53642DB239EF196001DD179 /* Day10.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642DA239EF196001DD179 /* Day10.swift */; };
 		D53642DD239EF1AB001DD179 /* Day10Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53642DC239EF1AB001DD179 /* Day10Tests.swift */; };
@@ -1302,6 +1303,7 @@
 		2EE7EE4425815DC300C9FA25 /* Day8_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day8_Readme.md; sourceTree = "<group>"; };
 		2EE7EE502581606700C9FA25 /* Day8Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day8Tests.swift; sourceTree = "<group>"; };
 		D52BE530275A2B7700768B0A /* Day3_Chris.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day3_Chris.input; sourceTree = "<group>"; };
+		D52BE532275B74A200768B0A /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		D53642D7239EF188001DD179 /* Day10_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day10_Readme.md; sourceTree = "<group>"; };
 		D53642D8239EF190001DD179 /* Day10.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day10.input; sourceTree = "<group>"; };
 		D53642DA239EF196001DD179 /* Day10.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day10.swift; sourceTree = "<group>"; };
@@ -2500,6 +2502,7 @@
 			isa = PBXGroup;
 			children = (
 				2E09F93425A8C4E800C3269F /* Ring.swift */,
+				D52BE532275B74A200768B0A /* Grid.swift */,
 				2EA0438B257D0628003A2742 /* StandardLibraries.h */,
 				2E016502257FAEE0006E56E0 /* RegularExpressions.swift */,
 				2E4765D32584910500F22D1F /* Math.swift */,
@@ -4876,6 +4879,7 @@
 				2EA043AA257D0644003A2742 /* Point.swift in Sources */,
 				2E905562258B273800D6A8CD /* Vector.swift in Sources */,
 				2EC9EF342587588900E4E7E0 /* Int+Additions.swift in Sources */,
+				D52BE533275B74A200768B0A /* Grid.swift in Sources */,
 				2EE7EE0A258131EC00C9FA25 /* RegularExpressions.swift in Sources */,
 				2E90586825934FCF00D6A8CD /* LinkedList.swift in Sources */,
 				2E09F93F25A8C5C700C3269F /* Ring.swift in Sources */,

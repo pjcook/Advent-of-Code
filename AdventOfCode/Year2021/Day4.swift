@@ -1,37 +1,6 @@
 import Foundation
 import StandardLibraries
 
-public struct Grid<T> {
-    public let columns: Int
-    public var items: [T]
-    
-    public subscript(x: Int, y: Int) -> T {
-        get {
-            let index = x + y * columns
-            return items[index]
-        }
-        set {
-            let index = x + y * columns
-            items[index] = newValue
-        }
-    }
-    
-    public subscript(point: Point) -> T {
-        get {
-            self[point.x, point.y]
-        }
-        set {
-            self[point.x, point.y] = newValue
-        }
-    }
-}
-
-extension Grid: Equatable {
-    public static func == (lhs: Grid<T>, rhs: Grid<T>) -> Bool {
-        lhs.columns == rhs.columns && lhs.columns == rhs.columns
-    }
-}
-
 public struct Day4 {
     public init() {}
 
