@@ -35,7 +35,7 @@ public struct Day4 {
         
         guard let board = winningBoard else { return -1 }
         
-        let count = board.items.filter({ $0 != -1 }).reduce(0, { $0 + $1 })
+        let count = board.items.filter({ $0 != -1 }).reduce(0, +)
         return currentNumber * count
     }
     
@@ -78,7 +78,7 @@ public struct Day4 {
         
         guard let board = lastBoard else { return -1 }
         
-        let count = board.items.filter({ $0 != -1 }).reduce(0, { $0 + $1 })
+        let count = board.items.filter({ $0 != -1 }).reduce(0, +)
         return currentNumber * count
     }
     
@@ -111,9 +111,8 @@ public struct Day4 {
         while i < input.count {
             let items = [input[i], input[i+1], input[i+2], input[i+3], input[i+4]]
                 .joined(separator: " ")
-                .replacingOccurrences(of: "  ", with: " ")
                 .components(separatedBy: " ")
-                .compactMap { $0.isEmpty ? nil : Int($0) }
+                .compactMap(Int.init)
             
             i += 6
             boards.append(Board(columns: 5, items: items))

@@ -18,7 +18,7 @@ public class Day21 {
         }
 
         // Find list of alegen words in foreign language
-        let alegenFood = alegens.map { $0.value }.reduce([]) { $0 + $1 }
+        let alegenFood = alegens.map { $0.value }.reduce([], +)
         
         // Remove words from main ingredient list
         for alegen in alegenFood {
@@ -54,7 +54,7 @@ public class Day21 {
 public extension Day21 {
     func matchAlegens(_ alegens: [String : Set<String>]) -> [String : Set<String>] {
         var alegens = alegens
-        while alegens.map({ $0.value }).reduce([], { $0 + $1 }).count > alegens.count {
+        while alegens.map({ $0.value }).reduce([], +).count > alegens.count {
             for alegen in alegens.filter({ $0.value.count == 1 }) {
                 for alegen2 in alegens.filter({ $0.value.count > 1 && $0.value.intersection(alegen.value).count == 1 }) {
                     var list = alegen2.value

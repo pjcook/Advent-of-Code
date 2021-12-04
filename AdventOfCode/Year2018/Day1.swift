@@ -9,7 +9,7 @@
 import Foundation
 
 public func processFrequencyChanges(_ data: [Int]) -> Int {
-    return data.reduce(0) { $0 + $1 }
+    return data.reduce(0, +)
 }
 
 public func findFirstDuplicateFrequency(_ data: [Int]) -> Int {
