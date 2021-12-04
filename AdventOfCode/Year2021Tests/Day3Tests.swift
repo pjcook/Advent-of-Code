@@ -8,35 +8,49 @@ class Day3Tests: XCTestCase {
     let day = Day3()
 
     func test_part1() {
-//        measure {
+        measure {
         XCTAssertEqual(738234, day.part1(input))
-//        }
+        }
     }
     
     func test_part2() {
-//        measure {
+        measure {
         XCTAssertEqual(3969126, day.part2(input))
-//        }
+        }
+    }
+
+    let inputChris = Input("Day3_Chris.input", Year2021.bundle).lines
+
+    func test_part1_chris() {
+        measure {
+        XCTAssertEqual(1131506, day.part1(inputChris))
+        }
+    }
+    
+    func test_part2_chris() {
+        measure {
+        XCTAssertEqual(7863147, day.part2(inputChris))
+        }
     }
     
     let day2 = Day3b()
     
     func test_part1b() {
-//        measure {
+        measure {
         XCTAssertEqual(738234, day2.part1(input))
-//        }
+        }
     }
     
     func test_part2b() {
-//        measure {
+        measure {
         XCTAssertEqual(3969126, day2.part2(input))
-//        }
+        }
     }
     
     func test_parsing() {
-//        measure {
+        measure {
         let grid = day2.parse(input)
-//        }
+        }
     }
     
     func test_example() {
