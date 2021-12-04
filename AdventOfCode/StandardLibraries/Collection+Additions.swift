@@ -13,3 +13,21 @@ public extension Collection where Element: Comparable {
         return (minElement, maxElement)
     }
 }
+
+public extension Collection where Self.Iterator.Element: Collection {
+    var transpose: Array<Array<Self.Iterator.Element.Iterator.Element>> {
+        var result = Array<Array<Self.Iterator.Element.Iterator.Element>>()
+        if self.isEmpty {return result}
+
+        var index = self.first!.startIndex
+        while index != self.first!.endIndex {
+            var subResult = Array<Self.Iterator.Element.Iterator.Element>()
+            for subArray in self {
+                subResult.append(subArray[index])
+            }
+            result.append(subResult)
+            index = self.first!.index(after: index)
+        }
+        return result
+    }
+}

@@ -1,8 +1,42 @@
 import Foundation
 import StandardLibraries
 
+public struct Grid<T> {
+    public let columns: Int
+    public var items: [T]
+    
+    public subscript(x: Int, y: Int) -> T {
+        get {
+            let index = x + y * columns
+            return items[index]
+        }
+        set {
+            let index = x + y * columns
+            items[index] = newValue
+        }
+    }
+    
+    public subscript(point: Point) -> T {
+        get {
+            self[point.x, point.y]
+        }
+        set {
+            self[point.x, point.y] = newValue
+        }
+    }
+}
+
+extension Grid: Equatable {
+    public static func == (lhs: Grid<T>, rhs: Grid<T>) -> Bool {
+        lhs.columns == rhs.columns && lhs.columns == rhs.columns
+    }
+}
+
 public struct Day4 {
     public init() {}
+
+    public typealias Board = Grid<Int>
+    public typealias NumberCalls = [Int]
     
     public func part1(_ input: [String]) throws -> Int {
         let (numbers, b) = try parse(input)
@@ -32,16 +66,7 @@ public struct Day4 {
         
         guard let board = winningBoard else { return -1 }
         
-        var count = 0
-        for x in (0..<5) {
-            for y in (0..<5) {
-                let value = board[x][y]
-                if value != -1 {
-                    count += value
-                }
-            }
-        }
-        
+        let count = board.items.filter({ $0 != -1 }).reduce(0, { $0 + $1 })
         return currentNumber * count
     }
     
@@ -65,7 +90,7 @@ public struct Day4 {
                 
                 // Check if board has won
                 if checkBoardForWin(board) {
-                    boardsToRemove.append(boards.firstIndex(of: board)!)
+                    boardsToRemove.append(boardIndex)
                     hasWon = true
                 }
             }
@@ -84,37 +109,24 @@ public struct Day4 {
         
         guard let board = lastBoard else { return -1 }
         
-        var count = 0
-        for x in (0..<5) {
-            for y in (0..<5) {
-                let value = board[x][y]
-                if value != -1 {
-                    count += value
-                }
-            }
-        }
-        
+        let count = board.items.filter({ $0 != -1 }).reduce(0, { $0 + $1 })
         return currentNumber * count
     }
     
     public func callNumber(_ b: Board, currentNumber: Int) -> Board {
         var board = b
-        for x in (0..<5) {
-            for y in (0..<5) {
-                if board[x][y] == currentNumber {
-                    board[x][y] = -1
-                }
-            }
+        if let index = board.items.firstIndex(of: currentNumber) {
+            board.items[index] = -1
         }
         return board
     }
     
     public func checkBoardForWin(_ board: Board) -> Bool {
         for i in (0..<5) {
-            if board[0][i] == -1 && board[1][i] == -1 && board[2][i] == -1 && board[3][i] == -1 && board[4][i] == -1 {
+            if board[0,i] == -1 && board[1,i] == -1 && board[2,i] == -1 && board[3,i] == -1 && board[4,i] == -1 {
                 return true
             }
-            if board[i][0] == -1 && board[i][1] == -1 && board[i][2] == -1 && board[i][3] == -1 && board[i][4] == -1 {
+            if board[i,0] == -1 && board[i,1] == -1 && board[i,2] == -1 && board[i,3] == -1 && board[i,4] == -1 {
                 return true
             }
         }
@@ -122,37 +134,22 @@ public struct Day4 {
         return false
     }
     
-    public typealias Board = [[Int]]
-    public typealias NumberCalls = [Int]
-    public let regex = try! RegularExpression(pattern: "^\\s?(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)$")
-    
     public func parse(_ input: [String]) throws -> (NumberCalls, [Board]) {
         var boards = [Board]()
         let numberCalls = input.first!.components(separatedBy: ",").compactMap(Int.init)
         var i = 2
         
         while i < input.count {
-            var board = Board()
-            board.append(try parse(input[i]))
-            board.append(try parse(input[i+1]))
-            board.append(try parse(input[i+2]))
-            board.append(try parse(input[i+3]))
-            board.append(try parse(input[i+4]))
+            let items = [input[i], input[i+1], input[i+2], input[i+3], input[i+4]]
+                .joined(separator: " ")
+                .replacingOccurrences(of: "  ", with: " ")
+                .components(separatedBy: " ")
+                .compactMap { $0.isEmpty ? nil : Int($0) }
+            
             i += 6
-            boards.append(board)
+            boards.append(Board(columns: 5, items: items))
         }
         
         return (numberCalls, boards)
-    }
-    
-    public func parse(_ input: String) throws -> [Int] {
-        let match = try regex.match(input)
-        var numbers = [Int]()
-        numbers.append(try match.integer(at: 0))
-        numbers.append(try match.integer(at: 1))
-        numbers.append(try match.integer(at: 2))
-        numbers.append(try match.integer(at: 3))
-        numbers.append(try match.integer(at: 4))
-        return numbers
     }
 }
