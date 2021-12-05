@@ -4,7 +4,7 @@ import StandardLibraries
 public struct Day5 {
     public init() {}
     
-    public func part1(_ input: [String], includeDiagonals: Bool = false) -> Int {
+    public func process(_ input: [String], includeDiagonals: Bool = false) -> Int {
         let data = parse(input)
         let maxX = data.reduce(0) { max($0, $1.0.x, $1.1.x) }
         let maxY = data.reduce(0) { max($0, $1.0.y, $1.1.y) }
@@ -57,6 +57,42 @@ public struct Day5 {
                     Point(Int(p2[0])!,Int(p2[1])!)
                 )
             )
+        }
+        return data
+    }
+    
+    public func process2(_ input: [String], includeDiagonals: Bool = false) -> Int {
+        return parse2(input, includeDiagonals: includeDiagonals).filter({ $0.value > 1 }).count
+    }
+    
+    public func parse2(_ input: [String], includeDiagonals: Bool = false) -> [(Point):Int] {
+        var data = [Point:Int]()
+        for line in input {
+            let a = line.components(separatedBy: " -> ")
+            let p1 = a[0].components(separatedBy: ",")
+            let p2 = a[1].components(separatedBy: ",")
+            let start = Point(Int(p1[0])!,Int(p1[1])!)
+            let end = Point(Int(p2[0])!,Int(p2[1])!)
+            
+            let m = end - start
+            if m.y == 0 {                   // horizontal line
+                for x in (min(start.x, end.x)...max(start.x, end.x)) {
+                    let point = Point(x, start.y)
+                    data[point] = data[point, default: 0] + 1
+                }
+            } else if m.x == 0 {            // vertical line
+                for y in (min(start.y, end.y)...max(start.y, end.y)) {
+                    let point = Point(start.x, y)
+                    data[point] = data[point, default: 0] + 1
+                }
+            } else if includeDiagonals {    // diagonal
+                for i in (0...max(start.x, end.x)-min(start.x, end.x)) {
+                    let x = start.x < end.x ? start.x + i : start.x - i
+                    let y = start.y < end.y ? start.y + i : start.y - i
+                    let point = Point(x, y)
+                    data[point] = data[point, default: 0] + 1
+                }
+            }
         }
         return data
     }

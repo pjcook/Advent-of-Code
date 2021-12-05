@@ -9,13 +9,25 @@ class Day5Tests: XCTestCase {
 
     func test_part1() {
 //        measure {
-        XCTAssertEqual(4826, day.part1(input))
+        XCTAssertEqual(4826, day.process(input))
 //        }
     }
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(16793, day.part1(input, includeDiagonals: true))
+        XCTAssertEqual(16793, day.process(input, includeDiagonals: true))
+//        }
+    }
+    
+    func test_part1b() {
+//        measure {
+        XCTAssertEqual(4826, day.process2(input))
+//        }
+    }
+    
+    func test_part2b() {
+//        measure {
+        XCTAssertEqual(16793, day.process2(input, includeDiagonals: true))
 //        }
     }
     
@@ -37,7 +49,7 @@ class Day5Tests: XCTestCase {
 0,0 -> 8,8
 5,5 -> 8,2
 """.lines
-        XCTAssertEqual(5, day.part1(input))
+        XCTAssertEqual(5, day.process(input))
     }
     
     func test_example2() {
@@ -53,6 +65,6 @@ class Day5Tests: XCTestCase {
 0,0 -> 8,8
 5,5 -> 8,2
 """.lines
-        XCTAssertEqual(12, day.part1(input, includeDiagonals: true))
+        XCTAssertEqual(12, day.process(input, includeDiagonals: true))
     }
 }
