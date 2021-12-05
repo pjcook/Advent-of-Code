@@ -4,13 +4,24 @@ import Year2015
 
 class Day17Tests: XCTestCase {
     
-    let input = Input("Day17.input", Year2015.bundle)
+    let input = Input("Day17.input", Year2015.bundle).integers
+    let day = Day17()
 
     func test_part1() {
-//        XCTAssertEqual(381699, Day1.findMatch(input: input, value: 2020))
+        XCTAssertEqual(4372, day.part1(input))
     }
     
     func test_part2() {
-//        XCTAssertEqual(111605670, Day1.findMatch2(input: input, value: 2020))
+        XCTAssertEqual(4, day.part2(input))
+    }
+    
+    func test_example() {
+        let input = [20, 15, 10, 5, 5]
+        XCTAssertEqual(4, day.part1(input, litres: 25))
+    }
+    
+    func test_example2() {
+        let input = [20, 15, 10, 5, 5]
+        XCTAssertEqual(3, day.part2(input, litres: 25))
     }
 }
