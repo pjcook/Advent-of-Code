@@ -4,14 +4,19 @@ import Year2015
 
 class Day20Tests: XCTestCase {
     
-    let input = Input("Day20.input", Year2015.bundle).lines
     let day = Day20()
 
     func test_part1() {
-        XCTAssertEqual(0, day.part1(input))
+        // too high 1854765
+        // too high 1049160
+        XCTAssertEqual(1049160, day.part1(36000000))
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+        XCTAssertEqual(0, day.part2(36000000))
+    }
+    
+    func test_example() {
+        XCTAssertEqual(8, day.part1(150))
     }
 }
