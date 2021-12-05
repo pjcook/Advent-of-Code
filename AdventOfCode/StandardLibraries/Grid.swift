@@ -35,3 +35,15 @@ extension Grid: Equatable {
         lhs.columns == rhs.columns && lhs.columns == rhs.columns
     }
 }
+
+extension Grid {
+    public func draw() {
+        for y in (0..<items.count/columns) {
+            var row = ""
+            for x in (0..<columns) {
+                row += "\(self[x,y])"
+            }
+            print(row)
+        }
+    }
+}
