@@ -23,10 +23,6 @@ public struct Day5 {
         return grid.items.reduce(0, { $0 + ($1 > 1 ? 1 : 0) })
     }
     
-    public func part2(_ input: [String]) -> Int {
-        return 0
-    }
-    
     public func mapX(_ grid: inout Grid<Int>, _ input: (Point,Point)) {
         let y = input.0.y
         for x in (min(input.0.x, input.1.x)...max(input.0.x, input.1.x)) {

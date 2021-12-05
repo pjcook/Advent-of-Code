@@ -1,6 +1,9 @@
 import Foundation
 
 public struct Grid<T> {
+    public var rows: Int {
+        items.count / columns
+    }
     public let columns: Int
     public var items: [T]
     
@@ -45,5 +48,17 @@ extension Grid {
             }
             print(row)
         }
+    }
+    
+    public func drawForBool(on: String = "#", off: String = ".") {
+        guard let grid = self as? Grid<Bool> else { return }
+        for y in (0..<items.count/columns) {
+            var row = ""
+            for x in (0..<columns) {
+                row += "\(grid[x,y] ? on : off)"
+            }
+            print(row)
+        }
+        print()
     }
 }

@@ -8,10 +8,40 @@ class Day18Tests: XCTestCase {
     let day = Day18()
 
     func test_part1() {
-        XCTAssertEqual(0, day.part1(input))
+        XCTAssertEqual(768, day.part1(input))
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+        XCTAssertEqual(781, day.part2(input))
+    }
+    
+    func test_parsing() {
+        let grid = day.parse(input)
+        XCTAssertEqual(10000, grid.items.count)
+        XCTAssertEqual(100, grid.columns)
+    }
+    
+    func test_example() {
+        let input = """
+.#.#.#
+...##.
+#....#
+..#...
+#.#..#
+####..
+""".lines
+        XCTAssertEqual(4, day.part1(input, steps: 4))
+    }
+    
+    func test_example2() {
+        let input = """
+.#.#.#
+...##.
+#....#
+..#...
+#.#..#
+####..
+""".lines
+        XCTAssertEqual(17, day.part2(input, steps: 5))
     }
 }
