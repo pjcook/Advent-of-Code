@@ -3,7 +3,8 @@ import StandardLibraries
 
 public struct Day7 {
     public init() {}
-    
+    public typealias Reducer = (Int, (Int, Int)) throws -> Int
+
     public func part1(_ input: [Int]) -> Int {
         let sorted = input.sorted()
         let min = sorted.first!
@@ -24,18 +25,7 @@ public struct Day7 {
     }
     
     public func part1b(_ input: [Int]) -> Int {
-        var dict = [Int:Int]()
-        var min = Int.max
-        var max = 0
-        for i in input {
-            dict[i] = dict[i, default: 0] + 1
-            if i < min {
-                min = i
-            }
-            if i > max {
-                max = i
-            }
-        }
+        let (dict, min, max) = reduce(input)
         var mini = Int.max
         for i in (min...max) {
             let result = dict.reduce(0) {
@@ -96,5 +86,21 @@ public struct Day7 {
             }
         }
         return mini
+    }
+    
+    public func reduce(_ input: [Int]) -> ([Int:Int], Int, Int) {
+        var dict = [Int:Int]()
+        var min = Int.max
+        var max = 0
+        for i in input {
+            dict[i] = dict[i, default: 0] + 1
+            if i < min {
+                min = i
+            }
+            if i > max {
+                max = i
+            }
+        }
+        return (dict, min, max)
     }
 }

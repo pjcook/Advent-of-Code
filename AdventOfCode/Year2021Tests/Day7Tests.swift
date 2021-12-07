@@ -14,9 +14,9 @@ class Day7Tests: XCTestCase {
     }
     
     func test_part1b() {
-        measure {
+//        measure {
         XCTAssertEqual(340056, day.part1b(input))
-        }
+//        }
     }
     
     func test_part2() {
@@ -26,9 +26,9 @@ class Day7Tests: XCTestCase {
     }
     
     func test_part2b() {
-        measure {
+//        measure {
         XCTAssertEqual(96592275, day.part2b(input))
-        }
+//        }
     }
     
     func test_example() {
