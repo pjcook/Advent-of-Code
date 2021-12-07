@@ -23,6 +23,34 @@ public struct Day7 {
         return mini
     }
     
+    public func part1b(_ input: [Int]) -> Int {
+        var dict = [Int:Int]()
+        var min = Int.max
+        var max = 0
+        for i in input {
+            dict[i] = dict[i, default: 0] + 1
+            if i < min {
+                min = i
+            }
+            if i > max {
+                max = i
+            }
+        }
+        var mini = Int.max
+        for i in (min...max) {
+            let result = dict.reduce(0) {
+                $0 + abs(i - $1.0) * $1.1
+            }
+
+            if result < mini {
+                mini = result
+            } else {
+                break
+            }
+        }
+        return mini
+    }
+    
     public func part2(_ input: [Int]) -> Int {
         let sorted = input.sorted()
         let min = sorted.first!
@@ -36,6 +64,35 @@ public struct Day7 {
             
             if result < mini {
                 mini = result
+            }
+        }
+        return mini
+    }
+    
+    public func part2b(_ input: [Int]) -> Int {
+        var dict = [Int:Int]()
+        var min = Int.max
+        var max = 0
+        for i in input {
+            dict[i] = dict[i, default: 0] + 1
+            if i < min {
+                min = i
+            }
+            if i > max {
+                max = i
+            }
+        }
+        var mini = Int.max
+        for i in (min...max) {
+            let result = dict.reduce(0) {
+                let n = abs(i - $1.0)
+                return $0 + (n * (n + 1) / 2) * $1.1
+            }
+
+            if result < mini {
+                mini = result
+            } else {
+                break
             }
         }
         return mini
