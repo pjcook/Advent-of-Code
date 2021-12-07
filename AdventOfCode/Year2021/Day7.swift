@@ -60,18 +60,7 @@ public struct Day7 {
     }
     
     public func part2b(_ input: [Int]) -> Int {
-        var dict = [Int:Int]()
-        var min = Int.max
-        var max = 0
-        for i in input {
-            dict[i] = dict[i, default: 0] + 1
-            if i < min {
-                min = i
-            }
-            if i > max {
-                max = i
-            }
-        }
+        let (dict, min, max) = reduce(input)
         var mini = Int.max
         for i in (min...max) {
             let result = dict.reduce(0) {
