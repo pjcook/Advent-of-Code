@@ -84,16 +84,16 @@ public struct Day8 {
 
      
      a  = 7 - 1
-     b  = (any with 5) = x - 1 (item with count 1)
+     b  = 4 - 1 - d
      c  = (c,d,e) - d - e
      d  = (d,g) - g
      e  = (b,e) - b
      f  = 1 - c
      g  = (d,g) - 4
      
-     d,g = (all 5 char count of 3) - 1
+     d,g = (all 5 char count of 3) - 7
      b,e = (all 5 char count 1)
-     c,d,e = (all 6 char count 1)
+     c,d,e = (all 6 char count 2)
      
      b,d = 4 - 1
      
@@ -141,7 +141,7 @@ public struct Day8 {
             count += Int(number)!
         }
         
-        return 0
+        return count
     }
     
     public func mapCharacters(_ grid: Grid<String>, y: Int) -> [Int: Set<String>] {
@@ -159,18 +159,22 @@ public struct Day8 {
         var charMap = [Character:Character]()
         
         let one = dict[2]!.first!
-        charMap["a"] = discreet(value1: dict[3]!.first!, value2: one)
+        charMap["a"] = Set(dict[3]!.first!).subtracting(Set(one)).first!
         let char5 = charCount(dict[5]!)
         var be = Set(char5.filter({ $0.value == 1 }).map({ $0.key }))
         let four = Set(dict[4]!.first!)
-        charMap["e"] = be.subtracting(four).first!
-        charMap["b"] = be.remove(charMap["e"]!)
-        
-        var dg = Set(char5.filter({ $0.value == 3 }).map({ $0.key })).subtracting(Set(one))
-        charMap["g"] = dg.subtracting(four).first
-        charMap["d"] = dg.remove(charMap["g"]!)
-
+        var dg = Set(char5.filter({ $0.value == 3 }).map({ $0.key })).subtracting(Set(dict[3]!.first!))
         let cde = Set(charCount(dict[6]!).filter({ $0.value == 2 }).map({ $0.key }))
+
+        charMap["g"] = dg.subtracting(four).first
+        dg.remove(charMap["g"]!)
+        charMap["d"] = dg.first!
+
+        var b = four.subtracting(Set(one))
+        b.remove(charMap["d"]!)
+        charMap["b"] = b.first!
+        be.remove(charMap["b"]!)
+        charMap["e"] = be.first!
         
         charMap["c"] = cde.subtracting(Set([charMap["d"]!, charMap["e"]!])).first
         charMap["f"] = Set(one).subtracting([charMap["c"]!]).first
@@ -199,13 +203,6 @@ public struct Day8 {
         numbers[String((a+b+c+d+e+f+g).sorted())] = 8
         numbers[String((a+b+c+d+f+g).sorted())] = 9
         return numbers
-    }
-    
-    public func discreet(value1: String, value2: String) -> Character {
-        let s1 = Set(value1)
-        let s2 = Set(value2)
-        let i = s1.subtracting(s2)
-        return Character(String(i.first!))
     }
     
     public func charCount(_ input: Set<String>) -> [Character:Int] {
