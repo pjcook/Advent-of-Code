@@ -45,6 +45,6 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
         let input = """
 acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
 """.lines
-        try day.part2(input)
+        XCTAssertEqual(5353, try! day.part2(input))
     }
 }
