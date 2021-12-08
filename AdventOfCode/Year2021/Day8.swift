@@ -130,7 +130,7 @@ public struct Day8 {
         var count = 0
         
         for y in (0..<grid.rows) {
-            let dict = mapCharacters(grid)
+            let dict = mapCharacters(grid, y: y)
             let charMap = translateCharacters(grid, dict: dict)
             let numbers = mapNumbers(charMap: charMap)
             
@@ -144,18 +144,18 @@ public struct Day8 {
         return 0
     }
     
-    public func mapCharacters(_ grid: Grid) -> [Int: Set<String>] {
+    public func mapCharacters(_ grid: Grid<String>, y: Int) -> [Int: Set<String>] {
         var dict = [Int:Set<String>]()
         for x in (0..<grid.columns) {
             let value = grid[x,y]
-            var values = dict[value.count] ?? Set<String>()
+            var values = dict[value.count, default: Set<String>()]
             values.insert(value)
             dict[value.count] = values
         }
         return dict
     }
     
-    public func translateCharacters(_ grid: Grid, dict: [Int: Set<String>]) -> [Character:Character] {
+    public func translateCharacters(_ grid: Grid<String>, dict: [Int: Set<String>]) -> [Character:Character] {
         var charMap = [Character:Character]()
         
         let one = dict[2]!.first!
@@ -188,16 +188,16 @@ public struct Day8 {
         let f = String(charMap["f"]!)
         let g = String(charMap["g"]!)
         
-        numbers[(a+b+c+e+f+g).sorted()] = 0
-        numbers[(c+f).sorted()] = 1
-        numbers[(a+c+d+e+g).sorted()] = 2
-        numbers[(a+c+d+f+g).sorted()] = 3
-        numbers[(b+c+d+f).sorted()] = 4
-        numbers[(a+b+d+f+g).sorted()] = 5
-        numbers[(a+b+d+e+f+g).sorted()] = 6
-        numbers[(a+c+f).sorted()] = 7
-        numbers[(a+b+c+d+e+f+g).sorted()] = 8
-        numbers[(a+b+c+d+f+g).sorted()] = 9
+        numbers[String((a+b+c+e+f+g).sorted())] = 0
+        numbers[String((c+f).sorted())] = 1
+        numbers[String((a+c+d+e+g).sorted())] = 2
+        numbers[String((a+c+d+f+g).sorted())] = 3
+        numbers[String((b+c+d+f).sorted())] = 4
+        numbers[String((a+b+d+f+g).sorted())] = 5
+        numbers[String((a+b+d+e+f+g).sorted())] = 6
+        numbers[String((a+c+f).sorted())] = 7
+        numbers[String((a+b+c+d+e+f+g).sorted())] = 8
+        numbers[String((a+b+c+d+f+g).sorted())] = 9
         return numbers
     }
     
