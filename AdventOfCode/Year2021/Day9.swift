@@ -8,13 +8,11 @@ public struct Day9 {
         let grid = parse(input)
         var count = 0
         let max = Point(grid.columns, grid.rows)
-        for y in (0..<grid.rows) {
-            for x in (0..<grid.columns) {
-                let point = Point(x,y)
-                let value = grid[point.x, point.y]
-                if isLowPoint(point, value: value, grid: grid, max: max) {
-                    count += value + 1
-                }
+        for i in (0..<grid.items.count) {
+            let point = Point(i / grid.columns, i % grid.columns)
+            let value = grid[point.x, point.y]
+            if isLowPoint(point, value: value, grid: grid, max: max) {
+                count += value + 1
             }
         }
         
@@ -25,13 +23,11 @@ public struct Day9 {
         let grid = parse(input)
         var basin = [Int]()
         let max = Point(grid.columns, grid.rows)
-        for y in (0..<grid.rows) {
-            for x in (0..<grid.columns) {
-                let point = Point(x,y)
-                let value = grid[point.x, point.y]
-                if isLowPoint(point, value: value, grid: grid, max: max) {
-                    basin.append(calculateBasin(point, grid: grid, max: max))
-                }
+        for i in (0..<grid.items.count) {
+            let point = Point(i / grid.columns, i % grid.columns)
+            let value = grid[point.x, point.y]
+            if isLowPoint(point, value: value, grid: grid, max: max) {
+                basin.append(calculateBasin(point, grid: grid, max: max))
             }
         }
         
@@ -44,10 +40,12 @@ public struct Day9 {
     public func isLowPoint(_ point: Point, value: Int, grid: Grid<Int>, max: Point) -> Bool {
         guard value < 9 else { return false }
         let n = point.cardinalNeighbors(max: max)
-        let values = n.map {
-            grid[$0.x, $0.y]
-        }.sorted()
-        return value < values.first!
+        var min = Int.max
+        _ = n.map {
+            let value = grid[$0.x, $0.y]
+            if value < min { min = value }
+        }
+        return value < min
     }
     
     public func calculateBasin(_ point: Point, grid: Grid<Int>, max: Point) -> Int {
@@ -62,7 +60,8 @@ public struct Day9 {
         var n2 = [Point]()
         for p in n {
             let value = grid[p.x, p.y]
-            if points[p] == nil {
+            
+            if !points.keys.contains(p) {
                 if value == 9 {
                     points[p] = 0
                 } else {

@@ -20,10 +20,12 @@ class Day9Tests: XCTestCase {
     }
     
     func test_parsing() {
+        measure {
         let grid = day.parse(input)
         XCTAssertEqual(10000, grid.items.count)
         XCTAssertEqual(100, grid.columns)
         XCTAssertEqual(100, grid.rows)
+        }
     }
     
     func test_example2() {
