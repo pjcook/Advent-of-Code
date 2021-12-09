@@ -144,9 +144,62 @@ public struct Day8 {
         return count
     }
     
+    public func part2b(_ input: [String]) throws -> Int {
+        let grid = try parse(input)
+        var count = 0
+        
+        for y in (0..<grid.rows) {
+            let elements = mapCharacters2(grid, y: y)
+
+            let a = elements[Set(grid[10,y])]!
+            let b = elements[Set(grid[11,y])]!
+            let c = elements[Set(grid[12,y])]!
+            let d = elements[Set(grid[13,y])]!
+            
+            count += a * 1000 + b * 100 + c * 10 + d
+        }
+        
+        return count
+    }
+    
+    public func mapCharacters2(_ grid: Grid<String>, y: Int) -> [Set<Character>: Int] {
+        var dict = [Int:Set<Set<Character>>]()
+        for x in (0..<10) {
+            let value = grid[x,y]
+            var values = dict[value.count, default: Set<Set<Character>>()]
+            values.insert(Set<Character>(value))
+            dict[value.count] = values
+        }
+                
+        let one = dict[2]!.first!
+        let four = dict[4]!.first!
+        let seven = dict[3]!.first!
+        let eight = dict[7]!.first!
+        
+        var sixLEDs = dict[6]!
+        var fiveLEDs = dict[5]!
+
+        let nine = sixLEDs.first { $0.isSuperset(of: four) }!
+        sixLEDs.remove(nine)
+                
+        let three = fiveLEDs.first { $0.isSuperset(of: one) }!
+        fiveLEDs.remove(three)
+        
+        let zero = sixLEDs.first { $0.isSuperset(of: one) }!
+        sixLEDs.remove(zero)
+        
+        let six = sixLEDs.first!
+        let five = fiveLEDs.first { $0.isSubset(of: nine) }!
+        fiveLEDs.remove(five)
+        
+        let two = fiveLEDs.first!
+        
+        return [ zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 ]
+    }
+    
     public func mapCharacters(_ grid: Grid<String>, y: Int) -> [Int: Set<String>] {
         var dict = [Int:Set<String>]()
-        for x in (0..<grid.columns) {
+        for x in (0..<10) {
             let value = grid[x,y]
             var values = dict[value.count, default: Set<String>()]
             values.insert(value)
