@@ -8,10 +8,33 @@ class Day9Tests: XCTestCase {
     let day = Day9()
 
     func test_part1() {
-        XCTAssertEqual(0, day.part1(input))
+        measure {
+        XCTAssertEqual(496, day.part1(input))
+        }
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+        measure {
+        XCTAssertEqual(902880, day.part2(input))
+        }
+    }
+    
+    func test_parsing() {
+        let grid = day.parse(input)
+        XCTAssertEqual(10000, grid.items.count)
+        XCTAssertEqual(100, grid.columns)
+        XCTAssertEqual(100, grid.rows)
+    }
+    
+    func test_example2() {
+        let input = """
+2199943210
+3987894921
+9856789892
+8767896789
+9899965678
+""".lines
+        XCTAssertEqual(15, day.part1(input))
+        XCTAssertEqual(1134, day.part2(input))
     }
 }

@@ -137,13 +137,15 @@ public extension Point {
         return items
     }()
     
-    func cardinalNeighbors(_ allowNegative: Bool = false) -> Set<Point> {
+    func cardinalNeighbors(_ allowNegative: Bool = false, max: Point? = nil) -> Set<Point> {
         return Set([
             Point(x, y-1),
             Point(x-1, y),
             Point(x+1, y),
             Point(x, y+1)
-        ].filter({ allowNegative || $0.x >= 0 && $0.y >= 0 })
+        ]
+                    .filter({ allowNegative || $0.x >= 0 && $0.y >= 0 })
+                    .filter({ max == nil || $0.x < max!.x && $0.y < max!.y })
         )
     }
     
@@ -158,7 +160,7 @@ public extension Point {
             Point(x, y+1),
             Point(x+1, y+1)
         ]
-            .filter({ allowNegative || $0.x >= 0 && $0.y >= 0 })
+                    .filter({ allowNegative || $0.x >= 0 && $0.y >= 0 })
                     .filter({ max == nil || $0.x < max!.x && $0.y < max!.y })
         )
     }
