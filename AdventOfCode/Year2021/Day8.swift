@@ -3,7 +3,7 @@ import StandardLibraries
 
 public struct Day8 {
     public init() {}
-    public typealias Patterns = Grid<String>
+    public typealias Patterns = Grid<Set<Character>>
     /*
     0:      1:      2:      3:      4:
    aaaa    ....    aaaa    aaaa    ....
@@ -134,11 +134,12 @@ public struct Day8 {
             let charMap = translateCharacters(grid, dict: dict)
             let numbers = mapNumbers(charMap: charMap)
             
-            var number = ""
-            for x in (10..<14) {
-                number.append(String(numbers[grid[x,y]]!))
-            }
-            count += Int(number)!
+            let a = numbers[grid[10,y]]!
+            let b = numbers[grid[11,y]]!
+            let c = numbers[grid[12,y]]!
+            let d = numbers[grid[13,y]]!
+            
+            count += a * 1000 + b * 100 + c * 10 + d
         }
         
         return count
@@ -162,12 +163,12 @@ public struct Day8 {
         return count
     }
     
-    public func mapCharacters2(_ grid: Grid<String>, y: Int) -> [Set<Character>: Int] {
+    public func mapCharacters2(_ grid: Grid<Set<Character>>, y: Int) -> [Set<Character>: Int] {
         var dict = [Int:Set<Set<Character>>]()
         for x in (0..<10) {
             let value = grid[x,y]
             var values = dict[value.count, default: Set<Set<Character>>()]
-            values.insert(Set<Character>(value))
+            values.insert(value)
             dict[value.count] = values
         }
                 
@@ -197,18 +198,18 @@ public struct Day8 {
         return [ zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 ]
     }
     
-    public func mapCharacters(_ grid: Grid<String>, y: Int) -> [Int: Set<String>] {
-        var dict = [Int:Set<String>]()
+    public func mapCharacters(_ grid: Grid<Set<Character>>, y: Int) -> [Int: Set<Set<Character>>] {
+        var dict = [Int:Set<Set<Character>>]()
         for x in (0..<10) {
             let value = grid[x,y]
-            var values = dict[value.count, default: Set<String>()]
+            var values = dict[value.count, default: Set<Set<Character>>()]
             values.insert(value)
             dict[value.count] = values
         }
         return dict
     }
     
-    public func translateCharacters(_ grid: Grid<String>, dict: [Int: Set<String>]) -> [Character:Character] {
+    public func translateCharacters(_ grid: Grid<Set<Character>>, dict: [Int: Set<Set<Character>>]) -> [Character:Character] {
         var charMap = [Character:Character]()
         
         let one = dict[2]!.first!
@@ -234,8 +235,8 @@ public struct Day8 {
         return charMap
     }
     
-    public func mapNumbers(charMap: [Character:Character]) -> [String:Int] {
-        var numbers = [String:Int]()
+    public func mapNumbers(charMap: [Character:Character]) -> [Set<Character>:Int] {
+        var numbers = [Set<Character>:Int]()
         
         let a = String(charMap["a"]!)
         let b = String(charMap["b"]!)
@@ -245,20 +246,20 @@ public struct Day8 {
         let f = String(charMap["f"]!)
         let g = String(charMap["g"]!)
         
-        numbers[String((a+b+c+e+f+g).sorted())] = 0
-        numbers[String((c+f).sorted())] = 1
-        numbers[String((a+c+d+e+g).sorted())] = 2
-        numbers[String((a+c+d+f+g).sorted())] = 3
-        numbers[String((b+c+d+f).sorted())] = 4
-        numbers[String((a+b+d+f+g).sorted())] = 5
-        numbers[String((a+b+d+e+f+g).sorted())] = 6
-        numbers[String((a+c+f).sorted())] = 7
-        numbers[String((a+b+c+d+e+f+g).sorted())] = 8
-        numbers[String((a+b+c+d+f+g).sorted())] = 9
+        numbers[Set(a+b+c+e+f+g)] = 0
+        numbers[Set(c+f)] = 1
+        numbers[Set(a+c+d+e+g)] = 2
+        numbers[Set(a+c+d+f+g)] = 3
+        numbers[Set(b+c+d+f)] = 4
+        numbers[Set(a+b+d+f+g)] = 5
+        numbers[Set(a+b+d+e+f+g)] = 6
+        numbers[Set(a+c+f)] = 7
+        numbers[Set(a+b+c+d+e+f+g)] = 8
+        numbers[Set(a+b+c+d+f+g)] = 9
         return numbers
     }
     
-    public func charCount(_ input: Set<String>) -> [Character:Int] {
+    public func charCount(_ input: Set<Set<Character>>) -> [Character:Int] {
         var result = [Character:Int]()
         
         for item in input {
@@ -273,12 +274,12 @@ public struct Day8 {
     public let regex = try! RegularExpression(pattern: "^([abcdefg]+) ([abcdefg]+) ([abcdefg]+) ([abcdefg]+) ([abcdefg]+) ([abcdefg]+) ([abcdefg]+) ([abcdefg]+) ([abcdefg]+) ([abcdefg]+) . ([abcdefg]+) ([abcdefg]+) ([abcdefg]+) ([abcdefg]+)$")
     
     public func parse(_ input: [String]) throws -> Patterns {
-            var items = [String]()
+            var items = [Set<Character>]()
         
         for line in input {
             let match = try regex.match(line)
             for i in (0..<14) {
-                items.append(String(try match.string(at: i).sorted()))
+                items.append(Set(try match.string(at: i)))
             }
         }
         
