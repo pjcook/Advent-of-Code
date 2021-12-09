@@ -11,12 +11,8 @@ public struct Day9 {
         for y in (0..<grid.rows) {
             for x in (0..<grid.columns) {
                 let point = Point(x,y)
-                let n = point.cardinalNeighbors(max: max)
-                let values = n.map {
-                    grid[$0.x, $0.y]
-                }.sorted()
                 let value = grid[point.x, point.y]
-                if value < values.first! {
+                if isLowPoint(point, value: value, grid: grid, max: max) {
                     count += value + 1
                 }
             }
@@ -32,31 +28,35 @@ public struct Day9 {
         for y in (0..<grid.rows) {
             for x in (0..<grid.columns) {
                 let point = Point(x,y)
-                let n = point.cardinalNeighbors(max: max)
-                let values = n.map {
-                    grid[$0.x, $0.y]
-                }.sorted()
                 let value = grid[point.x, point.y]
-                if value < values.first! {
-                    // low point, calculate basin
-                    var points = [point:value]
-                    findBasin(point, grid: grid, points: &points)
-                    basin.append(points.reduce(0, { $0 + ($1.value != -1 ? 1 : 0) }))
-                    
+                if isLowPoint(point, value: value, grid: grid, max: max) {
+                    basin.append(calculateBasin(point, grid: grid, max: max))
                 }
             }
         }
         
-        let sortedBasins = Array(basin.sorted().reversed())
-        var count = 1
-        for i in (0..<3) {
-            count *= sortedBasins[i]
-        }
-        return count
+        return basin
+            .sorted()
+            .dropFirst(basin.count - 3)
+            .reduce(1, *)
     }
     
-    public func findBasin(_ point: Point, grid: Grid<Int>, points: inout [Point:Int]) {
-        let max = Point(grid.columns, grid.rows)
+    public func isLowPoint(_ point: Point, value: Int, grid: Grid<Int>, max: Point) -> Bool {
+        guard value < 9 else { return false }
+        let n = point.cardinalNeighbors(max: max)
+        let values = n.map {
+            grid[$0.x, $0.y]
+        }.sorted()
+        return value < values.first!
+    }
+    
+    public func calculateBasin(_ point: Point, grid: Grid<Int>, max: Point) -> Int {
+        var points = [point:1]
+        findBasin(point, grid: grid, max: max, points: &points)
+        return points.reduce(0, { $0 + $1.value })
+    }
+    
+    public func findBasin(_ point: Point, grid: Grid<Int>, max: Point, points: inout [Point:Int]) {
         let n = point.cardinalNeighbors(max: max)
         
         var n2 = [Point]()
@@ -64,16 +64,16 @@ public struct Day9 {
             let value = grid[p.x, p.y]
             if points[p] == nil {
                 if value == 9 {
-                    points[p] = -1
+                    points[p] = 0
                 } else {
-                    points[p] = value
+                    points[p] = 1
                     n2.append(p)
                 }
             }
         }
         
         for p in n2 {
-            findBasin(p, grid: grid, points: &points)
+            findBasin(p, grid: grid, max: max, points: &points)
         }
     }
     
