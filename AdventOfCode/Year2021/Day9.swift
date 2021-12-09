@@ -24,7 +24,7 @@ public struct Day9 {
         var basin = [Int]()
         let max = Point(grid.columns, grid.rows)
         for i in (0..<grid.items.count) {
-            let point = Point(i / grid.columns, i % grid.columns)
+            let point = Point(i % grid.columns, i / grid.columns)
             let value = grid[point.x, point.y]
             if isLowPoint(point, value: value, grid: grid, max: max) {
                 basin.append(calculateBasin(point, grid: grid, max: max))
