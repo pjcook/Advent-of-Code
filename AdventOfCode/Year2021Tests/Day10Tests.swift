@@ -8,10 +8,36 @@ class Day10Tests: XCTestCase {
     let day = Day10()
 
     func test_part1() {
-        XCTAssertEqual(0, day.part1(input))
+//        measure {
+        XCTAssertEqual(299793, day.part1(input))
+//        }
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+//        measure {
+        XCTAssertEqual(3654963618, day.part2(input))
+//        }
+    }
+    
+    func test_examples() {
+        XCTAssertEqual(.invalid("}"), day.parse("{([(<{}[<>[]}>{[]{[(<()>"))
+        XCTAssertEqual(.invalid(")"), day.parse("[[<[([]))<([[{}[[()]]]"))
+        XCTAssertEqual(.invalid("]"), day.parse("[{[{({}]{}}([{[{{{}}([]"))
+        XCTAssertEqual(.invalid(")"), day.parse("[<(<(<(<{}))><([]([]()"))
+        XCTAssertEqual(.invalid(">"), day.parse("<{([([[(<>()){}]>(<<{{"))
+        
+        let input = """
+[({(<(())[]>[[{[]{<()<>>
+[(()[<>])]({[<{<<[]>>(
+{([(<{}[<>[]}>{[]{[(<()>
+(((({<>}<{<{<>}{[]{[]{}
+[[<[([]))<([[{}[[()]]]
+[{[{({}]{}}([{[{{{}}([]
+{<[[]]>}<{[{[{[]{()[[[]
+[<(<(<(<{}))><([]([]()
+<{([([[(<>()){}]>(<<{{
+<{([{{}}[<[[[<>{}]]]>[]]
+""".lines
+        XCTAssertEqual(26397, day.part1(input))
     }
 }

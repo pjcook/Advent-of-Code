@@ -14,9 +14,9 @@ class Day9Tests: XCTestCase {
     }
     
     func test_part2() {
-//        measure {
+        measure {
         XCTAssertEqual(902880, day.part2(input))
-//        }
+        }
     }
     
     func test_parsing() {

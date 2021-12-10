@@ -33,7 +33,7 @@ public struct Day9 {
         
         return basin
             .sorted()
-            .dropFirst(basin.count - 3)
+            .suffix(3)
             .reduce(1, *)
     }
     
