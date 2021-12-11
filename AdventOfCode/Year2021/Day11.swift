@@ -76,7 +76,7 @@ public struct Day11 {
         // Increment the whole grid first, so that you can ignore positions with value 0 when flashing neighbours using recursion
         for i in (0..<grid.items.count) {
             // Current point
-            let point = Point(i / grid.columns, i % grid.columns)
+            let point = Point(i % grid.columns, i / grid.columns)
             // Current value
             let value = grid[point]
             if value == 9 {

@@ -5,11 +5,11 @@ public struct Day9 {
     public init() {}
     
     public func part1(_ input: [String]) -> Int {
-        let grid = parse(input)
+        let grid = Grid<Int>(input)
         var count = 0
         let max = Point(grid.columns, grid.rows)
         for i in (0..<grid.items.count) {
-            let point = Point(i / grid.columns, i % grid.columns)
+            let point = Point(i % grid.columns, i / grid.columns)
             let value = grid[point.x, point.y]
             if isLowPoint(point, value: value, grid: grid, max: max) {
                 count += value + 1
@@ -20,7 +20,7 @@ public struct Day9 {
     }
     
     public func part2(_ input: [String]) -> Int {
-        let grid = parse(input)
+        let grid = Grid<Int>(input)
         var basin = [Int]()
         let max = Point(grid.columns, grid.rows)
         for i in (0..<grid.items.count) {
@@ -74,17 +74,5 @@ public struct Day9 {
         for p in n2 {
             findBasin(p, grid: grid, max: max, points: &points)
         }
-    }
-    
-    public func parse(_ input: [String]) -> Grid<Int> {
-        var items = [Int]()
-        
-        for row in input {
-            _ = row.map {
-                items.append(Int(String($0))!)
-            }
-        }
-        
-        return Grid(columns: input[0].count, items: items)
     }
 }

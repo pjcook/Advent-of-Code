@@ -1,5 +1,6 @@
 import XCTest
 import InputReader
+import StandardLibraries
 import Year2021
 
 class Day9Tests: XCTestCase {
@@ -14,14 +15,14 @@ class Day9Tests: XCTestCase {
     }
     
     func test_part2() {
-        measure {
+//        measure {
         XCTAssertEqual(902880, day.part2(input))
-        }
+//        }
     }
     
     func test_parsing() {
 //        measure {
-        let grid = day.parse(input)
+        let grid = Grid<Int>(input)
         XCTAssertEqual(10000, grid.items.count)
         XCTAssertEqual(100, grid.columns)
         XCTAssertEqual(100, grid.rows)
