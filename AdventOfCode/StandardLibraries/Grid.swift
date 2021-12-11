@@ -33,6 +33,19 @@ public struct Grid<T> {
     }
 }
 
+extension Grid where T == Int {
+    public init(_ input: [String]) {
+        var items = [Int]()
+        
+        for line in input {
+            line.forEach { items.append(Int(String($0))!) }
+        }
+        
+        self.columns = input[0].count
+        self.items = items
+    }
+}
+
 extension Grid: Equatable {
     public static func == (lhs: Grid<T>, rhs: Grid<T>) -> Bool {
         lhs.columns == rhs.columns && lhs.columns == rhs.columns
