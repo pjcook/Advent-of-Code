@@ -58,6 +58,12 @@ public struct Day10 {
         return finalScores.sorted()[finalScores.count / 2]
     }
     
+    public let openers: [Character] = ["(", "[", "{", "<"]
+    public let notRoundClose: [Character] = ["]", "}", ">"]
+    public let notSquareClose: [Character] = [")", "}", ">"]
+    public let notCurlyClose: [Character] = [")", "]", ">"]
+    public let notArrowClose: [Character] = [")", "]", "}"]
+    
     public func parse(_ input: String) -> Status {
         var found = [Character]()
         
@@ -70,15 +76,13 @@ public struct Day10 {
                     || found.last == "{" && c == "}"
                     || found.last == "<" && c == ">" {
                 found.removeLast()
-            } else if
-                ["(", "[", "{", "<"].contains(found.last)
-                    && ["(", "[", "{", "<"].contains(c) {
+            } else if openers.contains(found.last!) && openers.contains(c) {
                 found.append(c)
             } else if
-                found.last == "(" && ["]", "}", ">"].contains(c)
-                    || found.last == "[" && [")", "}", ">"].contains(c)
-                    || found.last == "{" && [")", "]", ">"].contains(c)
-                    || found.last == "<" && [")", "]", "}"].contains(c) {
+                found.last == "(" && notRoundClose.contains(c)
+                    || found.last == "[" && notSquareClose.contains(c)
+                    || found.last == "{" && notCurlyClose.contains(c)
+                    || found.last == "<" && notArrowClose.contains(c) {
                 return .invalid(c)
             }
         }

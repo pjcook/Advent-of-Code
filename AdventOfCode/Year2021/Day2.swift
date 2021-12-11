@@ -4,6 +4,7 @@ import StandardLibraries
 public struct Day2 {
     public init() {}
     
+    // Submarine commands
     public enum Command {
         case up(Int)
         case down(Int)
