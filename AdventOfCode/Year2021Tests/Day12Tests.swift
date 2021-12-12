@@ -19,11 +19,28 @@ class Day12Tests: XCTestCase {
 //        }
     }
     
+    func test_part1b() {
+//        measure {
+        XCTAssertEqual(3292, day.solution2(input))
+//        }
+    }
+    
+    func test_part2b() {
+//        measure {
+        XCTAssertEqual(89592, day.solution2(input, allowRepeat: true))
+//        }
+    }
+    
     func test_parsing() {
-        let elements = day.parse(input)
-        for item in elements {
-            print(item)
-        }
+//        measure {
+        _ = day.parse(input)
+//        }
+    }
+    
+    func test_parsing_slow() {
+//        measure {
+        _ = day.parse_slow(input)
+//        }
     }
     
     func test_example1() {
