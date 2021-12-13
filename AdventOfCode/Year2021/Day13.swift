@@ -3,17 +3,18 @@ import StandardLibraries
 
 public struct Day13 {
     public init() {}
+    public enum Fold {
+        case x(Int)
+        case y(Int)
+    }
     public typealias Points = Set<Point>
-    public typealias Folds = [Point]
+    public typealias Folds = [Fold]
     
     public func part1(_ input: [String]) -> Int {
         var (points, folds) = parse(input)
-        let fold = folds.first!
-        
-        if fold.x == 0 {
-            foldVertical(&points, y: fold.y)
-        } else {
-            foldHorizontal(&points, x: fold.x)
+        switch folds.first! {
+        case let .x(value): foldHorizontal(&points, x: value)
+        case let .y(value): foldVertical(&points, y: value)
         }
 
         return points.count
@@ -23,10 +24,9 @@ public struct Day13 {
         var (points, folds) = parse(input)
 
         for fold in folds {
-            if fold.x == 0 {
-                foldVertical(&points, y: fold.y)
-            } else {
-                foldHorizontal(&points, x: fold.x)
+            switch fold {
+            case let .x(value): foldHorizontal(&points, x: value)
+            case let .y(value): foldVertical(&points, y: value)
             }
         }
         draw(points)
@@ -68,14 +68,14 @@ public struct Day13 {
             }
             if !processFolds {
                 let split = line.split(separator: ",")
-                let point = Point(Int(String(split[0]))!,Int(String(split[1]))!)
-                points.insert(point)
+                points.insert(Point(Int(String(split[0]))!,Int(String(split[1]))!))
             } else {
                 let split = line.split(separator: "=")
+                let value = Int(String(split[1]))!
                 if split[0].last! == "x" {
-                    folds.append(Point(Int(String(split[1]))!, 0))
+                    folds.append(.x(value))
                 } else {
-                    folds.append(Point(0, Int(String(split[1]))!))
+                    folds.append(.y(value))
                 }
             }
         }
