@@ -8,13 +8,21 @@ class Day14Tests: XCTestCase {
     let day = Day14()
 
     func test_part1() {
+//        measure {
         XCTAssertEqual(2233, day.part1(input, steps: 10))
+//        }
+    }
+    
+    func test_part1b() {
+//        measure {
+        XCTAssertEqual(2233, day.part2(input, steps: 10))
+//        }
     }
     
     func test_part2() {
-        // 2884513602165 too high
-        // 2884513602165
-        XCTAssertEqual(2884513602165, day.part2(input, steps: 40))
+//        measure {
+        XCTAssertEqual(2884513602164, day.part2(input, steps: 40))
+//        }
     }
     
     func test_parsing() {
