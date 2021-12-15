@@ -48,31 +48,28 @@ extension Grid where T == Int {
         self.items = items
     }
     
-    public func dijkstra(start: Point, end: Point) -> Int {
-        dijkstra(start: start, end: end, maxPoint: bottomRight)
+    public func dijkstra(start: Point, end: Point, calculateScore: (Point) -> Int) -> Int {
+        dijkstra(start: start, end: end, maxPoint: bottomRight, calculateScore: calculateScore)
     }
     
     // https://www.redblobgames.com/pathfinding/a-star/introduction.html
-    public func dijkstra(start: Point, end: Point, maxPoint: Point, shouldDrawPath: Bool = false) -> Int {
+    public func dijkstra(start: Point, end: Point, maxPoint: Point, shouldDrawPath: Bool = false, calculateScore: (Point) -> Int) -> Int {
         let queue = PriorityQueue<Point>()
         queue.enqueue(start, priority: 0)
         var cameFrom = [Point:Point]()
         var costSoFar = [Point: Int]()
         costSoFar[start] = 0
         
+        // calculate shortest path
         while !queue.isEmpty {
+            // Using a priority queue means we always pick the next cheapest value
             let current = queue.dequeue()!
             if current == end {
-                break
+                break   // exit early
             }
             
             for next in current.cardinalNeighbors(max: maxPoint) {
-                let gridPoint = Point(next.x % columns, next.y % rows)
-                var gridScore = self[gridPoint] + Int(next.x / columns) + Int(next.y / rows)
-                if gridScore > 9 {
-                    gridScore -= 9
-                }
-                let newCost = costSoFar[current, default: 0] + gridScore
+                let newCost = costSoFar[current, default: 0] + calculateScore(next)
                 if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
                     costSoFar[next] = newCost
                     queue.enqueue(next, priority: newCost)
@@ -81,32 +78,34 @@ extension Grid where T == Int {
             }
         }
         
-        //        print(costSoFar.count, cameFrom.count)
-        
         // Draw Path
         if shouldDrawPath {
-            var path = [Point]()
-            var current: Point? = end
-            while current != nil {
-                if let point = current, let next = cameFrom[point] {
-                    path.append(next)
-                    current = next
-                } else {
-                    current = nil
-                }
-            }
-            
-            path.reversed().forEach { print($0) }
+            drawCalculatedPath(end, &cameFrom)
         }
         
         return costSoFar[end, default: -1]
     }
     
-    public func aStar(start: Point, end: Point) -> Int {
-        aStar(start: start, end: end, maxPoint: bottomRight)
+    fileprivate func drawCalculatedPath(_ end: Point, _ cameFrom: inout [Point : Point]) {
+        var path = [Point]()
+        var current: Point? = end
+        while current != nil {
+            if let point = current, let next = cameFrom[point] {
+                path.append(next)
+                current = next
+            } else {
+                current = nil
+            }
+        }
+        
+        path.reversed().forEach { print($0) }
     }
     
-    public func aStar(start: Point, end: Point, maxPoint: Point) -> Int {
+    public func aStar(start: Point, end: Point, calculateScore: (Point) -> Int) -> Int {
+        aStar(start: start, end: end, maxPoint: bottomRight, calculateScore: calculateScore)
+    }
+    
+    public func aStar(start: Point, end: Point, maxPoint: Point, calculateScore: (Point) -> Int) -> Int {
         let queue = PriorityQueue<Point>()
         queue.enqueue(start, priority: 0)
         var cameFrom = [Point:Point]()
@@ -120,12 +119,7 @@ extension Grid where T == Int {
             }
             
             for next in current.cardinalNeighbors(max: maxPoint) {
-                let gridPoint = Point(next.x % columns, next.y % rows)
-                var gridScore = self[gridPoint] + Int(next.x / columns) + Int(next.y / rows)
-                if gridScore > 9 {
-                    gridScore -= 9
-                }
-                let newCost = costSoFar[current, default: 0] + gridScore
+                let newCost = costSoFar[current, default: 0] + calculateScore(next)
                 if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
                     costSoFar[next] = newCost
                     queue.enqueue(next, priority: newCost + current.distance(to: next))
