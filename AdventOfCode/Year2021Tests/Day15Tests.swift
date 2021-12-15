@@ -15,6 +15,8 @@ class Day15Tests: XCTestCase {
     func test_part2() {
         XCTAssertEqual(2963, grid.dijkstra(start: .zero, end: Point(grid.columns * 5 - 1, grid.rows * 5 - 1), maxPoint: Point(grid.columns * 5, grid.rows * 5), calculateScore: grid.calculateScore))
     }
+    
+    // Commenting out additional tests because the Part 2's take over 4s each
     /*
     func test_part1_aStar() {
         XCTAssertEqual(769, grid.aStar(start: .zero, end: Point(grid.columns - 1, grid.rows - 1), calculateScore: grid.calculateScore))
