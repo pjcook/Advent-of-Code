@@ -52,20 +52,18 @@ extension Grid where T == Int {
         dijkstra(start: start, end: end, maxPoint: bottomRight)
     }
     
+    // https://www.redblobgames.com/pathfinding/a-star/introduction.html
     public func dijkstra(start: Point, end: Point, maxPoint: Point) -> Int {
-        var queue = [Point: Int]()
-        queue[start] = 0
+        let queue = PriorityQueue<Point>()
+        queue.enqueue(start, priority: 0)
         var cameFrom = [Point:Point]()
         var costSoFar = [Point: Int]()
         costSoFar[start] = 0
         
         while !queue.isEmpty {
-            let current = queue.sorted { p1, p2 in
-                p1.value < p2.value
-            }.first!.key
-            queue.removeValue(forKey: current)
+            let current = queue.dequeue()!
             if current == end {
-                continue
+                break
             }
             
             for next in current.cardinalNeighbors(max: maxPoint) {
@@ -77,8 +75,42 @@ extension Grid where T == Int {
                 let newCost = costSoFar[current, default: 0] + gridScore
                 if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
                     costSoFar[next] = newCost
-                    let priority = newCost
-                    queue[next] = priority
+                    queue.enqueue(next, priority: newCost)
+                    cameFrom[next] = current
+                }
+            }
+        }
+        
+        return costSoFar[end, default: -1]
+    }
+    
+    public func aStar(start: Point, end: Point) -> Int {
+        aStar(start: start, end: end, maxPoint: bottomRight)
+    }
+    
+    public func aStar(start: Point, end: Point, maxPoint: Point) -> Int {
+        let queue = PriorityQueue<Point>()
+        queue.enqueue(start, priority: 0)
+        var cameFrom = [Point:Point]()
+        var costSoFar = [Point: Int]()
+        costSoFar[start] = 0
+        
+        while !queue.isEmpty {
+            let current = queue.dequeue()!
+            if current == end {
+                break
+            }
+            
+            for next in current.cardinalNeighbors(max: maxPoint) {
+                let gridPoint = Point(next.x % columns, next.y % rows)
+                var gridScore = self[gridPoint] + Int(next.x / columns) + Int(next.y / rows)
+                if gridScore > 9 {
+                    gridScore -= 9
+                }
+                let newCost = costSoFar[current, default: 0] + gridScore
+                if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
+                    costSoFar[next] = newCost
+                    queue.enqueue(next, priority: newCost + current.distance(to: next))
                     cameFrom[next] = current
                 }
             }
