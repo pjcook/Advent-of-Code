@@ -668,8 +668,10 @@
 		D536D0D6274E2D8F00D20509 /* Day13.swift in Sources */ = {isa = PBXBuildFile; fileRef = D536D089274E2D8F00D20509 /* Day13.swift */; };
 		D536D0D7274E2D8F00D20509 /* Day3.input in Resources */ = {isa = PBXBuildFile; fileRef = D536D08A274E2D8F00D20509 /* Day3.input */; };
 		D536D0D8274E2D8F00D20509 /* Day24.input in Resources */ = {isa = PBXBuildFile; fileRef = D536D08B274E2D8F00D20509 /* Day24.input */; };
+		D55123AB276A38CC00F9433F /* Day15_chris.input in Resources */ = {isa = PBXBuildFile; fileRef = D55123AA276A38CC00F9433F /* Day15_chris.input */; };
 		D5541C5D23EC018700EFFD42 /* InputReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5541C5C23EC018700EFFD42 /* InputReader.swift */; };
 		D56165942769DECB00C5C1B6 /* Queues.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56165932769DECB00C5C1B6 /* Queues.swift */; };
+		D56165962769F98800C5C1B6 /* Day15_mark.input in Resources */ = {isa = PBXBuildFile; fileRef = D56165952769F98800C5C1B6 /* Day15_mark.input */; };
 		D58A3B4123C88DBA004393AC /* GKMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58A3B4023C88DBA004393AC /* GKMapper.swift */; };
 		D5A8778423AAC43D004A21CD /* Day19.input in Resources */ = {isa = PBXBuildFile; fileRef = D5A8778323AAC43D004A21CD /* Day19.input */; };
 		D5A8778623AAC445004A21CD /* Day19.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A8778523AAC445004A21CD /* Day19.swift */; };
@@ -1737,8 +1739,10 @@
 		D536D089274E2D8F00D20509 /* Day13.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Day13.swift; sourceTree = "<group>"; };
 		D536D08A274E2D8F00D20509 /* Day3.input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Day3.input; sourceTree = "<group>"; };
 		D536D08B274E2D8F00D20509 /* Day24.input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Day24.input; sourceTree = "<group>"; };
+		D55123AA276A38CC00F9433F /* Day15_chris.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day15_chris.input; sourceTree = "<group>"; };
 		D5541C5C23EC018700EFFD42 /* InputReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputReader.swift; path = InputReader/InputReader.swift; sourceTree = SOURCE_ROOT; };
 		D56165932769DECB00C5C1B6 /* Queues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queues.swift; sourceTree = "<group>"; };
+		D56165952769F98800C5C1B6 /* Day15_mark.input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Day15_mark.input; sourceTree = "<group>"; };
 		D58A3B4023C88DBA004393AC /* GKMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GKMapper.swift; sourceTree = "<group>"; };
 		D5A8778223AAC434004A21CD /* Day19_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day19_Readme.md; sourceTree = "<group>"; };
 		D5A8778323AAC43D004A21CD /* Day19.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day19.input; sourceTree = "<group>"; };
@@ -2738,6 +2742,8 @@
 				D536CD6E274E292E00D20509 /* Day14.swift */,
 				D536CD7A274E292E00D20509 /* Day15_Readme.md */,
 				D536CD95274E292F00D20509 /* Day15.input */,
+				D56165952769F98800C5C1B6 /* Day15_mark.input */,
+				D55123AA276A38CC00F9433F /* Day15_chris.input */,
 				D536CD81274E292F00D20509 /* Day15.swift */,
 				D536CD7D274E292E00D20509 /* Day16_Readme.md */,
 				D536CD97274E292F00D20509 /* Day16.input */,
@@ -4401,6 +4407,7 @@
 				D536CDC9274E293000D20509 /* Day6.input in Resources */,
 				D536CDB4274E293000D20509 /* Day2_Readme.md in Resources */,
 				D536CDC1274E293000D20509 /* Day24_Readme.md in Resources */,
+				D55123AB276A38CC00F9433F /* Day15_chris.input in Resources */,
 				D536CDC8274E293000D20509 /* Day16_Readme.md in Resources */,
 				D536CDEE274E293000D20509 /* Day3.input in Resources */,
 				D536CDD4274E293000D20509 /* Day20_Readme.md in Resources */,
@@ -4429,6 +4436,7 @@
 				D536CDB2274E293000D20509 /* Day21_Readme.md in Resources */,
 				D536CDA9274E293000D20509 /* Day7_Readme.md in Resources */,
 				D536CDE0274E293000D20509 /* Day15.input in Resources */,
+				D56165962769F98800C5C1B6 /* Day15_mark.input in Resources */,
 				D536CDBF274E293000D20509 /* Day8.input in Resources */,
 				D536CDB0274E293000D20509 /* Day18_Readme.md in Resources */,
 				D536CDC2274E293000D20509 /* Day1.input in Resources */,

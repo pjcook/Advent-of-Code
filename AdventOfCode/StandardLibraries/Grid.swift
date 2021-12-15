@@ -53,7 +53,7 @@ extension Grid where T == Int {
     }
     
     // https://www.redblobgames.com/pathfinding/a-star/introduction.html
-    public func dijkstra(start: Point, end: Point, maxPoint: Point) -> Int {
+    public func dijkstra(start: Point, end: Point, maxPoint: Point, shouldDrawPath: Bool = false) -> Int {
         let queue = PriorityQueue<Point>()
         queue.enqueue(start, priority: 0)
         var cameFrom = [Point:Point]()
@@ -79,6 +79,24 @@ extension Grid where T == Int {
                     cameFrom[next] = current
                 }
             }
+        }
+        
+        //        print(costSoFar.count, cameFrom.count)
+        
+        // Draw Path
+        if shouldDrawPath {
+            var path = [Point]()
+            var current: Point? = end
+            while current != nil {
+                if let point = current, let next = cameFrom[point] {
+                    path.append(next)
+                    current = next
+                } else {
+                    current = nil
+                }
+            }
+            
+            path.reversed().forEach { print($0) }
         }
         
         return costSoFar[end, default: -1]
