@@ -1,17 +1,18 @@
 import XCTest
 import InputReader
+import StandardLibraries
 import Year2021
 
 class Day15Tests: XCTestCase {
     
     let input = Input("Day15.input", Year2021.bundle).lines
-    let day = Day15()
+    lazy var grid = Grid<Int>(input)
 
     func test_part1() {
-        XCTAssertEqual(0, day.part1(input))
+        XCTAssertEqual(769, grid.dijkstra(start: .zero, end: Point(grid.columns - 1, grid.rows - 1)))
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+        XCTAssertEqual(2963, grid.dijkstra(start: .zero, end: Point(grid.columns * 5 - 1, grid.rows * 5 - 1), maxPoint: Point(grid.columns * 5, grid.rows * 5)))
     }
 }

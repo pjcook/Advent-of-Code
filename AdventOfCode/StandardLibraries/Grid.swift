@@ -6,6 +6,9 @@ public struct Grid<T> {
     }
     public let columns: Int
     public var items: [T]
+    public var bottomRight: Point {
+        Point(columns, rows)
+    }
     
     public init(columns: Int, items: [T]) {
         self.columns = columns
@@ -43,6 +46,45 @@ extension Grid where T == Int {
         
         self.columns = input[0].count
         self.items = items
+    }
+    
+    public func dijkstra(start: Point, end: Point) -> Int {
+        dijkstra(start: start, end: end, maxPoint: bottomRight)
+    }
+    
+    public func dijkstra(start: Point, end: Point, maxPoint: Point) -> Int {
+        var queue = [Point: Int]()
+        queue[start] = 0
+        var cameFrom = [Point:Point]()
+        var costSoFar = [Point: Int]()
+        costSoFar[start] = 0
+        
+        while !queue.isEmpty {
+            let current = queue.sorted { p1, p2 in
+                p1.value < p2.value
+            }.first!.key
+            queue.removeValue(forKey: current)
+            if current == end {
+                continue
+            }
+            
+            for next in current.cardinalNeighbors(max: maxPoint) {
+                let gridPoint = Point(next.x % columns, next.y % rows)
+                var gridScore = self[gridPoint] + Int(next.x / columns) + Int(next.y / rows)
+                if gridScore > 9 {
+                    gridScore -= 9
+                }
+                let newCost = costSoFar[current, default: 0] + gridScore
+                if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
+                    costSoFar[next] = newCost
+                    let priority = newCost
+                    queue[next] = priority
+                    cameFrom[next] = current
+                }
+            }
+        }
+        
+        return costSoFar[end, default: -1]
     }
 }
 
