@@ -8,11 +8,15 @@ class Day16Tests: XCTestCase {
     let day = Day16()
 
     func test_part1() {
+//        measure {
         XCTAssertEqual(1007, day.part1(input))
+//        }
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+//        measure {
+        XCTAssertEqual(834151779165, day.part2(input))
+//        }
     }
     
     func test_parsing() {

@@ -17,6 +17,25 @@ public struct Day16 {
         public func valueCount() -> Int {
             return value + subPackets.reduce(0, { $0 + $1.valueCount() })
         }
+
+        func desc(_ depth: Int) -> String {
+            let padding = String(repeating: "-", count: depth)
+            return "\n\(padding) \(typeID), \(value), \(subPackets.count)" + subPackets.map { $0.desc(depth + 1) }.joined()
+        }
+        
+        public func process() -> Int {
+            switch typeID {
+            case 0: return subPackets.reduce(0, { $0 + $1.process() })
+            case 1: return subPackets.reduce(1, { $0 * $1.process() })
+            case 2: return subPackets.map { $0.process() }.min()!
+            case 3: return subPackets.map { $0.process() }.max()!
+            case 4: return value
+            case 5: return subPackets[0].process() > subPackets[1].process() ? 1 : 0
+            case 6: return subPackets[0].process() < subPackets[1].process() ? 1 : 0
+            case 7: return subPackets[0].process() == subPackets[1].process() ? 1 : 0
+            default: abort()
+            }
+        }
     }
     
     public func part1(_ input: String) -> Int {
@@ -26,11 +45,13 @@ public struct Day16 {
     }
     
     public func part2(_ input: String) -> Int {
-        return 0
+        var values = parse(input)
+        let packet = processPacket(&values, depth: 1)
+        return packet?.process() ?? 0
     }
     
     public func processPacket(_ input: inout [Int], depth: Int) -> Packet? {
-        guard input.count > 6 else {
+        guard input.contains(1) else {
             input = []
             return nil
         }
@@ -39,24 +60,18 @@ public struct Day16 {
         input.removeFirst(3)
         let typeID = Int(input[0..<3].map(String.init).joined(), radix: 2)!
         input.removeFirst(3)
-        print(depth, version, typeID)
+
         if typeID == 4 {        // Literal
-            packets.append(processLiteral(&input, version: version, typeID: typeID, depth: depth))
+            return Packet(version: version, typeID: typeID, value: processLiteral(&input, version: version, typeID: typeID, depth: depth), subPackets: packets)
         } else { // operator
             processOperator(&input, depth: depth).forEach { packets.append($0) }
-        }
-        
-        while !input.isEmpty {
-            if let packet = processPacket(&input, depth: depth + 1) {
-                packets.append(packet)
-            }
         }
 
         return Packet(version: version, typeID: typeID, value: 0, subPackets: packets)
     }
     
     public func processOperator(_ input: inout [Int], depth: Int) -> [Packet] {
-        guard input.count > 11 else {
+        guard input.contains(1) else {
             input = []
             return []
         }
@@ -67,11 +82,15 @@ public struct Day16 {
             input.removeFirst(15)
             var remainder = Array(input[0..<length])
             input.removeFirst(length)
-            if let packet = processPacket(&remainder, depth: depth + 1) {
-                return [packet]
-            } else {
-                return []
+            var packets = [Packet]()
+            while remainder.contains(1) {
+                if let packet = processPacket(&remainder, depth: depth + 1) {
+                    packets.append(packet)
+                } else {
+                    break
+                }
             }
+            return packets
         } else {        // the number of subpackets
             length = Int(input[0..<11].map(String.init).joined(), radix: 2)!
             input.removeFirst(11)
@@ -85,7 +104,7 @@ public struct Day16 {
         }
     }
     
-    public func processLiteral(_ input: inout [Int], version: Int, typeID: Int, depth: Int) -> Packet {
+    public func processLiteral(_ input: inout [Int], version: Int, typeID: Int, depth: Int) -> Int {
         var shouldLoop = true
         var remainder = [Int]()
         while shouldLoop {
@@ -98,7 +117,7 @@ public struct Day16 {
                 shouldLoop = false
             }
         }
-        return Packet(version: 0, typeID: 0, value: Int(remainder.map(String.init).joined(), radix: 2)!, subPackets: [])
+        return Int(remainder.map(String.init).joined(), radix: 2)!
     }
     
     public func parse(_ input: String) -> [Int] {
