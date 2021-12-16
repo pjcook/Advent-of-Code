@@ -24,12 +24,11 @@ class Day16Tests: XCTestCase {
         print(values)
         print(values.count % 3)
         print(values.count / 3)
-        let packets = day.processPacket(&values, depth: 1)
-        XCTAssertEqual(1, packets.count)
-        print(packets)
-        XCTAssertEqual(6, packets[0].version)
-        XCTAssertEqual(4, packets[0].typeID)
-        XCTAssertEqual(2021, packets[0].value)
+        let packet = day.processPacket(&values, depth: 1)!
+        print(packet)
+        XCTAssertEqual(6, packet.version)
+        XCTAssertEqual(4, packet.typeID)
+        XCTAssertEqual(2021, packet.valueCount())
     }
     
     func test_examples_part1() {
