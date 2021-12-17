@@ -45,7 +45,6 @@ public struct Day16 {
         return packet?.process() ?? 0
     }
     
-    // Instead of reducing the input array, pass around a pointer and the substring instead will be more efficient
     public func readPacketHeader(_ input: inout [Int], depth: Int) -> Packet? {
         var packets = [Packet]()
         let version = Int(input[0..<3].map(String.init).joined(), radix: 2)!

@@ -17,6 +17,9 @@ public struct Day17 {
         }
     }
     
+    /*
+     Find the initial velocity that causes the probe to reach the highest y position and still eventually be within the target area after any step. What is the highest y position it reaches on this trajectory?
+     */
     public func part1(_ targetArea: TargetArea) -> Int {
         var maxY = 0
         
@@ -31,6 +34,9 @@ public struct Day17 {
         return maxY
     }
     
+    /*
+     How many distinct initial velocity values cause the probe to be within the target area after any step?
+     */
     public func part2(_ targetArea: TargetArea) -> Int {
         var count = 0
         
@@ -45,6 +51,16 @@ public struct Day17 {
         return count
     }
     
+    /*
+     The probe launcher on your submarine can fire the probe with any integer velocity in the x (forward) and y (upward, or downward if negative) directions. For example, an initial x,y velocity like 0,10 would fire the probe straight up, while an initial velocity like 10,-1 would fire the probe forward at a slight downward angle.
+
+     The probe's x,y position starts at 0,0. Then, it will follow some trajectory by moving in steps. On each step, these changes occur in the following order:
+
+     The probe's x position increases by its x velocity.
+     The probe's y position increases by its y velocity.
+     Due to drag, the probe's x velocity changes by 1 toward the value 0; that is, it decreases by 1 if it is greater than 0, increases by 1 if it is less than 0, or does not change if it is already 0.
+     Due to gravity, the probe's y velocity decreases by 1.
+     */
     public func calculateTrajectoryReturnMaxY(start: Point, trajectory: Point, targetArea: TargetArea) -> Int? {
         var position = start
         var trajectory = trajectory
