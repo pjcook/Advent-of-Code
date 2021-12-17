@@ -23,7 +23,7 @@ public struct Day17 {
     public func part1(_ targetArea: TargetArea) -> Int {
         var maxY = 0
         
-        for x in (1..<targetArea.topLeft.x + targetArea.bottomRight.x) {
+        for x in (1..<targetArea.topLeft.x) {
             for y in (targetArea.bottomRight.y...abs(targetArea.bottomRight.y)) {
                 if let y = calculateTrajectoryReturnMaxY(start: .zero, trajectory: Point(x,y), targetArea: targetArea) {
                     maxY = max(maxY, y)
@@ -39,15 +39,15 @@ public struct Day17 {
      */
     public func part2(_ targetArea: TargetArea) -> Int {
         var count = 0
-        
-        for x in (1..<targetArea.topLeft.x + targetArea.bottomRight.x) {
+
+        for x in (1...targetArea.bottomRight.x) {
             for y in (targetArea.bottomRight.y...abs(targetArea.bottomRight.y)) {
                 if calculateTrajectoryReturnMaxY(start: .zero, trajectory: Point(x,y), targetArea: targetArea) != nil {
                     count += 1
                 }
             }
         }
-        
+
         return count
     }
     
@@ -69,24 +69,23 @@ public struct Day17 {
         while true {
             // move by trajectory
             position = position + trajectory
-            
             maxY = max(maxY, position.y)
             
             // calculate if in targetArea
-            if targetArea.xRange.contains(position.x) && targetArea.yRange.contains(position.y) {
-                result = maxY
+            if position.y < targetArea.bottomRight.y {
                 break
-            } else if position.y < targetArea.bottomRight.y {
+            } else if targetArea.xRange.contains(position.x) && targetArea.yRange.contains(position.y) {
+                result = maxY
                 break
             }
             
             // affect trajectory by gravity and current
-            if trajectory.x < 0 {
-                trajectory = trajectory + Point(1,-1)
-            } else if trajectory.x > 0 {
+            if trajectory.x > 0 {
                 trajectory = trajectory + Point(-1,-1)
-            } else {
+            } else if trajectory.x == 0 {
                 trajectory = trajectory + Point(0,-1)
+            } else {    // never going to happen
+                trajectory = trajectory + Point(1,-1)
             }
         }
         
