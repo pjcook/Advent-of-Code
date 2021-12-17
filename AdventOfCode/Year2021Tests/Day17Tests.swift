@@ -12,15 +12,15 @@ class Day17Tests: XCTestCase {
     let targetArea_stephen = Day17.TargetArea(topLeft: Point(70,-124), bottomRight: Point(96, -179))
 
     func test_part1() {
-        measure {
+//        measure {
         XCTAssertEqual(5778, day.part1(targetArea))
-        }
+//        }
     }
     
     func test_part2() {
-        measure {
+//        measure {
         XCTAssertEqual(2576, day.part2(targetArea))
-        }
+//        }
     }
     
     func test_stephen() {

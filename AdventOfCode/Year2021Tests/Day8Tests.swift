@@ -14,15 +14,15 @@ class Day8Tests: XCTestCase {
     }
     
     func test_part2() throws {
-        measure {
+//        measure {
         XCTAssertEqual(1068933, try! day.part2(input))
-        }
+//        }
     }
     
     func test_part2b() throws {
-        measure {
+//        measure {
         XCTAssertEqual(1068933, try! day.part2b(input))
-        }
+//        }
     }
     
     func test_parsing() throws {
