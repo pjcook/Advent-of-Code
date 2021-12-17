@@ -20,15 +20,15 @@ class Day16Tests: XCTestCase {
     }
     
     func test_parsing() {
-        XCTAssertEqual(5464, day.parse(input).count)
+        XCTAssertEqual(5464, day.convertHexInputToBinary(input).count)
     }
     
     func test_example_parsing() {
-        var values = day.parse("D2FE28")
+        var values = day.convertHexInputToBinary("D2FE28")
         print(values)
         print(values.count % 3)
         print(values.count / 3)
-        let packet = day.processPacket(&values, depth: 1)!
+        let packet = day.readPacketHeader(&values, depth: 1)!
         print(packet)
         XCTAssertEqual(6, packet.version)
         XCTAssertEqual(4, packet.typeID)

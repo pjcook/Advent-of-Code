@@ -18,11 +18,6 @@ public struct Day16 {
             return value + subPackets.reduce(0, { $0 + $1.valueCount() })
         }
 
-        func desc(_ depth: Int) -> String {
-            let padding = String(repeating: "-", count: depth)
-            return "\n\(padding) \(typeID), \(value), \(subPackets.count)" + subPackets.map { $0.desc(depth + 1) }.joined()
-        }
-        
         public func process() -> Int {
             switch typeID {
             case 0: return subPackets.reduce(0, { $0 + $1.process() })
@@ -39,22 +34,19 @@ public struct Day16 {
     }
     
     public func part1(_ input: String) -> Int {
-        var values = parse(input)
-        let packet = processPacket(&values, depth: 1)
+        var values = convertHexInputToBinary(input)
+        let packet = readPacketHeader(&values, depth: 1)
         return packet?.versionCount() ?? 0
     }
     
     public func part2(_ input: String) -> Int {
-        var values = parse(input)
-        let packet = processPacket(&values, depth: 1)
+        var values = convertHexInputToBinary(input)
+        let packet = readPacketHeader(&values, depth: 1)
         return packet?.process() ?? 0
     }
     
-    public func processPacket(_ input: inout [Int], depth: Int) -> Packet? {
-        guard input.contains(1) else {
-            input = []
-            return nil
-        }
+    // Instead of reducing the input array, pass around a pointer and the substring instead will be more efficient
+    public func readPacketHeader(_ input: inout [Int], depth: Int) -> Packet? {
         var packets = [Packet]()
         let version = Int(input[0..<3].map(String.init).joined(), radix: 2)!
         input.removeFirst(3)
@@ -71,10 +63,6 @@ public struct Day16 {
     }
     
     public func processOperator(_ input: inout [Int], depth: Int) -> [Packet] {
-        guard input.contains(1) else {
-            input = []
-            return []
-        }
         let i = input.removeFirst()
         var length = 0
         if i == 0 {     // number of bits in the sub-packets
@@ -84,7 +72,7 @@ public struct Day16 {
             input.removeFirst(length)
             var packets = [Packet]()
             while remainder.contains(1) {
-                if let packet = processPacket(&remainder, depth: depth + 1) {
+                if let packet = readPacketHeader(&remainder, depth: depth + 1) {
                     packets.append(packet)
                 } else {
                     break
@@ -96,7 +84,7 @@ public struct Day16 {
             input.removeFirst(11)
             var packets = [Packet]()
             for _ in (0..<length) {
-                if let packet = processPacket(&input, depth: depth + 1) {
+                if let packet = readPacketHeader(&input, depth: depth + 1) {
                     packets.append(packet)
                 }
             }
@@ -120,7 +108,7 @@ public struct Day16 {
         return Int(remainder.map(String.init).joined(), radix: 2)!
     }
     
-    public func parse(_ input: String) -> [Int] {
+    public func convertHexInputToBinary(_ input: String) -> [Int] {
         var results = [[Int]]()
         for x in input {
             var values = [Int]()
