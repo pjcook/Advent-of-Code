@@ -5,6 +5,9 @@ public struct Day7 {
     public init() {}
     public typealias Reducer = (Int, (Int, Int)) throws -> Int
 
+    /*
+     Each submarine has a horizontal position (puzzle input). Moving 1 step costs 1 fuel. What is the least amount of fuel required to align all submarines to the same position?
+     */
     public func part1(_ input: [Int]) -> Int {
         let sorted = input.sorted()
         let min = sorted.first!
