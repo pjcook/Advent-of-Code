@@ -18,6 +18,12 @@ public struct Day17 {
     }
     
     /*
+     So MAX X should be the last X position in your targetArea because with a single trajectory, you could jump to that X position i.e. you could jump directly into the target area. And the MIN Y should be the smallest Y value from your targetArea.
+     X can never be 0 (unless your target area has a negative X range), or it won’t move and will never get into the target area.
+     The maximum Y value on the other hand is a little more tricky, so I just made an assumption that the absolute value of the lowest Y position from the targetArea would likely do.
+     */
+    
+    /*
      Find the initial velocity that causes the probe to reach the highest y position and still eventually be within the target area after any step. What is the highest y position it reaches on this trajectory?
      */
     public func part1(_ targetArea: TargetArea) -> Int {
