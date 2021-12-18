@@ -672,6 +672,8 @@
 		D5541C5D23EC018700EFFD42 /* InputReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5541C5C23EC018700EFFD42 /* InputReader.swift */; };
 		D56165942769DECB00C5C1B6 /* Queues.swift in Sources */ = {isa = PBXBuildFile; fileRef = D56165932769DECB00C5C1B6 /* Queues.swift */; };
 		D56165962769F98800C5C1B6 /* Day15_mark.input in Resources */ = {isa = PBXBuildFile; fileRef = D56165952769F98800C5C1B6 /* Day15_mark.input */; };
+		D57BBECD276E4C3100101A91 /* Day18b.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57BBECC276E4C3100101A91 /* Day18b.swift */; };
+		D57BBECF276E4D2000101A91 /* Day18Testsb.swift in Sources */ = {isa = PBXBuildFile; fileRef = D57BBECE276E4D2000101A91 /* Day18Testsb.swift */; };
 		D58A3B4123C88DBA004393AC /* GKMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58A3B4023C88DBA004393AC /* GKMapper.swift */; };
 		D5A8778423AAC43D004A21CD /* Day19.input in Resources */ = {isa = PBXBuildFile; fileRef = D5A8778323AAC43D004A21CD /* Day19.input */; };
 		D5A8778623AAC445004A21CD /* Day19.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5A8778523AAC445004A21CD /* Day19.swift */; };
@@ -1743,6 +1745,8 @@
 		D5541C5C23EC018700EFFD42 /* InputReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputReader.swift; path = InputReader/InputReader.swift; sourceTree = SOURCE_ROOT; };
 		D56165932769DECB00C5C1B6 /* Queues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queues.swift; sourceTree = "<group>"; };
 		D56165952769F98800C5C1B6 /* Day15_mark.input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Day15_mark.input; sourceTree = "<group>"; };
+		D57BBECC276E4C3100101A91 /* Day18b.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day18b.swift; sourceTree = "<group>"; };
+		D57BBECE276E4D2000101A91 /* Day18Testsb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Day18Testsb.swift; sourceTree = "<group>"; };
 		D58A3B4023C88DBA004393AC /* GKMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GKMapper.swift; sourceTree = "<group>"; };
 		D5A8778223AAC434004A21CD /* Day19_Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Day19_Readme.md; sourceTree = "<group>"; };
 		D5A8778323AAC43D004A21CD /* Day19.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day19.input; sourceTree = "<group>"; };
@@ -2754,6 +2758,7 @@
 				D536CD65274E292E00D20509 /* Day18_Readme.md */,
 				D536CD93274E292F00D20509 /* Day18.input */,
 				D536CD7C274E292E00D20509 /* Day18.swift */,
+				D57BBECC276E4C3100101A91 /* Day18b.swift */,
 				D536CD99274E292F00D20509 /* Day19_Readme.md */,
 				D536CD9A274E292F00D20509 /* Day19.input */,
 				D536CD88274E292F00D20509 /* Day19.swift */,
@@ -2801,6 +2806,7 @@
 				D536CD47274E273D00D20509 /* Day16Tests.swift */,
 				D536CD49274E274100D20509 /* Day17Tests.swift */,
 				D536CD4B274E274600D20509 /* Day18Tests.swift */,
+				D57BBECE276E4D2000101A91 /* Day18Testsb.swift */,
 				D536CD4D274E274900D20509 /* Day19Tests.swift */,
 				D536CD4F274E274D00D20509 /* Day20Tests.swift */,
 				D536CD51274E275000D20509 /* Day21Tests.swift */,
@@ -4914,6 +4920,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D57BBECD276E4C3100101A91 /* Day18b.swift in Sources */,
 				D5F81B552759EC24008CA24B /* Day3b.swift in Sources */,
 				D536CDB9274E293000D20509 /* Day14.swift in Sources */,
 				D536CDE7274E293000D20509 /* Day4.swift in Sources */,
@@ -4972,6 +4979,7 @@
 				D536CD4A274E274100D20509 /* Day17Tests.swift in Sources */,
 				D536CD5A274E275C00D20509 /* Day25Tests.swift in Sources */,
 				D536CD3E274E272800D20509 /* Day11Tests.swift in Sources */,
+				D57BBECF276E4D2000101A91 /* Day18Testsb.swift in Sources */,
 				D536CD40274E272B00D20509 /* Day12Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

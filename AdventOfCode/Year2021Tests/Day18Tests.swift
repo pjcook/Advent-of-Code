@@ -7,6 +7,15 @@ class Day18Tests: XCTestCase {
     let input = Input("Day18.input", Year2021.bundle).lines
     let day = Day18()
 
+    /*
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     !!!  IMPORTANT - GO LOOK IN THE Day19Testsb file instead  !!!
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     */
+    
+    
     func test_part1() {
         XCTAssertEqual(0, day.part1(input))
     }
@@ -19,7 +28,7 @@ class Day18Tests: XCTestCase {
 //        day.parse("[1,2]")
 //        day.parse("[[1,9],[8,5]]")
 //        day.parse("[[[[1,2],[3,4]],[[5,6],[7,8]]],9]")
-        day.parse("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]")
+        _ = day.parse("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]")
     }
     
     func test_examples() {
