@@ -30,7 +30,8 @@ public struct Day17 {
         var maxY = 0
         
         for x in (1..<targetArea.topLeft.x) {
-            for y in (targetArea.bottomRight.y..<abs(targetArea.bottomRight.y)) {
+            for y in (0..<abs(targetArea.bottomRight.y)) {
+                if shouldSkip(targetArea, x: x, y: y) { continue }
                 if let y = calculateTrajectoryReturnMaxY(start: .zero, trajectory: Point(x,y), targetArea: targetArea) {
                     maxY = max(maxY, y)
                 }
@@ -48,6 +49,7 @@ public struct Day17 {
 
         for x in (1...targetArea.bottomRight.x) {
             for y in (targetArea.bottomRight.y..<abs(targetArea.bottomRight.y)) {
+                if shouldSkip(targetArea, x: x, y: y) { continue }
                 if calculateTrajectoryReturnMaxY(start: .zero, trajectory: Point(x,y), targetArea: targetArea) != nil {
                     count += 1
                 }
@@ -55,6 +57,11 @@ public struct Day17 {
         }
 
         return count
+    }
+    
+    // This is an optimisation to skip areas that definitely can never work
+    public func shouldSkip(_ targetArea: TargetArea, x: Int, y: Int) -> Bool {
+        return (x < targetArea.topLeft.x && y < targetArea.topLeft.y) || (x > targetArea.topLeft.x && y > targetArea.topLeft.y)
     }
     
     /*
