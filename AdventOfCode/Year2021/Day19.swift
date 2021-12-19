@@ -5,83 +5,73 @@ public struct Day19 {
     public init() {}
     
     public typealias Scanners = [Scanner]
-    public typealias Distances = [VectorKey:Int]
-    
-    public struct VectorKey: Hashable {
-        public let p1: Vector
-        public let p2: Vector
-        public init(_ p1: Vector, _ p2: Vector) {
-            self.p1 = p1
-            self.p2 = p2
-        }
-        
-        public static func == (lhs: VectorKey, rhs: VectorKey) -> Bool {
-            [lhs.p1, lhs.p2].contains(rhs.p1) && [lhs.p1, lhs.p2].contains(rhs.p2)
-        }
-    }
+    public typealias Face = [Vector]
     
     public struct Scanner: Hashable {
         public let id: String
-        public let beacons: [Vector]
-        public let distances: Distances
-        public init(id: String = UUID().uuidString, beacons: [Vector]) {
-            var distances = Distances()
-            var list = beacons
-            while !list.isEmpty {
-                let beacon = list.removeLast()
-                for b in list {
-                    distances[VectorKey(beacon,b)] = abs(beacon.distance(to: b))
-                }
-            }
-            self.init(id: id, beacons: beacons, distances: distances)
-        }
-        
-        public init(id: String, beacons: [Vector], distances: Distances) {
+        public let faces: Set<Face>
+        public init(id: String = UUID().uuidString, beacons: Face) {
             self.id = id
-            self.beacons = beacons
-            self.distances = distances
+            self.faces = Self.calculateFaces(beacons)
         }
         
-        public func translate(_ vector: Vector) -> Scanner {
-            let translatedBeacons = beacons.map { $0 + vector }
-            return Scanner(id: id, beacons: translatedBeacons, distances: distances)
-        }
-        
-        public func rotateX() -> Scanner {
-//            let (minCoord, _) = beacons.minMax()
-//            let additive = Vector(x: 0, y: -1 * minCoord.y, z: -1 * minCoord.z)
-//            let negative = Vector(x: 0, y: minCoord.z, z: minCoord.y)
-            let translatedBeacons = beacons
-//                .map { $0 + additive }
-                .map { $0.rotateX() }
-//                .map { $0 + negative }
+        public static func calculateFaces(_ beacons: Face) -> Set<Face> {
+            var beacons = beacons
+            var faces = Set<[Vector]>()
             
-            return Scanner(id: id, beacons: translatedBeacons, distances: distances)
+            // Z faces
+            beacons = beacons.map { $0.rotateZ() }
+            faces.insert(beacons)
+            beacons = beacons.map { $0.rotateZ() }
+            faces.insert(beacons)
+            beacons = beacons.map { $0.rotateZ() }
+            faces.insert(beacons)
+            beacons = beacons.map { $0.rotateZ() }
+            faces.insert(beacons)
+            
+            // Y faces
+            beacons = beacons.map { $0.rotateY() }
+            faces.insert(beacons)
+            beacons = beacons.map { $0.rotateY() }
+            faces.insert(beacons)
+            beacons = beacons.map { $0.rotateY() }
+            faces.insert(beacons)
+            beacons = beacons.map { $0.rotateY() }
+            faces.insert(beacons)
+
+            // X faces
+            beacons = beacons.map { $0.rotateX() }
+            faces.insert(beacons)
+            beacons = beacons.map { $0.rotateX() }
+            faces.insert(beacons)
+            beacons = beacons.map { $0.rotateX() }
+            faces.insert(beacons)
+            beacons = beacons.map { $0.rotateX() }
+            faces.insert(beacons)
+
+            return faces
         }
         
-        public func rotateY() -> Scanner {
-//            let (minCoord, _) = beacons.minMax()
-//            let additive = Vector(x: -1 * minCoord.x, y: 0, z: -1 * minCoord.z)
-//            let negative = Vector(x: minCoord.z, y: 0, z: minCoord.x)
-            let translatedBeacons = beacons
-//                .map { $0 + additive }
-                .map { $0.rotateY() }
-//                .map { $0 + negative }
-            
-            return Scanner(id: id, beacons: translatedBeacons, distances: distances)
+        private func duplicate(with beacons: [Vector]) -> Scanner {
+            Scanner(id: id, beacons: beacons)
         }
         
-        public func rotateZ() -> Scanner {
-//            let (minCoord, _) = beacons.minMax()
-//            let additive = Vector(x: -1 * minCoord.x, y: -1 * minCoord.y, z: 0)
-//            let negative = Vector(x: minCoord.y, y: minCoord.x, z: 0)
-            let translatedBeacons = beacons
-//                .map { $0 + additive }
-                .map { $0.rotateZ() }
-//                .map { $0 + negative }
-            
-            return Scanner(id: id, beacons: translatedBeacons, distances: distances)
-        }
+//        public func translate(_ vector: Vector) -> Scanner {
+//            let translatedBeacons = beacons.map { $0 + vector }
+//            return duplicate(with: translatedBeacons)
+//        }
+//
+//        public func rotateX() -> Scanner {
+//            return duplicate(with: beacons.map { $0.rotateX() })
+//        }
+//
+//        public func rotateY() -> Scanner {
+//            return duplicate(with: beacons.map { $0.rotateY() })
+//        }
+//
+//        public func rotateZ() -> Scanner {
+//            return duplicate(with: beacons.map { $0.rotateZ() })
+//        }
     }
     
     /*
@@ -91,30 +81,70 @@ public struct Day19 {
      */
     public func part1(_ input: [String]) -> Int {
         var scanners = parse(input)
-        let scanner0 = scanners.removeFirst()
-
+        let primary = scanners.removeFirst()
+        let primaryFace = primary.faces.first!
+        draw(primaryFace)
+        let primaryVectors = calculateVectors(primaryFace)
+        var matched = [Face]()
+        matched.append(primaryFace)
+        
         for scanner in scanners {
-            // Find beacon to match
-            let (vectorA, vectorB) = findBeaconToMatch(scanner0.distances, scanner.distances)
-            
-            // Translate scanner beacon positions to scanner0 dXYZ
-//            let translated = scanner.translate(vectorA + vectorB)
-            
-            // RotateTransform scanner and check if more than 12 beacon positions match
+            // for each scanner, find the matching FACE
+            if let face = findMatchingFace(primaryVectors, scanner: scanner) {
+                draw(face)
+            }
         }
         
         return 0
     }
     
-    public func findBeaconToMatch(_ a: Distances, _ b: Distances) -> (VectorKey, VectorKey) {
-        for item1 in a {
-            for item2 in b {
-                if item1.value == item2.value {
-                    return (item1.key, item2.key)
+    public func findMatchingFace(_ primaryVectors: Face, scanner: Scanner) -> Face? {
+        for face in scanner.faces {
+            let vectors = calculateVectors(face)
+            if doFacesMatch(primaryVectors, vectors) {
+                return face
+            }
+        }
+        return nil
+    }
+    
+    public func match(_ vectors1: Face, _ vectors2: Face) -> Bool {
+        var a = 0
+        var b = 0
+        while a < vectors1.count {
+            let v1 = vectors1[a]
+            
+            while b < vectors2.count {
+                let v2 = vectors2[b]
+                if v1 == v2 { // find first match of sequence
+                    // check for sequence
+                    var a2 = a + 1
+                    var b2 = b + 1
+                    var count = 1
+                    while b2 < vectors2.count && vectors1[a2] == vectors2[b2] {
+                        count += 1
+                        a2 += 1
+                        b2 += 1
+                    }
+                        
+                    if count >= 12 { return true }
                 }
             }
         }
-        abort()
+        return false
+    }
+    
+    public func calculateVectors(_ face: Face) -> Face {
+        var newFace = Face()
+        var items = Array(face.sorted({ a, b in a.x < b.x && a.y < b.y && a.z < b.z }))
+        var previous = items.removeFirst()
+        
+        while !items.isEmpty {
+            let next = items.removeFirst()
+            newFace.append(next - previous)
+        }
+        
+        return newFace
     }
     
     public func part2(_ input: [String]) -> Int {
@@ -137,5 +167,29 @@ public struct Day19 {
         }
         scanners.append(Scanner(beacons: beacons))
         return scanners
+    }
+    
+    public func draw(_ beacons: Face) {
+        let (minCoords, maxCoords) = beacons.minMax()
+        let dx = maxCoords.x - minCoords.x
+        let dy = maxCoords.y - minCoords.y
+        let d = max(dx, dy)+2
+        let items = Set(beacons.map({ Point($0.x, $0.y) }))
+        draw(items, min: Point(-d, -d), max: Point(d,d))
+    }
+    
+    public func draw(_ tiles: Set<Point>, min: Point, max: Point) {
+        for y in (min.y...max.y) {
+            var line = ""
+            for x in (min.x...max.x) {
+                if y == 0 && x == 0 {
+                    line.append("🔴")
+                } else {
+                    line.append(tiles.contains(Point(x: x, y: y)) ? "⚪️" : "⚫️")
+                }
+            }
+            print(line)
+        }
+        print()
     }
 }
