@@ -6,8 +6,42 @@ public struct Day20 {
     
     public typealias Algorithm = [Int]
     
-    public let light = "#"
-    public let dark = "."
+    public func part1(_ input: [String]) -> Int {
+        let (algorithm, photo) = parse(input)
+        
+        let enhancedPhoto1 = photo.enhance(algorithm)
+        let enhancedPhoto2 = enhancedPhoto1.enhance(algorithm)
+
+        return enhancedPhoto2.pixels.elements.count
+    }
+    
+    public func part2(_ input: [String]) -> Int {
+        let (algorithm, photo) = parse(input)
+        var enhancedPhoto = photo
+        for _ in (0..<50) {
+            enhancedPhoto = enhancedPhoto.enhance(algorithm)
+        }
+        return enhancedPhoto.pixels.elements.count
+    }
+    
+    public func parse(_ input: [String]) -> (Algorithm, Photo) {
+        let algorithm = input[0].replacingOccurrences(of: "#", with: "1").replacingOccurrences(of: ".", with: "0").map({ Int(String($0))! })
+        
+        var items = [Point:Int]()
+        var y = 0
+        for i in (2..<input.count) {
+            let line = input[i]
+            for x in (0..<line.count) {
+                if line[x] == "#" {
+                    items[Point(x,y)] = 1
+                }
+            }
+            
+            y += 1
+        }
+        
+        return (algorithm, Photo(pixels: DictGrid(items, rows: y, columns: input[2].count, defaultValue: 0)))
+    }
     
     public struct Photo {
         public let pixels: DictGrid<Int>
@@ -52,43 +86,6 @@ public struct Day20 {
                 return pixels[point]
             }
         }
-    }
-    
-    public func part1(_ input: [String]) -> Int {
-        let (algorithm, photo) = parse(input)
-        
-        let enhancedPhoto1 = photo.enhance(algorithm)
-        let enhancedPhoto2 = enhancedPhoto1.enhance(algorithm)
-
-        return enhancedPhoto2.pixels.elements.count
-    }
-    
-    public func part2(_ input: [String]) -> Int {
-        let (algorithm, photo) = parse(input)
-        var enhancedPhoto = photo
-        for _ in (0..<50) {
-            enhancedPhoto = enhancedPhoto.enhance(algorithm)
-        }
-        return enhancedPhoto.pixels.elements.count
-    }
-    
-    public func parse(_ input: [String]) -> (Algorithm, Photo) {
-        let algorithm = input[0].replacingOccurrences(of: "#", with: "1").replacingOccurrences(of: ".", with: "0").map({ Int(String($0))! })
-        
-        var items = [Point:Int]()
-        var y = 0
-        for i in (2..<input.count) {
-            let line = input[i]
-            for x in (0..<line.count) {
-                if line[x] == "#" {
-                    items[Point(x,y)] = 1
-                }
-            }
-            
-            y += 1
-        }
-        
-        return (algorithm, Photo(pixels: DictGrid(items, rows: y, columns: input[2].count, defaultValue: 0)))
     }
 }
 

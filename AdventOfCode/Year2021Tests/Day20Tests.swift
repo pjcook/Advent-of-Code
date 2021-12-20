@@ -36,11 +36,11 @@ class Day20Tests: XCTestCase {
     func test_parsing() {
         let (algorithm, photo) = day.parse(input)
         XCTAssertEqual(512, algorithm.count)
-        XCTAssertEqual(104, photo.pixels.rows)
-        XCTAssertEqual(104, photo.pixels.columns)
+        XCTAssertEqual(100, photo.pixels.rows)
+        XCTAssertEqual(100, photo.pixels.columns)
         
         let paddedGrid = photo.pixels.padded(by: 2)
-        XCTAssertEqual(108, paddedGrid.rows)
-        XCTAssertEqual(108, paddedGrid.columns)
+        XCTAssertEqual(104, paddedGrid.rows)
+        XCTAssertEqual(104, paddedGrid.columns)
     }
 }
