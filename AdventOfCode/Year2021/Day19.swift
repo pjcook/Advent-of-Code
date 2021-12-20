@@ -6,6 +6,7 @@ public struct Day19 {
     
     public typealias Scanners = [Scanner]
     public typealias Face = [Vector]
+    public typealias FaceDistances = [Point]
     
     public struct Scanner: Hashable {
         public let id: String
@@ -19,59 +20,28 @@ public struct Day19 {
             var beacons = beacons
             var faces = Set<[Vector]>()
             
-            // Z faces
-            beacons = beacons.map { $0.rotateZ() }
-            faces.insert(beacons)
-            beacons = beacons.map { $0.rotateZ() }
-            faces.insert(beacons)
-            beacons = beacons.map { $0.rotateZ() }
-            faces.insert(beacons)
-            beacons = beacons.map { $0.rotateZ() }
-            faces.insert(beacons)
+            for _ in (0..<4) {
+                beacons = beacons.map { $0.rotateX() }
+                faces.insert(beacons)
+
+                for _ in (0..<4) {
+                    beacons = beacons.map { $0.rotateY() }
+                    faces.insert(beacons)
+
+                    for _ in (0..<4) {
+                        beacons = beacons.map { $0.rotateZ() }
+                        faces.insert(beacons)
+
+                    }
+                }
+            }
             
-            // Y faces
-            beacons = beacons.map { $0.rotateY() }
-            faces.insert(beacons)
-            beacons = beacons.map { $0.rotateY() }
-            faces.insert(beacons)
-            beacons = beacons.map { $0.rotateY() }
-            faces.insert(beacons)
-            beacons = beacons.map { $0.rotateY() }
-            faces.insert(beacons)
-
-            // X faces
-            beacons = beacons.map { $0.rotateX() }
-            faces.insert(beacons)
-            beacons = beacons.map { $0.rotateX() }
-            faces.insert(beacons)
-            beacons = beacons.map { $0.rotateX() }
-            faces.insert(beacons)
-            beacons = beacons.map { $0.rotateX() }
-            faces.insert(beacons)
-
             return faces
         }
         
         private func duplicate(with beacons: [Vector]) -> Scanner {
             Scanner(id: id, beacons: beacons)
         }
-        
-//        public func translate(_ vector: Vector) -> Scanner {
-//            let translatedBeacons = beacons.map { $0 + vector }
-//            return duplicate(with: translatedBeacons)
-//        }
-//
-//        public func rotateX() -> Scanner {
-//            return duplicate(with: beacons.map { $0.rotateX() })
-//        }
-//
-//        public func rotateY() -> Scanner {
-//            return duplicate(with: beacons.map { $0.rotateY() })
-//        }
-//
-//        public func rotateZ() -> Scanner {
-//            return duplicate(with: beacons.map { $0.rotateZ() })
-//        }
     }
     
     /*
@@ -82,33 +52,36 @@ public struct Day19 {
     public func part1(_ input: [String]) -> Int {
         var scanners = parse(input)
         let primary = scanners.removeFirst()
-        let primaryFace = primary.faces.first!
-        draw(primaryFace)
-        let primaryVectors = calculateVectors(primaryFace)
-        var matched = [Face]()
-        matched.append(primaryFace)
-        
-        for scanner in scanners {
-            // for each scanner, find the matching FACE
-            if let face = findMatchingFace(primaryVectors, scanner: scanner) {
-                draw(face)
-            }
+        var primaryFaceVectors = [Face:FaceDistances]()
+        primary.faces.forEach {
+            primaryFaceVectors[$0] = calculateVectors($0)
         }
+
+//        var matched = [Face:[Face]]()
+//        matched.append(primaryFace)
+//        
+//        for scanner in scanners {
+//            // for each scanner, find the matching FACE
+//            if let face = findMatchingFace(primaryVectors, scanner: scanner) {
+//                draw(face)
+//            }
+//        }
         
         return 0
     }
     
-    public func findMatchingFace(_ primaryVectors: Face, scanner: Scanner) -> Face? {
+    public func findMatchingFace(_ primaryVectors: FaceDistances, scanner: Scanner) -> Face? {
         for face in scanner.faces {
+//            draw(face)
             let vectors = calculateVectors(face)
-            if doFacesMatch(primaryVectors, vectors) {
+            if match(primaryVectors, vectors) {
                 return face
             }
         }
         return nil
     }
     
-    public func match(_ vectors1: Face, _ vectors2: Face) -> Bool {
+    public func match(_ vectors1: FaceDistances, _ vectors2: FaceDistances) -> Bool {
         var a = 0
         var b = 0
         while a < vectors1.count {
@@ -127,21 +100,31 @@ public struct Day19 {
                         b2 += 1
                     }
                         
-                    if count >= 12 { return true }
+                    if count > 1 { return true }
                 }
+                b += 1
             }
+            a += 1
         }
         return false
     }
     
-    public func calculateVectors(_ face: Face) -> Face {
-        var newFace = Face()
-        var items = Array(face.sorted({ a, b in a.x < b.x && a.y < b.y && a.z < b.z }))
+    public func calculateVectors(_ face: Face) -> FaceDistances {
+        var newFace = FaceDistances()
+        var items = Array(face.map({ Point($0.x, $0.y) }).sorted(by: <=))
         var previous = items.removeFirst()
+        previous = .zero - previous
+
+        // transpose points so first point is effectively zero
+        items = items.map { $0 + previous }
         
+        // The origin (start point) is now zero
+        previous = .zero
+
         while !items.isEmpty {
             let next = items.removeFirst()
             newFace.append(next - previous)
+            previous = next
         }
         
         return newFace

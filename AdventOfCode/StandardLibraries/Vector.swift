@@ -20,6 +20,26 @@ public extension Vector {
     static func - (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(x: lhs.x - rhs.x, y: lhs.y - rhs.y, z: lhs.z - rhs.z)
     }
+    
+    static func < (lhs: Vector, rhs: Vector) -> Bool {
+        lhs.x < rhs.x && lhs.y < rhs.y && lhs.z < rhs.z
+    }
+    
+    static func > (lhs: Vector, rhs: Vector) -> Bool {
+        lhs.x > rhs.x && lhs.y > rhs.y && lhs.z > rhs.z
+    }
+    
+    static func <= (lhs: Vector, rhs: Vector) -> Bool {
+        lhs.x <= rhs.x && lhs.y <= rhs.y && lhs.z <= rhs.z
+    }
+    
+    static func >= (lhs: Vector, rhs: Vector) -> Bool {
+        lhs.x >= rhs.x && lhs.y >= rhs.y && lhs.z >= rhs.z
+    }
+    
+    static func == (lhs: Vector, rhs: Vector) -> Bool {
+        lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z
+    }
 }
 
 public extension Vector {
@@ -59,6 +79,22 @@ public extension Collection where Element == Vector {
         }
         
         return (Vector(x: minX, y: minY, z: minZ), Vector(x: maxX, y: maxY, z: maxZ))
+    }
+}
+
+public extension Collection where Element == Point {
+    func minMax() -> (Point, Point) {
+        var minX = Int.max, minY = Int.max
+        var maxX = Int.min, maxY = Int.min
+        
+        self.forEach {
+            minX = Swift.min(minX, $0.x)
+            minY = Swift.min(minY, $0.y)
+            maxX = Swift.max(maxX, $0.x)
+            maxY = Swift.max(maxY, $0.y)
+        }
+        
+        return (Point(x: minX, y: minY), Point(x: maxX, y: maxY))
     }
 }
 

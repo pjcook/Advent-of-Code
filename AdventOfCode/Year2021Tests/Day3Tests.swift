@@ -49,7 +49,7 @@ class Day3Tests: XCTestCase {
     
     func test_parsing() {
 //        measure {
-        let grid = day2.parse(input)
+        _ = day2.parse(input)
 //        }
     }
     
