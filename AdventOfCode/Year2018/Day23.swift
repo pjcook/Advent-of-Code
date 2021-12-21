@@ -8,7 +8,7 @@ public struct Day23 {
         var items = parse(input)
         items.sort(by: { $0.radius > $1.radius })
         let largest = items.first!
-        return items.filter({ $0.vector.distance(to: largest.vector) <= largest.radius }).count
+        return items.filter({ $0.vector.manhattanDistance(to: largest.vector) <= largest.radius }).count
     }
     
     public func part2(_ input: [String]) -> Int {
@@ -32,7 +32,7 @@ public struct Day23 {
                         var count = 0
                         let vector = Vector(x: x, y: y, z: z)
                         for bot in bots {
-                            let distance = bot.vector.distance(to: vector)
+                            let distance = bot.vector.manhattanDistance(to: vector)
                             if distance - bot.radius < gridSize {
                                 count += 1
                             }
@@ -42,7 +42,7 @@ public struct Day23 {
                             maxCount = count
                             best = vector
                         } else if maxCount == count {
-                            if best == nil || vector.distance(to: .zero) < best!.distance(to: .zero) {
+                            if best == nil || vector.manhattanDistance(to: .zero) < best!.manhattanDistance(to: .zero) {
                                 best = vector
                             }
                         }
@@ -66,7 +66,7 @@ public struct Day23 {
             gridSize = gridSize / 2
         }
         
-        return best!.distance(to: .zero)
+        return best!.manhattanDistance(to: .zero)
     }
 }
 
@@ -96,7 +96,7 @@ struct Item: Hashable {
         
         vector = Vector(x: x, y: y, z: z)
         radius = r
-        distanceToZero = vector.distance(to: .zero)
+        distanceToZero = vector.manhattanDistance(to: .zero)
         min = distanceToZero - radius
         max = distanceToZero + radius
         range = (min...max)

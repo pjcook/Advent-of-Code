@@ -59,8 +59,12 @@ public extension Vector {
     }()
     
     // Manhattan distance
-    func distance(to: Vector) -> Int {
+    func manhattanDistance(to: Vector) -> Int {
         return abs(x - to.x) + abs(y - to.y) + abs(z - to.z)
+    }
+    
+    func distance(to: Vector) -> Double {
+        sqrt(pow(Double(x - to.x), 2) + pow(Double(y - to.y), 2) + pow(Double(z - to.z), 2))
     }
 }
 
