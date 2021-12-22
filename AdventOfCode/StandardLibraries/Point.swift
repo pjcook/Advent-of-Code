@@ -23,10 +23,14 @@ public struct Point: Hashable, Comparable {
 }
 
 extension Point {
-    public func distance(to other: Point) -> Int {
-        return abs(x - other.x) + abs(y - other.y)
+    public func distance(to: Point) -> Double {
+        sqrt(pow(Double(x - to.x), 2) + pow(Double(y - to.y), 2))
     }
     
+    public func manhattanDistance(to point: Point) -> Int {
+        abs(point.x - x) + abs(point.y - y)
+    }
+        
     public var manhattanDistance: Int {
         abs(x) + abs(y)
     }

@@ -122,7 +122,7 @@ extension Grid where T == Int {
                 let newCost = costSoFar[current, default: 0] + calculateScore(next)
                 if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
                     costSoFar[next] = newCost
-                    queue.enqueue(next, priority: newCost + current.distance(to: next))
+                    queue.enqueue(next, priority: newCost + current.manhattanDistance(to: next))
                     cameFrom[next] = current
                 }
             }

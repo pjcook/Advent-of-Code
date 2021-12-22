@@ -6,11 +6,12 @@ public struct Day19 {
     
     public typealias Scanners = [Scanner]
     public typealias Face = [Vector]
-    public typealias FaceDistances = Set<Double>
+    public typealias FaceDistances = Set<Vector>
     
     public struct Scanner: Hashable {
         public let id: String
         public let faces: [Face]
+        public var position: Vector?
         public init(id: String = UUID().uuidString, beacons: Face) {
             self.id = id
             self.faces = Self.calculateFaces(beacons)
@@ -60,20 +61,47 @@ public struct Day19 {
         for scanner in scanners {
             // for each scanner, find the matching FACE
             if let face = findMatchingFace(primaryFaceVectors, scanner: scanner) {
-                draw(face)
+//                draw(face)
+                // Found a face
                 matched.append(face)
+                
+                // Now align it
+                alignFaces(primaryFace, face)
             } else {
                 print("fail", primaryFace.minMax())
-//                print("fail", matched.count)
             }
         }
         
         return 0
     }
     
+    public func alignFaces(_ f1: Face, _ f2: Face) {
+        var f1 = f1
+        var f2 = f2
+        
+        // attempt to align points
+        outerloop: while !f1.isEmpty {
+            let f1MinMax = f1.minMax()            
+            var f1b = f1.map { $0 - (.zero - f1MinMax.1) }.sorted(by: { $0.x < $1.x }).sorted(by: { $0.y < $1.y })
+            for p1 in f1b {
+                var f2c = f2
+                while !f2c.isEmpty {
+                    let f2MinMax = f2c.minMax()
+                    var f2b = f2c.map { $0 - (.zero - f2MinMax.1) }.sorted(by: { $0.x < $1.x }).sorted(by: { $0.y < $1.y })
+                    for p2 in f2b {
+                        if p1 == p2 {
+                            
+                            break outerloop
+                        }
+                    }
+                    _ = f2c.removeFirst()
+                }
+            }
+            _ = f1.removeFirst()
+        }
+    }
     public func findMatchingFace(_ primaryVectors: FaceDistances, scanner: Scanner) -> Face? {
         for face in scanner.faces {
-//            draw(face)
             let vectors = calculateVectors(face)
             if match(primaryVectors, vectors) {
                 return face
@@ -83,59 +111,20 @@ public struct Day19 {
     }
     
     public func match(_ vectors1: FaceDistances, _ vectors2: FaceDistances) -> Bool {
-        var a = 0
-        var b = 0
-//        while a < vectors1.count {
-//            let v1 = vectors1[a]
-//            
-//            while b < vectors2.count {
-//                let v2 = vectors2[b]
-//                if v1 == v2 { // find first match of sequence
-//                    // check for sequence
-//                    var a2 = a + 1
-//                    var b2 = b + 1
-//                    var count = 1
-//                    while b2 < vectors2.count {
-//                        if vectors1[a2] == vectors2[b2] {
-//                            count += 1
-//                            a2 += 1
-//                            b2 = b + count
-//                        }
-//                        b2 += 1
-//                    }
-//                        
-//                    if count >= 12 || count == vectors2.count { return true }
-//                }
-//                b += 1
-//            }
-//            a += 1
-//        }
-        return false
+        return vectors1.intersection(vectors2).count >= 3
     }
     
     public func calculateVectors(_ face: Face) -> FaceDistances {
-        var newFace = FaceDistances()
+        var distances = FaceDistances()
+        var face = face.sorted(by: { $0.x < $1.x }).sorted(by: { $0.y < $1.y }).sorted(by: { $0.z < $1.z })
+        while !face.isEmpty {
+            let p1 = face.removeLast()
+            for p2 in face {
+                distances.insert(p2 - p1)
+            }
+        }
         
-        
-        
-//        var items = Array(face.map({ Point($0.x, $0.y) }).sorted(by: { $0.x < $1.x }).sorted(by: { $0.y < $1.y }))
-//        var previous = items.removeFirst()
-//        let (minPoint, maxPoint) = items.minMax()
-//        let transpose = .zero - minPoint
-//
-//        // transpose points so all points should be in the positive
-//        items = items.map { $0 + transpose }
-//
-//        // The origin (start point) is now zero
-//        previous = .zero
-//
-//        while !items.isEmpty {
-//            let next = items.removeFirst()
-//            newFace.append(next - previous)
-//            previous = next
-//        }
-        
-        return newFace
+        return distances
     }
     
     public func part2(_ input: [String]) -> Int {

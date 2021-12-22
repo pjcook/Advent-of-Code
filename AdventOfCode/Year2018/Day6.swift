@@ -68,15 +68,3 @@ public struct Day6 {
         return areaPoints.count
     }
 }
-
-public extension Point {
-    func manhattanDistance(to point: Point) -> Int {
-        abs(point.x - x) + abs(point.y - y)
-    }
-    
-    func distance(to point: Point) -> Double {
-        let dx = Double(abs(point.x - x))
-        let dy = Double(abs(point.y - y))
-        return sqrt(dx * dx + dy * dy)
-    }
-}
