@@ -668,6 +668,7 @@
 		D536D0D6274E2D8F00D20509 /* Day13.swift in Sources */ = {isa = PBXBuildFile; fileRef = D536D089274E2D8F00D20509 /* Day13.swift */; };
 		D536D0D7274E2D8F00D20509 /* Day3.input in Resources */ = {isa = PBXBuildFile; fileRef = D536D08A274E2D8F00D20509 /* Day3.input */; };
 		D536D0D8274E2D8F00D20509 /* Day24.input in Resources */ = {isa = PBXBuildFile; fileRef = D536D08B274E2D8F00D20509 /* Day24.input */; };
+		D53F82962773BE7D007814FC /* Cube.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53F82952773BE7D007814FC /* Cube.swift */; };
 		D54F5966276F20EF00B34C8E /* VectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54F5965276F20EF00B34C8E /* VectorTests.swift */; };
 		D55123AB276A38CC00F9433F /* Day15_chris.input in Resources */ = {isa = PBXBuildFile; fileRef = D55123AA276A38CC00F9433F /* Day15_chris.input */; };
 		D5541C5D23EC018700EFFD42 /* InputReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5541C5C23EC018700EFFD42 /* InputReader.swift */; };
@@ -1742,6 +1743,7 @@
 		D536D089274E2D8F00D20509 /* Day13.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Day13.swift; sourceTree = "<group>"; };
 		D536D08A274E2D8F00D20509 /* Day3.input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Day3.input; sourceTree = "<group>"; };
 		D536D08B274E2D8F00D20509 /* Day24.input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Day24.input; sourceTree = "<group>"; };
+		D53F82952773BE7D007814FC /* Cube.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cube.swift; sourceTree = "<group>"; };
 		D54F5965276F20EF00B34C8E /* VectorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VectorTests.swift; sourceTree = "<group>"; };
 		D55123AA276A38CC00F9433F /* Day15_chris.input */ = {isa = PBXFileReference; lastKnownFileType = text; path = Day15_chris.input; sourceTree = "<group>"; };
 		D5541C5C23EC018700EFFD42 /* InputReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputReader.swift; path = InputReader/InputReader.swift; sourceTree = SOURCE_ROOT; };
@@ -2520,6 +2522,7 @@
 				2E4765D32584910500F22D1F /* Math.swift */,
 				2E0671482578AD86003079FD /* Point.swift */,
 				D56165932769DECB00C5C1B6 /* Queues.swift */,
+				D53F82952773BE7D007814FC /* Cube.swift */,
 				2E90589D2594671900D6A8CD /* Pointf.swift */,
 				2E905561258B273800D6A8CD /* Vector.swift */,
 				2E90586725934FCF00D6A8CD /* LinkedList.swift */,
@@ -4903,6 +4906,7 @@
 				2EE7EE0A258131EC00C9FA25 /* RegularExpressions.swift in Sources */,
 				2E90586825934FCF00D6A8CD /* LinkedList.swift in Sources */,
 				2E09F93F25A8C5C700C3269F /* Ring.swift in Sources */,
+				D53F82962773BE7D007814FC /* Cube.swift in Sources */,
 				2E4765DF2584911400F22D1F /* Math.swift in Sources */,
 				2E07980825C831D1000F7BA5 /* Collection+Additions.swift in Sources */,
 				D56165942769DECB00C5C1B6 /* Queues.swift in Sources */,

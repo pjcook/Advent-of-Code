@@ -9,11 +9,25 @@ class Day22Tests: XCTestCase {
     let day = Day22()
 
     func test_part1() {
-        XCTAssertEqual(561032, day.part1(Array(input[..<20])))
+//        measure {
+        XCTAssertEqual(561032, day.solve(Array(input[..<20])))
+//        }
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part1(input))
+//        measure {
+        XCTAssertEqual(1322825263376414, day.solve(input))
+//        }
+    }
+    
+    func test_example3() {
+        let input = """
+        on x=10..12,y=10..12,z=10..12
+        on x=11..13,y=11..13,z=11..13
+        off x=9..11,y=9..11,z=9..11
+        on x=10..10,y=10..10,z=10..10
+        """.lines
+        XCTAssertEqual(39, day.solve(input))
     }
     
     func test_example() {
@@ -39,7 +53,7 @@ on x=-49..-5,y=-3..45,z=-29..18
 off x=18..30,y=-20..-8,z=-3..13
 on x=-41..9,y=-7..43,z=-33..15
 """.lines
-        XCTAssertEqual(590784, day.part1(input))
+        XCTAssertEqual(590784, day.solve(input))
     }
     
     func test_example2() {
@@ -105,6 +119,6 @@ off x=-70369..-16548,y=22648..78696,z=-1892..86821
 on x=-53470..21291,y=-120233..-33476,z=-44150..38147
 off x=-93533..-4276,y=-16170..68771,z=-104985..-24507
 """.lines
-        XCTAssertEqual(2758514936282235, day.part1(input))
+        XCTAssertEqual(2758514936282235, day.solve(input))
     }
 }
