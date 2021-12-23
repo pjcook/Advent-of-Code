@@ -75,9 +75,14 @@ public class Day23 {
     }
     
     public var minScore = Int.max
+    public var winningBoard: Board?
+    public var winningBoardHistory: [Board]?
     
-    public func solve(_ board: Board) -> Int {
+    public func solve(_ board: Board, printHistory: Bool = false) -> Int {
         solve(board, history: [])
+        if printHistory, let history = winningBoardHistory {
+            report(history)
+        }
         return minScore
     }
     
@@ -87,6 +92,8 @@ public class Day23 {
             if board.score < minScore {
                 minScore = board.score
 //                report(history)   // for testing
+                winningBoard = board
+                winningBoardHistory = history
             }
             return
         }

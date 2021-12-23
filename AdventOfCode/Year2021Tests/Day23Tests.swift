@@ -18,7 +18,7 @@ class Day23Tests: XCTestCase {
 //    func test_part1_chris() {
 //        XCTAssertEqual(16244, day.solve(board_chris_part1()))
 //    }
-//    
+//
 //    func test_part2_chris() {
 //        XCTAssertEqual(43226, day.solve(board_chris_part2()))
 //    }
@@ -26,9 +26,9 @@ class Day23Tests: XCTestCase {
 //    func test_part1_chris_cornford() {
 //        XCTAssertEqual(19059, day.solve(board_cornford_part1()))
 //    }
-//    
+//
 //    func test_part2_chris_cornford() {
-//        XCTAssertEqual(48541, day.solve(board_cornford_part2()))
+//        XCTAssertEqual(48541, day.solve(board_cornford_part2(), printHistory: true))
 //    }
 
     func test_distanceFrom_home_position() {
