@@ -135,7 +135,7 @@ public class Day23 {
         let tile = board.positions[position]
         if
             board.room(tile).canEnter,
-            isRouteHomeClear(position, board: board)
+            isRouteHomeClear(position, tile: tile, board: board)
         {
             let room = board.room(tile)
             let index = room.tiles.firstIndex(where: { $0 == .free })!
@@ -152,8 +152,8 @@ public class Day23 {
         return nil
     }
     
-    public func isRouteHomeClear(_ position: Int, board: Board) -> Bool {
-        let home = board.positions[position].roomEntrance
+    public func isRouteHomeClear(_ position: Int, tile: Tile, board: Board) -> Bool {
+        let home = tile.roomEntrance
         if home < position {
             return board.positions[(home..<position)].first { $0 != .free } == nil
         } else {
