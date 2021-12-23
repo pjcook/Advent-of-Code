@@ -4,7 +4,7 @@ import StandardLibraries
 public class Day23 {
     public init() {}
 
-    public enum TileType: Int {
+    public enum Tile: Int {
         case free = 0
         case A = 1
         case B = 10
@@ -32,45 +32,25 @@ public class Day23 {
         }
     }
     
-    public struct Tile: Hashable {
-        public let id: String
-        public let tileType: TileType
-        
-        public init(id: String, tileType: TileType) {
-            self.id = id
-            self.tileType = tileType
-        }
-        
-        public static let free = Tile(id: ".", tileType: .free)
-        public static func == (lhs: Tile, rhs: Tile) -> Bool {
-            lhs.id == rhs.id
-        }
-        
-        public func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-            hasher.combine(tileType.rawValue)
-        }
-    }
-    
     public struct Room: Hashable {
-        public let id: TileType
+        public let id: Tile
         public var tiles: [Tile]
         
-        public init(id: TileType, tiles: [Tile]) {
+        public init(id: Tile, tiles: [Tile]) {
             self.id = id
             self.tiles = tiles
         }
         
         public var canEnter: Bool {
-            tiles.first(where: { ![id, .free].contains($0.tileType) }) == nil
+            tiles.first(where: { ![id, .free].contains($0) }) == nil
         }
         
         public var solved: Bool {
-            tiles.first(where: { $0.tileType != id }) == nil
+            tiles.first(where: { $0 != id }) == nil
         }
         
         public var isEmpty: Bool {
-            tiles.first(where: { $0.tileType != .free }) == nil
+            tiles.first(where: { $0 != .free }) == nil
         }
         
         public static func == (lhs: Room, rhs: Room) -> Bool {
@@ -96,14 +76,14 @@ public class Day23 {
         
         public var solved: Bool {
             for room in rooms {
-                if room.tiles.first(where: { $0.tileType != room.id }) != nil {
+                if room.tiles.first(where: { $0 != room.id }) != nil {
                     return false
                 }
             }
             return true
         }
         
-        public func room(_ id: TileType) -> Room {
+        public func room(_ id: Tile) -> Room {
             rooms.first(where: { $0.id == id })!
         }
         
@@ -123,10 +103,10 @@ public class Day23 {
     public var completeBoards = [Board]()
     
     public func part1(_ input: [String]) -> Int {
-        let roomA = Room(id: .A, tiles: [Tile(id: "D1", tileType: .D), Tile(id: "C1", tileType: .C)])
-        let roomB = Room(id: .B, tiles: [Tile(id: "C2", tileType: .C), Tile(id: "A1", tileType: .A)])
-        let roomC = Room(id: .C, tiles: [Tile(id: "A2", tileType: .A), Tile(id: "B1", tileType: .B)])
-        let roomD = Room(id: .D, tiles: [Tile(id: "B2", tileType: .B), Tile(id: "D2", tileType: .D)])
+        let roomA = Room(id: .A, tiles: [.D, .C])
+        let roomB = Room(id: .B, tiles: [.C, .A])
+        let roomC = Room(id: .C, tiles: [.A, .B])
+        let roomD = Room(id: .D, tiles: [.B, .D])
         let positions: [Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
 
         solve(Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0), history: [])
@@ -135,10 +115,10 @@ public class Day23 {
     }
     
     public func part1_chris(_ input: [String]) -> Int {
-        let roomA = Room(id: .A, tiles: [Tile(id: "B1", tileType: .B), Tile(id: "D1", tileType: .D)])
-        let roomB = Room(id: .B, tiles: [Tile(id: "C1", tileType: .C), Tile(id: "D2", tileType: .D)])
-        let roomC = Room(id: .C, tiles: [Tile(id: "A1", tileType: .A), Tile(id: "B2", tileType: .B)])
-        let roomD = Room(id: .D, tiles: [Tile(id: "C2", tileType: .C), Tile(id: "A2", tileType: .A)])
+        let roomA = Room(id: .A, tiles: [.B, .D])
+        let roomB = Room(id: .B, tiles: [.C, .D])
+        let roomC = Room(id: .C, tiles: [.A, .B])
+        let roomD = Room(id: .D, tiles: [.C, .A])
         let positions: [Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
 
         solve(Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0), history: [])
@@ -147,10 +127,10 @@ public class Day23 {
     }
     
     public func part2(_ input: [String]) -> Int {
-        let roomA = Room(id: .A, tiles: [Tile(id: "D1", tileType: .D), Tile(id: "D3", tileType: .D), Tile(id: "D4", tileType: .D), Tile(id: "C1", tileType: .C)])
-        let roomB = Room(id: .B, tiles: [Tile(id: "C2", tileType: .C), Tile(id: "B3", tileType: .B), Tile(id: "C3", tileType: .C), Tile(id: "A1", tileType: .A)])
-        let roomC = Room(id: .C, tiles: [Tile(id: "A2", tileType: .A), Tile(id: "A3", tileType: .A), Tile(id: "B4", tileType: .B), Tile(id: "B1", tileType: .B)])
-        let roomD = Room(id: .D, tiles: [Tile(id: "B2", tileType: .B), Tile(id: "C4", tileType: .C), Tile(id: "A4", tileType: .A), Tile(id: "D2", tileType: .D)])
+        let roomA = Room(id: .A, tiles: [.D, .D, .D, .C])
+        let roomB = Room(id: .B, tiles: [.C, .B, .C, .A])
+        let roomC = Room(id: .C, tiles: [.A, .A, .B, .B])
+        let roomD = Room(id: .D, tiles: [.B, .C, .A, .D])
         let positions: [Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
 
         solve(Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0), history: [])
@@ -159,10 +139,10 @@ public class Day23 {
     }
     
     public func part2_chris(_ input: [String]) -> Int {
-        let roomA = Room(id: .A, tiles: [Tile(id: "B1", tileType: .B), Tile(id: "D3", tileType: .D), Tile(id: "D4", tileType: .D), Tile(id: "D1", tileType: .D)])
-        let roomB = Room(id: .B, tiles: [Tile(id: "C1", tileType: .C), Tile(id: "B3", tileType: .B), Tile(id: "C3", tileType: .C), Tile(id: "D2", tileType: .D)])
-        let roomC = Room(id: .C, tiles: [Tile(id: "A1", tileType: .A), Tile(id: "A3", tileType: .A), Tile(id: "B4", tileType: .B), Tile(id: "B2", tileType: .B)])
-        let roomD = Room(id: .D, tiles: [Tile(id: "C2", tileType: .C), Tile(id: "C4", tileType: .C), Tile(id: "A4", tileType: .A), Tile(id: "A2", tileType: .A)])
+        let roomA = Room(id: .A, tiles: [.B, .D, .D, .D])
+        let roomB = Room(id: .B, tiles: [.C, .B, .C, .D])
+        let roomC = Room(id: .C, tiles: [.A, .A, .B, .B])
+        let roomD = Room(id: .D, tiles: [.C, .C, .A, .A])
         let positions: [Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
 
         solve(Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0), history: [])
@@ -174,15 +154,15 @@ public class Day23 {
         guard !board.solved else {
             if board.score < minScore {
                 minScore = board.score
-                print(minScore)
-                
-                if minScore <= 16438 {
-                    var level = 1
-                    for board in history {
-                        draw(board, level: level)
-                        level += 1
-                    }
-                }
+//                print(minScore)
+//                
+//                if minScore <= 16438 {
+//                    var level = 1
+//                    for board in history {
+//                        draw(board, level: level)
+//                        level += 1
+//                    }
+//                }
             }
             return
         }
@@ -221,13 +201,13 @@ public class Day23 {
     public func moveFromCorridor(position: Int, board: Board) -> Board? {
         let tile = board.positions[position]
         if
-            board.room(tile.tileType).canEnter,
+            board.room(tile).canEnter,
             isRouteHomeClear(position, board: board)
         {
-            let room = board.room(tile.tileType)
-            let index = room.tiles.firstIndex(where: { $0.tileType == .free })!
-            let distance = abs(position - tile.tileType.roomEntrance) + room.tiles.count - index
-            let newScore = board.score + distance * tile.tileType.rawValue
+            let room = board.room(tile)
+            let index = room.tiles.firstIndex(where: { $0 == .free })!
+            let distance = abs(position - tile.roomEntrance) + room.tiles.count - index
+            let newScore = board.score + distance * tile.rawValue
             var newRooms = board.rooms
             var newRoom = room
             newRoom.tiles[index] = tile
@@ -240,11 +220,11 @@ public class Day23 {
     }
     
     public func isRouteHomeClear(_ position: Int, board: Board) -> Bool {
-        let home = board.positions[position].tileType.roomEntrance
+        let home = board.positions[position].roomEntrance
         if home < position {
-            return board.positions[(home..<position)].first { $0.tileType != .free } == nil
+            return board.positions[(home..<position)].first { $0 != .free } == nil
         } else {
-            return board.positions[(position+1...home)].first { $0.tileType != .free } == nil
+            return board.positions[(position+1...home)].first { $0 != .free } == nil
         }
     }
     
@@ -252,7 +232,7 @@ public class Day23 {
         let home = room.id.roomEntrance
         let a = min(home, position)
         let b = max(home, position)
-        return board.positions[(a..<b)].first { $0.tileType != .free } == nil
+        return board.positions[(a..<b)].first { $0 != .free } == nil
     }
     
     public func moveFromRoom(room: Room, board: Board, to forcedTestPosition: Int? = nil) -> [Board] {
@@ -269,12 +249,12 @@ public class Day23 {
         
         let tile = room.tiles[index]
         // if can get home ONLY do that
-        if board.room(tile.tileType).canEnter, isRouteFromHomeClear(room.id.roomEntrance, room: board.room(tile.tileType), board: board) {
+        if board.room(tile).canEnter, isRouteFromHomeClear(room.id.roomEntrance, room: board.room(tile), board: board) {
             let newPositions = board.positions
             var newRooms = board.rooms
             var newCurrentRoom = room
             newCurrentRoom.tiles[index] = .free
-            var nextRoom = board.room(tile.tileType)
+            var nextRoom = board.room(tile)
             
             var nextIndex = 0
             while nextIndex < nextRoom.tiles.count {
@@ -290,7 +270,7 @@ public class Day23 {
             let exitCount = room.tiles.count - 1 - index
             let entryCount = room.tiles.count - nextIndex
             let distance = abs(nextRoom.id.roomEntrance - room.id.roomEntrance) + 1 + exitCount + entryCount
-            let newScore = board.score + distance * tile.tileType.rawValue
+            let newScore = board.score + distance * tile.rawValue
             boards.append(Board(rooms: newRooms, positions: newPositions, score: newScore))
             return boards
         }
@@ -326,7 +306,7 @@ public class Day23 {
         newRoom.tiles[index] = .free
         newRooms[newRooms.firstIndex(of: room)!] = newRoom
         let distance = abs(position - room.id.roomEntrance) + 1 + room.tiles.count - 1 - index
-        let newScore = board.score + distance * tile.tileType.rawValue
+        let newScore = board.score + distance * tile.rawValue
         let newBoard = Board(rooms: newRooms, positions: newPositions, score: newScore)
         return newBoard
     }
@@ -336,7 +316,7 @@ public class Day23 {
         print(String(repeating: "#", count: 13))
         var corridor = "#"
         for tile in board.positions {
-            corridor.append(tile.tileType.symbol)
+            corridor.append(tile.symbol)
         }
         corridor.append("#")
         print(corridor)
@@ -344,11 +324,11 @@ public class Day23 {
         let roomB = board.room(.B)
         let roomC = board.room(.C)
         let roomD = board.room(.D)
-        print("###\(roomA.tiles.last!.tileType.symbol)#\(roomB.tiles.last!.tileType.symbol)#\(roomC.tiles.last!.tileType.symbol)#\(roomD.tiles.last!.tileType.symbol)###")
+        print("###\(roomA.tiles.last!.symbol)#\(roomB.tiles.last!.symbol)#\(roomC.tiles.last!.symbol)#\(roomD.tiles.last!.symbol)###")
         
         var i = roomA.tiles.count - 2
         while i >= 0 {
-            print("  #\(roomA.tiles[i].tileType.symbol)#\(roomB.tiles[i].tileType.symbol)#\(roomC.tiles[i].tileType.symbol)#\(roomD.tiles[i].tileType.symbol)#")
+            print("  #\(roomA.tiles[i].symbol)#\(roomB.tiles[i].symbol)#\(roomC.tiles[i].symbol)#\(roomD.tiles[i].symbol)#")
             i -= 1
         }
         

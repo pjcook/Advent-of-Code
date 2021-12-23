@@ -24,10 +24,10 @@ class Day23Tests: XCTestCase {
     }
     
     func test_distanceFrom_home_position() {
-        let roomA = Day23.Room(id: .A, tiles: [Day23.Tile(id: "D1", tileType: .D), Day23.Tile(id: "C1", tileType: .C)])
-        let roomB = Day23.Room(id: .B, tiles: [Day23.Tile(id: "C2", tileType: .C), Day23.Tile(id: "A1", tileType: .A)])
-        let roomC = Day23.Room(id: .C, tiles: [Day23.Tile(id: "A2", tileType: .A), Day23.Tile(id: "B1", tileType: .B)])
-        let roomD = Day23.Room(id: .D, tiles: [Day23.Tile(id: "B2", tileType: .B), Day23.Tile(id: "D2", tileType: .D)])
+        let roomA = Day23.Room(id: .A, tiles: [.D, .C])
+        let roomB = Day23.Room(id: .B, tiles: [.C, .A])
+        let roomC = Day23.Room(id: .C, tiles: [.A, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.B, .D])
         let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
         let board = Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
         
@@ -36,11 +36,11 @@ class Day23Tests: XCTestCase {
     }
     
     func test_distanceFrom_home_position_home() {
-        let roomA = Day23.Room(id: .A, tiles: [Day23.Tile(id: "D1", tileType: .D), .free])
-        let roomB = Day23.Room(id: .B, tiles: [Day23.Tile(id: "B1", tileType: .B), Day23.Tile(id: "B2", tileType: .B)])
-        let roomC = Day23.Room(id: .C, tiles: [Day23.Tile(id: "C1", tileType: .C), Day23.Tile(id: "C2", tileType: .C)])
-        let roomD = Day23.Room(id: .D, tiles: [Day23.Tile(id: "D2", tileType: .D), .free])
-        let positions: [Day23.Tile] = [Day23.Tile(id: "A1", tileType: .A), Day23.Tile(id: "A2", tileType: .A),.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        let roomA = Day23.Room(id: .A, tiles: [.D, .free])
+        let roomB = Day23.Room(id: .B, tiles: [.B, .B])
+        let roomC = Day23.Room(id: .C, tiles: [.C, .C])
+        let roomD = Day23.Room(id: .D, tiles: [.D, .free])
+        let positions: [Day23.Tile] = [.A, .A,.free,.free,.free,.free,.free,.free,.free,.free,.free]
         let board = Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
         
         let options = day.moveFromRoom(room: board.room(.A), board: board)
@@ -50,11 +50,11 @@ class Day23Tests: XCTestCase {
     }
     
     func test_distanceFrom_position_home_no_options() {
-        let roomA = Day23.Room(id: .A, tiles: [Day23.Tile(id: "D1", tileType: .D), .free])
-        let roomB = Day23.Room(id: .B, tiles: [Day23.Tile(id: "B1", tileType: .B), Day23.Tile(id: "B2", tileType: .B)])
-        let roomC = Day23.Room(id: .C, tiles: [Day23.Tile(id: "C1", tileType: .C), Day23.Tile(id: "C2", tileType: .C)])
-        let roomD = Day23.Room(id: .D, tiles: [Day23.Tile(id: "D2", tileType: .D), .free])
-        let positions: [Day23.Tile] = [Day23.Tile(id: "A1", tileType: .A), Day23.Tile(id: "A2", tileType: .A),.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        let roomA = Day23.Room(id: .A, tiles: [.D, .free])
+        let roomB = Day23.Room(id: .B, tiles: [.B, .B])
+        let roomC = Day23.Room(id: .C, tiles: [.C, .C])
+        let roomD = Day23.Room(id: .D, tiles: [.D, .free])
+        let positions: [Day23.Tile] = [.A, .A,.free,.free,.free,.free,.free,.free,.free,.free,.free]
         let board = Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
         
         let option = day.moveFromCorridor(position: 1, board: board)
@@ -62,10 +62,10 @@ class Day23Tests: XCTestCase {
     }
     
     func test_full_journey() {
-        let roomA = Day23.Room(id: .A, tiles: [Day23.Tile(id: "D1", tileType: .D), Day23.Tile(id: "C1", tileType: .C)])
-        let roomB = Day23.Room(id: .B, tiles: [Day23.Tile(id: "C2", tileType: .C), Day23.Tile(id: "A1", tileType: .A)])
-        let roomC = Day23.Room(id: .C, tiles: [Day23.Tile(id: "A2", tileType: .A), Day23.Tile(id: "B1", tileType: .B)])
-        let roomD = Day23.Room(id: .D, tiles: [Day23.Tile(id: "B2", tileType: .B), Day23.Tile(id: "D2", tileType: .D)])
+        let roomA = Day23.Room(id: .A, tiles: [.D, .C])
+        let roomB = Day23.Room(id: .B, tiles: [.C, .A])
+        let roomC = Day23.Room(id: .C, tiles: [.A, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.B, .D])
         let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
         let board = Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
         
@@ -107,10 +107,10 @@ class Day23Tests: XCTestCase {
     }
     
     func test_full_journey_chris() {
-        let roomA = Day23.Room(id: .A, tiles: [Day23.Tile(id: "B1", tileType: .B), Day23.Tile(id: "D1", tileType: .D)])
-        let roomB = Day23.Room(id: .B, tiles: [Day23.Tile(id: "C1", tileType: .C), Day23.Tile(id: "D2", tileType: .D)])
-        let roomC = Day23.Room(id: .C, tiles: [Day23.Tile(id: "A1", tileType: .A), Day23.Tile(id: "B2", tileType: .B)])
-        let roomD = Day23.Room(id: .D, tiles: [Day23.Tile(id: "C2", tileType: .C), Day23.Tile(id: "A2", tileType: .A)])
+        let roomA = Day23.Room(id: .A, tiles: [.B, .D])
+        let roomB = Day23.Room(id: .B, tiles: [.C, .D])
+        let roomC = Day23.Room(id: .C, tiles: [.A, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.C, .A])
         let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
         let board = Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
         
@@ -131,7 +131,7 @@ class Day23Tests: XCTestCase {
 }
 
 extension Day23.Board {
-    func move(from: Day23.TileType, to: Int, day: Day23) -> Day23.Board {
+    func move(from: Day23.Tile, to: Int, day: Day23) -> Day23.Board {
         day.moveFromRoom(room: self.room(from), board: self, to: to).first!
     }
     
