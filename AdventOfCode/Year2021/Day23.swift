@@ -20,19 +20,9 @@ public class Day23 {
             default: abort()
             }
         }
-        
-        public var symbol: Character {
-            switch self {
-            case .free: return "."
-            case .A: return "A"
-            case .B: return "B"
-            case .C: return "C"
-            case .D: return "D"
-            }
-        }
     }
     
-    public struct Room: Hashable {
+    public struct Room: Equatable {
         public let id: Tile
         public var tiles: [Tile]
         
@@ -56,14 +46,9 @@ public class Day23 {
         public static func == (lhs: Room, rhs: Room) -> Bool {
             lhs.id == rhs.id
         }
-        
-        public func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-            hasher.combine(tiles)
-        }
     }
     
-    public struct Board: Hashable {
+    public struct Board: Equatable {
         public let rooms: [Room]
         public let positions: [Tile]
         public let score: Int
@@ -75,12 +60,7 @@ public class Day23 {
         }
         
         public var solved: Bool {
-            for room in rooms {
-                if room.tiles.first(where: { $0 != room.id }) != nil {
-                    return false
-                }
-            }
-            return true
+            rooms.reduce(true, { $0 && $1.solved })
         }
         
         public func room(_ id: Tile) -> Room {
@@ -89,85 +69,31 @@ public class Day23 {
         
         public let tilesToStopOn = [0,1,3,5,7,9,10]
         
-        public func hash(into hasher: inout Hasher) {
-            hasher.combine(rooms.sorted(by: { $0.id.rawValue < $1.id.rawValue }))
-            hasher.combine(positions)
-        }
-        
         public static func == (lhs: Board, rhs: Board) -> Bool {
             lhs.rooms == rhs.rooms && lhs.positions == rhs.positions
         }
     }
     
     public var minScore = Int.max
-    public var completeBoards = [Board]()
     
-    public func part1(_ input: [String]) -> Int {
-        let roomA = Room(id: .A, tiles: [.D, .C])
-        let roomB = Room(id: .B, tiles: [.C, .A])
-        let roomC = Room(id: .C, tiles: [.A, .B])
-        let roomD = Room(id: .D, tiles: [.B, .D])
-        let positions: [Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
-
-        solve(Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0), history: [])
-        
-        return minScore
-    }
-    
-    public func part1_chris(_ input: [String]) -> Int {
-        let roomA = Room(id: .A, tiles: [.B, .D])
-        let roomB = Room(id: .B, tiles: [.C, .D])
-        let roomC = Room(id: .C, tiles: [.A, .B])
-        let roomD = Room(id: .D, tiles: [.C, .A])
-        let positions: [Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
-
-        solve(Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0), history: [])
-        
-        return minScore
-    }
-    
-    public func part2(_ input: [String]) -> Int {
-        let roomA = Room(id: .A, tiles: [.D, .D, .D, .C])
-        let roomB = Room(id: .B, tiles: [.C, .B, .C, .A])
-        let roomC = Room(id: .C, tiles: [.A, .A, .B, .B])
-        let roomD = Room(id: .D, tiles: [.B, .C, .A, .D])
-        let positions: [Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
-
-        solve(Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0), history: [])
-        
-        return minScore
-    }
-    
-    public func part2_chris(_ input: [String]) -> Int {
-        let roomA = Room(id: .A, tiles: [.B, .D, .D, .D])
-        let roomB = Room(id: .B, tiles: [.C, .B, .C, .D])
-        let roomC = Room(id: .C, tiles: [.A, .A, .B, .B])
-        let roomD = Room(id: .D, tiles: [.C, .C, .A, .A])
-        let positions: [Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
-
-        solve(Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0), history: [])
-        
+    public func solve(_ board: Board) -> Int {
+        solve(board, history: [])
         return minScore
     }
     
     public func solve(_ board: Board, history: [Board]) {
+        // Check if solved and exit
         guard !board.solved else {
             if board.score < minScore {
                 minScore = board.score
-//                print(minScore)
-//                
-//                if minScore <= 16438 {
-//                    var level = 1
-//                    for board in history {
-//                        draw(board, level: level)
-//                        level += 1
-//                    }
-//                }
+//                report(history)   // for testing
             }
             return
         }
+        // If current score not less than any previous min score then give up
         guard board.score < minScore else { return }
         
+        // Walk all possible available moves depth first
         for nextBoard in availableMoves(board) {
             var newHistory = history
             newHistory.append(nextBoard)
@@ -311,8 +237,16 @@ public class Day23 {
         return newBoard
     }
     
+    private func report(_ history: [Board]) {
+        var level = 1
+        for board in history {
+            draw(board, level: level)
+            level += 1
+        }
+    }
+    
     public func draw(_ board: Board, level: Int) {
-        print("[\(level)] Score:", minScore, board.score, "board states checked:", completeBoards.count)
+        print("[\(level)] Score:", minScore, board.score)
         print(String(repeating: "#", count: 13))
         var corridor = "#"
         for tile in board.positions {
@@ -334,5 +268,17 @@ public class Day23 {
         
         print("  #########")
         print()
+    }
+}
+
+extension Day23.Tile {
+    public var symbol: Character {
+        switch self {
+        case .free: return "."
+        case .A: return "A"
+        case .B: return "B"
+        case .C: return "C"
+        case .D: return "D"
+        }
     }
 }

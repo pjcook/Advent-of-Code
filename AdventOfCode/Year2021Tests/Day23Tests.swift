@@ -8,41 +8,37 @@ class Day23Tests: XCTestCase {
     let day = Day23()
 
     func test_part1() {
-        XCTAssertEqual(15358, day.part1(input))
+        XCTAssertEqual(15358, day.solve(board_mine_part1()))
     }
-    
-    func test_part1_chris() {
-        XCTAssertEqual(16244, day.part1_chris(input))
-    }
-    
+
     func test_part2() {
-        XCTAssertEqual(51436, day.part2(input))
+        XCTAssertEqual(51436, day.solve(board_mine_part2()))
     }
-    
-    func test_part2_chris() {
-        XCTAssertEqual(43226, day.part2_chris(input))
-    }
-    
+
+//    func test_part1_chris() {
+//        XCTAssertEqual(16244, day.solve(board_chris_part1()))
+//    }
+//    
+//    func test_part2_chris() {
+//        XCTAssertEqual(43226, day.solve(board_chris_part2()))
+//    }
+//
+//    func test_part1_chris_cornford() {
+//        XCTAssertEqual(19059, day.solve(board_cornford_part1()))
+//    }
+//    
+//    func test_part2_chris_cornford() {
+//        XCTAssertEqual(48541, day.solve(board_cornford_part2()))
+//    }
+
     func test_distanceFrom_home_position() {
-        let roomA = Day23.Room(id: .A, tiles: [.D, .C])
-        let roomB = Day23.Room(id: .B, tiles: [.C, .A])
-        let roomC = Day23.Room(id: .C, tiles: [.A, .B])
-        let roomD = Day23.Room(id: .D, tiles: [.B, .D])
-        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
-        let board = Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
-        
+        let board = board_mine_part1()
         let options = day.moveFromRoom(room: board.room(.B), board: board)
         XCTAssertEqual(5, options[0].score)
     }
     
     func test_distanceFrom_home_position_home() {
-        let roomA = Day23.Room(id: .A, tiles: [.D, .free])
-        let roomB = Day23.Room(id: .B, tiles: [.B, .B])
-        let roomC = Day23.Room(id: .C, tiles: [.C, .C])
-        let roomD = Day23.Room(id: .D, tiles: [.D, .free])
-        let positions: [Day23.Tile] = [.A, .A,.free,.free,.free,.free,.free,.free,.free,.free,.free]
-        let board = Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
-        
+        let board = board_mine_test1()
         let options = day.moveFromRoom(room: board.room(.A), board: board)
         XCTAssertEqual(9000, options[0].score)
         XCTAssertTrue(options[0].room(.D).solved)
@@ -50,24 +46,14 @@ class Day23Tests: XCTestCase {
     }
     
     func test_distanceFrom_position_home_no_options() {
-        let roomA = Day23.Room(id: .A, tiles: [.D, .free])
-        let roomB = Day23.Room(id: .B, tiles: [.B, .B])
-        let roomC = Day23.Room(id: .C, tiles: [.C, .C])
-        let roomD = Day23.Room(id: .D, tiles: [.D, .free])
-        let positions: [Day23.Tile] = [.A, .A,.free,.free,.free,.free,.free,.free,.free,.free,.free]
-        let board = Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+        let board = board_mine_test1()
         
         let option = day.moveFromCorridor(position: 1, board: board)
         XCTAssertNil(option)
     }
     
     func test_full_journey() {
-        let roomA = Day23.Room(id: .A, tiles: [.D, .C])
-        let roomB = Day23.Room(id: .B, tiles: [.C, .A])
-        let roomC = Day23.Room(id: .C, tiles: [.A, .B])
-        let roomD = Day23.Room(id: .D, tiles: [.B, .D])
-        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
-        let board = Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+        let board = board_mine_part1()
         
         let board1 = board.move(from: .B, to: 0, day: day)
         XCTAssertEqual(5, board1.score)
@@ -107,12 +93,7 @@ class Day23Tests: XCTestCase {
     }
     
     func test_full_journey_chris() {
-        let roomA = Day23.Room(id: .A, tiles: [.B, .D])
-        let roomB = Day23.Room(id: .B, tiles: [.C, .D])
-        let roomC = Day23.Room(id: .C, tiles: [.A, .B])
-        let roomD = Day23.Room(id: .D, tiles: [.C, .A])
-        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
-        let board = Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+        let board = board_chris_part1()
         
         let board1 = board.move(from: .C, to: 3, day: day)
         let board2 = board1.move(from: .D, to: 10, day: day)
@@ -137,5 +118,70 @@ extension Day23.Board {
     
     func move(from: Int, day: Day23) -> Day23.Board {
         day.moveFromCorridor(position: from, board: self)!
+    }
+}
+
+extension Day23Tests {
+    func board_mine_part1() -> Day23.Board {
+        let roomA = Day23.Room(id: .A, tiles: [.D, .C])
+        let roomB = Day23.Room(id: .B, tiles: [.C, .A])
+        let roomC = Day23.Room(id: .C, tiles: [.A, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.B, .D])
+        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        return Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+    }
+    
+    func board_mine_part2() -> Day23.Board {
+        let roomA = Day23.Room(id: .A, tiles: [.D, .D, .D, .C])
+        let roomB = Day23.Room(id: .B, tiles: [.C, .B, .C, .A])
+        let roomC = Day23.Room(id: .C, tiles: [.A, .A, .B, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.B, .C, .A, .D])
+        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        return Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+    }
+    
+    func board_cornford_part1() -> Day23.Board {
+        let roomA = Day23.Room(id: .A, tiles: [.D, .D])
+        let roomB = Day23.Room(id: .B, tiles: [.A, .C])
+        let roomC = Day23.Room(id: .C, tiles: [.A, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.B, .C])
+        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        return Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+    }
+    
+    func board_cornford_part2() -> Day23.Board {
+        let roomA = Day23.Room(id: .A, tiles: [.D, .D, .D, .D])
+        let roomB = Day23.Room(id: .B, tiles: [.A, .B, .C, .C])
+        let roomC = Day23.Room(id: .C, tiles: [.A, .A, .B, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.B, .C, .A, .C])
+        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        return Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+    }
+    
+    func board_mine_test1() -> Day23.Board {
+        let roomA = Day23.Room(id: .A, tiles: [.D, .free])
+        let roomB = Day23.Room(id: .B, tiles: [.B, .B])
+        let roomC = Day23.Room(id: .C, tiles: [.C, .C])
+        let roomD = Day23.Room(id: .D, tiles: [.D, .free])
+        let positions: [Day23.Tile] = [.A, .A,.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        return Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+    }
+    
+    func board_chris_part1() -> Day23.Board {
+        let roomA = Day23.Room(id: .A, tiles: [.B, .D])
+        let roomB = Day23.Room(id: .B, tiles: [.C, .D])
+        let roomC = Day23.Room(id: .C, tiles: [.A, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.C, .A])
+        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        return Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+    }
+    
+    func board_chris_part2() -> Day23.Board {
+        let roomA = Day23.Room(id: .A, tiles: [.B, .D, .D, .D])
+        let roomB = Day23.Room(id: .B, tiles: [.C, .B, .C, .D])
+        let roomC = Day23.Room(id: .C, tiles: [.A, .A, .B, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.C, .C, .A, .A])
+        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        return Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
     }
 }
