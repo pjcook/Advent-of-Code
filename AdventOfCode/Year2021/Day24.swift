@@ -54,9 +54,10 @@ public struct Day24 {
      */
     
     public struct IntALU {
-        var x: Int = 0
-        var y: Int = 0
-        var z: Int = 0
+        public var x: Int = 0
+        public var y: Int = 0
+        public var z: Int = 0
+        public init() {}
     }
     
     public func validate(_ input: [Int]) -> Int {
