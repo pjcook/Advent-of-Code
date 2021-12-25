@@ -60,23 +60,11 @@ public struct Day24 {
         public init() {}
     }
     
-    public func validate(_ input: [Int]) -> Int {
+    public func validate(_ bits: [Int], triples: [Triple]) -> Int {
         var alu = IntALU()
-        alu = execute(w: input[0], a: 1, b: 11, c: 5, alu: alu)
-        alu = execute(w: input[1], a: 1, b: 13, c: 5, alu: alu)
-        alu = execute(w: input[2], a: 1, b: 12, c: 1, alu: alu)
-        alu = execute(w: input[3], a: 1, b: 15, c: 15, alu: alu)
-        alu = execute(w: input[4], a: 1, b: 10, c: 2, alu: alu)
-        alu = execute(w: input[5], a: 26, b: -1, c: 2, alu: alu)
-        alu = execute(w: input[6], a: 1, b: 14, c: 5, alu: alu)
-        alu = execute(w: input[7], a: 26, b: -8, c: 8, alu: alu)
-        alu = execute(w: input[8], a: 26, b: -7, c: 14, alu: alu)
-        alu = execute(w: input[9], a: 26, b: -8, c: 12, alu: alu)
-        alu = execute(w: input[10], a: 1, b: 11, c: 7, alu: alu)
-        alu = execute(w: input[11], a: 26, b: -2, c: 14, alu: alu)
-        alu = execute(w: input[12], a: 26, b: -2, c: 13, alu: alu)
-        alu = execute(w: input[13], a: 26, b: -13, c: 6, alu: alu)
-        print(alu.z.formatted())
+        for i in (0..<bits.count) {
+            alu = execute(w: bits[i], a: triples[i].a, b: triples[i].b, c: triples[i].c, alu: alu)
+        }
         return alu.z
     }
     
@@ -85,7 +73,97 @@ public struct Day24 {
         alu.x = ((alu.z % 26) + b) == w ? 0 : 1
         alu.y = (w + c) * alu.x
         alu.z = (alu.z / a) * (25 * alu.x + 1) + alu.y
-        print(w, a, b, c, alu.x, alu.y, alu.z)
         return alu
+    }
+    
+    public struct Triple {
+        public let a: Int
+        public let b: Int
+        public let c: Int
+    }
+    
+    public struct Mapping {
+        public let a: Int
+        public let b: Int
+    }
+    
+    public func calculateMin(_ triples: [Triple], _ mapping: [Mapping]) -> [Int] {
+        var bits = [0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        
+        for map in mapping {
+            let index1 = map.a
+            let index2 = map.b
+            let c = triples[index1].c
+            let b = triples[index2].b
+            
+            var x = 1
+            while x <= 9 {
+                if (1...9).contains(x + c + b) {
+                    break
+                }
+                x += 1
+            }
+            bits[index1] = x
+            bits[index2] = x + c + b
+        }
+        
+        return bits
+    }
+    
+    public func calculateMax(_ triples: [Triple], _ mapping: [Mapping]) -> [Int] {
+        var bits = [0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        
+        for map in mapping {
+            let index1 = map.a
+            let index2 = map.b
+            let c = triples[index1].c
+            let b = triples[index2].b
+            
+            var x = 9
+            while x > 0 {
+                if (1...9).contains(x + c + b) {
+                    break
+                }
+                x -= 1
+            }
+            bits[index1] = x
+            bits[index2] = x + c + b
+        }
+        
+        return bits
+    }
+    
+    public func createMapping(_ triples: [Triple]) -> [Mapping] {
+        var doubles = [Mapping]()
+        var indexes = [0,1,2,3,4,5,6,7,8,9,10,11,12,13]
+        
+        while !indexes.isEmpty {
+            for i in (0..<indexes.count) {
+                let a = triples[indexes[i]].a
+                let b = triples[indexes[i+1]].a
+                if a == 1, b == 26 {
+                    doubles.append(Mapping(a: indexes[i], b: indexes[i+1]))
+                    indexes.remove(at: i)
+                    indexes.remove(at: i)
+                    break
+                }
+            }
+        }
+        
+        return doubles
+    }
+    
+    public func parse(_ input: [String]) -> [Triple] {
+        var triples = [Triple]()
+        var i = 0
+        while i < input.count {
+            let a = Int(String(input[i+4].split(separator: " ").last!))!
+            let b = Int(String(input[i+5].split(separator: " ").last!))!
+            let c = Int(String(input[i+15].split(separator: " ").last!))!
+            triples.append(Triple(a: a, b: b, c: c))
+            i += 18
+        }
+        
+        return triples
     }
 }
