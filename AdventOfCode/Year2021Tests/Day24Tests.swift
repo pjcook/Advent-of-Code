@@ -9,17 +9,21 @@ class Day24Tests: XCTestCase {
     let day = Day24()
 
     func test_part1() {
+//        measure {
         let triples = day.parse(input)
         let mappings = day.createMapping(triples)
         let bits = day.calculateMax(triples, mappings)
         XCTAssertEqual(0, day.validate(bits, triples: triples))
+//        }
     }
     
     func test_part2() {
+//        measure {
         let triples = day.parse(input)
         let mappings = day.createMapping(triples)
         let bits = day.calculateMin(triples, mappings)
         XCTAssertEqual(0, day.validate(bits, triples: triples))
+//        }
     }
     
     func test_part1_chris() {
