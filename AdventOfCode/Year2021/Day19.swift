@@ -6,42 +6,13 @@ public struct Day19 {
     
     public typealias Scanners = [Scanner]
     public typealias Face = [Vector]
-    public typealias FaceDistances = Set<Vector>
     
     public struct Scanner: Hashable {
         public let id: String
-        public let faces: [Face]
-        public var position: Vector?
+        public let beacons: Face
         public init(id: String = UUID().uuidString, beacons: Face) {
             self.id = id
-            self.faces = Self.calculateFaces(beacons)
-        }
-        
-        public static func calculateFaces(_ beacons: Face) -> [Face] {
-            var beacons = beacons
-            var faces = [Face]()
-            
-            for _ in (0..<4) {
-                beacons = beacons.map { $0.rotateX() }
-                faces.append(beacons)
-
-                for _ in (0..<4) {
-                    beacons = beacons.map { $0.rotateY() }
-                    faces.append(beacons)
-
-                    for _ in (0..<4) {
-                        beacons = beacons.map { $0.rotateZ() }
-                        faces.append(beacons)
-
-                    }
-                }
-            }
-            
-            return faces
-        }
-        
-        private func duplicate(with beacons: [Vector]) -> Scanner {
-            Scanner(id: id, beacons: beacons)
+            self.beacons = beacons
         }
     }
     
@@ -51,84 +22,117 @@ public struct Day19 {
      Then count how many unique beacons there are.
      */
     public func part1(_ input: [String]) -> Int {
-        var scanners = parse(input)
-        let primary = scanners.removeFirst()
-        let primaryFace = primary.faces.first!
-        let primaryFaceVectors = calculateVectors(primaryFace)
-
-        var matched = [primaryFace]
-        
-        for scanner in scanners {
-            // for each scanner, find the matching FACE
-            if let face = findMatchingFace(primaryFaceVectors, scanner: scanner) {
-//                draw(face)
-                // Found a face
-                matched.append(face)
-                
-                // Now align it
-                alignFaces(primaryFace, face)
-            } else {
-                print("fail", primaryFace.minMax())
-            }
-        }
-        
-        return 0
-    }
-    
-    public func alignFaces(_ f1: Face, _ f2: Face) {
-        var f1 = f1
-        var f2 = f2
-        
-        // attempt to align points
-        outerloop: while !f1.isEmpty {
-            let f1MinMax = f1.minMax()            
-            var f1b = f1.map { $0 - (.zero - f1MinMax.1) }.sorted(by: { $0.x < $1.x }).sorted(by: { $0.y < $1.y })
-            for p1 in f1b {
-                var f2c = f2
-                while !f2c.isEmpty {
-                    let f2MinMax = f2c.minMax()
-                    var f2b = f2c.map { $0 - (.zero - f2MinMax.1) }.sorted(by: { $0.x < $1.x }).sorted(by: { $0.y < $1.y })
-                    for p2 in f2b {
-                        if p1 == p2 {
-                            
-                            break outerloop
-                        }
-                    }
-                    _ = f2c.removeFirst()
-                }
-            }
-            _ = f1.removeFirst()
-        }
-    }
-    public func findMatchingFace(_ primaryVectors: FaceDistances, scanner: Scanner) -> Face? {
-        for face in scanner.faces {
-            let vectors = calculateVectors(face)
-            if match(primaryVectors, vectors) {
-                return face
-            }
-        }
-        return nil
-    }
-    
-    public func match(_ vectors1: FaceDistances, _ vectors2: FaceDistances) -> Bool {
-        return vectors1.intersection(vectors2).count >= 3
-    }
-    
-    public func calculateVectors(_ face: Face) -> FaceDistances {
-        var distances = FaceDistances()
-        var face = face.sorted(by: { $0.x < $1.x }).sorted(by: { $0.y < $1.y }).sorted(by: { $0.z < $1.z })
-        while !face.isEmpty {
-            let p1 = face.removeLast()
-            for p2 in face {
-                distances.insert(p2 - p1)
-            }
-        }
-        
-        return distances
+        let (_, allBeacons) = solve(input)
+        return allBeacons.count
     }
     
     public func part2(_ input: [String]) -> Int {
-        return 0
+        var (scannerPositions, _) = solve(input)
+        var position = scannerPositions.removeLast()
+        var distance = 0
+        while !scannerPositions.isEmpty {
+            for next in scannerPositions {
+                let nextDistance = position.manhattanDistance(to: next)
+                if nextDistance > distance {
+                    distance = nextDistance
+                }
+            }
+            position = scannerPositions.removeLast()
+        }
+        return distance
+    }
+    
+    /*
+     • Convert the input into lists of beacons with relative scanner positions
+     • Just pick the first scanner to be the primary and map every other scanner and beacon back to that
+     • Loop through each scanner trying to see if you have enough info to match it up with the information you already know.
+     • To match a scanner, loop over each beacon in the known list of beacons, calculate the vectors from that beacon to ALL other know beacons in any direction, then for each beacon in the next scanner, look at each beacon in turn for each potential orientation, and calculate the vectors from that beacon to every other beacon. Using Sets find the intersection of those two sets of vectors. If there are more than 6 matching vectors then you have found the correct orientation for the scanner. You can calculate the relative position of the scanner in relation to the original scanner by taking the first beacon position away from the beacon position on the scanner that you are checking against. You can then calculate the relative position for ALL beacons on that scanner by taking the scanner position away from each beacon position and adding those to the set of known beacons before moving on to the next scanner. Any additional known beacons help you solve subsequent scanners.
+     */
+    public func solve(_ input: [String]) -> ([Vector], Set<Vector>) {
+        var scanners = parse(input)
+        let primary = scanners.removeFirst()
+        let primaryFace = primary.beacons
+        
+        var scannerPositions: [Vector] = [.zero]
+        var knownBeacons = Set(primaryFace)
+
+        while !scanners.isEmpty {
+            let scanner = scanners.removeFirst()
+            var matched = false
+
+            // try to calculate position of the scanner
+            outerloop: for b1 in knownBeacons {
+                // You have to do this each time because the list of known beacons hopefully increases each time
+                let primaryVectorSet = calculateVectors(b1, in: Array(knownBeacons))
+
+                for transform in allTransforms {
+                    let face = scanner.beacons.map { transform($0) }
+                    for b2 in face {
+                        let faceVectors = calculateVectors(b2, in: face)
+                        if primaryVectorSet.intersection(faceVectors).count >= 6 {
+                            let scannerPosition = b2 - b1
+                            scannerPositions.append(scannerPosition)
+                            
+                            // add translated beacons to allBeacons list
+                            for beacon in face {
+                                knownBeacons.insert(beacon - scannerPosition)
+                            }
+
+                            matched = true
+                            break outerloop
+                        }
+                    }
+                }
+            }
+            
+            // If scanner was not matched append to the end of the list to check again later.
+            if !matched {
+                scanners.append(scanner)
+            }
+        }
+        
+        return (scannerPositions, knownBeacons)
+    }
+    
+    public var allTransforms: [(Vector) -> Vector] {
+        [
+            { Vector(x:  $0.x, y:  $0.y, z:  $0.z) },
+            { Vector(x:  $0.x, y:  $0.z, z: -$0.y) },
+            { Vector(x:  $0.x, y: -$0.y, z: -$0.z) },
+            { Vector(x:  $0.x, y: -$0.z, z:  $0.y) },
+            { Vector(x:  $0.y, y:  $0.x, z: -$0.z) },
+            { Vector(x:  $0.y, y:  $0.z, z:  $0.x) },
+            { Vector(x:  $0.y, y: -$0.x, z:  $0.z) },
+            { Vector(x:  $0.y, y: -$0.z, z: -$0.x) },
+            { Vector(x:  $0.z, y:  $0.x, z:  $0.y) },
+            { Vector(x:  $0.z, y:  $0.y, z: -$0.x) },
+            { Vector(x:  $0.z, y: -$0.x, z: -$0.y) },
+            { Vector(x:  $0.z, y: -$0.y, z:  $0.x) },
+            { Vector(x: -$0.x, y:  $0.y, z: -$0.z) },
+            { Vector(x: -$0.x, y:  $0.z, z:  $0.y) },
+            { Vector(x: -$0.x, y: -$0.y, z:  $0.z) },
+            { Vector(x: -$0.x, y: -$0.z, z: -$0.y) },
+            { Vector(x: -$0.y, y:  $0.x, z:  $0.z) },
+            { Vector(x: -$0.y, y:  $0.z, z: -$0.x) },
+            { Vector(x: -$0.y, y: -$0.x, z: -$0.z) },
+            { Vector(x: -$0.y, y: -$0.z, z:  $0.x) },
+            { Vector(x: -$0.z, y:  $0.x, z: -$0.y) },
+            { Vector(x: -$0.z, y:  $0.y, z:  $0.x) },
+            { Vector(x: -$0.z, y: -$0.x, z:  $0.y) },
+            { Vector(x: -$0.z, y: -$0.y, z: -$0.x) },
+        ]
+    }
+    
+    public func calculateVectors(_ beacon: Vector, in face: Face) -> Set<Vector> {
+        var vectors = Set<Vector>()
+        
+        for b1 in face {
+            if beacon != b1 {
+                vectors.insert(b1 - beacon)
+            }
+        }
+        
+        return vectors
     }
     
     public func parse(_ input: [String]) -> Scanners {
@@ -147,29 +151,5 @@ public struct Day19 {
         }
         scanners.append(Scanner(beacons: beacons))
         return scanners
-    }
-    
-    public func draw(_ beacons: Face) {
-        let (minCoords, maxCoords) = beacons.minMax()
-        let dx = maxCoords.x - minCoords.x
-        let dy = maxCoords.y - minCoords.y
-        let d = max(dx, dy)+2
-        let items = Set(beacons.map({ Point($0.x, $0.y) }))
-        draw(items, min: Point(-d, -d), max: Point(d,d))
-    }
-    
-    public func draw(_ tiles: Set<Point>, min: Point, max: Point) {
-        for y in (min.y...max.y) {
-            var line = ""
-            for x in (min.x...max.x) {
-                if y == 0 && x == 0 {
-                    line.append("🔴")
-                } else {
-                    line.append(tiles.contains(Point(x: x, y: y)) ? "⚪️" : "⚫️")
-                }
-            }
-            print(line)
-        }
-        print()
     }
 }
