@@ -15,6 +15,14 @@ class Day23Tests: XCTestCase {
         XCTAssertEqual(51436, day.solve(board_mine_part2()))
     }
 
+//    func test_part1_stephen() {
+//        XCTAssertEqual(15472, day.solve(board_stephen_part1()))
+//    }
+//    
+//    func test_part2_stephen() {
+//        XCTAssertEqual(46182, day.solve(board_stephen_part2()))
+//    }
+
 //    func test_part1_chris() {
 //        XCTAssertEqual(16244, day.solve(board_chris_part1()))
 //    }
@@ -181,6 +189,24 @@ extension Day23Tests {
         let roomB = Day23.Room(id: .B, tiles: [.C, .B, .C, .D])
         let roomC = Day23.Room(id: .C, tiles: [.A, .A, .B, .B])
         let roomD = Day23.Room(id: .D, tiles: [.C, .C, .A, .A])
+        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        return Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+    }
+    
+    func board_stephen_part1() -> Day23.Board {
+        let roomA = Day23.Room(id: .A, tiles: [.C, .D])
+        let roomB = Day23.Room(id: .B, tiles: [.C, .B])
+        let roomC = Day23.Room(id: .C, tiles: [.D, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.A, .A])
+        let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
+        return Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
+    }
+    
+    func board_stephen_part2() -> Day23.Board {
+        let roomA = Day23.Room(id: .A, tiles: [.C, .D, .D, .D])
+        let roomB = Day23.Room(id: .B, tiles: [.C, .B, .C, .B])
+        let roomC = Day23.Room(id: .C, tiles: [.D, .A, .B, .B])
+        let roomD = Day23.Room(id: .D, tiles: [.A, .C, .A, .A])
         let positions: [Day23.Tile] = [.free,.free,.free,.free,.free,.free,.free,.free,.free,.free,.free]
         return Day23.Board(rooms: [roomA, roomB, roomC, roomD], positions: positions, score: 0)
     }
