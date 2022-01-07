@@ -214,7 +214,6 @@ public extension CompassDirection {
     }
     
     func rotateLeft(times: Int) -> CompassDirection {
-        print((4 + (rawValue - (times % 4))) % 4)
         return CompassDirection(rawValue: (4 + (rawValue - (times % 4))) % 4) ?? self
     }
     

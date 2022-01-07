@@ -34,6 +34,10 @@ public struct Grid<T> {
             self[point.x, point.y] = newValue
         }
     }
+    
+    public func point(for index: Int) -> Point {
+        Point(index % columns, index / columns)
+    }
 }
 
 extension Grid where T == Int {
