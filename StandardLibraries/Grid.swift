@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Grid<T> {
+public struct Grid<T: Hashable>: Hashable {
     public var rows: Int {
         items.count / columns
     }
