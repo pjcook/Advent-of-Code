@@ -4,7 +4,37 @@ import StandardLibraries
 public class Day19 {
     public init() {}
     
-    public typealias Options = [String:[String]]
+    public typealias Options = [String: [String]]
+    
+    // 10x faster
+    public func part1b(_ input: [String]) -> Int {
+        let (options, molecule) = parse(input)
+        var variants = Set<String>()
+        
+        for i in (0..<molecule.count) {
+            let key1 = String(molecule[i])
+            if let keys = options[key1] {
+                for key in keys {
+                    var newValue = molecule
+                    newValue.replaceSubrange((newValue.index(newValue.startIndex, offsetBy: i)..<newValue.index(newValue.startIndex, offsetBy: i+1)), with: key)
+                    variants.insert(newValue)
+                }
+            }
+            
+            if i == 0 { continue }
+            
+            let key2 = String(molecule[i-1] + molecule[i])
+            if let keys = options[key2] {
+                for key in keys {
+                    var newValue = molecule
+                    newValue.replaceSubrange((newValue.index(newValue.startIndex, offsetBy: i-1)..<newValue.index(newValue.startIndex, offsetBy: i+1)), with: key)
+                    variants.insert(newValue)
+                }
+            }
+        }
+        
+        return variants.count
+    }
     
     public func part1(_ input: [String]) -> Int {
         let (items, molecule) = parse(input)
@@ -51,87 +81,86 @@ public class Day19 {
         return variants
     }
     
-    public func part2(_ input: [String]) -> Int {
-        let (items, molecule) = parse(input)
-        var options = [String:String]()
-        for item in items {
-            for value in item.value {
-                options[value] = item.key
-            }
-        }
-        return destruct2(molecule, options: options, depth: 1, minDepth: Int.max)
-    }
+    fileprivate static var attemptedNodes = Set<Node>()
     
-    public func destruct2(_ molecule: String, options: [String:String], depth: Int, minDepth: Int) -> Int {
-        guard depth < 20 else { return minDepth }
-        guard !attempts.contains(molecule), depth < minDepth else { return minDepth }
-        guard molecule != "e" else { return min(depth, minDepth) }
-        attempts.insert(molecule)
-        minLength = min(minLength, molecule.count)
-        print(minLength, molecule.count, depth, minDepth, attempts.count, molecule)
-        var newMinDepth = minDepth
-        for key in options.keys.sorted(by: { $0.count > $1.count }) {
-            var string = molecule
-            let count = countNonOverlapping(key, content: string)
-            if count > 0 {
-                string = string.replacingOccurrences(of: key, with: options[key]!)
-                newMinDepth = min(newMinDepth, destruct2(string, options: options, depth: depth + count, minDepth: minDepth))
-            }
+    fileprivate class Node: Hashable {
+        static func == (lhs: Day19.Node, rhs: Day19.Node) -> Bool {
+            lhs.key == rhs.key
         }
-     return newMinDepth
-    }
-    
-    public func countNonOverlapping(_ word: String, content: String) -> Int {
-        var count = 0
-        var i = word.count
-        while i <= content.count {
-            if content[i-word.count..<i] == word {
-                count += 1
-                i += word.count
-            } else {
-                i += 1
-            }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(key)
         }
-        return count
-    }
-    
-    var attempts = Set<String>()
-    var minLength = Int.max
-    public func destruct(_ molecule: String, options: [String:String], depth: Int, minDepth: Int) -> Int {
-        guard !attempts.contains(molecule), depth < minDepth else { return minDepth }
-        attempts.insert(molecule)
-        minLength = min(minLength, molecule.count)
-        print(minLength, molecule.count, depth, minDepth, attempts.count, molecule)
-        var newMinDepth = minDepth
-        for key in options.keys.sorted().reversed() {
-            if key.count > molecule.count {
-                continue
-            } else if key == molecule {
-                let newValue = options[key]!
-                if newValue == "e" {
-                    newMinDepth = min(minDepth, depth)
-                } else {
-                    newMinDepth = destruct(newValue, options: options, depth: depth + 1, minDepth: newMinDepth)
-                }
-                continue
-            }
-            for i in (0..<molecule.count - key.count) {
-                let start = i
-                let end = start + key.count
-                if molecule[start..<end] == key {
-                    let range = (molecule.index(molecule.startIndex, offsetBy: start)..<molecule.index(molecule.startIndex, offsetBy: end+1))
-                    let newValue = molecule.replacingOccurrences(of: key, with: options[key]!, options: [], range: range)
-                    if newValue == "e" {
-                        newMinDepth = min(minDepth, depth)
-                    } else {
-                        newMinDepth = destruct(newValue, options: options, depth: depth + 1, minDepth: newMinDepth)
+        
+        let key: String
+        let depth: Int
+        var options: [Node]
+        
+        init(key: String, depth: Int) {
+            self.key = key
+            self.depth = depth
+            self.options = []
+        }
+        
+        func calculateOptions(sortedKeys: [String], replacementOptions: Options) -> Bool {
+            for sortedKey in sortedKeys {
+                let ranges = key.ranges(of: sortedKey)
+                guard !ranges.isEmpty else { continue }
+                
+                for range in ranges {
+                    for value in replacementOptions[sortedKey]! {
+                        var input = key
+                        input.replaceSubrange(range, with: value)
+                        if input == "e" {
+                            return true
+                        } else {
+                            let node = Node(key: input, depth: depth+1)
+                            if !Day19.attemptedNodes.contains(node) {
+                                options.append(node)
+                            }
+                        }
                     }
                 }
             }
+            
+            return false
         }
-        return newMinDepth
+        
+        func solve(sortedKeys: [String], replacementOptions: Options) -> Int {
+            Day19.attemptedNodes.insert(self)
+
+            if calculateOptions(sortedKeys: sortedKeys, replacementOptions: replacementOptions) {
+                return depth + 1
+            }
+            
+            for option in options.sorted(by: { $0.key < $1.key }) {
+                let result = option.solve(sortedKeys: sortedKeys, replacementOptions: replacementOptions)
+                if result > -1 {
+                    return result
+                }
+            }
+            
+            return -1
+        }
     }
     
+    public func part2(_ input: [String]) -> Int {
+        Day19.attemptedNodes = []
+        let (options, molecule) = parse2(input)
+        var sortedKeys: [String] = options.keys.sorted(by: { $0.count > $1.count })
+        print("Keys count", sortedKeys.count)
+        for key in sortedKeys {
+            let filteredKeys = sortedKeys.filter({ $0 != key })
+            if molecule.contains(key) { continue }
+            if !filteredKeys.compactMap({ $0.contains(key) ? $0 : nil }).isEmpty { continue }
+            sortedKeys.removeAll(where: { $0 == key })
+            print(key)
+        }
+        print("Keys count", sortedKeys.count)
+        let node = Node(key: molecule, depth: 0)
+        return node.solve(sortedKeys: sortedKeys, replacementOptions: options)
+    }
+
     public func parse(_ input: [String]) -> (Options, String) {
         var input = input
         var items = Options()
@@ -142,6 +171,22 @@ public class Day19 {
             var options = items[comp[0], default: []]
             options.append(comp[1])
             items[comp[0]] = options
+            line = input.removeFirst()
+        }
+        
+        return (items, input.first!)
+    }
+    
+    public func parse2(_ input: [String]) -> (Options, String) {
+        var input = input
+        var items = Options()
+        
+        var line = input.removeFirst()
+        while !line.isEmpty {
+            let comp = line.components(separatedBy: " => ")
+            var options = items[comp[1], default: []]
+            options.append(comp[0])
+            items[comp[1]] = options
             line = input.removeFirst()
         }
         

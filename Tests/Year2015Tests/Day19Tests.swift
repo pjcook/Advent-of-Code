@@ -8,11 +8,37 @@ class Day19Tests: XCTestCase {
     let day = Day19()
 
     func test_part1() {
-        XCTAssertEqual(576, day.part1(input))
+        XCTAssertEqual(576, day.part1b(input))
     }
     
     func test_part2() {
-//        XCTAssertEqual(0, day.part2(input))
+        XCTAssertEqual(6, day.part2(input))
+    }
+    
+    func test_part2_test1() {
+        let input = """
+        e => H
+        e => O
+        H => HO
+        H => OH
+        O => HH
+        
+        HOH
+        """.lines
+        XCTAssertEqual(3, day.part2(input))
+    }
+    
+    func test_part2_test2() {
+        let input = """
+        e => H
+        e => O
+        H => HO
+        H => OH
+        O => HH
+        
+        HOHOHO
+        """.lines
+        XCTAssertEqual(6, day.part2(input))
     }
     
     func test_parsing() {
@@ -21,12 +47,6 @@ class Day19Tests: XCTestCase {
         XCTAssertEqual(506, molecule.count)
         XCTAssertEqual(43, items.values.flatMap({ $0 }).count)
         XCTAssertEqual("ORnPBPMgArCaCaCaSiThCaCaSiThCaCaPBSiRnFArRnFArCaCaSiThCaCaSiThCaCaCaCaCaCaSiRnFYFArSiRnMgArCaSiRnPTiTiBFYPBFArSiRnCaSiRnTiRnFArSiAlArPTiBPTiRnCaSiAlArCaPTiTiBPMgYFArPTiRnFArSiRnCaCaFArRnCaFArCaSiRnSiRnMgArFYCaSiRnMgArCaCaSiThPRnFArPBCaSiRnMgArCaCaSiThCaSiRnTiMgArFArSiThSiThCaCaSiRnMgArCaCaSiRnFArTiBPTiRnCaSiAlArCaPTiRnFArPBPBCaCaSiThCaPBSiThPRnFArSiThCaSiThCaSiThCaPTiBSiRnFYFArCaCaPRnFArPBCaCaPBSiRnTiRnFArCaPRnFArSiRnCaCaCaSiThCaRnCaFArYCaSiRnFArBCaCaCaSiThFArPBFArCaSiRnFArRnCaCaCaFArSiRnFArTiRnPMgArF", molecule)
-    }
-    
-    func test_countNonOverlapping() {
-        XCTAssertEqual(1, day.countNonOverlapping("abc", content: "jhabcuy"))
-        XCTAssertEqual(2, day.countNonOverlapping("abc", content: "jhabcuyabc"))
-        XCTAssertEqual(2, day.countNonOverlapping("bcbc", content: "jbcabcbchjjgbcbcbcefefe"))
     }
     
     func test_example() {
@@ -38,6 +58,17 @@ O => HH
 HOH
 """.lines
         XCTAssertEqual(4, day.part1(input))
+    }
+    
+    func test_exampleb() {
+        let input = """
+H => HO
+H => OH
+O => HH
+
+HOH
+""".lines
+        XCTAssertEqual(4, day.part1b(input))
     }
     
     func test_example2() {
