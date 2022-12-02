@@ -13,6 +13,16 @@ class Day2Tests: XCTestCase {
 //        }
     }
     
+    func test_part1_test() {
+        let input = """
+A Y
+B X
+C Z
+""".lines
+
+        XCTAssertEqual(15, day.part1(input))
+    }
+    
     func test_part2() {
 //        measure {
         XCTAssertEqual(13433, day.part2(input))

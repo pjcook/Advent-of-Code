@@ -11,62 +11,32 @@ import Foundation
 public struct Day2 {
     public init() {}
     
-    enum RockPaperScissors: String {
-        case rock = "A"
-        case paper = "B"
-        case scissors = "C"
-        case rockP2 = "X"
-        case paperP2 = "Y"
-        case scissorsP2 = "Z"
+    enum RockPaperScissors: Int {
+        case rock = 1
+        case paper = 2
+        case scissors = 3
         
-        func score(_ p2: RockPaperScissors) -> Int {
-            switch (self, p2) {
-            case (.rock, .rockP2): return 1 + RockPaperScissors.drawPoints
-            case (.rock, .paperP2): return 2 + RockPaperScissors.winPoints
-            case (.rock, .scissorsP2): return 3
-            case (.paper, .rockP2): return 1
-            case (.paper, .paperP2): return 2 + RockPaperScissors.drawPoints
-            case (.paper, .scissorsP2): return 3 + RockPaperScissors.winPoints
-            case (.scissors, .rockP2): return 1 + RockPaperScissors.winPoints
-            case (.scissors, .paperP2): return 2
-            case (.scissors, .scissorsP2): return 3 + RockPaperScissors.drawPoints
-            default: return 1
+        init?(rawValue: String) {
+            switch rawValue {
+            case "A": self = .rock
+            case "B": self = .paper
+            case "C": self = .scissors
+            case "X": self = .rock
+            case "Y": self = .paper
+            case "Z": self = .scissors
+            default: return nil
             }
         }
         
-        static var winPoints: Int = 6
-        static var drawPoints: Int = 3
-    }
-    
-    public func part1(_ input: [String]) -> Int {
-        parse(input).reduce(0, { $0 + $1.2 })
-    }
-    
-    func parse(_ input: [String]) -> [(RockPaperScissors, RockPaperScissors, Int)] {
-        var results = [(RockPaperScissors, RockPaperScissors, Int)]()
-        
-        for line in input {
-            guard !line.isEmpty else { continue }
-            let components = line.components(separatedBy: " ")
-            let p1 = RockPaperScissors(rawValue: components[0])!
-            let p2 = RockPaperScissors(rawValue: components[1])!
-            let result = (p1, p2, p1.score(p2))
-            results.append(result)
+        func scoreForPart1(_ p2: RockPaperScissors) -> Int {
+            p2.rawValue + GameResult(self, p2).rawValue
         }
         
-        return results
-    }
-    
-    enum RockPaperScissors2: String {
-        case rock = "A"
-        case paper = "B"
-        case scissors = "C"
-        
-        func score(_ expectedResult: ExtectedResult) -> Int {
-            requiredForExpectation(expectedResult).points + expectedResult.points
+        func scoreForPart2(_ expectedResult: GameResult) -> Int {
+            requiredForExpectation(expectedResult).rawValue + expectedResult.rawValue
         }
         
-        func requiredForExpectation(_ expectedResult: ExtectedResult) -> RockPaperScissors2 {
+        func requiredForExpectation(_ expectedResult: GameResult) -> RockPaperScissors {
             switch (self, expectedResult) {
             case (.rock, .lose): return .scissors
             case (.rock, .draw): return .rock
@@ -80,46 +50,62 @@ public struct Day2 {
             }
         }
         
-        var points: Int {
-            switch self {
-            case .rock: return 1
-            case .paper: return 2
-            case .scissors: return 3
-            }
-        }
-        
         static var winPoints: Int = 6
         static var drawPoints: Int = 3
     }
     
-    enum ExtectedResult: String {
-        case lose = "X"
-        case draw = "Y"
-        case win = "Z"
+    enum GameResult: Int {
+        case lose = 0
+        case draw = 3
+        case win = 6
         
-        var points: Int {
-            switch self {
-            case .lose: return 0
-            case .draw: return 3
-            case .win: return 6
+        init?(rawValue: String) {
+            switch rawValue {
+            case "X": self = .lose
+            case "Y": self = .draw
+            case "Z": self = .win
+            default: return nil
+            }
+        }
+        
+        init(_ p1: RockPaperScissors, _ p2: RockPaperScissors) {
+            switch (p1, p2) {
+            case (.rock, .rock): self = .draw
+            case (.rock, .paper): self = .win
+            case (.rock, .scissors): self = .lose
+            case (.paper, .rock): self = .lose
+            case (.paper, .paper): self = .draw
+            case (.paper, .scissors): self = .win
+            case (.scissors, .rock): self = .win
+            case (.scissors, .paper): self = .lose
+            case (.scissors, .scissors): self = .draw
             }
         }
     }
     
-    public func part2(_ input: [String]) -> Int {
-        parse2(input).reduce(0, { $0 + $1.2 })
-    }
-    
-    func parse2(_ input: [String]) -> [(RockPaperScissors2, ExtectedResult, Int)] {
-        var results = [(RockPaperScissors2, ExtectedResult, Int)]()
+    public func part1(_ input: [String]) -> Int {
+        var results = 0
         
         for line in input {
             guard !line.isEmpty else { continue }
             let components = line.components(separatedBy: " ")
-            let p1 = RockPaperScissors2(rawValue: components[0])!
-            let p2 = ExtectedResult(rawValue: components[1])!
-            let result = (p1, p2, p1.score(p2))
-            results.append(result)
+            let p1 = RockPaperScissors(rawValue: components[0])!
+            let p2 = RockPaperScissors(rawValue: components[1])!
+            results += p1.scoreForPart1(p2)
+        }
+        
+        return results
+    }
+    
+    public func part2(_ input: [String]) -> Int {
+        var results = 0
+        
+        for line in input {
+            guard !line.isEmpty else { continue }
+            let components = line.components(separatedBy: " ")
+            let p1 = RockPaperScissors(rawValue: components[0])!
+            let p2 = GameResult(rawValue: components[1])!
+            results += p1.scoreForPart2(p2)
         }
         
         return results
