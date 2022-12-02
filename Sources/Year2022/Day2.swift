@@ -16,7 +16,7 @@ public struct Day2 {
         case paper = 2
         case scissors = 3
         
-        init?(rawValue: String) {
+        init?(rawValue: Character) {
             switch rawValue {
             case "A": self = .rock
             case "B": self = .paper
@@ -38,15 +38,9 @@ public struct Day2 {
         
         func requiredForExpectation(_ expectedResult: GameResult) -> RockPaperScissors {
             switch (self, expectedResult) {
-            case (.rock, .lose): return .scissors
-            case (.rock, .draw): return .rock
-            case (.rock, .win): return .paper
-            case (.paper, .lose): return .rock
-            case (.paper, .draw): return .paper
-            case (.paper, .win): return .scissors
-            case (.scissors, .lose): return .paper
-            case (.scissors, .draw): return .scissors
-            case (.scissors, .win): return .rock
+            case (.rock, .lose), (.paper, .win), (.scissors, .draw): return .scissors
+            case (.rock, .draw), (.paper, .lose), (.scissors, .win): return .rock
+            case (.rock, .win), (.paper, .draw), (.scissors, .lose): return .paper
             }
         }
         
@@ -59,7 +53,7 @@ public struct Day2 {
         case draw = 3
         case win = 6
         
-        init?(rawValue: String) {
+        init?(rawValue: Character) {
             switch rawValue {
             case "X": self = .lose
             case "Y": self = .draw
@@ -70,15 +64,9 @@ public struct Day2 {
         
         init(_ p1: RockPaperScissors, _ p2: RockPaperScissors) {
             switch (p1, p2) {
-            case (.rock, .rock): self = .draw
-            case (.rock, .paper): self = .win
-            case (.rock, .scissors): self = .lose
-            case (.paper, .rock): self = .lose
-            case (.paper, .paper): self = .draw
-            case (.paper, .scissors): self = .win
-            case (.scissors, .rock): self = .win
-            case (.scissors, .paper): self = .lose
-            case (.scissors, .scissors): self = .draw
+            case (.rock, .rock), (.paper, .paper), (.scissors, .scissors): self = .draw
+            case (.rock, .paper), (.paper, .scissors), (.scissors, .rock): self = .win
+            case (.rock, .scissors), (.paper, .rock), (.scissors, .paper): self = .lose
             }
         }
     }
@@ -88,9 +76,8 @@ public struct Day2 {
         
         for line in input {
             guard !line.isEmpty else { continue }
-            let components = line.components(separatedBy: " ")
-            let p1 = RockPaperScissors(rawValue: components[0])!
-            let p2 = RockPaperScissors(rawValue: components[1])!
+            let p1 = RockPaperScissors(rawValue: line.first!)!
+            let p2 = RockPaperScissors(rawValue: line.last!)!
             results += p1.scoreForPart1(p2)
         }
         
@@ -102,9 +89,8 @@ public struct Day2 {
         
         for line in input {
             guard !line.isEmpty else { continue }
-            let components = line.components(separatedBy: " ")
-            let p1 = RockPaperScissors(rawValue: components[0])!
-            let p2 = GameResult(rawValue: components[1])!
+            let p1 = RockPaperScissors(rawValue: line.first!)!
+            let p2 = GameResult(rawValue: line.last!)!
             results += p1.scoreForPart2(p2)
         }
         
