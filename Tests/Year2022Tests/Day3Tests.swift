@@ -45,6 +45,6 @@ CrZsJsPPZsGzwwsLwLmpwMDw
     
     func test_lookup() throws {
         XCTAssertEqual(52, day.lookup.count)
-        XCTAssertEqual(16, day.lookup.firstIndex(of: "p")! + 1)
+        XCTAssertEqual(16, day.lookup["p"]!)
     }
 }

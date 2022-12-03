@@ -12,9 +12,10 @@ import StandardLibraries
 public struct Day3 {
     public init() {}
     
-    public let lookup = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".map { $0 }
-    public func valueOf(_ char: Character) -> Int {
-        lookup.firstIndex(of: char)! + 1
+    public let lookup = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".enumerated().reduce([Character: Int]()) {
+        var dict = $0
+        dict[$1.element] = $1.offset + 1
+        return dict
     }
     
     /*
@@ -26,10 +27,10 @@ public struct Day3 {
         var total = 0
         for line in input {
             let hp = line.count/2
-            let a = Set(line[0..<hp])
-            let b = Set(line[hp..<line.count])
+            let a = Set(line.prefix(hp))
+            let b = Set(line.suffix(hp))
             let match = Character(String(a.intersection(b)))
-            total += valueOf(match)
+            total += lookup[match]!
         }
         return total
     }
@@ -43,13 +44,13 @@ public struct Day3 {
         var total = 0
         var pointer = 0
         let max = input.count
-        
+
         while pointer < max {
             let a = Set(input[pointer])
             let b = Set(input[pointer+1])
             let c = Set(input[pointer+2])
             let match = Character(String(a.intersection(b).intersection(c)))
-            total += valueOf(match)
+            total += lookup[match]!
             pointer += 3
         }
         
