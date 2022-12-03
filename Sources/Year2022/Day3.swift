@@ -17,6 +17,11 @@ public struct Day3 {
         lookup.firstIndex(of: char)! + 1
     }
     
+    /*
+     Each line can be split into two exact halves.
+     Each half contains exactly 1 matching character.
+     That matching character has an implicit value from the `lookup` table position + 1
+     */
     public func part1(_ input: [String]) -> Int {
         var total = 0
         for line in input {
@@ -29,6 +34,11 @@ public struct Day3 {
         return total
     }
     
+    /*
+     The lines in the input are grouped into blocks of 3.
+     There is exactly 1 matching character across each group of 3 lines.
+     That matching character has an implicit value from the `lookup` table position + 1
+     */
     public func part2(_ input: [String]) -> Int {
         var lines = input
         var total = 0
