@@ -40,15 +40,17 @@ public struct Day3 {
      That matching character has an implicit value from the `lookup` table position + 1
      */
     public func part2(_ input: [String]) -> Int {
-        var lines = input
         var total = 0
+        var pointer = 0
+        let max = input.count
         
-        while !lines.isEmpty {
-            let a = Set(lines.removeFirst())
-            let b = Set(lines.removeFirst())
-            let c = Set(lines.removeFirst())
+        while pointer < max {
+            let a = Set(input[pointer])
+            let b = Set(input[pointer+1])
+            let c = Set(input[pointer+2])
             let match = Character(String(a.intersection(b).intersection(c)))
             total += valueOf(match)
+            pointer += 3
         }
         
         return total
