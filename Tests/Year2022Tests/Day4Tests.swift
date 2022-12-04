@@ -4,18 +4,46 @@ import Year2022
 
 class Day4Tests: XCTestCase {
     
-    let input = Input("Day4.input", Bundle.module).integers
+    let input = Input("Day4.input", Bundle.module).lines
     let day = Day4()
 
-    func test_part4() {
+    func test_part1() {
+        measure {
+        XCTAssertEqual(424, day.part1(input))
+        }
+    }
+    
+    func test_part1_example() {
+        let input = """
+2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8
+""".lines
 //        measure {
-        XCTAssertEqual(1, day.part1(input))
+        XCTAssertEqual(2, day.part1(input))
 //        }
     }
     
     func test_part2() {
+        measure {
+        XCTAssertEqual(804, day.part2(input))
+        }
+    }
+    
+    func test_part2_example() {
+        let input = """
+2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8
+""".lines
 //        measure {
-        XCTAssertEqual(1, day.part2(input))
+        XCTAssertEqual(4, day.part2(input))
 //        }
     }
 }
