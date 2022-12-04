@@ -8,9 +8,15 @@ class Day4Tests: XCTestCase {
     let day = Day4()
 
     func test_part1() {
-        measure {
+//        measure {
         XCTAssertEqual(424, day.part1(input))
-        }
+//        }
+    }
+    
+    func test_part1b() {
+//        measure {
+        XCTAssertEqual(424, day.part1b(input))
+//        }
     }
     
     func test_part1_example() {
@@ -22,15 +28,19 @@ class Day4Tests: XCTestCase {
 6-6,4-6
 2-6,4-8
 """.lines
-//        measure {
         XCTAssertEqual(2, day.part1(input))
-//        }
     }
     
     func test_part2() {
-        measure {
+//        measure {
         XCTAssertEqual(804, day.part2(input))
-        }
+//        }
+    }
+    
+    func test_part2b() {
+//        measure {
+        XCTAssertEqual(804, day.part2b(input))
+//        }
     }
     
     func test_part2_example() {
@@ -42,8 +52,6 @@ class Day4Tests: XCTestCase {
 6-6,4-6
 2-6,4-8
 """.lines
-//        measure {
         XCTAssertEqual(4, day.part2(input))
-//        }
     }
 }
