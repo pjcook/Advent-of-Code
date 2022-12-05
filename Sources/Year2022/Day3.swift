@@ -39,7 +39,7 @@ public struct Day3 {
      That matching character has an implicit value from the `lookup` table position + 1
      */
     public func part2(_ input: [String]) -> Int {
-        stride(from: 0, to: 300, by: 3)
+        stride(from: 0, to: input.count, by: 3)
             .reduce(0) {
                 let a = Set(input[$1])
                 let b = Set(input[$1+1])
