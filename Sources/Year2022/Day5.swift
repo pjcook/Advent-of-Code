@@ -68,7 +68,7 @@ extension Day5 {
         var stacks = Stacks()
         let stackPositions = [1, 5, 9, 13, 17, 21, 25, 29, 33]
         
-        for i in (0..<crateIndex) {
+    outerloop: for i in (0..<crateIndex) {
             let line = lines[i]
             for j in (1...9) {
                 if line.count > j {
@@ -78,6 +78,8 @@ extension Day5 {
                     var stack = stacks[j, default: CreateStack()]
                     stack.insert(Character(String(value)), at: 0)
                     stacks[j] = stack
+                } else {
+                    continue outerloop
                 }
             }
         }
