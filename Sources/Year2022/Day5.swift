@@ -99,16 +99,15 @@ extension Day5 {
             }
         }
         
-//        let regex = try RegularExpression(pattern: "[\\d]+")
+        let regex = try RegularExpression(pattern: "[\\w]* ([\\d]+) [\\w]* ([\\d]+) [\\w]* ([\\d]+)")
         var instructions = Instructions()
         
         for i in (crateIndex+2..<lines.count) {
             let line = lines[i]
-            let components = line.components(separatedBy: " ")
-            let instruction = (Int(components[1])!, Int(components[3])!, Int(components[5])!)
-//            guard !line.isEmpty else { continue }
-//            let match = try regex.match(line)
-//            let instruction = try (match.integer(at: 0), match.integer(at: 1), match.integer(at: 2))
+//            let components = line.components(separatedBy: " ")
+//            let instruction = (Int(components[1])!, Int(components[3])!, Int(components[5])!)
+            let match = try regex.match(line)
+            let instruction = try (match.integer(at: 0), match.integer(at: 1), match.integer(at: 2))
             instructions.append(instruction)
         }
         

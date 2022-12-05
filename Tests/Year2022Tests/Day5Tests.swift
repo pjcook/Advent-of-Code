@@ -1,5 +1,6 @@
 import XCTest
 import InputReader
+import StandardLibraries
 import Year2022
 
 class Day5Tests: XCTestCase {
@@ -9,13 +10,13 @@ class Day5Tests: XCTestCase {
 
     func test_part1() throws {
 //        measure {
-        XCTAssertEqual("WHTLRMZRC", try day.part1(input))
+        XCTAssertEqual("WHTLRMZRC", try! day.part1(input))
 //        }
     }
     
     func test_part2() throws {
 //        measure {
-        XCTAssertEqual("GMPMLWNMG", try day.part2(input))
+        XCTAssertEqual("GMPMLWNMG", try! day.part2(input))
 //        }
     }
 }
@@ -54,6 +55,16 @@ move 1 from 1 to 2
     }
     
     func test_regex() throws {
-        let regex = try RegularExpression(pattern: "[\\d]+")
+        let regex = try RegularExpression(pattern: "[\\w]* ([\\d]+) [\\w]* ([\\d]+) [\\w]* ([\\d]+)")
+        let line = "move 8 from 33 to 2"
+        let match = try regex.match(line)
+        let instruction = try (match.integer(at: 0), match.integer(at: 1), match.integer(at: 2))
+        print(instruction)
+    }
+    
+    func test_parsing() throws {
+//        measure {
+            _ = try! day.parse(input, crateIndex: 8)
+//        }
     }
 }
