@@ -24,15 +24,13 @@ public struct Day3 {
      That matching character has an implicit value from the `lookup` table position + 1
      */
     public func part1(_ input: [String]) -> Int {
-        var total = 0
-        for line in input {
-            let hp = line.count/2
-            let a = Set(line.prefix(hp))
-            let b = Set(line.suffix(hp))
+        input.reduce(0) {
+            let hp = $1.count/2
+            let a = Set($1.prefix(hp))
+            let b = Set($1.suffix(hp))
             let match = Character(String(a.intersection(b)))
-            total += lookup[match]!
+            return $0 + lookup[match]!
         }
-        return total
     }
     
     /*
@@ -41,19 +39,13 @@ public struct Day3 {
      That matching character has an implicit value from the `lookup` table position + 1
      */
     public func part2(_ input: [String]) -> Int {
-        var total = 0
-        var pointer = 0
-        let max = input.count
-
-        while pointer < max {
-            let a = Set(input[pointer])
-            let b = Set(input[pointer+1])
-            let c = Set(input[pointer+2])
-            let match = Character(String(a.intersection(b).intersection(c)))
-            total += lookup[match]!
-            pointer += 3
-        }
-        
-        return total
+        stride(from: 0, to: 300, by: 3)
+            .reduce(0) {
+                let a = Set(input[$1])
+                let b = Set(input[$1+1])
+                let c = Set(input[$1+2])
+                let match = Character(String(a.intersection(b).intersection(c)))
+                return $0 + lookup[match]!
+            }
     }
 }
