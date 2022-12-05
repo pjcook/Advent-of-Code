@@ -34,9 +34,8 @@ move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2
 """.lines
-        let (stacks, instructions) = try day.parse(input, crateIndex: 3)
+        let stacks = try day.parse(input, move: day.move)
         print(stacks)
-        print(instructions)
     }
     
     func test_part1_example() throws {
@@ -51,7 +50,7 @@ move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2
 """.lines
-        XCTAssertEqual("CMZ", try day.part1(input, crateIndex: 3))
+        XCTAssertEqual("CMZ", try day.part1(input))
     }
     
     func test_regex() throws {
@@ -64,7 +63,7 @@ move 1 from 1 to 2
     
     func test_parsing() throws {
 //        measure {
-            _ = try! day.parse(input, crateIndex: 8)
+        _ = try! day.parse(input, move: day.move)
 //        }
     }
 }

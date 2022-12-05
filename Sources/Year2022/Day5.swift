@@ -13,45 +13,23 @@ public typealias CreateStack = [Character]
 public typealias Stacks = [Int: CreateStack]
 public typealias Instruction = (Int, Int, Int)
 public typealias Instructions = [Instruction]
+public typealias Move = ((inout Stacks, Instruction) -> Void)
 
 public struct Day5 {
     public init() {}
     
-    public func part1(_ input: [String], crateIndex: Int = 8) throws -> String {
-        var (stacks, instructions) = try parse(input, crateIndex: crateIndex)
-        var result = ""
-        
-        for instruction in instructions {
-            move(stacks: &stacks, instruction: instruction)
-        }
-        
-        for i in (1...9) {
-            if let stack = stacks[i], let char = stack.last {
-                result.append(char)
-            }
-        }
-        return result
+    public func part1(_ input: [String]) throws -> String {
+        try parse(input, move: move)
     }
     
-    public func part2(_ input: [String], crateIndex: Int = 8) throws -> String {
-        var (stacks, instructions) = try parse(input, crateIndex: crateIndex)
-        var result = ""
-        
-        for instruction in instructions {
-            move9001(stacks: &stacks, instruction: instruction)
-        }
-        
-        for i in (1...9) {
-            if let stack = stacks[i], let char = stack.last {
-                result.append(char)
-            }
-        }
-        return result
+    public func part2(_ input: [String]) throws -> String {
+        try parse(input, move: move9001)
     }
 }
 
 extension Day5 {
-    public func move(stacks: inout Stacks, instruction: Instruction) {
+    // Move function for part1
+    public func move(_ stacks: inout Stacks, _ instruction: Instruction) {
         var fromStack = stacks[instruction.1, default: CreateStack()]
         var toStack = stacks[instruction.2, default: CreateStack()]
 
@@ -65,7 +43,8 @@ extension Day5 {
         stacks[instruction.2] = toStack
     }
     
-    public func move9001(stacks: inout Stacks, instruction: Instruction) {
+    // Move function for part2
+    public func move9001(_ stacks: inout Stacks, _ instruction: Instruction) {
         var fromStack = stacks[instruction.1, default: CreateStack()]
         var toStack = stacks[instruction.2, default: CreateStack()]
         var stack = CreateStack()
@@ -81,7 +60,11 @@ extension Day5 {
         stacks[instruction.2] = toStack
     }
     
-    public func parse(_ lines: [String], crateIndex: Int) throws -> (Stacks, Instructions) {
+    public func parse(_ lines: [String], move: Move) throws -> String {
+        // Find blank line separating top and bottom sections of the file
+        let crateIndex = (lines.firstIndex(of: "") ?? 1) - 1
+        
+        // Parse the top section of the file
         var stacks = Stacks()
         let stackPositions = [1, 5, 9, 13, 17, 21, 25, 29, 33]
         
@@ -99,18 +82,24 @@ extension Day5 {
             }
         }
         
+        // Parse the bottom section of the file executing instructions as you go
         let regex = try RegularExpression(pattern: "[\\w]* ([\\d]+) [\\w]* ([\\d]+) [\\w]* ([\\d]+)")
-        var instructions = Instructions()
         
         for i in (crateIndex+2..<lines.count) {
             let line = lines[i]
-//            let components = line.components(separatedBy: " ")
-//            let instruction = (Int(components[1])!, Int(components[3])!, Int(components[5])!)
             let match = try regex.match(line)
             let instruction = try (match.integer(at: 0), match.integer(at: 1), match.integer(at: 2))
-            instructions.append(instruction)
+            move(&stacks, instruction)
         }
         
-        return (stacks, instructions)
+        // Calculate final result
+        var result = ""
+        for i in (1...9) {
+            if let stack = stacks[i], let char = stack.last {
+                result.append(char)
+            }
+        }
+        
+        return result
     }
 }
