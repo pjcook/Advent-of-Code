@@ -1,5 +1,6 @@
 import XCTest
 import InputReader
+import StandardLibraries
 import Year2015
 
 class Day19Tests: XCTestCase {
@@ -14,6 +15,20 @@ class Day19Tests: XCTestCase {
     func test_part2() {
         XCTAssertEqual(6, day.part2(input))
     }
+    
+//    func test_part2_example() {
+//        let input = "ORnPBPMgArCaCaCaSiThCaCaSiThCaCaPBSiRnFArRnFArCaCaSiThCaCaSiThCaCaCaCaCaCaSiRnFYFArSiRnMgArCaSiRnPTiTiBFYPBFArSiRnCaSiRnTiRnFArSiAlArPTiBPTiRnCaSiAlArCaPTiTiBPMgYFArPTiRnFArSiRnCaCaFArRnCaFArCaSiRnSiRnMgArFYCaSiRnMgArCaCaSiThPRnFArPBCaSiRnMgArCaCaSiThCaSiRnTiMgArFArSiThSiThCaCaSiRnMgArCaCaSiRnFArTiBPTiRnCaSiAlArCaPTiRnFArPBPBCaCaSiThCaPBSiThPRnFArSiThCaSiThCaSiThCaPTiBSiRnFYFArCaCaPRnFArPBCaCaPBSiRnTiRnFArCaPRnFArSiRnCaCaCaSiThCaRnCaFArYCaSiRnFArBCaCaCaSiThFArPBFArCaSiRnFArRnCaCaCaFArSiRnFArTiRnPMgArF"
+//        let count = input.count
+//        let regexAr = try! RegularExpression(pattern: "(Ar)")
+//        let ar = regexAr.matches(in: input).count
+//        let regexRn = try! RegularExpression(pattern: "(Rn)")
+//        let rn = regexRn.matches(in: input).count
+//        let regexY = try! RegularExpression(pattern: "(Y)")
+//        let y = regexY.matches(in: input).count
+//
+//        let result = count - ar - rn - 2 * y - 1
+//        print(result)
+//    }
     
     func test_part2_test1() {
         let input = """

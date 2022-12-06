@@ -147,18 +147,38 @@ public class Day19 {
     public func part2(_ input: [String]) -> Int {
         Day19.attemptedNodes = []
         let (options, molecule) = parse2(input)
-        var sortedKeys: [String] = options.keys.sorted(by: { $0.count > $1.count })
-        print("Keys count", sortedKeys.count)
-        for key in sortedKeys {
-            let filteredKeys = sortedKeys.filter({ $0 != key })
-            if molecule.contains(key) { continue }
-            if !filteredKeys.compactMap({ $0.contains(key) ? $0 : nil }).isEmpty { continue }
-            sortedKeys.removeAll(where: { $0 == key })
-            print(key)
+        let sortedKeys: [(String, String)] = options.sorted(by: { $0.0.count - $0.1.count > $1.0.count - $1.1.count })
+        var variant = molecule
+        var steps = 0
+        
+        while variant != "e" {
+            var reduced = false
+            for (from, to) in sortedKeys {
+                var found = false
+                while variant.contains(from) {
+                    let range = variant.firstRange(of: from)!
+                    variant.replaceSubrange(range, with: to)
+                    found = true
+                }
+                if found {
+                    reduced = true
+                    steps += 1
+                    print(steps, from, variant)
+                }
+            }
+            if !reduced { break }
         }
-        print("Keys count", sortedKeys.count)
-        let node = Node(key: molecule, depth: 0)
-        return node.solve(sortedKeys: sortedKeys, replacementOptions: options)
+//        for key in sortedKeys {
+//            let filteredKeys = sortedKeys.filter({ $0 != key })
+//            guard molecule.contains(key.0) { continue }
+//            if !filteredKeys.compactMap({ $0.contains(key) ? $0 : nil }).isEmpty { continue }
+//            sortedKeys.removeAll(where: { $0 == key })
+//            print(key)
+//        }
+//        print("Keys count", sortedKeys.count)
+//        let node = Node(key: molecule, depth: 0)
+//        return node.solve(sortedKeys: sortedKeys, replacementOptions: options)
+        return steps
     }
 
     public func parse(_ input: [String]) -> (Options, String) {
@@ -177,16 +197,14 @@ public class Day19 {
         return (items, input.first!)
     }
     
-    public func parse2(_ input: [String]) -> (Options, String) {
+    public func parse2(_ input: [String]) -> ([(String, String)], String) {
         var input = input
-        var items = Options()
+        var items = [(String, String)]()
         
         var line = input.removeFirst()
         while !line.isEmpty {
             let comp = line.components(separatedBy: " => ")
-            var options = items[comp[1], default: []]
-            options.append(comp[0])
-            items[comp[1]] = options
+            items.append((comp[1], comp[0]))
             line = input.removeFirst()
         }
         
