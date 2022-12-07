@@ -19,9 +19,7 @@ public struct Day7 {
     public func part2(_ input: [String], requiredFreeSpace: Int = 30_000_000, fileSystemSize: Int = 70_000_000) -> Int {
         let dir = parse(input)
         let additionalSpaceNeeded = requiredFreeSpace - (fileSystemSize - dir.size)
-        var folders = [Dir]()
-        part2Traverse(dir: dir, additionalSpaceNeeded: additionalSpaceNeeded, folders: &folders)
-        return folders.sorted(by: { $0.size < $1.size }).first!.size
+        return part2Traverse(dir: dir, additionalSpaceNeeded: additionalSpaceNeeded, smallestFolder: dir).size
     }
 }
 
@@ -40,14 +38,18 @@ extension Day7 {
         return total
     }
     
-    public func part2Traverse(dir: Dir, additionalSpaceNeeded: Int, folders: inout [Dir]) {
-        if dir.size > additionalSpaceNeeded {
-            folders.append(dir)
+    public func part2Traverse(dir: Dir, additionalSpaceNeeded: Int, smallestFolder: Dir) -> Dir {
+        var smallestFolder = smallestFolder
+        
+        if dir.size > additionalSpaceNeeded && dir.size < smallestFolder.size {
+            smallestFolder = dir
         }
         
         for item in dir.contents where item is Dir {
-            part2Traverse(dir: item as! Dir, additionalSpaceNeeded: additionalSpaceNeeded, folders: &folders)
+            smallestFolder = part2Traverse(dir: item as! Dir, additionalSpaceNeeded: additionalSpaceNeeded, smallestFolder: smallestFolder)
         }
+        
+        return smallestFolder
     }
 }
 
