@@ -14,8 +14,7 @@ public struct Day8 {
     
     public func part1(_ input: [String]) -> Int {
         let grid = Grid(input)
-        let total = grid.columns * 2 + grid.rows * 2 - 4
-        var points = Set<Point>()
+        var total = grid.columns * 2 + grid.rows * 2 - 4
         
         for y in (1..<grid.columns-1) {
             for x in (1..<grid.rows-1) {
@@ -23,31 +22,31 @@ public struct Day8 {
                 let value = grid[point]
                 // Check left
                 if (0..<x).map({ Point($0, y) }).first(where: { grid[$0] >= value }) == nil {
-                    points.insert(point)
+                    total += 1
                     continue
                 }
                 
                 // Check right
                 if (x+1..<grid.columns).map({ Point($0, y) }).first(where: { grid[$0] >= value }) == nil {
-                    points.insert(point)
+                    total += 1
                     continue
                 }
                 
                 // Check top
                 if (0..<y).map({ Point(x, $0) }).first(where: { grid[$0] >= value }) == nil {
-                    points.insert(point)
+                    total += 1
                     continue
                 }
                 
                 // Check bottom
                 if (y+1..<grid.rows).map({ Point(x, $0) }).first(where: { grid[$0] >= value }) == nil {
-                    points.insert(point)
+                    total += 1
                     continue
                 }
             }
         }
 
-        return total + points.count
+        return total
     }
     
     public func part2(_ input: [String]) -> Int {
