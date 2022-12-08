@@ -12,34 +12,20 @@ import StandardLibraries
 public struct Day8 {
     public init() {}
     
-    public func part1(_ input: [String]) -> Int {
-        let grid = Grid(input)
+    public func part1(_ grid: Grid<Int>) -> Int {
         var total = grid.columns * 2 + grid.rows * 2 - 4
         
         for y in (1..<grid.columns-1) {
             for x in (1..<grid.rows-1) {
                 let point = Point(x, y)
                 let value = grid[point]
-                // Check left
-                if (0..<x).map({ Point($0, y) }).first(where: { grid[$0] >= value }) == nil {
-                    total += 1
-                    continue
-                }
                 
-                // Check right
-                if (x+1..<grid.columns).map({ Point($0, y) }).first(where: { grid[$0] >= value }) == nil {
-                    total += 1
-                    continue
-                }
-                
-                // Check top
-                if (0..<y).map({ Point(x, $0) }).first(where: { grid[$0] >= value }) == nil {
-                    total += 1
-                    continue
-                }
-                
-                // Check bottom
-                if (y+1..<grid.rows).map({ Point(x, $0) }).first(where: { grid[$0] >= value }) == nil {
+                if
+                    visibleFromLeft(point: point, grid: grid, value: value) ||
+                    visibleFromRight(point: point, grid: grid, value: value) ||
+                    visibleFromTop(point: point, grid: grid, value: value) ||
+                    visibleFromBottom(point: point, grid: grid, value: value)
+                {
                     total += 1
                     continue
                 }
@@ -49,8 +35,23 @@ public struct Day8 {
         return total
     }
     
-    public func part2(_ input: [String]) -> Int {
-        let grid = Grid(input)
+    func visibleFromLeft(point: Point, grid: Grid<Int>, value: Int) -> Bool {
+        (0..<point.x).map({ Point($0, point.y) }).first(where: { grid[$0] >= value }) == nil
+    }
+    
+    func visibleFromRight(point: Point, grid: Grid<Int>, value: Int) -> Bool {
+        (point.x+1..<grid.columns).map({ Point($0, point.y) }).first(where: { grid[$0] >= value }) == nil
+    }
+    
+    func visibleFromTop(point: Point, grid: Grid<Int>, value: Int) -> Bool {
+        (0..<point.y).map({ Point(point.x, $0) }).first(where: { grid[$0] >= value }) == nil
+    }
+    
+    func visibleFromBottom(point: Point, grid: Grid<Int>, value: Int) -> Bool {
+        (point.y+1..<grid.rows).map({ Point(point.x, $0) }).first(where: { grid[$0] >= value }) == nil
+    }
+    
+    public func part2(_ grid: Grid<Int>) -> Int {
         var highestScenicScore = 0
         
         for y in (1..<grid.columns-1) {
@@ -58,13 +59,12 @@ public struct Day8 {
                 let point = Point(x, y)
                 let value = grid[point]
                                 
-                let left = ((0..<x).map({ Point($0, y) }).reversed().firstIndex(where: { grid[$0] >= value }) ?? x-1) + 1
-                let right = ((x+1..<grid.columns).map({ Point($0, y) }).firstIndex(where: { grid[$0] >= value }) ?? (grid.columns-1)-(x+1)) + 1
-                let top = ((0..<y).map({ Point(x, $0) }).reversed().firstIndex(where: { grid[$0] >= value }) ?? y-1) + 1
-                let bottom = ((y+1..<grid.rows).map({ Point(x, $0) }).firstIndex(where: { grid[$0] >= value }) ?? (grid.rows-1)-(y+1)) + 1
+                let scenicScore =
+                    visibleToLeft(point: point, grid: grid, value: value) *
+                    visibleToRight(point: point, grid: grid, value: value) *
+                    visibleToTop(point: point, grid: grid, value: value) *
+                    visibleToBottom(point: point, grid: grid, value: value)
                 
-                let scenicScore = left * right * top * bottom
-
                 if scenicScore > highestScenicScore {
                     highestScenicScore = scenicScore
                 }
@@ -72,6 +72,22 @@ public struct Day8 {
         }
 
         return highestScenicScore
+    }
+    
+    func visibleToLeft(point: Point, grid: Grid<Int>, value: Int) -> Int {
+        ((0..<point.x).map({ Point($0, point.y) }).reversed().firstIndex(where: { grid[$0] >= value }) ?? point.x-1) + 1
+    }
+    
+    func visibleToRight(point: Point, grid: Grid<Int>, value: Int) -> Int {
+        ((point.x+1..<grid.columns).map({ Point($0, point.y) }).firstIndex(where: { grid[$0] >= value }) ?? (grid.columns-1)-(point.x+1)) + 1
+    }
+    
+    func visibleToTop(point: Point, grid: Grid<Int>, value: Int) -> Int {
+        ((0..<point.y).map({ Point(point.x, $0) }).reversed().firstIndex(where: { grid[$0] >= value }) ?? point.y-1) + 1
+    }
+    
+    func visibleToBottom(point: Point, grid: Grid<Int>, value: Int) -> Int {
+        ((point.y+1..<grid.rows).map({ Point(point.x, $0) }).firstIndex(where: { grid[$0] >= value }) ?? (grid.rows-1)-(point.y+1)) + 1
     }
 }
 
