@@ -38,6 +38,13 @@ R 2
         XCTAssertEqual(4, results.first?.value)
     }
     
+    func test_parse_input() throws {
+//        measure {
+            let results = day.parse(input)
+            XCTAssertEqual(2000, results.count)
+//        }
+    }
+    
     func test_part1_example() throws {
         let input = """
 R 4

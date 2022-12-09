@@ -9,7 +9,6 @@
 import Foundation
 import StandardLibraries
 
-
 public struct Day9 {
     public init() {}
     
@@ -47,15 +46,14 @@ public struct Day9 {
         for movement in movements {
             for _ in (0..<movement.value) {
                 move(head: &head, tail: &tail1, shouldTrack: false, points: &points, direction: movement.direction)
-                moveTail(head: tail1, tail: &tail2, shouldTrack: false, points: &points, direction: movement.direction)
-                moveTail(head: tail2, tail: &tail3, shouldTrack: false, points: &points, direction: movement.direction)
-                moveTail(head: tail3, tail: &tail4, shouldTrack: false, points: &points, direction: movement.direction)
-                moveTail(head: tail4, tail: &tail5, shouldTrack: false, points: &points, direction: movement.direction)
-                moveTail(head: tail5, tail: &tail6, shouldTrack: false, points: &points, direction: movement.direction)
-                moveTail(head: tail6, tail: &tail7, shouldTrack: false, points: &points, direction: movement.direction)
-                moveTail(head: tail7, tail: &tail8, shouldTrack: false, points: &points, direction: movement.direction)
-                moveTail(head: tail8, tail: &tail9, shouldTrack: true, points: &points, direction: movement.direction)
-
+                moveTail(head: tail1, tail: &tail2)
+                moveTail(head: tail2, tail: &tail3)
+                moveTail(head: tail3, tail: &tail4)
+                moveTail(head: tail4, tail: &tail5)
+                moveTail(head: tail5, tail: &tail6)
+                moveTail(head: tail6, tail: &tail7)
+                moveTail(head: tail7, tail: &tail8)
+                points = moveTail(head: tail8, tail: &tail9, points: points)!
 //                draw(points: points, head: head, tail1: tail1, tail2: tail2, tail3: tail3, tail4: tail4, tail5: tail5, tail6: tail6, tail7: tail7, tail8: tail8, tail9: tail9)
             }
         }
@@ -65,101 +63,54 @@ public struct Day9 {
 }
 
 extension Day9 {
-    func draw(points: Set<Point>, head: Point, tail1: Point, tail2: Point, tail3: Point, tail4: Point, tail5: Point, tail6: Point, tail7: Point, tail8: Point, tail9: Point) {
-        var positions = points
-        positions.insert(head)
-        positions.insert(tail1)
-        positions.insert(tail2)
-        positions.insert(tail3)
-        positions.insert(tail4)
-        positions.insert(tail5)
-        positions.insert(tail6)
-        positions.insert(tail7)
-        positions.insert(tail8)
-        positions.insert(tail9)
-        
-        let (minCoord, maxCoord) = positions.minMax()
-        
-        for y in (minCoord.y...maxCoord.y) {
-            var line = ""
-            for x in (minCoord.x...maxCoord.x) {
-                let point = Point(x, y)
-                if points.contains(point) {
-                    if point == .zero {
-                        line.append("s")
-                    } else {
-                        line.append("#")
-                    }
-                    continue
-                }
-                
-                switch point {
-                case head: line.append("H")
-                case tail1: line.append("1")
-                case tail2: line.append("2")
-                case tail3: line.append("3")
-                case tail4: line.append("4")
-                case tail5: line.append("5")
-                case tail6: line.append("6")
-                case tail7: line.append("7")
-                case tail8: line.append("8")
-                case tail9: line.append("9")
-                default: line.append(".")
-                }
-            }
-            print(line)
-        }
-        print()
-    }
-    
     func move(head: inout Point, tail: inout Point, shouldTrack: Bool, points: inout Set<Point>, direction: Direction) {
-        switch direction {
-        case .up:
-            head = head.up()
-            let headNeighbors = head.neighbors(true, max: nil)
-            if head != tail, !headNeighbors.contains(tail) {
-                tail = head.down()
-                if shouldTrack {
-                    points.insert(tail)
-                }
-            }
-        case .down:
-            head = head.down()
-            let headNeighbors = head.neighbors(true, max: nil)
-            if head != tail, !headNeighbors.contains(tail) {
-                tail = head.up()
-                if shouldTrack {
-                    points.insert(tail)
-                }
-            }
-        case .left:
-            head = head.left()
-            let headNeighbors = head.neighbors(true, max: nil)
-            if head != tail, !headNeighbors.contains(tail) {
-                tail = head.right()
-                if shouldTrack {
-                    points.insert(tail)
-                }
-            }
-        case .right:
-            head = head.right()
-            let headNeighbors = head.neighbors(true, max: nil)
-            if head != tail, !headNeighbors.contains(tail) {
-                tail = head.left()
-                if shouldTrack {
-                    points.insert(tail)
-                }
-            }
+        if move(head: &head, tail: &tail, direction: direction), shouldTrack {
+            points.insert(tail)
         }
     }
     
-    func moveTail(head: Point, tail: inout Point, shouldTrack: Bool, points: inout Set<Point>, direction: Direction) {
+    func move(head: inout Point, tail: inout Point, direction: Direction) -> Bool {
+        head = head.move(direction)
+        guard head != tail else { return false }
+        if !head.neighbors(true, max: nil).contains(tail) {
+            tail = head.move(direction.opposite)
+            return true
+        }
+        return false
+    }
+    
+    @discardableResult
+    func moveTail(head: Point, tail: inout Point, points: Set<Point>? = nil) -> Set<Point>? {
+        guard head != tail else { return points }
         let headNeighbors = head.neighbors(true, max: nil)
-        if head != tail, !headNeighbors.contains(tail) {
+        var points = points
+        if !headNeighbors.contains(tail) {
             tail = headNeighbors.intersection(tail.neighbors(true, max: nil)).sorted(by: { head.manhattanDistance(to: $0) < head.manhattanDistance(to: $1) }).first ?? tail
-            if shouldTrack {
-                points.insert(tail)
-            }
+            points?.insert(tail)
+        }
+        return points
+    }
+    
+    public func parse(_ input: [String]) -> [SnakeMove] {
+        var movements = [SnakeMove]()
+        
+        for line in input {
+            let components = line.components(separatedBy: " ")
+            let movement = SnakeMove(direction: Direction(rawValue: components[0])!, value: Int(components[1])!)
+            movements.append(movement)
+        }
+        
+        return movements
+    }
+}
+
+extension Point {
+    public func move(_ direction: Day9.Direction) -> Point {
+        switch direction {
+        case .left: return left()
+        case .right: return right()
+        case .up: return up()
+        case .down: return down()
         }
     }
 }
@@ -175,17 +126,14 @@ extension Day9 {
         case down = "D"
         case left = "L"
         case right = "R"
-    }
-    
-    public func parse(_ input: [String]) -> [SnakeMove] {
-        var movements = [SnakeMove]()
         
-        for line in input {
-            let components = line.components(separatedBy: " ")
-            let movement = SnakeMove(direction: Direction(rawValue: components[0])!, value: Int(components[1])!)
-            movements.append(movement)
+        public var opposite: Direction {
+            switch self {
+            case .up: return .down
+            case .down: return .up
+            case .left: return .right
+            case .right: return .left
+            }
         }
-        
-        return movements
     }
 }
