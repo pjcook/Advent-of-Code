@@ -168,12 +168,23 @@ public extension Point {
                     .filter({ max == nil || $0.x < max!.x && $0.y < max!.y })
         )
     }
+    
+    func position(from origin: Point) -> Position? {
+        for position in Position.all {
+            if origin + position.point == self {
+                return position
+            }
+        }
+        return nil
+    }
 }
 
 public enum Position {
     case tl, t, tr
     case l, m, r
     case bl, b, br
+    
+    static let all: [Position] = [.tl, .t, .tr, .l, .m, .r, .bl, .b, .br]
     
     public var point: Point {
         switch self {
