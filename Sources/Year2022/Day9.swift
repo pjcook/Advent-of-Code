@@ -77,29 +77,38 @@ extension Day9 {
         positions.insert(tail7)
         positions.insert(tail8)
         positions.insert(tail9)
-        let (minPoint, _) = positions.minMax()
         
-        let side = 30
-        var grid = Grid<String>(columns: side, items: Array(repeating: ".", count: side*side))
-        let adder = Point(abs(minPoint.x), abs(minPoint.y))
-        grid[head + adder] = "H"
-        grid[tail1 + adder] = "1"
-        grid[tail2 + adder] = "2"
-        grid[tail3 + adder] = "3"
-        grid[tail4 + adder] = "4"
-        grid[tail5 + adder] = "5"
-        grid[tail6 + adder] = "6"
-        grid[tail7 + adder] = "7"
-        grid[tail8 + adder] = "8"
-        grid[tail9 + adder] = "9"
+        let (minCoord, maxCoord) = positions.minMax()
         
-        for p in points {
-            grid[p + adder] = "#"
+        for y in (minCoord.y...maxCoord.y) {
+            var line = ""
+            for x in (minCoord.x...maxCoord.x) {
+                let point = Point(x, y)
+                if points.contains(point) {
+                    if point == .zero {
+                        line.append("s")
+                    } else {
+                        line.append("#")
+                    }
+                    continue
+                }
+                
+                switch point {
+                case head: line.append("H")
+                case tail1: line.append("1")
+                case tail2: line.append("2")
+                case tail3: line.append("3")
+                case tail4: line.append("4")
+                case tail5: line.append("5")
+                case tail6: line.append("6")
+                case tail7: line.append("7")
+                case tail8: line.append("8")
+                case tail9: line.append("9")
+                default: line.append(".")
+                }
+            }
+            print(line)
         }
-        
-        grid[adder] = "s"
-
-        grid.draw()
         print()
     }
     
