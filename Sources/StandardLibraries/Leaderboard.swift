@@ -168,7 +168,7 @@ extension API.StarTime {
     
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        let timestamp = try Double(values.decode(String.self, forKey: .datetime))! / 1000
+        let timestamp = try Double(values.decode(String.self, forKey: .datetime))! / Double(1000)
         datetime = Date(timeIntervalSince1970: timestamp)
     }
 }
