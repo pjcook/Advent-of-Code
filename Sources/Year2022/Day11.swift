@@ -93,10 +93,56 @@ extension Day11 {
         }
     }
     
-    public enum Operation {
+    public enum Operation: Equatable {
         case add(Int)
         case multiply(Int)
         case double
+    }
+}
+
+extension Day11 {
+    public func parse(_ lines: [String]) -> [Monkey] {
+        var monkeys = [Monkey]()
+        var index = 0
+        
+        while index < lines.count {
+            var line = lines[index]
+            guard line.hasPrefix("Monkey") else {
+                index += 1
+                continue
+            }
+            
+            index += 1
+            line = lines[index]
+            let list = line.replacingOccurrences(of: "  Starting items: ", with: "").components(separatedBy: ", ").map({ Int($0)! })
+            
+            index += 1
+            line = lines[index]
+            let operationComponents = line.replacingOccurrences(of: "  Operation: new = ", with: "").components(separatedBy: " ")
+            var operation = Operation.double
+            if operationComponents[1] == "+" {
+                operation = .add(Int(operationComponents[2])!)
+            } else if operationComponents[1] == "*" && operationComponents[2] != "old" {
+                operation = .multiply(Int(operationComponents[2])!)
+            }
+            
+            index += 1
+            line = lines[index]
+            let checkDivisor = Int(line.components(separatedBy: " ").last!)!
+            
+            index += 1
+            line = lines[index]
+            let checkTrue = Int(line.components(separatedBy: " ").last!)!
+            
+            index += 1
+            line = lines[index]
+            let checkFalse = Int(line.components(separatedBy: " ").last!)!
+            
+            let monkey = Monkey(list: list, operation: operation, checkDivisor: checkDivisor, checkTrue: checkTrue, checkFalse: checkFalse)
+            monkeys.append(monkey)
+        }        
+        
+        return monkeys
     }
 }
 
