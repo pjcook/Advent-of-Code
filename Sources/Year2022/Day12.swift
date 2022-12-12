@@ -24,26 +24,10 @@ public struct Day12 {
     }
     
     public func part2(_ input: [String]) -> Int {
-        var grid = parse(input, startItem: 1)
+        let grid = parse(input, startItem: 1)
         let endIndex = grid.items.firstIndex(of: endItem)!
         let end = grid.point(for: endIndex)
-
-        var shortest = Int.max
-
-        for y in (0..<grid.rows) {
-            for x in (0..<grid.columns) {
-                let point = Point(x, y)
-                guard grid[point] == 1 else { continue }
-                grid[point] = 0
-                let cost = calculatePath(from: point, to: end, grid: grid)
-                if cost != -1, cost < shortest {
-                    shortest = cost
-                }
-                grid[point] = 1
-            }
-        }
-                
-        return shortest - 1
+        return calculatePath(from: end, grid: grid)
     }
 }
 
@@ -77,6 +61,38 @@ extension Day12 {
         
         return costSoFar[end, default: -1]
     }
+    
+    func calculatePath(from end: Point, grid: Grid<Int>) -> Int {
+        let maxPoint = grid.bottomRight
+        
+        let queue = PriorityQueue<Point>()
+        queue.enqueue(end, priority: 0)
+        var cameFrom = [Point:Point]()
+        var costSoFar = [Point: Int]()
+        costSoFar[end] = 0
+        var start = end
+
+        while !queue.isEmpty {
+            let current = queue.dequeue()!
+            let currentValue = grid[current]
+            if currentValue == 1 {
+                start = current
+                break
+            }
+            
+            for next in current.cardinalNeighbors(max: maxPoint) {
+                guard grid[next] - currentValue >= -1 else { continue }
+                let newCost = costSoFar[current, default: 0] + 1
+                if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
+                    costSoFar[next] = newCost
+                    queue.enqueue(next, priority: newCost + current.manhattanDistance(to: next))
+                    cameFrom[next] = current
+                }
+            }
+        }
+        
+        return costSoFar[start, default: -1]
+    }
 }
 
 extension Day12 {
@@ -91,8 +107,7 @@ extension Day12 {
                 } else if $0 == "E" {
                     items.append(endItem)
                 } else {
-                    let index = alphabet.firstIndex(of: $0)! + 1
-                    items.append(index as! Int)
+                    items.append(alphabet.firstIndex(of: $0)! + 1)
                 }
             }
         }
