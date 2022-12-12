@@ -1,6 +1,7 @@
 import Foundation
 
 public class PriorityQueue<T: Hashable> {
+    public init() {}
     public var queue = [T:Int]()
     public var isEmpty: Bool {
         queue.isEmpty
