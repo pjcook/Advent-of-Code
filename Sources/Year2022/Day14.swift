@@ -21,6 +21,7 @@ public struct Day14 {
         let data = parse(input)
         var allPoints = [Point]()
         
+        // calculate all walls, this is also required so we know how big our `Grid` will need to be
         for points in data {
             for i in (1..<points.count) {
                 let point1 = points[i-1]
@@ -37,14 +38,17 @@ public struct Day14 {
             }
         }
         
+        // calculate the size of the required grid
         let minMax = allPoints.minMax()
         let maxLeft = Point(minMax.0.x-1, minMax.1.y)
         var grid = Grid(columns: minMax.1.x + 1, items: Array(repeating: air, count: (minMax.1.x + 1) * (minMax.1.y + 1)))
         
+        // add walls
         for point in allPoints {
             grid[point] = wall
         }
         
+        // pour sand
         let startPoint = Point(500, 0)
     outerloop: while true {
             var point = startPoint
@@ -87,6 +91,7 @@ public struct Day14 {
         let data = parse(input)
         var allPoints = [Point]()
         
+        // calculate all walls, this is also required so we know how big our `Grid` will need to be
         for points in data {
             for i in (1..<points.count) {
                 let point1 = points[i-1]
@@ -103,11 +108,13 @@ public struct Day14 {
             }
         }
         
+        // calculate the size of the required grid
         let minMax = allPoints.minMax()
         let rows = minMax.1.y + 2
-        let columns = minMax.1.x * 2
+        let columns = minMax.1.x + rows
         var grid = Grid(columns: columns, items: Array(repeating: air, count: (columns + 1) * (rows + 1)))
         
+        // add walls
         for point in allPoints {
             grid[point] = wall
         }
@@ -117,6 +124,7 @@ public struct Day14 {
             grid[Point(x, rows)] = wall
         }
         
+        // pour sand
         let startPoint = Point(500, 0)
     outerloop: while true {
             var point = startPoint
