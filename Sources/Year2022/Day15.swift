@@ -63,10 +63,7 @@ public struct Day15 {
             var ranges = sensorData.filter({ $0.isInRange(for: y) }).map({ $0.range(for: y) })
             var range = ranges.removeFirst()
             while !ranges.isEmpty {
-                if let nextRange = ranges.first(where: { range.overlaps($0) }) {
-                    ranges.remove(at: ranges.firstIndex(of: nextRange)!)
-                    range = (min(range.lowerBound, nextRange.lowerBound)...max(range.upperBound, nextRange.upperBound))
-                } else if let nextRange = ranges.first(where: { ((range.lowerBound-1)...(range.upperBound+1)).overlaps($0) }) {
+                if let nextRange = ranges.first(where: { ((range.lowerBound-1)...(range.upperBound+1)).overlaps($0) }) {
                     ranges.remove(at: ranges.firstIndex(of: nextRange)!)
                     range = (min(range.lowerBound, nextRange.lowerBound)...max(range.upperBound, nextRange.upperBound))
                 } else {
@@ -86,7 +83,7 @@ public struct Day15 {
 }
 
 extension Day15 {
-    public class SensorData {
+    public struct SensorData {
         public let sensor: Point
         public let beacon: Point
         public let manhattanDistance: Int
