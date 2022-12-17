@@ -16,14 +16,16 @@ public struct Day17 {
     
     public init() {}
     
-    public func part1(_ input: String, numberOfRocks: Int = 2022, shouldCleanup: Bool = false) -> Int {
+    public func part1(_ input: String, numberOfRocks: Int = 2022) -> Int {
         let minX = 0
         let maxX = 7
         var rockPointer = 0
         var inputPointer = 0
         var top = 0
+        var added = 0
         
         var tunnel = Set<Point>()
+        var seen = [Set<Point>: (Int, Int)]()
         
         func incrementRockPointer() {
             rockPointer += 1
@@ -39,6 +41,15 @@ public struct Day17 {
             }
         }
         
+        func calculateSigniture() -> Set<Point> {
+            let maxY = tunnel.map({ $0.y }).sorted().last!
+            let results: [Point] = tunnel.compactMap { point in
+                guard maxY - point.y <= 50 else { return nil }
+                return Point(point.x, maxY - point.y)
+            }
+            return Set(results)
+        }
+        
         func draw(points: Set<Point>, currentRock: Set<Point>?) {
             var allPoints = points
             if let currentRock {
@@ -48,28 +59,21 @@ public struct Day17 {
             }
             let minMax = allPoints.minMax()
             let columns = 7
-            var grid = Grid(columns: columns, items: Array(repeating: empty, count: columns * (minMax.1.y + 1)))
+            let rows = minMax.1.y-minMax.0.y
+            var grid = Grid(columns: columns, items: Array(repeating: empty, count: columns * (rows + 1)))
             
+            let transition = Point(0,-minMax.0.y)
             for point in points {
-                grid[point] = rock
+                grid[point+transition] = rock
             }
             if let currentRock {
                 for point in currentRock {
-                    grid[point] = fallingRock
+                    grid[point+transition] = fallingRock
                 }
             }
             
             grid.drawUpsidedown()
             print()
-        }
-        
-        func cleanUp() {
-            let minMax = tunnel.minMax()
-            for point in tunnel {
-                if point.y < minMax.1.y - 30 {
-                    tunnel.remove(point)
-                }
-            }
         }
         
         func moveRock(rock: Rock) {
@@ -105,27 +109,32 @@ public struct Day17 {
                 
                 // Continue
                 rock = testRock
+//                draw(points: tunnel, currentRock: rock.points)
             }
         }
         
-        let onePercent = 100 / numberOfRocks
-        for i in (0..<numberOfRocks) {
-            if i % 1_000 == 0 {
-                print("Completed", onePercent * i, "%", i, tunnel.count)
-            }
+        var i = 0
+        while i < numberOfRocks {
             moveRock(rock: Day17.allRocks[rockPointer])
             incrementRockPointer()
-            if shouldCleanup {
-                cleanUp()
+            
+            if i >= 2022 {
+                let signiture = calculateSigniture()
+                if let (oldI, oldTop) = seen[signiture] {
+                    let dy = top - oldTop
+                    let dt = i - oldI
+                    let amt = (numberOfRocks - i) / dt
+                    added += amt * dy
+                    i += amt * dt
+                }
+                seen[signiture] = (i, top)
             }
+            
+            i += 1
         }
         
 //        draw(points: tunnel, currentRock: nil)
-        return top
-    }
-    
-    public func part2(_ input: String) -> Int {
-        return 1
+        return top + added
     }
 }
 

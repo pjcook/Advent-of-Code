@@ -15,7 +15,7 @@ class Day17Tests: XCTestCase {
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(1, day.part1(input, numberOfRocks: 1_000_000_000_000, shouldCleanup: true))
+        XCTAssertEqual(1547953216393, day.part1(input, numberOfRocks: 1_000_000_000_000))
 //        }
     }
 }
@@ -29,6 +29,6 @@ extension Day17Tests {
     
     func test_part2_example() {
         let input = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"
-        XCTAssertEqual(1514285714288, day.part1(input, numberOfRocks: 1_000_000_000_000, shouldCleanup: true))
+        XCTAssertEqual(1514285714288, day.part1(input, numberOfRocks: 1_000_000_000_000))
     }
 }
