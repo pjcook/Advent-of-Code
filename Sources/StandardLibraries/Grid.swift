@@ -212,6 +212,17 @@ extension Grid {
         }
     }
     
+    public func drawUpsidedown() {
+        for i in (1...rows) {
+            let y = rows - i
+            var row = ""
+            for x in (0..<columns) {
+                row += "\(self[x,y])"
+            }
+            print(row)
+        }
+    }
+    
     public func drawForBool(on: String = "#", off: String = ".") {
         guard let grid = self as? Grid<Bool> else { return }
         for y in (0..<items.count/columns) {
