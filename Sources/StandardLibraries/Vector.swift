@@ -43,7 +43,29 @@ public extension Vector {
 }
 
 public extension Vector {
+    func cardinalNeighbours(_ allowNegative: Bool = false, max: Vector? = nil) -> Set<Vector> {
+        Set(
+            Vector.cardinalNeighbours.map({ $0 + self })
+                .filter({ allowNegative || $0.x >= 0 && $0.y >= 0 && $0.z >= 0 })
+                .filter({ max == nil || $0.x < max!.x && $0.y < max!.y && $0.z < max!.z })
+        )
+    }
+    
+    enum Direction {
+        public static let up = Vector(x: 0,y: 1,z: 0)
+        public static let down = Vector(x: 0,y: -1,z: 0)
+        public static let left = Vector(x: -1,y: 0,z: 0)
+        public static let right = Vector(x: 1,y: 0,z: 0)
+        public static let forwards = Vector(x: 0,y: 0,z: 1)
+        public static let backwards = Vector(x: 0,y: 0,z: -1)
+        public static let all = [up, down, left, right, forwards, backwards]
+    }
+    
     static let zero = Vector(x: 0, y: 0, z: 0)
+    
+    static var cardinalNeighbours: Set<Vector> = {
+        Set(Direction.all)
+    }()
     
     static var adjacent: Set<Vector> = {
         var items = Set<Vector>()
