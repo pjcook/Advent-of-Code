@@ -6,6 +6,8 @@ import Year2022
 class Day18Tests: XCTestCase {
     
     let input = Input("Day18.input", Bundle.module).lines
+    let input_sam = Input("Day18_Sam.input", Bundle.module).lines
+    let input_paul = Input("Day18_Paul.input", Bundle.module).lines
     let day = Day18()
 
     func test_part1() {
@@ -17,6 +19,30 @@ class Day18Tests: XCTestCase {
     func test_part2() {
 //        measure {
         XCTAssertEqual(2520, day.part2(input))
+//        }
+    }
+    
+    func test_part1_sam() {
+//        measure {
+        XCTAssertEqual(3496, day.part1(input_sam))
+//        }
+    }
+    
+    func test_part2_sam() {
+//        measure {
+        XCTAssertEqual(2064, day.part2(input_sam))
+//        }
+    }
+    
+    func test_part1_paul() {
+//        measure {
+        XCTAssertEqual(4536, day.part1(input_paul))
+//        }
+    }
+    
+    func test_part2_paul() {
+//        measure {
+        XCTAssertEqual(2606, day.part2(input_paul))
 //        }
     }
 }
