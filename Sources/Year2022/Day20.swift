@@ -23,14 +23,7 @@ public struct Day20 {
         for item in typedInput {
             guard item.value != 0 else { continue }
             let originalIndex = mixer.firstIndex(of: item)!
-            var moveToIndex = originalIndex + item.value
-            if moveToIndex < 0 {
-                moveToIndex = moveToIndex % topIndex
-                moveToIndex = moveToIndex + topIndex
-            }
-            if moveToIndex > topIndex {
-                moveToIndex = moveToIndex % topIndex
-            }
+            let moveToIndex = (((originalIndex + item.value) % topIndex) + topIndex) % topIndex
             
             mixer.remove(at: originalIndex)
             mixer.insert(item, at: moveToIndex)
@@ -48,18 +41,9 @@ public struct Day20 {
         
         // Calculate result
         let zero = mixer.firstIndex(where: { $0.value == 0 })!
-        var one = zero + 1000
-        if one >= typedInput.count {
-            one = one % typedInput.count
-        }
-        var two = zero + 2000
-        if two >= typedInput.count {
-            two = two % typedInput.count
-        }
-        var three = zero + 3000
-        if three >= typedInput.count {
-            three = three % typedInput.count
-        }
+        let one = (zero + 1000) % typedInput.count
+        let two = (zero + 2000) % typedInput.count
+        let three = (zero + 3000) % typedInput.count
         
         return mixer[one].value + mixer[two].value + mixer[three].value
     }
@@ -70,9 +54,7 @@ public struct Day20 {
     }
     
     public func part2(_ input: [Int]) -> Int {
-        let typedInput = input.map {
-            Value($0 * 811589153)
-        }
+        let typedInput = input.map { Value($0 * 811589153) }
         return mixing(typedInput, timesToMix: 10)
     }
 }
