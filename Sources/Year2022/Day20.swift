@@ -19,32 +19,34 @@ public struct Day20 {
         }
     }
     
-    fileprivate func mix(_ typedInput: [Day20.Value], _ mixer: inout [Day20.Value], _ modder: Int) {
+    fileprivate func mix(_ typedInput: [Day20.Value], _ mixer: inout [Day20.Value], _ topIndex: Int) {
         for item in typedInput {
             guard item.value != 0 else { continue }
-            let index = mixer.firstIndex(of: item)!
-            var move = index + item.value
-            if move < 0 {
-                move = move % modder
-                move = move + modder
+            let originalIndex = mixer.firstIndex(of: item)!
+            var moveToIndex = originalIndex + item.value
+            if moveToIndex < 0 {
+                moveToIndex = moveToIndex % topIndex
+                moveToIndex = moveToIndex + topIndex
             }
-            if move > modder {
-                move = move % modder
+            if moveToIndex > topIndex {
+                moveToIndex = moveToIndex % topIndex
             }
             
-            mixer.remove(at: index)
-            mixer.insert(item, at: move)
+            mixer.remove(at: originalIndex)
+            mixer.insert(item, at: moveToIndex)
         }
     }
     
     fileprivate func mixing(_ typedInput: [Value], timesToMix: Int) -> Int {
-        let modder = typedInput.count - 1
+        let topIndex = typedInput.count - 1
         var mixer = typedInput
 
+        // Mixing
         for _ in (0..<timesToMix) {
-            mix(typedInput, &mixer, modder)
+            mix(typedInput, &mixer, topIndex)
         }
         
+        // Calculate result
         let zero = mixer.firstIndex(where: { $0.value == 0 })!
         var one = zero + 1000
         if one >= typedInput.count {
@@ -72,22 +74,5 @@ public struct Day20 {
             Value($0 * 811589153)
         }
         return mixing(typedInput, timesToMix: 10)
-    }
-}
-
-extension Day20 {
-    public func index(for index: Int, value: Int, top: Int) -> Int {
-        guard value != 0 else { return index }
-        var newIndex = index + value
-        if value > 0 {
-            while newIndex > top {
-                newIndex = newIndex - top
-            }
-        } else {
-            while newIndex < 0 {
-                newIndex = newIndex + top
-            }
-        }
-        return newIndex
     }
 }
