@@ -37,6 +37,10 @@ public extension String {
     var lines: [String] {
         components(separatedBy: .newlines)
     }
+    
+    var integers: [Int] {
+        lines.compactMap(Int.init)
+    }
 }
 
 public func readInputAsStrings(filename: String, delimiter: Character = "\n", bundle: Bundle) throws -> [String] {
