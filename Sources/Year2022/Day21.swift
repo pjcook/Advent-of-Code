@@ -120,5 +120,6 @@ extension Day21 {
             queue.append(contentsOf: calculations.filter({ $0.1 == monkey || $0.3 == monkey }))
         }
         assert(false)
+        return ("","",trail)
     }
 }
