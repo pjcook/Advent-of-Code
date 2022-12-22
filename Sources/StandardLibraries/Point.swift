@@ -23,6 +23,18 @@ public struct Point: Hashable, Comparable {
 }
 
 extension Point {
+    public static func pointsIn(_ topRight: Point, _ bottomLeft: Point) -> Set<Point> {
+        var points = Set<Point>()
+        
+        for y in (topRight.y...bottomLeft.y) {
+            for x in (topRight.x...bottomLeft.x) {
+                points.insert(Point(x,y))
+            }
+        }
+        
+        return points
+    }
+    
     public func distance(to: Point) -> Double {
         sqrt(pow(Double(x - to.x), 2) + pow(Double(y - to.y), 2))
     }
