@@ -176,7 +176,7 @@ public struct Day13 {
         public let id: Int
         public var position: Point
         public var direction: CompassDirection
-        public var junctionOptions = Ring<Direction>([.left, .straight, .right])
+        public var junctionOptions = Ring<MovementDirection>([.left, .straight, .right])
         
         public init(id: Int, position: Point, direction: CompassDirection) {
             self.id = id

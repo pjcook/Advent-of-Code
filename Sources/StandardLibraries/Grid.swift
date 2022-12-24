@@ -40,6 +40,32 @@ public struct Grid<T: Hashable>: Hashable {
     }
 }
 
+extension Grid where T == [String] {
+    public init(_ input: [String]) {
+        var items = [[String]]()
+        
+        for line in input {
+            line.forEach { items.append([String($0)]) }
+        }
+        
+        self.columns = input[0].count
+        self.items = items
+    }
+}
+
+extension Grid where T == String {
+    public init(_ input: [String]) {
+        var items = [String]()
+        
+        for line in input {
+            line.forEach { items.append(String($0)) }
+        }
+        
+        self.columns = input[0].count
+        self.items = items
+    }
+}
+
 extension Grid where T == Int {
     public init(_ input: [String]) {
         var items = [Int]()

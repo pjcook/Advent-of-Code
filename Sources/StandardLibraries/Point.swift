@@ -153,19 +153,19 @@ public extension Point {
         return items
     }()
     
-    func cardinalNeighbors(_ allowNegative: Bool = false, max: Point? = nil) -> Set<Point> {
+    func cardinalNeighbors(_ allowNegative: Bool = false, min: Point = .zero, max: Point? = nil) -> Set<Point> {
         return Set([
             Point(x, y-1),
             Point(x-1, y),
             Point(x+1, y),
             Point(x, y+1)
         ]
-                    .filter({ allowNegative || $0.x >= 0 && $0.y >= 0 })
-                    .filter({ max == nil || $0.x < max!.x && $0.y < max!.y })
+            .filter({ allowNegative || $0.x >= min.x && $0.y >= min.y })
+            .filter({ max == nil || $0.x < max!.x && $0.y < max!.y })
         )
     }
     
-    func neighbors(_ allowNegative: Bool = false, max: Point? = nil) -> Set<Point> {
+    func neighbors(_ allowNegative: Bool = false, min: Point = .zero, max: Point? = nil) -> Set<Point> {
         return Set([
             Point(x-1, y-1),
             Point(x, y-1),
@@ -176,8 +176,8 @@ public extension Point {
             Point(x, y+1),
             Point(x+1, y+1)
         ]
-                    .filter({ allowNegative || $0.x >= 0 && $0.y >= 0 })
-                    .filter({ max == nil || $0.x < max!.x && $0.y < max!.y })
+            .filter({ allowNegative || $0.x >= min.x && $0.y >= min.y })
+            .filter({ max == nil || $0.x < max!.x && $0.y < max!.y })
         )
     }
     
@@ -245,6 +245,19 @@ public extension CompassDirection {
     }
 }
 
-public enum Direction: Int {
+public enum Direction {
+    case up, down, left, right
+    
+    public var point: Point {
+        switch self {
+        case .up: return Point(0, -1)
+        case .left: return Point(-1, 0)
+        case .right: return Point(1, 0)
+        case .down: return Point(0, 1)
+        }
+    }
+}
+
+public enum MovementDirection: Int {
     case left, right, straight
 }

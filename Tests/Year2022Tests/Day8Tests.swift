@@ -5,7 +5,7 @@ import Year2022
 
 class Day8Tests: XCTestCase {
     
-    let grid = Grid(Input("Day8.input", Bundle.module).lines)
+    let grid = Grid<Int>(Input("Day8.input", Bundle.module).lines)
     let day = Day8()
 
     func test_part1() {
@@ -23,7 +23,7 @@ class Day8Tests: XCTestCase {
 
 extension Day8Tests {
     func test_part1_example() throws {
-        let input = Grid("""
+        let input = Grid<Int>("""
 30373
 25512
 65332
@@ -34,7 +34,7 @@ extension Day8Tests {
     }
     
     func test_part2_example() throws {
-        let input = Grid("""
+        let input = Grid<Int>("""
 30373
 25512
 65332
