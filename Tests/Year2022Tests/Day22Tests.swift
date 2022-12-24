@@ -85,4 +85,26 @@ extension Day22Tests {
         
         XCTAssertEqual(5031, day.part2(input, mappings: Day22.ExampleMapping.all))
     }
+    
+    func test_part1_cubeMapping() {
+        let input = """
+        ...#
+        .#..
+        #...
+        ....
+...#.......#
+........#...
+..#....#....
+..........#.
+        ...#....
+        .....#..
+        .#......
+        ......#.
+
+10R5L5R10L4R5L5
+""".lines
+        let (grid, _) = day.parse(input)
+        let results = day.mapCube(grid: grid, lengthOfSide: 4)
+        print(results)
+    }
 }

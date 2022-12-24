@@ -42,6 +42,288 @@ public struct Day22 {
         case a, b, c, d, e, f
     }
     
+    public func mapCube(grid: Grid<String>, lengthOfSide: Int) -> [Day22Mapping] {
+        var sides = [Day22Mapping]()
+        var remaining: [Side] = [.f, .e, .d, .c, .b, .a]
+        var x = 0, y = 0
+        let bottomLeft = Point(lengthOfSide-1, lengthOfSide-1) // -1 because of the zero index
+        var point = Point(x, y)
+        func nextPoint() {
+            if x < grid.columns - lengthOfSide {
+                x += lengthOfSide
+            } else {
+                x = 0
+                y += lengthOfSide
+            }
+            point = Point(x, y)
+        }
+
+        while let sideId = remaining.popLast() {
+            while grid[point] == air {
+                nextPoint()
+            }
+            
+            sides.append(AutoMapping(id: sideId, minMax: (point, point + bottomLeft)))
+            nextPoint()
+        }
+        
+        var finalSides = [Day22Mapping]()
+        
+        /*  U D L R
+         1
+         2
+         3
+         4
+         5
+         6
+         
+         1 === side.a
+         */
+        let mid = Point(lengthOfSide / 2, lengthOfSide / 2)
+        
+        func neighbour(compassDirection: CompassDirection, point: Point) -> Day22Mapping? {
+            let point = point.add(direction: compassDirection, distance: lengthOfSide)
+            return sides.first(where: { $0.points.contains(point) })
+        }
+        
+        var mapGrid = Grid(columns: 4, items: Array(repeating: 0, count: 4*6))
+        let one = sides.first(where: { $0.id == .a })!
+        var lookup = [Int: Point]()
+        lookup[1] = one.topLeft + mid
+        let initialSearch = [
+            1:(4,3,5,2),
+            2:(4,3,1,6),
+            3:(1,6,5,2),
+            4:(5,2,1,6),
+            5:(3,4,1,6),
+            6:(3,4,5,2)
+        ]
+        
+        var queue = [1,2,3,4,5,6]
+        while !queue.isEmpty {
+            let next = queue.removeFirst()
+            guard let point = lookup[next] else {
+                queue.append(next)
+                continue
+            }
+            let details = initialSearch[next]!
+            
+            if let neg = neighbour(compassDirection: .e, point: point) {
+                let point = neg.topLeft + mid
+                if let key = lookup.first(where: { $0.value == point })?.key {
+                    if mapGrid[Point(3, next-1)] == 0 {
+                        mapGrid[Point(3, next-1)] = key
+                        mapGrid[Point(2, next-1)] = 7 - key
+                    }
+                } else {
+                    if lookup[details.3] == nil {
+                        lookup[details.3] = point
+                    } else if mapGrid[Point(3, next-1)] != 0 {
+                        lookup[mapGrid[Point(3, next-1)]] = point
+                    }  else {
+                        queue.append(next)
+                    }
+                    if mapGrid[Point(3, next-1)] == 0 {
+                        mapGrid[Point(3, next-1)] = details.3
+                        mapGrid[Point(2, next-1)] = details.2
+                    }
+                }
+                
+                // neighbours above and below would also share the same side
+                if let neg = neighbour(compassDirection: .s, point: point), let key = lookup.first(where: { $0.value == neg.topLeft + mid })?.key {  // above (reverse vertical compass points because numbers increase down
+                    mapGrid[Point(3, key-1)] = mapGrid[Point(3, next-1)]
+                    mapGrid[Point(2, key-1)] = mapGrid[Point(2, next-1)]
+                }
+                if let neg = neighbour(compassDirection: .n, point: point), let key = lookup.first(where: { $0.value == neg.topLeft + mid })?.key {
+                    mapGrid[Point(3, key-1)] = mapGrid[Point(3, next-1)]
+                    mapGrid[Point(2, key-1)] = mapGrid[Point(2, next-1)]
+                }
+            }
+            
+            if let neg = neighbour(compassDirection: .w, point: point) {
+                let point = neg.topLeft + mid
+                if let key = lookup.first(where: { $0.value == point })?.key {
+                    if mapGrid[Point(3, next-1)] == 0 {
+                        mapGrid[Point(3, next-1)] = 7 - key
+                        mapGrid[Point(2, next-1)] = key
+                    }
+                } else {
+                    if lookup[details.2] == nil {
+                        lookup[details.2] = point
+                    } else if mapGrid[Point(2, next-1)] != 0 {
+                        lookup[mapGrid[Point(2, next-1)]] = point
+                    } else {
+                        queue.append(next)
+                    }
+                    if mapGrid[Point(3, next-1)] == 0 {
+                        mapGrid[Point(3, next-1)] = details.3
+                        mapGrid[Point(2, next-1)] = details.2
+                    }
+                }
+                
+                // neighbours above and below would also share the same side
+                if let neg = neighbour(compassDirection: .s, point: point), let key = lookup.first(where: { $0.value == neg.topLeft + mid })?.key {  // above (reverse vertical compass points because numbers increase down
+                    mapGrid[Point(3, key-1)] = mapGrid[Point(3, next-1)]
+                    mapGrid[Point(2, key-1)] = mapGrid[Point(2, next-1)]
+                }
+                if let neg = neighbour(compassDirection: .n, point: point), let key = lookup.first(where: { $0.value == neg.topLeft + mid })?.key {
+                    mapGrid[Point(3, key-1)] = mapGrid[Point(3, next-1)]
+                    mapGrid[Point(2, key-1)] = mapGrid[Point(2, next-1)]
+                }
+            }
+            
+            if let neg = neighbour(compassDirection: .n, point: point) {
+                let point = neg.topLeft + mid
+                if let key = lookup.first(where: { $0.value == point })?.key {
+                    if mapGrid[Point(1, next-1)] == 0 {
+                        mapGrid[Point(1, next-1)] = key
+                        mapGrid[Point(0, next-1)] = 7 - key
+                    }
+                } else {
+                    if lookup[details.1] == nil {
+                        lookup[details.1] = point
+                    } else if mapGrid[Point(1, next-1)] != 0 {
+                        lookup[mapGrid[Point(1, next-1)]] = point
+                    }  else {
+                        queue.append(next)
+                    }
+                    if mapGrid[Point(1, next-1)] == 0 {
+                        mapGrid[Point(1, next-1)] = details.1
+                        mapGrid[Point(0, next-1)] = details.0
+                    }
+                }
+                
+                // neighbours above and below would also share the same side
+                if let neg = neighbour(compassDirection: .e, point: point), let key = lookup.first(where: { $0.value == neg.topLeft + mid })?.key {  // above (reverse vertical compass points because numbers increase down
+                    mapGrid[Point(1, key-1)] = mapGrid[Point(1, next-1)]
+                    mapGrid[Point(0, key-1)] = mapGrid[Point(0, next-1)]
+                }
+                if let neg = neighbour(compassDirection: .w, point: point), let key = lookup.first(where: { $0.value == neg.topLeft + mid })?.key {
+                    mapGrid[Point(1, key-1)] = mapGrid[Point(1, next-1)]
+                    mapGrid[Point(0, key-1)] = mapGrid[Point(0, next-1)]
+                }
+            }
+            
+            if let neg = neighbour(compassDirection: .s, point: point) {
+                let point = neg.topLeft + mid
+                if let key = lookup.first(where: { $0.value == point })?.key {
+                    if mapGrid[Point(1, next-1)] == 0 {
+                        mapGrid[Point(1, next-1)] = 7 - key
+                        mapGrid[Point(0, next-1)] = key
+                    }
+                } else {
+                    if lookup[details.0] == nil {
+                        lookup[details.0] = point
+                    } else if mapGrid[Point(0, next-1)] != 0 {
+                        lookup[mapGrid[Point(0, next-1)]] = point
+                    }  else {
+                        queue.append(next)
+                    }
+                    if mapGrid[Point(1, next-1)] == 0 {
+                        mapGrid[Point(1, next-1)] = details.1
+                        mapGrid[Point(0, next-1)] = details.0
+                    }
+                }
+                
+                // neighbours above and below would also share the same side
+                if let neg = neighbour(compassDirection: .e, point: point), let key = lookup.first(where: { $0.value == neg.topLeft + mid })?.key {  // above (reverse vertical compass points because numbers increase down
+                    mapGrid[Point(1, key-1)] = mapGrid[Point(1, next-1)]
+                    mapGrid[Point(0, key-1)] = mapGrid[Point(0, next-1)]
+                }
+                if let neg = neighbour(compassDirection: .w, point: point), let key = lookup.first(where: { $0.value == neg.topLeft + mid })?.key {
+                    mapGrid[Point(1, key-1)] = mapGrid[Point(1, next-1)]
+                    mapGrid[Point(0, key-1)] = mapGrid[Point(0, next-1)]
+                }
+            }
+        }
+
+        var toResolve = (0..<mapGrid.columns).compactMap({
+            if mapGrid[0,$0] == 0 || mapGrid[1,$0] == 0 || mapGrid[2,$0] == 0 || mapGrid[3,$0] == 0 {
+                return $0
+            }
+            return nil
+        })
+        
+        while !toResolve.isEmpty {
+            let next = toResolve.removeFirst()
+            
+            if mapGrid[0,next] == 0 && mapGrid[1,next] == 0 && mapGrid[2,next] == 0 && mapGrid[3,next] == 0 {
+                toResolve.append(next)
+                continue
+            }
+            
+            if (mapGrid[0,next] == 0 || mapGrid[1,next] == 0) && (mapGrid[2,next] != 0 || mapGrid[3,next] != 0) {
+                if mapGrid[2,next] != 0 {
+                    mapGrid[0,next] = mapGrid[0,mapGrid[2,next]-1]
+                    mapGrid[1,next] = mapGrid[1,mapGrid[2,next]-1]
+                } else {
+                    mapGrid[0,next] = mapGrid[0,mapGrid[3,next]-1]
+                    mapGrid[1,next] = mapGrid[1,mapGrid[3,next]-1]
+                }
+            }
+            
+            if (mapGrid[2,next] == 0 || mapGrid[3,next] == 0) && (mapGrid[0,next] != 0 || mapGrid[1,next] != 0) {
+                if mapGrid[0,next] != 0 {
+                    mapGrid[2,next] = mapGrid[2,mapGrid[0,next]-1]
+                    mapGrid[3,next] = mapGrid[3,mapGrid[0,next]-1]
+                } else {
+                    mapGrid[2,next] = mapGrid[2,mapGrid[1,next]-1]
+                    mapGrid[3,next] = mapGrid[3,mapGrid[1,next]-1]
+                }
+            }
+            
+            if mapGrid[0,next] == 0 || mapGrid[1,next] == 0 || mapGrid[2,next] == 0 || mapGrid[3,next] == 0 {
+                toResolve.append(next)
+            }
+        }
+
+        mapGrid.draw()
+        return finalSides
+    }
+    
+    public struct AutoMapping: Day22Mapping, Hashable, CustomStringConvertible {
+        public static func == (lhs: Day22.AutoMapping, rhs: Day22.AutoMapping) -> Bool {
+            lhs.id == rhs.id
+        }
+        
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+            hasher.combine(points)
+            hasher.combine(topLeft)
+            hasher.combine(bottomRight)
+        }
+        
+        public let id: Side
+        public let points: Set<Point>
+        public let topLeft: Point
+        public let bottomRight: Point
+        public let edges: [Direction: (Side, Int)]
+        
+        public init(id: Side, minMax: (Point, Point), edges: [Direction: (Side, Int)] = [:]) {
+            self.id = id
+            self.topLeft = minMax.0
+            self.bottomRight = minMax.1
+            self.points = Point.pointsIn(minMax.0, minMax.1)
+            self.edges = edges
+        }
+        
+        public init(id: Side, topLeft: Point, bottomRight: Point, points: Set<Point>, edges: [Direction: (Side, Int)]) {
+            self.id = id
+            self.topLeft = topLeft
+            self.bottomRight = bottomRight
+            self.points = points
+            self.edges = edges
+        }
+        
+        public func mapping(exitPoint: Point, direction: Direction) -> (Point, Direction) {
+            return (exitPoint, direction)
+        }
+        
+        public var description: String {
+            "\(id.rawValue):\(topLeft.x):\(topLeft.y);\(bottomRight.x):\(bottomRight.y)"
+        }
+    }
+    
     public struct ExampleMapping: Day22Mapping, Hashable {
         public static let a = ExampleMapping(id: .a, minMax: (Point(8, 0), Point(11, 3)))
         public static let b = ExampleMapping(id: .b, minMax: (Point(0, 4), Point(3, 7)))
@@ -457,6 +739,8 @@ extension Day22 {
         case down = 1
         case left = 2
         case up = 3
+        
+        static let all: [Direction] = [.right, .down, .left, .up]
         
         func move() -> Point {
             switch self {
