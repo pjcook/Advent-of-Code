@@ -32,18 +32,12 @@ extension Day25Tests {
         XCTAssertEqual("2=-1=0", day.part1(input))
     }
     
-    func test_part2_example() {
-        let input = """
-
-""".lines
-        XCTAssertEqual(1, day.part2(input))
-    }
-    
     func test_basic_example() {
         XCTAssertEqual(976, day.convert("2=-01"))
     }
     
     func test_convert() {
         XCTAssertEqual("2=-1=0", day.convert(4890))
+        XCTAssertEqual(6, day.findMaxMultiplier(4890))
     }
 }

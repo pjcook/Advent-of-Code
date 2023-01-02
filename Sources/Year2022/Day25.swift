@@ -52,10 +52,6 @@ public struct Day25 {
         
         return convert(total)
     }
-    
-    public func part2(_ input: [String]) -> Int {
-        return 1
-    }
 }
 
 extension Day25 {
@@ -68,27 +64,36 @@ extension Day25 {
         return total
     }
     
+    /*
+     Find how many characters will be in the Snafu number `findMaxMultiplier`
+     Reduce the total by dividing by the multiplier and rounding this will give you a value between 2 and -2
+     Convert the `value` to a Snafu character to append to the `result` output
+     Repeat the process for each position in the Snafu number from left to right
+     */
     public func convert(_ value: Int) -> String {
         var total = Double(value)
-        let topIndex = findMaxMultiplier(value) + 1
+        let topIndex = findMaxMultiplier(value)
         var result = ""
         for i in (0..<topIndex) {
             let multiplier = Double(pow(5, topIndex - i - 1))
             let value = Int(round(total / multiplier))
-            let snafu = Snafu(value)!
-            result.append(snafu.rawValue)
             total -= Double(value) * multiplier
+            appendToResult(value, result: &result)
         }
         
         return result
     }
-    
+
+    public func appendToResult(_ value: Int, result: inout String) {
+        result.append(Snafu(value)!.rawValue)
+    }
+
     public func findMaxMultiplier(_ value: Int) -> Int {
         var i = 1
         while true {
             let calc = pow(5, i) * 2
             if calc > value {
-                return i
+                return i + 1
             }
             i += 1
         }
