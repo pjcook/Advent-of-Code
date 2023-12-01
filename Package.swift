@@ -48,6 +48,10 @@ let package = Package(
         .library(
             name: "Year2022",
             targets: ["Year2022"]),
+        
+        .library(
+            name: "Year2023",
+            targets: ["Year2023"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -184,6 +188,20 @@ let package = Package(
                 "InputReader",
                 "StandardLibraries",
                 "Year2022"
+            ],
+            resources: [
+                .process("Resources"),
+            ]),
+        
+        .target(
+            name: "Year2023",
+            dependencies: ["StandardLibraries"]),
+        .testTarget(
+            name: "Year2023Tests",
+            dependencies: [
+                "InputReader",
+                "StandardLibraries",
+                "Year2023"
             ],
             resources: [
                 .process("Resources"),
