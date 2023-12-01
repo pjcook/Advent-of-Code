@@ -14,8 +14,52 @@ public class Day16 {
     
     public func part1(_ input: String) -> Int {
         let chambers = parse(input)
-        let start = chambers["AA"]!
-        return explore(current: start, chambers: chambers, depth: 1, maxDepth: 30, pressure: 0, runningTotal: 0, history: [start.id])
+        let nodes = compressGraph(chambers: chambers)
+        let maxTime = 30
+        var maxValue = 0
+        var maxHistory = [String]()
+        var queue = [(String, [String], Int, Int, Int)]()
+        queue.append(("AA", [], 0, 0, 0))
+        
+        while !queue.isEmpty {
+            let (id, history, time, total, value) = queue.removeFirst()
+            let node = nodes[id]!
+            var newTotal = total
+            var newTime = time
+            
+            guard time < maxTime else { continue }
+
+            var newValue = value
+            
+            // If not already open then open
+            if !history.contains(id), node.flowRate > 0 {
+                newTotal += value
+                newTime += 1
+                newValue += node.flowRate
+            }
+            
+            var destinations = node.destinations.filter({ !history.suffix(1).contains($0.id) })
+            if destinations.isEmpty {
+                destinations = node.destinations
+            }
+            
+            for next in destinations {
+                if newTime + next.distance >= maxTime {
+                    newTotal = newTotal + (newValue * (maxTime - newTime))
+                    maxValue = max(maxValue, newTotal)
+                    maxHistory = history
+                    print(maxValue, newTime, newValue, history)
+                } else {
+                    var newHistory = history
+                    newHistory.append(id)
+                    let newTotal = newTotal + (newValue * next.distance)
+                    queue.append((next.id, newHistory, newTime + next.distance, newTotal, newValue))
+                    print(maxValue, newTime, newHistory)
+                }
+            }
+        }
+        print(maxValue, maxHistory)
+        return maxValue
     }
     
     public func part2(_ input: String) -> Int {
@@ -23,73 +67,6 @@ public class Day16 {
     }
     
     var maxValue = 0
-}
-
-extension Day16 {
-    public func explore(current: Chamber, chambers: [String: Chamber], depth: Int, maxDepth: Int, pressure: Int, runningTotal: Int, history: [String]) -> Int {
-//        if runningTotal > maxValue {
-//            maxValue = runningTotal
-//        }
-//        print("explore:", depth, maxValue, current.id, pressure, runningTotal, history.joined(separator: ","))
-//        guard depth < maxDepth else { return pressure }
-//        let queue = PriorityQueue<Chamber>()
-//
-//        for id in current.tunnels {
-//            let chamber = chambers[id]!
-//            let priority = pressure + history.filter({ $0 == chamber.id }).count
-//
-//            // TODO: look forward to find best path forward not zero and not already open
-////            guard !history.suffix(min(chamber.tunnels.count, maxDepth - depth)).contains(chamber.id) else { continue }
-//            if chamber.flowRate == 0 {
-//                queue.enqueue(chamber, priority: priority)
-//            } else if chamber.valveOpen {
-//                queue.enqueue(chamber, priority: priority)
-//            } else {
-////                queue.enqueue(chamber, priority: pressure)
-//                queue.enqueue(chamber.toggleWillOpen(), priority: priority - chamber.flowRate)
-//            }
-//        }
-//
-//        if queue.isEmpty {
-//            print("explore:", depth, current.id, pressure, runningTotal, history.joined(separator: ","))
-//            return runningTotal + ((maxDepth - depth) * pressure)
-//        }
-//
-//        var currentMaxTotal = runningTotal
-//
-//        while !queue.isEmpty {
-//            var chamber = queue.dequeue()!
-//            var chambers = chambers
-//            var depth = depth
-//            var pressure = pressure
-//            var runningTotal = runningTotal
-//            chamber = chamber.visiting(from: current.id)
-//            if chamber.willOpen {
-//                chamber = chamber.toggleWillOpen()
-//                chamber = chamber.openValue()
-//                chambers[chamber.id] = chamber
-//                if depth + 2 <= maxDepth {
-//                    depth += 2
-//                    runningTotal += pressure * 2
-//                    pressure += chamber.flowRate
-//                } else {
-//                    depth += 1
-//                    runningTotal += pressure
-//                }
-//            } else {
-//                depth += 1
-//                runningTotal += pressure
-//            }
-//
-//            let result = explore(current: chamber, chambers: chambers, depth: depth, maxDepth: maxDepth, pressure: pressure, runningTotal: runningTotal, history: history + [chamber.id])
-//            if result > currentMaxTotal {
-//                currentMaxTotal = result
-//            }
-//        }
-        
-//        return currentMaxTotal
-        return 1
-    }
 }
 
 extension Day16 {
@@ -139,7 +116,7 @@ extension Day16 {
                 var prevId = valveChamber.key
                 while true {
                     let node = chambers[nextId]!
-                    if node.flowRate == 0 {
+                    if node.id != "AA", node.flowRate == 0 {
                         distance += 1
                         let id = node.tunnels.first(where: { $0 != prevId })!
                         prevId = nextId

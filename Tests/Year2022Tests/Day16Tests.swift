@@ -9,13 +9,13 @@ class Day16Tests: XCTestCase {
 
     func test_part1() {
 //        measure {
-        XCTAssertEqual(1, day.part1(input))
+        XCTAssertEqual(2080, day.part1(input))
 //        }
     }
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(1, day.part2(input))
+        XCTAssertEqual(2752, day.part2(input))
 //        }
     }
 }
@@ -48,7 +48,16 @@ Valve HH has flow rate=22; tunnel leads to valve GG
 Valve II has flow rate=0; tunnels lead to valves AA, JJ
 Valve JJ has flow rate=21; tunnel leads to valve II
 """
+        let compressed = day.compressGraph(chambers: day.parse(input))
+        XCTAssertEqual(7, compressed.count)
+
+        let bb = compressed["BB"]!
+        XCTAssertEqual(2, bb.destinations.count)
+        XCTAssertNotNil(bb.destinations.first(where: { $0.id == "AA" }))
+        XCTAssertNotNil(bb.destinations.first(where: { $0.id == "CC" }))
+
         XCTAssertEqual(1651, day.part1(input))
+        
     }
     
     func test_part1_parse() {
