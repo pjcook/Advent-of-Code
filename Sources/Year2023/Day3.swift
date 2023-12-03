@@ -7,8 +7,9 @@ public struct Day3 {
     public func part1(_ input: [String]) -> Int {
         let grid = parse(input)
         var result = 0
-//        let ignoreSymbol = "."
         let symbols = ["%", "/", "$", "+", "@", "=", "&", "#", "*", "-"]
+//        var symbols = extractSetOfNonNumericCharacters(grid: grid)
+//        symbols.remove(".")
         
         // Look for symbols
         for y in (0..<grid.rows) {
@@ -46,7 +47,7 @@ public struct Day3 {
 
 extension Day3 {
     func extractAdjacentNumbers(grid: Grid<String>, point: Point) -> [Int] {
-        let maxPoint = Point(grid.columns, grid.rows)
+        let maxPoint = grid.bottomRight
         var results = [Int]()
         var neighbors = Set(point.neighbors(false, min: .zero, max: maxPoint))
         
