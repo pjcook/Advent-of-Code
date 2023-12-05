@@ -26,7 +26,7 @@ public struct Day1 {
 }
 
 extension String {
-    func extractNumbers() -> [Int] {
+    public func extractNumbers() -> [Int] {
         var results = [Int]()
         let numbers = [
             "one": 1,

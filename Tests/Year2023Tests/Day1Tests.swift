@@ -1,6 +1,6 @@
 import XCTest
 import InputReader
-@testable import Year2023
+import Year2023
 
 class Day1Tests: XCTestCase {
     

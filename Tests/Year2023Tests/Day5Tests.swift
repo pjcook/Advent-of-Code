@@ -1,7 +1,7 @@
 import XCTest
 import InputReader
 import StandardLibraries
-@testable import Year2023
+import Year2023
 
 class Day5Tests: XCTestCase {
     
@@ -16,9 +16,16 @@ class Day5Tests: XCTestCase {
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(6082852, day.part2(input))
+        XCTAssertEqual(6_082_852, day.part2(input))
 //        }
     }
+    
+//    func test_part2_Chris() {
+//        let input = Input("Day5_Chris.input", Bundle.module).lines
+//        let mapRanges = day.parse(input)
+//        let result = mapRanges.lowestLocation(seeds: (1599552892...1499552892+200291842))
+//        XCTAssertEqual(37_806_486, result)
+//    }
     
     func test_rangeType_iterationOrder() {
         XCTAssertEqual(Day5.RangeType.allCases[0], .seedToSoil)
@@ -30,19 +37,104 @@ class Day5Tests: XCTestCase {
         XCTAssertEqual(Day5.RangeType.allCases[6], .humidityToLocation)
     }
     
-    func test_part2_example() {
-        XCTAssertEqual(46, day.part2(testInput))
+    func test_part1_example() {
+        XCTAssertEqual(35, day.part1(testInput))
     }
     
-    func test_part2_example2() {
-        XCTAssertEqual(82, day.test(testInput, seeds: [79]))
-        XCTAssertEqual(83, day.test(testInput, seeds: [80]))
-        XCTAssertEqual(84, day.test(testInput, seeds: [81]))
-        XCTAssertEqual(46, day.test(testInput, seeds: [82]))
-        XCTAssertEqual(47, day.test(testInput, seeds: [83]))
+    func test_part2_example() {
+        let mapRanges = day.parse(testInput)
+        var lowest = Int.max
+        for seedRange in mapRanges.seedRanges {
+            let result = mapRanges.lowestLocation(seeds: (seedRange.0...seedRange.0+seedRange.1))
+            if result < lowest {
+                lowest = result
+            }
+        }
+        XCTAssertEqual(46, lowest)
+    }
+    
+    func test_stuff4() {
+        /*
+        let mapRanges = day.parse(testInput)
         
-        XCTAssertEqual(46, day.test(testInput, seeds: [79,80,81,82,83,84,85,86,87,88,89,90,91,92]))
-        XCTAssertEqual(56, day.test(testInput, seeds: [55,56,57,58,59,60,61,62,63,64,64,65,66]))
+        var seedValuesToTry = Set<Int>()
+        for (startSeedNumber, rangeLength) in mapRanges.seedRanges {
+            let validSeedToSoilRanges = mapRanges.ranges[.seedToSoil]!
+                .filter({
+                    ($0.sourceRangeStart..<$0.sourceRangeStart+$0.rangeLength).overlaps(startSeedNumber..<startSeedNumber+rangeLength)
+                })
+            
+            for item in validSeedToSoilRanges {
+                seedValuesToTry.insert(max(item.sourceRangeStart, startSeedNumber))
+            }
+        }
+        print(seedValuesToTry)
+        XCTAssertEqual(mapRanges.lowestLocation(seeds: Array(seedValuesToTry)), 46)
+         */
+    }
+
+    func test_part2_example2() {
+        let mapRanges = day.parse(testInput)
+        XCTAssertEqual(82, mapRanges.lowestLocation(seeds: [79]))
+        XCTAssertEqual(83, mapRanges.lowestLocation(seeds: [80]))
+        XCTAssertEqual(84, mapRanges.lowestLocation(seeds: [81]))
+        XCTAssertEqual(46, mapRanges.lowestLocation(seeds: [82]))
+        XCTAssertEqual(47, mapRanges.lowestLocation(seeds: [83]))
+        XCTAssertEqual(55, mapRanges.lowestLocation(seeds: [91]))
+        
+        XCTAssertEqual(86, mapRanges.lowestLocation(seeds: [55]))
+        XCTAssertEqual(95, mapRanges.lowestLocation(seeds: [60]))
+        XCTAssertEqual(59, mapRanges.lowestLocation(seeds: [65]))
+        
+        XCTAssertEqual(46, mapRanges.lowestLocation(seeds: [79,80,81,82,83,84,85,86,87,88,89,90,91]))
+        XCTAssertEqual(56, mapRanges.lowestLocation(seeds: [55,56,57,58,59,60,61,62,63,64,64,65]))
+    }
+    
+    func test_stuff3() {
+//        var value = 6082852
+        let value = 412_141_395
+        // 377_104_678
+        // 544_894_922
+        // 558_493_009
+        
+        let mapRanges = day.parse(input)
+        for item in mapRanges.ranges[.seedToSoil]! {
+            guard item.sourceRangeStart <= value && item.sourceRangeStart + item.rangeLength >= value else { continue }
+            print(item)
+        }
+    }
+    
+    func test_stuff2_chris() {
+        // Answer: 37_806_486
+        /*
+        let input = Input("Day5_Chris.input", Bundle.module).lines
+        let mapRanges = day.parse(input)
+//        
+//        print(mapRanges.lowestLocation(seeds: (1_499_552_892...1_499_552_892+200_291_842)))
+        
+         /*
+        let result = day.divideAndConquer(start: 1_499_552_892, length: 200_291_842, mapRanges: mapRanges)
+        print(result)
+        
+        print(
+            mapRanges.seedRanges.filter({
+                ($0.0..<$0.0+$0.1).contains(568494408)
+            })
+        )
+        print()
+        
+        print(
+            mapRanges.ranges[.seedToSoil]!
+                .filter({
+                    ($0.sourceRangeStart...$0.sourceRangeStart+$0.rangeLength).overlaps(1_499_552_892...1_499_552_892+200_291_842)
+                })
+        )
+        // 773_420_016
+        // 568_494_408
+        // 586_838_162
+        print(mapRanges.locations(seeds: [1_599_552_892]))
+         */
+         */
     }
     
     func test_stuff2() {
@@ -55,7 +147,7 @@ class Day5Tests: XCTestCase {
                     ($0.sourceRangeStart...$0.sourceRangeStart+$0.rangeLength).overlaps(485_317_202...485_317_202+73_175_807)
                 })
         )
-        
+                
         // 485_317_202 +  73_175_807 = 558_493_009
         // 377_104_678 + 167_790_244 = 544_894_922
         // 544_894_922 +  55_279_380 = 600_174_302

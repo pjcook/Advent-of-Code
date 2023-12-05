@@ -16,7 +16,7 @@ public struct Day5 {
         for (startSeedNumber, rangeLength) in mapRanges.seedRanges {
             let validSeedToSoilRanges = mapRanges.ranges[.seedToSoil]!
                 .filter({
-                    ($0.sourceRangeStart...$0.sourceRangeStart+$0.rangeLength).overlaps(startSeedNumber...startSeedNumber+rangeLength)
+                    ($0.sourceRangeStart..<$0.sourceRangeStart+$0.rangeLength).overlaps(startSeedNumber..<startSeedNumber+rangeLength)
                 })
             
             let seedValues = validSeedToSoilRanges.map { max($0.sourceRangeStart, startSeedNumber) }
@@ -26,48 +26,23 @@ public struct Day5 {
         
         return smallestDistance
     }
-
-    func divideAndConquer(start: Int, length: Int, mapRanges: MapRanges) -> Int {
-        var startSeedNumber = start
-        var rangeLength = length
-        
-        while rangeLength > 5000 {
-            let halfRange = rangeLength / 2
-            let quarterRange = halfRange / 2
-            let lower = mapRanges.lowestLocation(seeds: [startSeedNumber + quarterRange])
-            let upper = mapRanges.lowestLocation(seeds: [startSeedNumber + halfRange + quarterRange])
-            
-            rangeLength = halfRange
-            if upper < lower {
-                startSeedNumber = startSeedNumber + halfRange
-            }
-        }
-        
-        let result = mapRanges.lowestLocation(seeds: (startSeedNumber...startSeedNumber+rangeLength))
-        return result
-    }
     
-    public func test(_ input: [String], seeds: [Int]) -> Int {
-        let mapRanges = parse(input)
-        return mapRanges.lowestLocation(seeds: seeds)
-    }
-    
-    struct MapRange {
-        let destinationRangeStart: Int
-        let sourceRangeStart: Int
-        let rangeLength: Int
+    public struct MapRange {
+        public let destinationRangeStart: Int
+        public let sourceRangeStart: Int
+        public let rangeLength: Int
         
-        func destination(input: Int) -> Int? {
+        public func destination(input: Int) -> Int? {
             guard (sourceRangeStart..<sourceRangeStart + rangeLength).contains(input) else { return nil }
             return destinationRangeStart + (input - sourceRangeStart)
         }
     }
     
-    struct MapRanges {
-        let seeds: [Int]
-        let ranges: [RangeType: [MapRange]]
+    public struct MapRanges {
+        public let seeds: [Int]
+        public let ranges: [RangeType: [MapRange]]
         
-        var seedRanges: [(Int,Int)] {
+        public var seedRanges: [(Int,Int)] {
             var index = 0
             var results = [(Int,Int)]()
             while index < seeds.count {
@@ -79,16 +54,11 @@ public struct Day5 {
             return results
         }
         
-        func destination(for rangeType: RangeType, input: Int) -> Int {
-            for range in self.ranges[rangeType]! {
-                if let result = range.destination(input: input) {
-                    return result
-                }
-            }
-            return input
+        public func destination(for rangeType: RangeType, input: Int) -> Int {
+            self.ranges[rangeType]!.first(where: { $0.destination(input: input) != nil })?.destination(input: input) ?? input
         }
         
-        func locations(seeds: [Int]) -> [Int] {
+        public func locations(seeds: [Int]) -> [Int] {
             var results = [Int]()
 
             for seed in seeds {
@@ -102,24 +72,7 @@ public struct Day5 {
             return results
         }
         
-        func lowestLocation(seeds: [Int]) -> Int {
-            var lowest = Int.max
-
-            for seed in seeds {
-                var result = seed
-                for rangeType in RangeType.allCases {
-                    result = destination(for: rangeType, input: result)
-                }
-                
-                if result < lowest {
-                    lowest = result
-                }
-            }
-            
-            return lowest
-        }
-        
-        func lowestLocation(seeds: ClosedRange<Int>) -> Int {
+        public func lowestLocation(seeds: [Int]) -> Int {
             var lowest = Int.max
 
             for seed in seeds {
@@ -137,7 +90,7 @@ public struct Day5 {
         }
     }
     
-    enum RangeType: String, CaseIterable {
+    public enum RangeType: String, CaseIterable {
         case seedToSoil = "seed-to-soil"
         case soilToFertilizer = "soil-to-fertilizer"
         case fertilizerToWater = "fertilizer-to-water"
@@ -149,7 +102,7 @@ public struct Day5 {
 }
 
 extension Day5 {
-    func parse(_ input: [String]) -> MapRanges {
+    public func parse(_ input: [String]) -> MapRanges {
         var results = [RangeType: [MapRange]]()
         var rangeName = ""
         var ranges = [MapRange]()
@@ -182,5 +135,48 @@ extension Day5 {
         }
         
         return MapRanges(seeds: seeds, ranges: results)
+    }
+}
+
+// unused code
+extension Day5 {
+    public func divideAndConquer(start: Int, length: Int, mapRanges: MapRanges) -> Int {
+        var startSeedNumber = start
+        var rangeLength = length
+        
+        while rangeLength > 5000 {
+            let halfRange = rangeLength / 2
+            let quarterRange = halfRange / 2
+            let lower = mapRanges.lowestLocation(seeds: [startSeedNumber + quarterRange])
+            let upper = mapRanges.lowestLocation(seeds: [startSeedNumber + halfRange + quarterRange])
+            
+            rangeLength = halfRange
+            if upper < lower {
+                startSeedNumber = startSeedNumber + halfRange
+            }
+        }
+        
+        let result = mapRanges.lowestLocation(seeds: (startSeedNumber...startSeedNumber+rangeLength))
+        return result
+    }
+}
+
+extension Day5.MapRanges {
+    public func lowestLocation(seeds: ClosedRange<Int>) -> Int {
+        var lowest = Int.max
+
+        for seed in seeds {
+            var result = seed
+            for rangeType in Day5.RangeType.allCases {
+                result = destination(for: rangeType, input: result)
+            }
+            
+            if result < lowest {
+                print("lower", result)
+                lowest = result
+            }
+        }
+        
+        return lowest
     }
 }
