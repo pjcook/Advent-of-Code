@@ -19,7 +19,7 @@ Calculate `result1` as `(time-upperIndex) * upperIndex`
 Calculate `result2` as `(time-lowerIndex) * lowerIndex`
 if `result1` is greater than `distance` then increment `count`
 if `result2` is greater than `distance` then increment `count`
-if `result1` and `result2` are less than or equal to `distance` then just return `count`
+if `result1` or `result2` are less than or equal to `distance` then just return `count`
 
 For `part 1` call the above function for each pair, then multiply all the results.
 For `part 2` call the above function for the single `time` and `distance` values.
