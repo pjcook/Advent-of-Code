@@ -20,6 +20,12 @@ class Day5Tests: XCTestCase {
 //        }
     }
     
+    func test_part2_bruteForce() {
+//        measure {
+        XCTAssertEqual(6_082_852, day.part2brute(input))
+//        }
+    }
+    
 //    func test_part2_Chris() {
 //        let input = Input("Day5_Chris.input", Bundle.module).lines
 //        let mapRanges = day.parse(input)

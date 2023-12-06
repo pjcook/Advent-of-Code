@@ -27,6 +27,18 @@ public struct Day5 {
         return smallestDistance
     }
     
+    public func part2brute(_ input: [String]) -> Int {
+        let mapRanges = parse(input)
+        var smallestDistance = Int.max
+        
+        for (startSeedNumber, rangeLength) in mapRanges.seedRanges {
+            let result = mapRanges.lowestLocation(seeds: (startSeedNumber...startSeedNumber+(rangeLength-1)))
+            smallestDistance = min(result, smallestDistance)
+        }
+        
+        return smallestDistance
+    }
+    
     public struct MapRange {
         public let destinationRangeStart: Int
         public let sourceRangeStart: Int
