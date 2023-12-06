@@ -8,9 +8,9 @@ class Day6Tests: XCTestCase {
     let day = Day6()
 
     func test_part1() {
-        measure {
+//        measure {
         XCTAssertEqual(393120, day.part1(time: [62,73,75,65], distance: [644,1023,1240,1023]))
-        }
+//        }
     }
     
     func test_part1_example() {
@@ -18,9 +18,9 @@ class Day6Tests: XCTestCase {
     }
     
     func test_part2() {
-        measure {
+//        measure {
         XCTAssertEqual(36872656, day.part2(time: 62737565, distance: 644102312401023))
-        }
+//        }
     }
     
     func test_part2_example() {
