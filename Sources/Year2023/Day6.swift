@@ -20,17 +20,17 @@ public struct Day6 {
         let halfway = time / 2
         var count = 1
         for i in (1..<halfway) {
-            let upper = halfway+i
             let lower = halfway-i
-            let result1 = (time-upper) * upper
-            let result2 = (time-lower) * lower
-            if result1 > distance {
-                count += 1
+            let result = (time-lower) * lower
+            if result > distance {
+                count += 2
             }
-            if result2 > distance {
-                count += 1
-            }
-            if result1 <= distance || result2 <= distance {
+            if result <= distance {
+                if (time-(halfway+i-1)) * (halfway+i-1) <= distance {
+                    count -= 1
+                } else if (time-(halfway+i)) * (halfway+i) > distance {
+                    count += 1
+                }
                 break
             }
         }

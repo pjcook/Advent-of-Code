@@ -26,5 +26,9 @@ class Day6Tests: XCTestCase {
     func test_part2_example() {
         XCTAssertEqual(71503, day.part2(time: 71530, distance: 940200))
     }
+    
+    func test_stuff() {
+        XCTAssertEqual(4, day.part2(time: 7, distance: 9))
+    }
 
 }
