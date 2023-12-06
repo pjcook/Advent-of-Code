@@ -29,6 +29,12 @@ class Day5Tests: XCTestCase {
 //        }
     }
     
+//    func test_parse_speed() {
+//        measure {
+//            let mapRanges = day.parse(testInput)
+//        }
+//    }
+    
 //    func test_part2_Chris() {
 //        let input = Input("Day5_Chris.input", Bundle.module).lines
 //        let mapRanges = day.parse(input)

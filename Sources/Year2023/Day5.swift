@@ -72,15 +72,19 @@ public struct Day5 {
                 .destination(input: input) ?? input
         }
         
+        func destination(seed: Int) -> Int {
+            var result = seed
+            for map in maps {
+                result = destination(for: map, input: result)
+            }
+            return result
+        }
+        
         public func locations(seeds: [Int]) -> [Int] {
             var results = [Int]()
 
             for seed in seeds {
-                var result = seed
-                for map in maps {
-                    result = destination(for: map, input: result)
-                }
-                results.append(result)
+                results.append(destination(seed: seed))
             }
             
             return results
@@ -90,14 +94,7 @@ public struct Day5 {
             var lowest = Int.max
 
             for seed in seeds {
-                var result = seed
-                for map in maps {
-                    result = destination(for: map, input: result)
-                }
-                
-                if result < lowest {
-                    lowest = result
-                }
+                lowest = min(destination(seed: seed), lowest)
             }
             
             return lowest
@@ -184,15 +181,7 @@ extension Day5.MapRanges {
         var lowest = Int.max
 
         for seed in seeds {
-            var result = seed
-            for map in maps {
-                result = destination(for: map, input: result)
-            }
-            
-            if result < lowest {
-                print("lower", result)
-                lowest = result
-            }
+            lowest = min(destination(seed: seed), lowest)
         }
         
         return lowest
