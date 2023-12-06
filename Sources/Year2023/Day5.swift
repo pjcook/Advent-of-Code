@@ -14,7 +14,7 @@ public struct Day5 {
 
         var smallestDistance = Int.max
         for (startSeedNumber, rangeLength) in mapRanges.seedRanges {
-            let validSeedToSoilRanges = mapRanges.ranges[.seedToSoil]!
+            let validSeedToSoilRanges = mapRanges.maps.first!
                 .filter({
                     ($0.sourceRangeStart..<$0.sourceRangeStart+$0.rangeLength).overlaps(startSeedNumber..<startSeedNumber+rangeLength)
                 })
@@ -45,14 +45,14 @@ public struct Day5 {
         public let rangeLength: Int
         
         public func destination(input: Int) -> Int? {
-            guard (sourceRangeStart..<sourceRangeStart + rangeLength).contains(input) else { return nil }
+            guard sourceRangeStart <= input, input < (sourceRangeStart + rangeLength) else { return nil }
             return destinationRangeStart + (input - sourceRangeStart)
         }
     }
     
     public struct MapRanges {
         public let seeds: [Int]
-        public let ranges: [RangeType: [MapRange]]
+        public let maps: [[MapRange]]
         
         public var seedRanges: [(Int,Int)] {
             var index = 0
@@ -66,8 +66,10 @@ public struct Day5 {
             return results
         }
         
-        public func destination(for rangeType: RangeType, input: Int) -> Int {
-            self.ranges[rangeType]!.first(where: { $0.destination(input: input) != nil })?.destination(input: input) ?? input
+        public func destination(for map: [MapRange], input: Int) -> Int {
+            map
+                .first(where: { $0.destination(input: input) != nil })?
+                .destination(input: input) ?? input
         }
         
         public func locations(seeds: [Int]) -> [Int] {
@@ -75,8 +77,8 @@ public struct Day5 {
 
             for seed in seeds {
                 var result = seed
-                for rangeType in RangeType.allCases {
-                    result = destination(for: rangeType, input: result)
+                for map in maps {
+                    result = destination(for: map, input: result)
                 }
                 results.append(result)
             }
@@ -89,8 +91,8 @@ public struct Day5 {
 
             for seed in seeds {
                 var result = seed
-                for rangeType in RangeType.allCases {
-                    result = destination(for: rangeType, input: result)
+                for map in maps {
+                    result = destination(for: map, input: result)
                 }
                 
                 if result < lowest {
@@ -123,7 +125,7 @@ extension Day5 {
         for line in input {
             guard !line.isEmpty else {
                 if !rangeName.isEmpty {
-                    results[RangeType(rawValue: rangeName)!] = ranges
+                    results[RangeType(rawValue: rangeName)!] = ranges.sorted(by: { $0.sourceRangeStart < $1.sourceRangeStart })
                 }
                 ranges = []
                 continue
@@ -146,7 +148,11 @@ extension Day5 {
             results[RangeType(rawValue: rangeName)!] = ranges
         }
         
-        return MapRanges(seeds: seeds, ranges: results)
+        var maps = [[MapRange]]()
+        for rangeType in RangeType.allCases {
+            maps.append(results[rangeType]!)
+        }
+        return MapRanges(seeds: seeds, maps: maps)
     }
 }
 
@@ -179,8 +185,8 @@ extension Day5.MapRanges {
 
         for seed in seeds {
             var result = seed
-            for rangeType in Day5.RangeType.allCases {
-                result = destination(for: rangeType, input: result)
+            for map in maps {
+                result = destination(for: map, input: result)
             }
             
             if result < lowest {

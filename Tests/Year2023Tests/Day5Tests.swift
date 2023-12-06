@@ -21,6 +21,9 @@ class Day5Tests: XCTestCase {
     }
     
     func test_part2_bruteForce() {
+        // 1074 seconds
+        // 992
+        // 216
 //        measure {
         XCTAssertEqual(6_082_852, day.part2brute(input))
 //        }
@@ -104,7 +107,7 @@ class Day5Tests: XCTestCase {
         // 558_493_009
         
         let mapRanges = day.parse(input)
-        for item in mapRanges.ranges[.seedToSoil]! {
+        for item in mapRanges.maps.first! {
             guard item.sourceRangeStart <= value && item.sourceRangeStart + item.rangeLength >= value else { continue }
             print(item)
         }
@@ -148,7 +151,7 @@ class Day5Tests: XCTestCase {
         //let result = day.divideAndConquer(start: 485_317_202, length: 73_175_807, mapRanges: mapRanges)
         
         print(
-            mapRanges.ranges[.seedToSoil]!
+            mapRanges.maps.first!
                 .filter({
                     ($0.sourceRangeStart...$0.sourceRangeStart+$0.rangeLength).overlaps(485_317_202...485_317_202+73_175_807)
                 })
@@ -178,7 +181,7 @@ class Day5Tests: XCTestCase {
         var smallestDistance = Int.max
         let mapRanges = day.parse(input)
         for (startSeedNumber, rangeLength) in mapRanges.seedRanges {
-            let validSeedToSoilRanges = mapRanges.ranges[.seedToSoil]!
+            let validSeedToSoilRanges = mapRanges.maps.first!
                 .filter({
                     ($0.sourceRangeStart...$0.sourceRangeStart+$0.rangeLength).overlaps(startSeedNumber...startSeedNumber+rangeLength)
                 })
