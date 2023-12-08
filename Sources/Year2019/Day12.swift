@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import StandardLibraries
 
 public struct Vector: Hashable, CustomDebugStringConvertible {
     public let x: Int
@@ -157,22 +158,4 @@ public func findRepeatingOrbits(moons: [Moon], numberOfSteps steps: Int) -> Int 
     guard let xCount = xSetCount, let yCount = ySetCount, let zCount = zSetCount else { return -1 }
     
     return lowestCommonMultiple(xCount, lowestCommonMultiple(yCount, zCount))
-}
-
-public func lowestCommonMultiple(_ value1: Int, _ value2: Int) -> Int {
-    return (value1 * value2) / greatestCommonDivisor(value1, value2)
-}
-
-public func greatestCommonDivisor(_ value1: Int, _ value2: Int) -> Int {
-    var i = 0
-    var j = max(value1, value2)
-    var result = min(value1, value2)
-    
-    while result != 0 {
-        i = j
-        j = result
-        result = i % j
-    }
-    
-    return j
 }
