@@ -19,26 +19,20 @@ public struct Day9 {
 
 extension Day9 {
     func extrapolateNextValue(_ items: [Int], depth: Int = 0) -> Int {
-        var results = [Int]()
-        for i in (1..<items.count) {
-            results.append(items[i] - items[i-1])
-        }
+        let results = nextSequence(items)
         
         guard !(results.first == 0 && results.last == 0) else { return 0 }
         let result = results.last! + extrapolateNextValue(results, depth: depth + 1)
         
         if depth == 0 {
-            return result + items.last!
+            return items.last! + result
         } else {
             return result
         }
     }
     
-    public func extrapolatePreviousValue(_ items: [Int], depth: Int = 0) -> Int {
-        var results = [Int]()
-        for i in (1..<items.count) {
-            results.append(items[i] - items[i-1])
-        }
+    func extrapolatePreviousValue(_ items: [Int], depth: Int = 0) -> Int {
+        let results = nextSequence(items)
         
         guard !(results.first == 0 && results.last == 0) else { return 0 }
         let result = results.first! - extrapolatePreviousValue(results, depth: depth + 1)
@@ -48,6 +42,14 @@ extension Day9 {
         } else {
             return result
         }
+    }
+    
+    func nextSequence(_ items: [Int]) -> [Int] {
+        var results = [Int]()
+        for i in (1..<items.count) {
+            results.append(items[i] - items[i-1])
+        }
+        return results
     }
 }
 
