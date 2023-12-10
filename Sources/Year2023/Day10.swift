@@ -15,17 +15,6 @@ public struct Day10 {
         
         return lhs.count-1
     }
-        
-    fileprivate func fillWithOutside(_ pointsToFill: inout Set<Point>, _ grid2: inout Grid<Day10.Tiles>) {
-        while let point = pointsToFill.popFirst() {
-            grid2.items[grid2.index(for: point)] = .outside
-            for nextPoint in point.neighbors(max: grid2.bottomRight) {
-                if grid2[nextPoint] == .ground {
-                    pointsToFill.insert(nextPoint)
-                }
-            }
-        }
-    }
     
     public func part2(_ input: [String]) -> Int {
         let grid = parse(input)
@@ -37,288 +26,24 @@ public struct Day10 {
         findFurthestPoint(&lhs, &rhs, grid)
         
         var newItems = Array(repeating: Tiles.ground, count: grid.items.count)
+        rhs.removeFirst()   // remove value that's already in `lhs`
+        rhs.removeLast()    // remove value that's already in `lhs`
+        lhs.append(contentsOf: rhs.reversed())
         for point in lhs {
             let index = grid.index(for: point)
             newItems[index] = grid[point]
         }
         
-        for point in rhs {
-            let index = grid.index(for: point)
-            newItems[index] = grid[point]
-        }
-        
         var grid2 = Grid<Tiles>(columns: grid.columns, items: newItems)
-        var firstEdgeTile = Point(-1, -1)
-        
-        // replace `start`
-        switch (lhs[1], rhs[1]) {
-            // northSouth
-            case (startPoint.up(), startPoint.down()), (startPoint.down(), startPoint.up()):
-                grid2.items[grid2.index(for: startPoint)] = .northSouth
-                
-            // eastWest
-            case (startPoint.left(), startPoint.right()), (startPoint.right(), startPoint.left()):
-                grid2.items[grid2.index(for: startPoint)] = .eastWest
-                
-            // northEast
-            case (startPoint.up(), startPoint.right()), (startPoint.right(), startPoint.up()):
-                grid2.items[grid2.index(for: startPoint)] = .northEast
-                
-            // northWest
-            case (startPoint.up(), startPoint.left()), (startPoint.left(), startPoint.up()):
-                grid2.items[grid2.index(for: startPoint)] = .northWest
-                
-            // southWest
-            case (startPoint.down(), startPoint.left()), (startPoint.left(), startPoint.down()):
-                grid2.items[grid2.index(for: startPoint)] = .southWest
-                
-            // southEast
-            case (startPoint.down(), startPoint.right()), (startPoint.right(), startPoint.down()):
-                grid2.items[grid2.index(for: startPoint)] = .southEast
-                
-            default:
-                assertionFailure("Something isn't right!")
-        }
+        replaceStartTile(lhs, rhs, startPoint, &grid2)
         
         // Fill in outside
-        var pointsToFill = Set<Point>()
-        for x in (0..<grid.columns) {
-            var point = Point(x: x, y: 0)
-            
-            if grid2[point] == .ground {
-                pointsToFill.insert(point)
-            } else if firstEdgeTile == Point(-1, -1), point != startPoint {
-                firstEdgeTile = point
-            }
-            
-            point = Point(x: x, y: grid.rows-1)
-            
-            if grid2[point] == .ground {
-                pointsToFill.insert(point)
-            } else if firstEdgeTile == Point(-1, -1), point != startPoint {
-                firstEdgeTile = point
-            }
-        }
-        
-        for y in (0..<grid.rows) {
-            var point = Point(x: 0, y: y)
-            
-            if grid2[point] == .ground {
-                pointsToFill.insert(point)
-            } else if firstEdgeTile == Point(-1, -1), point != startPoint {
-                firstEdgeTile = point
-            }
-            
-            point = Point(x: grid.columns-1, y: y)
-            
-            if grid2[point] == .ground {
-                pointsToFill.insert(point)
-            } else if firstEdgeTile == Point(-1, -1), point != startPoint {
-                firstEdgeTile = point
-            }
-        }
-        
+        var (pointsToFill, firstEdgeTile) = findOuterEdgeGroundTilesAndFirstEdgeTile(grid2, startPoint)
         fillWithOutside(&pointsToFill, &grid2)
-        
-        var edges: Set<Position> = []
-        let tile = grid2[firstEdgeTile]
-        /*
-         tl, t, tr
-         l , m,  r
-         bl, b, br
-         
-         `m` is the current point
-         Find the outer edge
-         */
-        switch tile {
-            case .northSouth:
-                if firstEdgeTile.left().x <= 0 {
-                    edges = [.tl, .l, .bl]
-                } else {
-                    edges = [.tr, .r, .br]
-                }
-                
-            case .eastWest:
-                if firstEdgeTile.up().y <= 0 {
-                    edges = [.tl, .t, .tr]
-                } else {
-                    edges = [.bl, .b, .br]
-                }
-                
-            case .northEast:
-                if firstEdgeTile.left().x <= 0 || firstEdgeTile.down().y >= grid2.rows {
-                    edges = [.tl, .l, .bl, .b, .br]
-                } else {
-                    edges = [.tr]
-                }
-                
-            case .northWest:
-                if firstEdgeTile.right().x >= grid2.columns || firstEdgeTile.down().y >= grid2.rows {
-                    edges = [.tr, .r, .br, .b, .bl]
-                } else {
-                    edges = [.tl]
-                }
-                
-            case .southWest:
-                if firstEdgeTile.up().y <= 0 || firstEdgeTile.right().x >= grid2.columns  {
-                    edges = [.tl, .t, .tr, .r, .br]
-                } else {
-                    edges = [.bl]
-                }
-                
-            case .southEast:
-                if firstEdgeTile.up().y <= 0 || firstEdgeTile.left().x <= 0  {
-                    edges = [.tl, .t, .tr, .l, .bl]
-                } else {
-                    edges = [.br]
-                }
-                
-            default:
-                assertionFailure("What happened? Invalid edge tile")
-        }
-        
-        for point in rhs.reversed() {
-            guard point != startPoint else { continue }
-            lhs.append(point)
-        }
-        
-        let startIndex = lhs.firstIndex(of: firstEdgeTile)!
-        var index = startIndex
-        
-        while true {
-            let previousPoint = lhs[index]
-            index += 1
-            if index >= lhs.count {
-                index = 0
-            }
-            let point = lhs[index]
-            let tile = grid2[point]
-            
-            switch tile {
-                case .northSouth:
-                    if previousPoint == point.up() {
-                        if edges.contains([.bl]) {
-                            edges = [.tl, .l, .bl]
-                        } else {
-                            edges = [.tr, .r, .br]
-                        }
-                    } else {
-                        if edges.contains([.tl]) {
-                            edges = [.tl, .l, .bl]
-                        } else {
-                            edges = [.tr, .r, .br]
-                        }
-                    }
-                    
-                case .eastWest:
-                    if previousPoint == point.left() {
-                        if edges.contains([.tr]) {
-                            edges = [.tl, .t, .tr]
-                        } else {
-                            edges = [.bl, .b, .br]
-                        }
-                    } else {
-                        if edges.contains([.tl]) {
-                            edges = [.tl, .t, .tr]
-                        } else {
-                            edges = [.bl, .b, .br]
-                        }
-                    }
-                    
-                case .northEast:
-                    if previousPoint == point.up() {
-                        if edges.contains([.br]) {
-                            edges = [.tr]
-                        } else {
-                            edges = [.tl, .l, .bl, .b, .br]
-                        }
-                    } else {
-                        if edges.contains([.tl]) {
-                            edges = [.tr]
-                        } else {
-                            edges = [.tl, .l, .bl, .b, .br]
-                        }
-                    }
-                    
-                case .northWest:
-                    if previousPoint == point.up() {
-                        if edges.contains([.bl]) {
-                            edges = [.tl]
-                        } else {
-                            edges = [.tr, .r, .br, .b, .bl]
-                        }
-                    } else {
-                        if edges.contains([.tr]) {
-                            edges = [.tl]
-                        } else {
-                            edges = [.tr, .r, .br, .b, .bl]
-                        }
-                    }
-                    
-                case .southWest:
-                    if previousPoint == point.down() {
-                        if edges.contains([.tl]) {
-                            edges = [.bl]
-                        } else {
-                            edges = [.tl, .t, .tr, .r, .br]
-                        }
-                    } else {
-                        if edges.contains([.br]) {
-                            edges = [.bl]
-                        } else {
-                            edges = [.tl, .t, .tr, .r, .br]
-                        }
-                    }
-                    
-                case .southEast:
-                    if previousPoint == point.down() {
-                        if edges.contains([.tr]) {
-                            edges = [.br]
-                        } else {
-                            edges = [.tr, .t, .tl, .l, .bl]
-                        }
-                    } else {
-                        if edges.contains([.bl]) {
-                            edges = [.br]
-                        } else {
-                            edges = [.tr, .t, .tl, .l, .bl]
-                        }
-                    }
-                    
-                case .start:
-                    break
-                    
-                default:
-                    assertionFailure("What happened? Invalid edge tile")
-            }
-            
-//            print()
-//            print(point, tile.rawValue)
-//            printEdges(edges, tile)
-
-            let outerPositions = edges.map { point + $0.point }
-            for neighbor in point.neighbors(max: grid2.bottomRight) {
-                if outerPositions.contains(neighbor), grid2[neighbor] == .ground {
-                    pointsToFill.insert(neighbor)
-                }
-            }
-            
-            if index == startIndex {
-                break
-            }
-        }
-        
+        findHiddenOuterTiles(firstEdgeTile, lhs, grid2, &pointsToFill)
         fillWithOutside(&pointsToFill, &grid2)
-        
-//        grid2.draw()
         
         return grid2.items.filter({ $0 == .ground }).count
-    }
-    
-    func printEdges(_ edges: Set<Position>, _ tile: Tiles) {
-        print("\(edges.contains(.tl) ? "⚪️" : "⚫️")\(edges.contains(.t) ? "⚪️" : [.northSouth, .northEast, .northWest].contains(tile) ? "🔴" : "⚫️")\(edges.contains(.tr) ? "⚪️" : "⚫️")")
-        print("\(edges.contains(.l) ? "⚪️" : [.eastWest, .northWest, .southWest].contains(tile) ? "🔴" : "⚫️")🔴\(edges.contains(.r) ? "⚪️" : [.eastWest, .northEast, .southEast].contains(tile) ? "🔴" : "⚫️")")
-        print("\(edges.contains(.bl) ? "⚪️" : "⚫️")\(edges.contains(.b) ? "⚪️" : [.northSouth, .southEast, .southWest].contains(tile) ? "🔴" : "⚫️")\(edges.contains(.br) ? "⚪️" : "⚫️")")
     }
     
     enum Tiles: Character, CustomStringConvertible {
@@ -359,49 +84,224 @@ public struct Day10 {
 }
 
 extension Day10 {
-    func findValidAdjacentStartTiles(_ grid: Grid<Day10.Tiles>, _ startPoint: Point, _ lhs: inout [Point], _ rhs: inout [Point]) {
-        if startPoint.up().isValid(max: grid.bottomRight), [.northSouth, .southWest, .southEast].contains(grid[startPoint.up()]) {
-            lhs.append(startPoint.up())
-        }
+    func findHiddenOuterTiles(_ firstEdgeTile: Point, _ lhs: [Point], _ grid2: Grid<Day10.Tiles>, _ pointsToFill: inout Set<Point>) {
+        let startIndex = lhs.firstIndex(of: firstEdgeTile)!
+        var edges: Set<Position> = calculateInitialTileEdges(firstEdgeTile, grid2)
+
+        var index = startIndex
         
-        if startPoint.down().isValid(max: grid.bottomRight), [.northSouth, .northEast, .northWest].contains(grid[startPoint.down()]) {
-            if lhs.count == 1 {
-                lhs.append(startPoint.down())
-            } else {
-                rhs.append(startPoint.down())
+        while true {
+            let previousPoint = lhs[index]
+            index = incrementIndex(index, maxIndex: lhs.count)
+            let point = lhs[index]
+            
+            edges = calculateTileOuterEdges(previousPoint, point, grid2, edges)
+            
+            let outerPositions = edges.map { point + $0.point }
+            for neighbor in point.neighbors(max: grid2.bottomRight) {
+                if outerPositions.contains(neighbor), grid2[neighbor] == .ground {
+                    pointsToFill.insert(neighbor)
+                }
             }
-        }
-        
-        if startPoint.left().isValid(max: grid.bottomRight), [.eastWest, .northEast, .southEast].contains(grid[startPoint.left()]) {
-            if lhs.count == 1 {
-                lhs.append(startPoint.left())
-            } else {
-                rhs.append(startPoint.left())
-            }
-        }
-        
-        if startPoint.right().isValid(max: grid.bottomRight), [.eastWest, .northWest, .southWest].contains(grid[startPoint.right()]) {
-            if lhs.count == 1 {
-                lhs.append(startPoint.right())
-            } else {
-                rhs.append(startPoint.right())
+            
+            if index == startIndex {
+                break
             }
         }
     }
     
+    func incrementIndex(_ index: Int, maxIndex: Int) -> Int {
+        let index = index + 1
+        if index >= maxIndex {
+            return 0
+        }
+        return index
+    }
+    
+    func calculateTileOuterEdges(_ previousPoint: Point, _ point: Point, _ grid2: Grid<Tiles>, _ edges: Set<Position>) -> Set<Position> {
+        switch (grid2[point], previousPoint) {
+            case (.northSouth, point.up()):
+                return edges.contains([.bl]) ? [.tl, .l, .bl] : [.tr, .r, .br]
+
+            case (.northSouth, _):
+                return edges.contains([.tl]) ? [.tl, .l, .bl] : [.tr, .r, .br]
+                
+            case (.eastWest, point.left()):
+                return edges.contains([.tr]) ? [.tl, .t, .tr] : [.bl, .b, .br]
+
+            case (.eastWest, _):
+                return edges.contains([.tl]) ? [.tl, .t, .tr] : [.bl, .b, .br]
+                
+            case (.northEast, point.up()):
+                return edges.contains([.br]) ? [.tr] : [.tl, .l, .bl, .b, .br]
+
+            case (.northEast, _):
+                return edges.contains([.tl]) ? [.tr] : [.tl, .l, .bl, .b, .br]
+                
+            case (.northWest, point.up()):
+                return edges.contains([.bl]) ? [.tl] : [.tr, .r, .br, .b, .bl]
+
+            case (.northWest, _):
+                return edges.contains([.tr]) ? [.tl] : [.tr, .r, .br, .b, .bl]
+                
+            case (.southWest, point.down()):
+                return edges.contains([.tl]) ? [.bl] : [.tl, .t, .tr, .r, .br]
+
+            case (.southWest, _):
+                return edges.contains([.br]) ? [.bl] : [.tl, .t, .tr, .r, .br]
+                
+            case (.southEast, point.down()):
+                return edges.contains([.tr]) ? [.br] : [.tr, .t, .tl, .l, .bl]
+
+            case (.southEast, _):
+                return edges.contains([.bl]) ? [.br] : [.tr, .t, .tl, .l, .bl]
+
+            default:
+                assertionFailure("What happened? Invalid edge tile")
+        }
+        return []
+    }
+    
+    func calculateInitialTileEdges(_ firstEdgeTile: Point, _ grid2: Grid<Day10.Tiles>) -> Set<Position> {
+        switch grid2[firstEdgeTile] {
+            case .northSouth:
+                return firstEdgeTile.left().x <= 0 ? [.tl, .l, .bl] : [.tr, .r, .br]
+                
+            case .eastWest:
+                return firstEdgeTile.up().y <= 0 ? [.tl, .t, .tr] : [.bl, .b, .br]
+                
+            case .northEast:
+                return firstEdgeTile.left().x <= 0 || firstEdgeTile.down().y >= grid2.rows ? [.tl, .l, .bl, .b, .br] : [.tr]
+                
+            case .northWest:
+                return firstEdgeTile.right().x >= grid2.columns || firstEdgeTile.down().y >= grid2.rows ? [.tr, .r, .br, .b, .bl] : [.tl]
+                
+            case .southWest:
+                return firstEdgeTile.up().y <= 0 || firstEdgeTile.right().x >= grid2.columns ? [.tl, .t, .tr, .r, .br] : [.bl]
+                
+            case .southEast:
+                return firstEdgeTile.up().y <= 0 || firstEdgeTile.left().x <= 0  ? [.tl, .t, .tr, .l, .bl] : [.br]
+                
+            default:
+                assertionFailure("What happened? Invalid edge tile")
+        }
+        return []
+    }
+    
+    func findOuterEdgeGroundTilesAndFirstEdgeTile(_ grid2: Grid<Tiles>, _ startPoint: Point) -> (Set<Point>, Point) {
+        var pointsToFill = Set<Point>()
+        var firstEdgeTile = Point(-1, -1)
+        for x in (0..<grid2.columns) {
+            var point = Point(x: x, y: 0)
+            
+            if grid2[point] == .ground {
+                pointsToFill.insert(point)
+            } else if firstEdgeTile == Point(-1, -1), point != startPoint {
+                firstEdgeTile = point
+            }
+            
+            point = Point(x: x, y: grid2.rows-1)
+            
+            if grid2[point] == .ground {
+                pointsToFill.insert(point)
+            } else if firstEdgeTile == Point(-1, -1), point != startPoint {
+                firstEdgeTile = point
+            }
+        }
+        
+        for y in (0..<grid2.rows) {
+            var point = Point(x: 0, y: y)
+            
+            if grid2[point] == .ground {
+                pointsToFill.insert(point)
+            } else if firstEdgeTile == Point(-1, -1), point != startPoint {
+                firstEdgeTile = point
+            }
+            
+            point = Point(x: grid2.columns-1, y: y)
+            
+            if grid2[point] == .ground {
+                pointsToFill.insert(point)
+            } else if firstEdgeTile == Point(-1, -1), point != startPoint {
+                firstEdgeTile = point
+            }
+        }
+        return (pointsToFill, firstEdgeTile)
+    }
+    
+    func replaceStartTile(_ lhs: [Point], _ rhs: [Point], _ startPoint: Point, _ grid2: inout Grid<Day10.Tiles>) {
+        // replace `start`
+        grid2.items[grid2.index(for: startPoint)] = switch (lhs[1], rhs[0]) {
+                // northSouth
+            case (startPoint.up(), startPoint.down()), (startPoint.down(), startPoint.up()):
+                .northSouth
+                
+                // eastWest
+            case (startPoint.left(), startPoint.right()), (startPoint.right(), startPoint.left()):
+                .eastWest
+                
+                // northEast
+            case (startPoint.up(), startPoint.right()), (startPoint.right(), startPoint.up()):
+                .northEast
+                
+                // northWest
+            case (startPoint.up(), startPoint.left()), (startPoint.left(), startPoint.up()):
+                .northWest
+                
+                // southWest
+            case (startPoint.down(), startPoint.left()), (startPoint.left(), startPoint.down()):
+                .southWest
+                
+                // southEast
+            case (startPoint.down(), startPoint.right()), (startPoint.right(), startPoint.down()):
+                .southEast
+                
+            default:
+//                assertionFailure("Something isn't right!")
+                .start
+        }
+    }
+    
+    func fillWithOutside(_ pointsToFill: inout Set<Point>, _ grid2: inout Grid<Day10.Tiles>) {
+        while let point = pointsToFill.popFirst() {
+            grid2.items[grid2.index(for: point)] = .outside
+            for nextPoint in point.neighbors(max: grid2.bottomRight) {
+                if grid2[nextPoint] == .ground {
+                    pointsToFill.insert(nextPoint)
+                }
+            }
+        }
+    }
+    
+    func findValidAdjacentStartTiles(_ startPoint: Point, _ grid: Grid<Day10.Tiles>, _ validOptions: [Tiles], _ lhs: inout [Point], _ rhs: inout [Point]) {
+        if startPoint.isValid(max: grid.bottomRight), validOptions.contains(grid[startPoint]) {
+            if lhs.count == 1 {
+                lhs.append(startPoint)
+            } else {
+                rhs.append(startPoint)
+            }
+        }
+    }
+    
+    func findValidAdjacentStartTiles(_ grid: Grid<Day10.Tiles>, _ startPoint: Point, _ lhs: inout [Point], _ rhs: inout [Point]) {
+        findValidAdjacentStartTiles(startPoint.up(), grid, [.northSouth, .southWest, .southEast], &lhs, &rhs)
+        findValidAdjacentStartTiles(startPoint.down(), grid, [.northSouth, .northEast, .northWest], &lhs, &rhs)
+        findValidAdjacentStartTiles(startPoint.left(), grid, [.eastWest, .northEast, .southEast], &lhs, &rhs)
+        findValidAdjacentStartTiles(startPoint.right(), grid, [.eastWest, .northWest, .southWest], &lhs, &rhs)
+    }
+    
+    func nextPoint(_ list: inout [Point], _ grid: Grid<Day10.Tiles>) {
+        let currentPoint = list[list.count - 1]
+        let previousPoint = list[list.count - 2]
+        let tile = grid[currentPoint]
+        let nextPoint = tile.points(for: currentPoint).filter({ $0 != previousPoint }).first!
+        list.append(nextPoint)
+    }
+    
     func findFurthestPoint(_ lhs: inout [Point], _ rhs: inout [Point], _ grid: Grid<Day10.Tiles>) {
         while lhs.last! != rhs.last! {
-            let leftPoint = lhs[lhs.count - 1]
-            let previousLeftPoint = lhs[lhs.count - 2]
-            let left = grid[leftPoint]
-            let nextLeftPoint = left.points(for: leftPoint).filter({ $0 != previousLeftPoint }).first!
-            lhs.append(nextLeftPoint)
-            
-            let rightPoint = rhs[rhs.count - 1]
-            let previousRightPoint = rhs[rhs.count - 2]
-            let right = grid[rightPoint]
-            let nextRightPoint = right.points(for: rightPoint).filter({ $0 != previousRightPoint }).first!
-            rhs.append(nextRightPoint)
+            nextPoint(&lhs, grid)
+            nextPoint(&rhs, grid)
         }
     }
 }
