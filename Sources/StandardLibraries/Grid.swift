@@ -38,6 +38,10 @@ public struct Grid<T: Hashable>: Hashable {
     public func point(for index: Int) -> Point {
         Point(index % columns, index / columns)
     }
+    
+    public func index(for point: Point) -> Int {
+        point.x + point.y * columns
+    }
 }
 
 extension Grid where T == [String] {
