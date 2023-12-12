@@ -31,13 +31,21 @@ public extension StringProtocol {
     func substring(toIndex: Int) -> SubSequence {
         return self[0 ..< Swift.max(0, toIndex)]
     }
-
+    
     subscript (r: Range<Int>) -> SubSequence {
         let range = Range(uncheckedBounds: (lower: Swift.max(0, Swift.min(length, r.lowerBound)),
                                             upper: Swift.min(length, Swift.max(0, r.upperBound))))
         let start = index(startIndex, offsetBy: range.lowerBound)
         let end = index(start, offsetBy: range.upperBound - range.lowerBound)
         return self[start ..< end]
+    }
+    
+    subscript (r: ClosedRange<Int>) -> SubSequence {
+        let range = Range(uncheckedBounds: (lower: Swift.max(0, Swift.min(length, r.lowerBound)),
+                                            upper: Swift.min(length, Swift.max(0, r.upperBound))))
+        let start = index(startIndex, offsetBy: range.lowerBound)
+        let end = index(start, offsetBy: range.upperBound - range.lowerBound)
+        return self[start ... end]
     }
 }
 
