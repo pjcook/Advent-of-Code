@@ -70,19 +70,30 @@ class Day12Tests: XCTestCase {
     }
     
     func test_numberOfConfigurations() {
-//        XCTAssertEqual(Day12.SurveyEntry("???.### 1,1,3").numberOfConfigurations(), 1)
-//        XCTAssertEqual(Day12.SurveyEntry(".??..??...?##. 1,1,3").numberOfConfigurations(), 4)
+        XCTAssertEqual(Day12.SurveyEntry("???.### 1,1,3").numberOfConfigurations(), 1)
+        XCTAssertEqual(Day12.SurveyEntry(".??..??...?##. 1,1,3").numberOfConfigurations(), 4)
         XCTAssertEqual(Day12.SurveyEntry("?#?#?#?#?#?#?#? 1,3,1,6").numberOfConfigurations(), 1)
-//        XCTAssertEqual(Day12.SurveyEntry("????.#...#... 4,1,1").numberOfConfigurations(), 1)
-//        XCTAssertEqual(Day12.SurveyEntry("????.######..#####. 1,6,5").numberOfConfigurations(), 4)
-//        XCTAssertEqual(Day12.SurveyEntry("?###???????? 3,2,1").numberOfConfigurations(), 10)
+        XCTAssertEqual(Day12.SurveyEntry("????.#...#... 4,1,1").numberOfConfigurations(), 1)
+        XCTAssertEqual(Day12.SurveyEntry("????.######..#####. 1,6,5").numberOfConfigurations(), 4)
+        XCTAssertEqual(Day12.SurveyEntry("?###???????? 3,2,1").numberOfConfigurations(), 10)
     }
     
-    func test_calculateOptions() {
+    func test_calculateOptions1() {
         let survey = Day12.SurveyEntry("?###???????? 3,2,1")
-        let options = survey.calculateOptions(input: survey.report)
-        print(options)
-        XCTAssertEqual(options.count, 10)
+        let options = survey.calculateOptions()
+        XCTAssertEqual(options, 10)
+    }
+    
+    func test_calculateOptions2() {
+        let survey = Day12.SurveyEntry("???.###????.###????.###????.###????.### 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3")
+        let options = survey.calculateOptions()
+        XCTAssertEqual(options, 1)
+    }
+    
+    func test_calculateOptions3() {
+        let survey = Day12.SurveyEntry(".??..??...?##.?.??..??...?##.?.??..??...?##.?.??..??...?##.?.??..??...?##. 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3")
+        let options = survey.calculateOptions()
+        XCTAssertEqual(options, 1)
     }
 }
 

@@ -6,12 +6,12 @@ public struct Day12 {
     
     public func part1(_ input: [String]) -> Int {
         let survey = parse(input)
-        return survey.reduce(0) { $0 + $1.numberOfConfigurations() }
+        return survey.reduce(0) { $0 + $1.calculateOptions() }
     }
     
     public func part2(_ input: [String]) -> Int {
         let survey = parse2(input)
-        return survey.reduce(0) { $0 + $1.numberOfConfigurations() }
+        return survey.reduce(0) { $0 + $1.calculateOptions() }
     }
     
     public struct SurveyEntry {
@@ -32,8 +32,8 @@ public struct Day12 {
 }
 
 extension Day12.SurveyEntry {
-    public func calculateOptions(input: String) -> [String] {
-        var results = Set<String>()
+    public func calculateOptions() -> Int {
+        var result = 0
         var toProcess = [(report, contiguousGroups, 0)]
         
         while let (nextReport, remainingGroups, currentIndex) = toProcess.popLast() {
@@ -57,13 +57,19 @@ extension Day12.SurveyEntry {
                         
                         if newReport2[index] == "?" {
                             newReport2[index] = "."
+                            toProcess.append((newReport2, remainingGroups, index + 1))
                         }
-                        toProcess.append((newReport2, remainingGroups, index + 1))
-                        break
-                    } else if isValid(report: newReport) {
-                        results.insert(newReport)
                         break
                     } else {
+                        if isValid(report: newReport.replacingOccurrences(of: "?", with: ".")) {
+                            result += 1
+                        }
+                        
+                        if newReport2[index] == "?" {
+                            newReport2[index] = "."
+                            toProcess.append((newReport2, remainingGroups, index + 1))
+                        }
+                        
                         break
                     }
                 } else {
@@ -75,7 +81,7 @@ extension Day12.SurveyEntry {
             }
         }
         
-        return Array(results)
+        return result
     }
     
     public func numberOfConfigurations() -> Int {
@@ -132,7 +138,7 @@ extension Day12 {
         var results = [SurveyEntry]()
         for line in input {
             let components = line.components(separatedBy: CharacterSet(arrayLiteral: " ", ","))
-            let report = components[0] + components[0] + components[0] + components[0] + components[0]
+            let report = components[0] + "?" + components[0] + "?" + components[0] + "?" + components[0] + "?" + components[0]
             let groups = components[1...].map({ Int(String($0))! })
             let contiguousGroups = groups + groups + groups + groups + groups
             results.append(SurveyEntry(report: report, contiguousGroups: contiguousGroups))
