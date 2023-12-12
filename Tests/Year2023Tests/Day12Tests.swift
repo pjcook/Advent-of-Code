@@ -27,11 +27,23 @@ class Day12Tests: XCTestCase {
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(1, day.part2(input))
+        XCTAssertEqual(65607131946466, day.part2Paulson(input))
 //        }
     }
     
-    func test_part2_example() {
+//    func test_part2_example() {
+//        let input = """
+//???.### 1,1,3
+//.??..??...?##. 1,1,3
+//?#?#?#?#?#?#?#? 1,3,1,6
+//????.#...#... 4,1,1
+//????.######..#####. 1,6,5
+//?###???????? 3,2,1
+//""".lines
+//        XCTAssertEqual(525152, day.part2(input))
+//    }
+    
+    func test_part2_example_paulson() {
         let input = """
 ???.### 1,1,3
 .??..??...?##. 1,1,3
@@ -40,7 +52,7 @@ class Day12Tests: XCTestCase {
 ????.######..#####. 1,6,5
 ?###???????? 3,2,1
 """.lines
-        XCTAssertEqual(525152, day.part2(input))
+        XCTAssertEqual(525152, day.part2Paulson(input))
     }
     
     func test_surveyEntry_init() {
@@ -93,7 +105,7 @@ class Day12Tests: XCTestCase {
     func test_calculateOptions3() {
         let survey = Day12.SurveyEntry(".??..??...?##.?.??..??...?##.?.??..??...?##.?.??..??...?##.?.??..??...?##. 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3")
         let options = survey.calculateOptions()
-        XCTAssertEqual(options, 1)
+        XCTAssertEqual(options, 16384)
     }
 }
 
