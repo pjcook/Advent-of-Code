@@ -13,6 +13,12 @@ class Day12Tests: XCTestCase {
 //        }
     }
     
+    func test_part1_paulson() {
+//        measure {
+        XCTAssertEqual(7490, day.part1Paulson(input))
+//        }
+    }
+    
     func test_part1_example() {
         let input = """
 ???.### 1,1,3

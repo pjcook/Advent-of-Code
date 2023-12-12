@@ -14,11 +14,19 @@ public struct Day12 {
         return survey.reduce(0) { $0 + $1.calculateOptions() }
     }
     
+    public func part1Paulson(_ input: [String]) -> Int {
+        let survey = parse(input)
+        let jp = JonathanPaulsonDay12()
+        return survey.reduce(0) {
+            $0 + jp.beginScore(dots: $1.report, blocks: $1.contiguousGroups, i: 0, bi: 0, current: 0)
+        }
+    }
+    
     public func part2Paulson(_ input: [String]) -> Int {
         let survey = parse2(input)
+        let jp = JonathanPaulsonDay12()
         return survey.reduce(0) {
-            Day12.lookup.removeAll()
-            return $0 + calculateScore(dots: $1.report, blocks: $1.contiguousGroups, i: 0, bi: 0, current: 0)
+            $0 + jp.beginScore(dots: $1.report, blocks: $1.contiguousGroups, i: 0, bi: 0, current: 0)
         }
     }
     
@@ -37,50 +45,61 @@ public struct Day12 {
             self.contiguousGroups = components[1...].map({ Int(String($0))! })
         }
     }
-
-    struct Key: Hashable {
-        let i: Int
-        let bi: Int
-        let current: Int
-    }
-    static var lookup = [Key: Int]()
 }
 
 extension Day12 {
-    // Thanks and credit to Jonathan Paulson. Converted from his Python solution
-    // https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/12.py
-    public func calculateScore(dots: String, blocks: [Int], i: Int, bi: Int, current: Int) -> Int {
-        let key = Key(i: i, bi: bi, current: current)
-        if let value = Day12.lookup[key] {
-            return value
+    class JonathanPaulsonDay12 {
+        /// Thanks and credit to Jonathan Paulson. Converted from his Python solution
+        /// https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/12.py
+
+        struct Key: Hashable {
+            let i: Int
+            let bi: Int
+            let current: Int
         }
+        var lookup = [Key: Int]()
         
-        if i == dots.count {
-            if bi == blocks.count && current == 0 {
-                return 1
-            } else if bi == blocks.count-1 && blocks[bi] == current {
-                return 1
-            } else {
-                return 0
+        func beginScore(dots: String, blocks: [Int], i: Int, bi: Int, current: Int) -> Int {
+            lookup.removeAll()
+            return calculateScore(dots: dots, blocks: blocks, i: i, bi: bi, current: current)
+        }
+
+        /// # i == current position within dots
+        /// # bi == current position within blocks
+        /// # current == length of current block of '#'
+        /// # state space is len(dots) * len(blocks) * len(dots)
+        private func calculateScore(dots: String, blocks: [Int], i: Int, bi: Int, current: Int) -> Int {
+            let key = Key(i: i, bi: bi, current: current)
+            if let value = lookup[key] {
+                return value
             }
-        }
-        
-        var ans = 0
-        for c in [".", "#"] {
-            if dots[i] == c || dots[i] == "?" {
-                if c == "." && current == 0 {
-                    ans += calculateScore(dots: dots, blocks: blocks, i: i+1, bi: bi, current: 0)
-                } else if c == "." && current > 0 && bi < blocks.count && blocks[bi] == current {
-                    ans += calculateScore(dots: dots, blocks: blocks, i: i+1, bi: bi+1, current: 0)
-                } else if c == "#" {
-                    ans += calculateScore(dots: dots, blocks: blocks, i: i+1, bi: bi, current: current+1)
+            
+            if i == dots.count {
+                if bi == blocks.count && current == 0 {
+                    return 1
+                } else if bi == blocks.count-1 && blocks[bi] == current {
+                    return 1
+                } else {
+                    return 0
                 }
             }
+            
+            var ans = 0
+            for c in [".", "#"] {
+                if dots[i] == c || dots[i] == "?" {
+                    if c == "." && current == 0 {
+                        ans += calculateScore(dots: dots, blocks: blocks, i: i+1, bi: bi, current: 0)
+                    } else if c == "." && current > 0 && bi < blocks.count && blocks[bi] == current {
+                        ans += calculateScore(dots: dots, blocks: blocks, i: i+1, bi: bi+1, current: 0)
+                    } else if c == "#" {
+                        ans += calculateScore(dots: dots, blocks: blocks, i: i+1, bi: bi, current: current+1)
+                    }
+                }
+            }
+            lookup[key] = ans
+            return ans
         }
-        Day12.lookup[key] = ans
-        return ans
     }
-
 }
 
 extension Day12.SurveyEntry {
