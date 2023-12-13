@@ -1,0 +1,7 @@
+#  Day13 - Solved
+
+I converted the input into groups of `rows` and `columns` collections.
+I broke the problem down into calling `calculateScore` for each group of `rows` and `cols`.
+`calculateScore` called another function `checkRows` for the array of `rows` and again for the array of `cols`, but passing in a `multiplier` of 1 with the array of `cols` and 100 with the array of `rows`.
+`checkRows` iterated over each entry in the passed in array of `rows` or `cols`. For each line it called `checkDifference` which checked whether the next row and the current row were either equal, or for part 2, were only off by 1 character e.g. the `hammingDistance == 1`. If `checkDifference` returned `true` then I ran `validateRows` from the current index position, and if the collection was valid then I would return the `index position + 1 * multiplier`.
+`validateRows` was used to determine whether the current collection mirrored itself from the passed in starting index position. For part 2 it also kept track of a `differences` count, because for part 2 the collection could be valid if the collection was already valid, or if the collection was valid with only 1 row with 1 variance e.g. the hamming distance of the counterpart was only 1. The function started at the start index, and checked each paid or rows moving out from the start index until it hit the side, double checking the number of `differences` (if running as part 2).
