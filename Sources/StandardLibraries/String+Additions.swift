@@ -12,6 +12,14 @@ public extension String {
     var binary: Int? {
         Int(self, radix: 2)
     }
+    
+    func hammingDistance(with other: String) -> Int {
+        var count = 0
+        for (a,b) in zip(self,other) {
+            count += a == b ? 0 : 1
+        }
+        return count
+    }
 }
 
 public extension StringProtocol {
