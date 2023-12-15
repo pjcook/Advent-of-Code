@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension String {
-    public func toAscii() -> [Int] {
+public extension String {
+    func toAscii() -> [Int] {
         var output = [Int]()
         for c in utf8 {
             output.append(Int(c))
@@ -18,8 +18,8 @@ extension String {
     }
 }
 
-extension Int {
-    public func toAscii() -> String? {
+public extension Int {
+    func toAscii() -> String? {
         guard self >= 0 else { return nil }
         if let us = UnicodeScalar(self) {
             return String(Character(us))
