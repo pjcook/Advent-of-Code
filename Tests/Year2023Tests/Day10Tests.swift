@@ -12,6 +12,11 @@ class Day10Tests: XCTestCase {
         XCTAssertEqual(7086, day.part1(input))
 //        }
     }
+    
+    func test_part1_chris() {
+        let input = Input("Day10_Chris.input", Bundle.module).lines
+        XCTAssertEqual(6823, day.part1(input))
+    }
 
     func test_part1_example1() {
         let input = """

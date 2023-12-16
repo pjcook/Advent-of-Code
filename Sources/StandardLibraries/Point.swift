@@ -245,7 +245,7 @@ public extension CompassDirection {
     }
 }
 
-public enum Direction {
+public enum Direction: Hashable {
     case up, down, left, right
     
     public var point: Point {
