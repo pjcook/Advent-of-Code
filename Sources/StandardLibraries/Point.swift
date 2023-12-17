@@ -245,8 +245,11 @@ public extension CompassDirection {
     }
 }
 
-public enum Direction: Hashable {
-    case up, down, left, right
+public enum Direction: Int, Hashable, CaseIterable {
+    case left = 0
+    case down = 1
+    case right = 2
+    case up = 3
     
     public var point: Point {
         switch self {
@@ -254,6 +257,19 @@ public enum Direction: Hashable {
         case .left: return Point(-1, 0)
         case .right: return Point(1, 0)
         case .down: return Point(0, 1)
+        }
+    }
+    
+    public var opposite: Direction {
+        switch self {
+            case .up:
+                .down
+            case .down:
+                .up
+            case .left:
+                .right
+            case .right:
+                .left
         }
     }
 }

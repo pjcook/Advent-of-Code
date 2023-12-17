@@ -153,7 +153,7 @@ extension Grid where T == Int {
         return costSoFar[end, default: -1]
     }
     
-    fileprivate func drawCalculatedPath(_ end: Point, _ cameFrom: inout [Point : Point]) {
+    func drawCalculatedPath(_ end: Point, _ cameFrom: inout [Point : Point]) {
         var path = [Point]()
         var current: Point? = end
         while current != nil {
