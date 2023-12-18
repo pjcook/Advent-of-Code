@@ -17,7 +17,7 @@ class Day15Tests: XCTestCase {
     }
     
     // Commenting out additional tests because the Part 2's take over 4s each
-    /*
+    
     func test_part1_aStar() {
         XCTAssertEqual(769, grid.aStar(start: .zero, end: Point(grid.columns - 1, grid.rows - 1), calculateScore: grid.calculateScore))
     }
@@ -47,7 +47,7 @@ class Day15Tests: XCTestCase {
     func test_part2_chris() {
         XCTAssertEqual(2881, grid_chris.dijkstra(start: .zero, end: Point(grid_chris.columns * 5 - 1, grid_chris.rows * 5 - 1), maxPoint: Point(grid_chris.columns * 5, grid_chris.rows * 5), calculateScore: grid_chris.calculateScore))
     }
-     */
+     
 }
 
 extension Grid where T == Int {
