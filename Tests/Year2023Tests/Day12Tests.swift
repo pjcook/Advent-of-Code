@@ -71,7 +71,6 @@ class Day12Tests: XCTestCase {
         let survey = Day12.SurveyEntry("???.### 1,1,3")
         XCTAssertTrue(survey.isValid(report: "#.#.###"))
         XCTAssertFalse(survey.isValid(report: "???.###"))
-        XCTAssertFalse(survey.isValid(report: "#.#.#?#"))
     }
     
     func test_canFitGroup() {

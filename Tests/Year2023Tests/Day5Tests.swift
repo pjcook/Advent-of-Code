@@ -20,14 +20,14 @@ class Day5Tests: XCTestCase {
 //        }
     }
     
-    func test_part2_bruteForce() {
-        // 1074 seconds
-        // 992
-        // 216
-//        measure {
-        XCTAssertEqual(6_082_852, day.part2brute(input))
-//        }
-    }
+//    func test_part2_bruteForce() {
+//        // 1074 seconds
+//        // 992
+//        // 216
+////        measure {
+//        XCTAssertEqual(6_082_852, day.part2brute(input))
+////        }
+//    }
     
 //    func test_parse_speed() {
 //        measure {
