@@ -22,6 +22,7 @@ public struct Day19 {
         var rules = extractRules(workflow, soFar: [], id: "in")
         var result = 0
         
+        // Remove the noise
         for i in (0..<rules.count) {
             rules[i] = rules[i].filter {
                 $0.instrumentType != .any
@@ -34,8 +35,9 @@ public struct Day19 {
             cleanUpRules(&rules, index: &index)
         }
         
-//        rules.forEach { print($0) }
+        rules.forEach { print($0) }
 
+        // Calculate the final answer
         for rule in rules {
             var values = [Int]()
             
@@ -45,20 +47,7 @@ public struct Day19 {
                     $0.instrumentType == instrument
                 }
                 
-                if options.count == 2 {
-                    if options[0].calculation == options[1].calculation {
-                        if options[0].calculation == .lessThan {
-                            let value = min(options[0].value, options[1].value)
-                            values.append(value - 1)
-                        } else {
-                            let value = max(options[0].value, options[1].value)
-                            values.append(4000 - value)
-                        }
-                    } else {
-                        let v = options.map { $0.value }.sorted()
-                        values.append(v[1] - 1 - v[0])
-                    }
-                } else if options.count == 0 {
+                if options.count == 0 {
                     values.append(4000)
                 } else if options.count == 1 {
                     if options[0].calculation == .lessThan {
@@ -67,13 +56,17 @@ public struct Day19 {
                         values.append(4000 - options[0].value)
                     }
                 } else {
+                    // s<1393:A, m>1711:A, m<2864:A, s>617:A, a>2135:A, m>2362:A, s<1105:A, x<2523:A, m>2689:A, x>1092:A, x<2044:R, m<2797:R, s>782:A
+                    // if all calculations e..g < or > are the same then
+                    //    if calculation == < then use smallest value - 1
+                    //    else use 4000 - largest value
+                    // else smallest lessThan - largest greaterThan
                     let calculation = options[0].calculation
                     if options.reduce(true, { $0 && $1.calculation == calculation }) {
+                        let value = options.map({ $0.value }).sorted().first!
                         if calculation == .lessThan {
-                            let value = options.map({ $0.value }).sorted().first!
                             values.append(value - 1)
                         } else {
-                            let value = options.map({ $0.value }).sorted().last!
                             values.append(4000 - value)
                         }
                     } else {
@@ -81,23 +74,6 @@ public struct Day19 {
                         let moreThanOptions = options.filter { $0.calculation == .greaterThan }.map({ $0.value }).sorted()
                         values.append(lessThanOptions.first! - 1 - moreThanOptions.last!)
                     }
-                    /*
-                     s<1393
-                     s<1105 -
-                     s>617
-                     s>782 -
-                     
-                     m>1711
-                     m>2362
-                     m>2689
-                     m<2797
-                     m<2864
-                     */
-                    // s<1393:A, m>1711:A, m<2864:A, s>617:A, a>2135:A, m>2362:A, s<1105:A, x<2523:A, m>2689:A, x>1092:A, x<2044:R, m<2797:R, s>782:A
-                    // if all calculations e..g < or > are the same then
-                    //    if calculation == < then use smallest value - 1
-                    //    else use 4000 - largest value
-                    // else largest less than and smallest greater than
                 }
             }
             
