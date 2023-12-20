@@ -47,8 +47,8 @@ public func pow<T: BinaryInteger>(_ base: T, _ power: T) -> T {
     return expBySq(1, base, power)
 }
 
-public func lowestCommonMultiple(_ value1: Int, _ value2: Int) -> Int {
-    return (value1 * value2) / greatestCommonDivisor(value1, value2)
+public func lowestCommonMultiple(_ x: Int, _ y: Int) -> Int {
+    return x / greatestCommonDivisor(x, y) * y
 }
 
 public func lowestCommonMultiple(_ values: [Int]) -> Int {
@@ -63,16 +63,16 @@ public func lowestCommonMultiple(_ values: [Int]) -> Int {
     return lowest
 }
 
-public func greatestCommonDivisor(_ value1: Int, _ value2: Int) -> Int {
-    var i = 0
-    var j = max(value1, value2)
-    var result = min(value1, value2)
+public func greatestCommonDivisor(_ x: Int, _ y: Int) -> Int {
+    var a = 0
+    var b = max(x, y)
+    var r = min(x, y)
     
-    while result != 0 {
-        i = j
-        j = result
-        result = i % j
+    while r != 0 {
+        a = b
+        b = r
+        r = a % b
     }
     
-    return j
+    return b
 }
