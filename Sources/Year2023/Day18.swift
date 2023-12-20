@@ -300,7 +300,6 @@ extension Day18 {
                             case let .bar((_, end2)):
                                 rowElements.append((col1...end2.x))
                                 if index+1 < horizontalItems.count {
-                                    let check = horizontalItems[index+1]
                                     switch next {
                                         case let .column(col2):
                                             if col2 == end2.x {
