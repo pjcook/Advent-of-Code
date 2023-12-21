@@ -90,21 +90,21 @@ public struct Day21 {
             return result
         }
         
-        for r in (0..<grid.rows) {
-            for c in (0..<grid.columns) {
-                let point = Point(c,r)
+        for y in (0..<grid.rows) {
+            for x in (0..<grid.columns) {
+                let point = Point(x,y)
                 let map = Map(board: .zero, pointOnBoard: point)
                 if distances[map] != nil {
                     let options = [-3,-2,-1,0,1,2,3]
-                    for tr in options {
-                        for tc in options {
-                            let distance = distances[Map(board: Point(tc,tr), pointOnBoard: point)]!
+                    for ty in options {
+                        for tx in options {
+                            let distance = distances[Map(board: Point(tx,ty), pointOnBoard: point)]!
                             if distance % 2 == steps % 2 && distance <= steps {
                                 result += 1
                             }
-                            if [-3,3].contains(tr) && [-3,3].contains(tc) {
+                            if [-3,3].contains(ty) && [-3,3].contains(tx) {
                                 result += solve(distance: distance, addition: 2, steps: steps)
-                            } else if [-3,3].contains(tr) || [-3,3].contains(tc) {
+                            } else if [-3,3].contains(ty) || [-3,3].contains(tx) {
                                 result += solve(distance: distance, addition: 1, steps: steps)
                             }
                         }
