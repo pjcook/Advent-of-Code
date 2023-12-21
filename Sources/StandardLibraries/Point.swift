@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Point: Hashable, Comparable {
+public struct Point: Hashable, Comparable, CustomStringConvertible {
     public var x: Int
     public var y: Int
     
@@ -20,6 +20,8 @@ public struct Point: Hashable, Comparable {
     public func down() -> Point { Point(x, y+1) }
     public func left() -> Point { Point(x-1, y) }
     public func right() -> Point { Point(x+1, y) }
+    
+    public var description: String { "(\(x),\(y))" }
 }
 
 extension Point {
