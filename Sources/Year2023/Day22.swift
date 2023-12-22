@@ -8,7 +8,7 @@ public struct Day22 {
     public func part1(_ input: [String]) -> Int {
         var blocks = parse(input)
         blocks = makeFall(blocks)
-        let (maxX, maxY, _) = findMaxXYZ(blocks: blocks)
+        let (maxX, maxY) = findMaxXY(blocks: blocks)
         
         return blocks.reduce(0) {
             $0 + (canRemove(block: $1, blocks: blocks, maxX: maxX, maxY: maxY) ? 1 : 0)
@@ -24,35 +24,24 @@ public struct Day22 {
 
 extension Day22 {
     func howManyWouldFall(blocks: [Cube]) -> Int {
-        var seen = [Cube: Int]()
-        var queue = blocks.reversed()
         var result = 0
         
-        for cube in queue {
-            if let value = seen[cube] {
-                result += value
-                continue
-            }
-            
+        for cube in blocks.reversed() {
             let remaining = remove(block: cube, from: blocks)
-            let count = countFall(remaining)
-            seen[cube] = count
-            result += count
+            result += countFall(remaining)
         }
         
         return result
     }
     
-    func findMaxXYZ(blocks: [Cube]) -> (Int, Int, Int) {
+    func findMaxXY(blocks: [Cube]) -> (Int, Int) {
         var maxX = 0
         var maxY = 0
-        var maxZ = 0
         for block in blocks {
             maxX = max(maxX, block.max.x)
             maxY = max(maxY, block.max.y)
-            maxZ = max(maxY, block.max.z)
         }
-        return (maxX, maxY, maxZ)
+        return (maxX, maxY)
     }
     
     func createAreaOfEffect(minZ: Int, maxZ: Int, maxX: Int, maxY: Int) -> Cube {
