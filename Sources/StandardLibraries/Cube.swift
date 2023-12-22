@@ -77,4 +77,11 @@ public struct Cube: Hashable {
         
         return spares
     }
+    
+    public func move(_ vector: Vector) -> Cube {
+        Cube(
+            min: Vector(x: min.x + vector.x, y: min.y + vector.y, z: min.z + vector.z),
+            max: Vector(x: max.x + vector.x, y: max.y + vector.y, z: max.z + vector.z)
+        )
+    }
 }

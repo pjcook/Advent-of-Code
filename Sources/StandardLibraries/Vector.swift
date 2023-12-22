@@ -12,6 +12,12 @@ public struct Vector: Hashable {
     }
 }
 
+extension Vector: CustomStringConvertible {
+    public var description: String {
+        "(\(x),\(y),\(z)"
+    }
+}
+
 public extension Vector {
     static func + (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
