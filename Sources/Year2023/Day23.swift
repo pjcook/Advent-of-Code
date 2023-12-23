@@ -5,49 +5,15 @@ public struct Day23 {
     public init() {}
     
     public func part1(_ input: [String]) -> Int {
-        let grid = Grid<String>(input)
-        let start = Point(1, 0)
-        let end = Point(grid.columns - 2, grid.rows - 1)
-        var nodes = [Point: [Point: Int]]()
-        var visited = Set<Point>()
-        var queue = [start]
-        while !queue.isEmpty {
-            let point = queue.removeFirst()
-            guard !visited.contains(point) else { continue }
-            visited.insert(point)
-            for next in point.cardinalNeighbors(max: grid.bottomRight) where grid[next] != "#" {
-                let (p, d) = findNextTarget(start: [point, next], grid: grid)
-                if !visited.contains(p) {
-                    var options = nodes[point, default: [Point: Int]()]
-                    options[p] = d
-                    nodes[point] = options
-                    queue.append(p)
-                }
-            }
-        }
-        
-        var queue2 = [[start]]
-        var longestPath = 0
-        while !queue2.isEmpty {
-            let history = queue2.removeLast()
-            let point = history.last!
-            for next in nodes[point]! { //.filter({ $0.key.origin == point && !history.contains($0.key.target) }) {
-                guard !history.contains(next.key) else { continue }
-                var trail = history
-                trail.append(next.key)
-                if next.key == end {
-                    longestPath = max(longestPath, calculateDistance(trail: trail, nodes: nodes))
-                    continue
-                }
-                queue2.append(trail)
-            }
-        }
-        
-        return longestPath
+        calculateLongestDistance(input, part2: false)
     }
     
     // Hamiltonian path problem
     public func part2(_ input: [String]) -> Int {
+        calculateLongestDistance(input, part2: true)
+    }
+    
+    func calculateLongestDistance(_ input: [String], part2: Bool) -> Int {
         let grid = Grid<String>(input)
         let start = Point(1, 0)
         let end = Point(grid.columns - 2, grid.rows - 1)
@@ -68,9 +34,11 @@ public struct Day23 {
                     nodes[point] = options
                     queue.append(p)
                     
-                    var options2 = nodes[p, default: [Point: Int]()]
-                    options2[point] = d
-                    nodes[p] = options2
+                    if part2 {
+                        var options2 = nodes[p, default: [Point: Int]()]
+                        options2[point] = d
+                        nodes[p] = options2
+                    }
                 }
             }
         }
@@ -94,25 +62,13 @@ public struct Day23 {
         return longestPath
     }
     
-    func calculateDistance(trail: [Point], nodes: [Point: [Point: Int]]) -> Int {
-        var distance = 0
-        
-        for i in (1..<trail.count) {
-            let origin = trail[i-1]
-            let target = trail[i]
-            distance += nodes[origin]![target]!
-        }
-        
-        return distance
-    }
-    
     func findNextTarget(start: [Point], grid: Grid<String>) -> (Point, Int) {
         var history = start
         var prev = start[0]
         var next = start[1]
 
         while true {
-            var neighbors = next.cardinalNeighbors(max: grid.bottomRight).filter {
+            let neighbors = next.cardinalNeighbors(max: grid.bottomRight).filter {
                 $0 != prev && grid[$0] != "#"
             }
             
