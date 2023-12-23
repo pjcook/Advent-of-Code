@@ -54,6 +54,8 @@ public struct Day23 {
         var nodes = [Point: [Point: Int]]()
         var visited = Set<Point>()
         var queue = [start]
+        let startTime = Date()
+        print(abs(startTime.timeIntervalSinceNow))
         while !queue.isEmpty {
             let point = queue.removeFirst()
             guard !visited.contains(point) else { continue }
@@ -72,24 +74,23 @@ public struct Day23 {
                 }
             }
         }
-        
-        var queue2 = [[start]]
+        print(abs(startTime.timeIntervalSinceNow))
+        var queue2 = [([start], 0)]
         var longestPath = 0
         while !queue2.isEmpty {
-            let history = queue2.removeLast()
+            let (history, distance) = queue2.removeLast()
             let point = history.last!
-            for next in nodes[point]! { //.filter({ $0.key.origin == point && !history.contains($0.key.target) }) {
-                guard !history.contains(next.key) else { continue }
+            for next in nodes[point]! where !history.contains(next.key) {
                 var trail = history
                 trail.append(next.key)
                 if next.key == end {
-                    longestPath = max(longestPath, calculateDistance(trail: trail, nodes: nodes))
+                    longestPath = max(longestPath, distance + next.value)
                     continue
                 }
-                queue2.append(trail)
+                queue2.append((trail, distance + next.value))
             }
         }
-        
+        print(abs(startTime.timeIntervalSinceNow))
         return longestPath
     }
     
