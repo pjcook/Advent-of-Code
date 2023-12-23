@@ -242,6 +242,20 @@ extension Grid {
         }
     }
     
+    public func draw(with points: [Point], value: String) {
+        for y in (0..<items.count/columns) {
+            var row = ""
+            for x in (0..<columns) {
+                if points.contains(Point(x, y)) {
+                    row += value
+                } else {
+                    row += "\(self[x,y])"
+                }
+            }
+            print(row)
+        }
+    }
+    
     public func drawUpsidedown() {
         for i in (1...rows) {
             let y = rows - i
