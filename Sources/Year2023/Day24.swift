@@ -4,8 +4,53 @@ import StandardLibraries
 public struct Day24 {
     public init() {}
     
-    // https://www.youtube.com/watch?v=guOyA7Ijqgk
     public func part1(_ input: [String], minValue: Double, maxValue: Double) -> Int {
+        let hailstones = parse(input)
+        var total = 0
+        for (i, hs1) in hailstones.enumerated() {
+            for hs2 in hailstones[(i+1)...] {
+                let (apx, apy, avx, avy) = (hs1.x, hs1.y, hs1.vx, hs1.vy)
+                let (bpx, bpy, bvx, bvy) = (hs2.x, hs2.y, hs2.vx, hs2.vy)
+                let m1 = avy / avx
+                let m2 = bvy / bvx
+                let c1 = apy - (m1 * apx)
+                let c2 = bpy - (m2 * bpx)
+                if m1 == m2 {
+                    continue
+                }
+                let xPos = (c2 - c1) / (m1 - m2)
+                let yPos = m1 * xPos + c1
+                if (xPos < apx && avx > 0) || (xPos > apx && avx < 0) || (xPos < bpx && bvx > 0) || (xPos > bpx && bvx < 0) {
+                    continue
+                }
+                if (minValue..<maxValue).contains(xPos) && (minValue..<maxValue).contains(yPos) {
+                    total += 1
+                }
+            }
+        }
+        
+        return total
+        /*
+         for A, B in it.combinations(InputList, 2):
+             APX, APY, APZ, AVX, AVY, AVZ = A
+             BPX, BPY, BPZ, BVX, BVY, BVZ = B
+             MA = (AVY/AVX)
+             MB = (BVY/BVX)
+             CA = APY - (MA*APX)
+             CB = BPY - (MB*BPX)
+             if MA == MB:
+                 continue
+             XPos = (CB-CA)/(MA-MB)
+             YPos = MA*XPos + CA
+             if (XPos < APX and AVX > 0) or (XPos > APX and AVX < 0) or (XPos < BPX and BVX > 0) or (XPos > BPX and BVX < 0):
+                 continue
+             if Min <= XPos <= Max and Min <= YPos <= Max:
+                 Part1Answer += 1
+         */
+    }
+    
+    // https://www.youtube.com/watch?v=guOyA7Ijqgk
+    public func part1b(_ input: [String], minValue: Double, maxValue: Double) -> Int {
         let hailstones = parse(input)
         var total = 0
         for (i, hs1) in hailstones.enumerated() {
@@ -34,95 +79,92 @@ public struct Day24 {
         
         return total
     }
-        
-//    public func part1b(_ input: [String], minValue: Int, maxValue: Int) -> Int {
-//        let hailstones = parse(input)
-//        var seen = Set<CacheKey>()
-//        var intersections = [(Point, Point, Point)]()
-//        
-//        for hailstone in hailstones {
-//            for hs in hailstones {
-//                guard hailstone != hs else { continue }
-//                let cacheKey = CacheKey(p1: hailstone.position, p2: hs.position)
-//                guard !seen.contains(cacheKey) else { continue }
-//                seen.insert(cacheKey)
-//                seen.insert(cacheKey.reversed())
-//                
-//                let a1 = Point(hailstone.position.x, hailstone.position.y)
-//                let v1 = Point(hailstone.velocity.x, hailstone.velocity.y)
-//                let a2 = a1 + v1
-//                let b1 = Point(hs.position.x, hs.position.y)
-//                let v2 = Point(hs.velocity.x, hs.velocity.y)
-//                let b2 = b1 + v2
-////                print(hailstone.position, hs.position)
-//                if let (x,y) = Point.intersectionOfLines(a1: a1, a2: a2, b1: b1, b2: b2) {
-//                    intersections.append((a1, b1, Point(Int(x), Int(y))))
-//                }
-//            }
-//        }
-//        
-//        var count = 0
-//        var points = Set<Point>()
-//        intersections
-//            .filter {
-////                print($0.0, $0.1, $0.2)
-//                return (minValue..<maxValue).contains($0.2.x) && (minValue..<maxValue).contains($0.2.y)
-//            }
-//            .forEach {
-////                print($0.0, $0.1, $0.2)
-//                points.insert($0.0)
-//                points.insert($0.1)
-//            }
-//        
-////        print()
-//        points.forEach { point in
-////            print(point)
-//            let hailstone = hailstones.first {
-//                $0.position.x == point.x && $0.position.y == point.y
-//            }!
-//            let first = intersections
-//                .filter {
-//                    $0.0 == point || $0.1 == point
-//                }
-//                .sorted {
-//                    switch (hailstone.velocity.x < 0, hailstone.velocity.y < 0) {
-//                    case (true,true): $0.2.x > $1.2.x && $0.2.y > $1.2.y
-//                    case (true,false): $0.2.x > $1.2.x && $0.2.y < $1.2.y
-//                    case (false,true): $0.2.x < $1.2.x && $0.2.y > $1.2.y
-//                    case (false,false): $0.2.x < $1.2.x && $0.2.y < $1.2.y
-//                    }
-//                }
-//            print()
-//            print(hailstone.position, hailstone.velocity)
-//            first.forEach {
-//                print("--- :", $0.0, $0.1, $0.2)
-//            }
-//            
-//            let first2 = first.first
-//            if let first2, (minValue...maxValue).contains(first2.2.x) && (minValue...maxValue).contains(first2.2.y) {
-//                count += 1
-//                print("in :", hailstone.position, hailstone.velocity)
-//            } else {
-//                print("out:", hailstone.position, hailstone.velocity)
-//            }
-//        }
-//
-//        return count
-//    }
-    
+      
     public func part2(_ input: [String]) -> Int {
         let hailstones = parse(input)
-        
-        return 1
-    }
-    
-    struct CacheKey: Hashable {
-        let p1: Vector
-        let p2: Vector
-        
-        func reversed() -> CacheKey {
-            CacheKey(p1: p2, p2: p1)
+        var potentialXOptions = Set<Int>()
+        var potentialYOptions = Set<Int>()
+        var potentialZOptions = Set<Int>()
+        for (i, hs1) in hailstones.enumerated() {
+            for hs2 in hailstones[(i+1)...] {
+                let (apx, apy, apz, avx, avy, avz) = (Int(hs1.x), Int(hs1.y), Int(hs1.z), Int(hs1.vx), Int(hs1.vy), Int(hs1.vz))
+                let (bpx, bpy, bpz, bvx, bvy, bvz) = (Int(hs2.x), Int(hs2.y), Int(hs2.z), Int(hs2.vx), Int(hs2.vy), Int(hs2.vz))
+                
+                if avx == bvx && abs(avx) > 100 {
+                    var newOptions = Set<Int>()
+                    let diff = bpx - apx
+                    for v in (-1000...1000) {
+                        if v == avx {
+                            continue
+                        }
+                        if diff % (v - avx) == 0 {
+                            newOptions.insert(v)
+                        }
+                    }
+                    if potentialXOptions.isEmpty {
+                        potentialXOptions = newOptions
+                    } else {
+                        potentialXOptions = potentialXOptions.intersection(newOptions)
+                    }
+                }
+                if avy == bvy && abs(avy) > 100 {
+                    var newOptions = Set<Int>()
+                    let diff = bpy - apy
+                    for v in (-1000...1000) {
+                        if v == avy {
+                            continue
+                        }
+                        if diff % (v - avy) == 0 {
+                            newOptions.insert(v)
+                        }
+                    }
+                    if potentialYOptions.isEmpty {
+                        potentialYOptions = newOptions
+                    } else {
+                        potentialYOptions = potentialYOptions.intersection(newOptions)
+                    }
+                }
+                if avz == bvz && abs(avz) > 100 {
+                    var newOptions = Set<Int>()
+                    let diff = bpz - apz
+                    for v in (-1000...1000) {
+                        if v == avz {
+                            continue
+                        }
+                        if diff % (v - avz) == 0 {
+                            newOptions.insert(v)
+                        }
+                    }
+                    if potentialZOptions.isEmpty {
+                        potentialZOptions = newOptions
+                    } else {
+                        potentialZOptions = potentialZOptions.intersection(newOptions)
+                    }
+                }
+            }
         }
+        
+        print(potentialXOptions, potentialYOptions, potentialZOptions)
+        let rvx = potentialXOptions.popFirst()!
+        let rvy = potentialYOptions.popFirst()!
+        let rvz = potentialZOptions.popFirst()!
+        
+        let hs1 = hailstones[0]
+        let hs2 = hailstones[1]
+        let m1 = (hs1.vy - Double(rvy)) / (hs1.vx - Double(rvx))
+        let m2 = (hs2.vy - Double(rvy)) / (hs2.vx - Double(rvx))
+
+        let c1 = hs1.y - (m1 * hs1.x)
+        let c2 = hs2.y - (m2 * hs2.x)
+        
+        let xPos = Int((c2 - c1) / (m1 - m2))
+        let yPos = Int(m1 * Double(xPos) + c1)
+        let time = (Double(xPos) - hs1.x) / (hs1.vx - Double(rvx))
+        let zPos = Int(hs1.z + (hs1.vz - Double(rvz)) * Double(time))
+
+        print(xPos, yPos, zPos)
+        
+        return xPos + yPos + zPos
     }
     
     struct Hailstone: Hashable, CustomStringConvertible {
