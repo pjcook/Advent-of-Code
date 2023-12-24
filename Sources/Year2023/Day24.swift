@@ -112,32 +112,8 @@ public struct Day24 {
     
     public func part2(_ input: [String]) -> Int {
         let hailstones = parse(input)
-        var total = 0
-        for (i, hs1) in hailstones.enumerated() {
-            for hs2 in hailstones[(i+1)...] {
-                let (a1, b1, c1) = (hs1.a, hs1.b, hs1.c)
-                let (a2, b2, c2) = (hs2.a, hs2.b, hs2.c)
-                if a1 * b2 == b1 * a2 {
-//                    print(hs1, hs2)
-                    continue    // Skip parallel lines
-                }
-                let x = (c1 * b2 - c2 * b1) / (a1 * b2 - a2 * b1)
-                let y = (c2 * a1 - c1 * a2) / (a1 * b2 - a2 * b1)
-//                print(x,y)
-                
-                guard (minValue..<maxValue).contains(x), (minValue..<maxValue).contains(y) else { continue }
-                let options: [Hailstone] = [hs1, hs2]
-                var isValid = true
-                for hs in options {
-                    isValid = isValid && (x - hs.x) * hs.vx >= 0 && (y - hs.y) * hs.vy >= 0
-                }
-                if isValid {
-                    total += 1
-                }
-            }
-        }
         
-        return total
+        return 1
     }
     
     struct CacheKey: Hashable {
