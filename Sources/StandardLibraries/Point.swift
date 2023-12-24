@@ -37,6 +37,14 @@ extension Point {
         return points
     }
     
+    public func isInArea(p1: Point, p2: Point) -> Bool {
+        let minX = min(p1.x, p2.x)
+        let maxX = max(p1.x, p2.x)
+        let minY = min(p1.y, p2.y)
+        let maxY = max(p1.y, p2.y)
+        return (minX...maxX).contains(x) && (minY...maxY).contains(y)
+    }
+    
     public func distance(to: Point) -> Double {
         sqrt(pow(Double(x - to.x), 2) + pow(Double(y - to.y), 2))
     }
@@ -278,4 +286,51 @@ public enum Direction: Int, Hashable, CaseIterable {
 
 public enum MovementDirection: Int {
     case left, right, straight
+}
+
+public extension Point {
+    // https://www.cuemath.com/geometry/equation-of-a-straight-line/
+    // point-slope-form m = (y - y1)/(x - x1) // calculate the angle `m` of the slope between 2 points
+    static func findAngle(p1: Point, p2: Point) -> Double {
+        if p1.x < p2.x {
+            return Double(p1.y - p2.y) / Double(p1.x - p2.x)
+        } else {
+            return Double(p2.y - p1.y) / Double(p2.x - p1.x)
+        }
+    }
+    
+    // find b
+    // y = mx + b
+    static func slope(p1: Point, m: Double) -> Double {
+        Double(p1.y) - (m * Double(p1.x))
+    }
+    
+    static func slope(m1: Double, m2: Double, b1: Double, b2: Double) -> Double {
+        (b2 - b1) / (m1 + m2)
+    }
+}
+
+public struct Line {
+    public let a: Double
+    public let b: Double
+    public let c: Double
+    
+    public init(p1: Point, p2: Point) {
+        let ordered = [p1, p2].sorted { $0.x < $1.x }
+        self.a = Double(ordered[0].y - ordered[1].y)
+        self.b = Double(ordered[1].x - ordered[0].x)
+        self.c = Double(-((ordered[0].x * ordered[1].y) - (ordered[1].x * ordered[0].y)))
+    }
+    
+}
+
+public func intersectionOfLines(line1: Line, line2: Line) -> (Double, Double)? {
+    let d = line1.a * line2.b - line1.b * line2.a
+    let dx = line1.c * line2.b - line1.b * line2.c
+    let dy = line1.a * line2.c - line1.c * line2.a
+    
+    guard d != 0 else { return nil }
+    let x = dx / d
+    let y = dy / d
+    return (x,y)
 }
