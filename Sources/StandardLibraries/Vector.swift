@@ -14,7 +14,7 @@ public struct Vector: Hashable {
 
 extension Vector: CustomStringConvertible {
     public var description: String {
-        "(\(x),\(y),\(z)"
+        "(\(x),\(y),\(z))"
     }
 }
 

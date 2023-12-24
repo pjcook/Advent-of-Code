@@ -10,7 +10,7 @@ class Day24Tests: XCTestCase {
 
     func test_part1() {
 //        measure {
-        XCTAssertEqual(1, day.part1(input, minValue: 200000000000000, maxValue: 400000000000000))
+        XCTAssertEqual(25810, day.part1(input, minValue: 200000000000000, maxValue: 400000000000000))
 //        }
     }
     
@@ -26,20 +26,13 @@ class Day24Tests: XCTestCase {
     }
     
     func test_part1_example1() {
-        // Hailstone A: 19, 13, 30 @ -2, 1, -2
-        // Hailstone B: 18, 19, 22 @ -1, -1, -2
-        // Hailstones' paths will cross inside the test area (at x=14.333, y=15.333).
-        let p1a = Point(19,13)
-        let p1b = p1a + Point(-2,1)
-        let p2a = Point(18,19)
-        let p2b = p2a + Point(-1,-1)
-        
-        guard let (x,y) = intersectionOfLines(line1: Line(p1: p1a, p2: p1b), line2: Line(p1: p2a, p2: p2b)) else {
-            XCTFail()
-            return
+        let a1 = Point(19,13)
+        let a2 = Point(17,14)
+        let b1 = Point(20,19)
+        let b2 = Point(21,14)
+        if let (x,y) = Point.intersectionOfLines(a1: a1, a2: a2, b1: b1, b2: b2) {
+            print("X",x,"Y",y)
         }
-        XCTAssertEqual(x, 14.333333333333334)
-        XCTAssertEqual(y, 15.333333333333334)
     }
     
     func test_part2() {

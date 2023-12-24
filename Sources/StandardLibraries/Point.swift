@@ -289,48 +289,56 @@ public enum MovementDirection: Int {
 }
 
 public extension Point {
-    // https://www.cuemath.com/geometry/equation-of-a-straight-line/
-    // point-slope-form m = (y - y1)/(x - x1) // calculate the angle `m` of the slope between 2 points
-    static func findAngle(p1: Point, p2: Point) -> Double {
-        if p1.x < p2.x {
-            return Double(p1.y - p2.y) / Double(p1.x - p2.x)
-        } else {
-            return Double(p2.y - p1.y) / Double(p2.x - p1.x)
-        }
+    /*
+     - A line is defined as y = mx + b OR y = slope * x + y-intercept
+     - Slope = rise over run = dy / dx = height / distance
+     - Y-intercept is where the line crosses the Y axis, where X = 0
+     
+     let a1 = Point(1,1)
+     let a2 = Point(3,3)
+     let b1 = Point(1,3)
+     let b2 = Point(3,1)
+     let slopeA = slope(p1: a1, p2: a2)
+     let slopeB = slope(p1: b1, p2: b2)
+     let yIntA = yIntercept(a1, slopeA)
+     let yIntB = yIntercept(b1, slopeB)
+     let result = lineIntersect(slopeA, yIntA, slopeB, yIntB)
+     */
+    static func slope(p1: Point, p2: Point) -> Double {
+        // dy/dx
+        // (y2 - y1) / (x2 - x1)
+        return Double(p2.y - p1.y) / Double(p2.x - p1.x)
     }
     
-    // find b
-    // y = mx + b
-    static func slope(p1: Point, m: Double) -> Double {
-        Double(p1.y) - (m * Double(p1.x))
+    static func yIntercept(p1: Point, slope: Double) -> Double {
+        // y = mx + b
+        // b = y - mx
+        // b = P1[1] - slope * P1[0]
+        return Double(p1.y) - slope * Double(p1.x)
     }
     
-    static func slope(m1: Double, m2: Double, b1: Double, b2: Double) -> Double {
-        (b2 - b1) / (m1 + m2)
-    }
-}
-
-public struct Line {
-    public let a: Double
-    public let b: Double
-    public let c: Double
-    
-    public init(p1: Point, p2: Point) {
-        let ordered = [p1, p2].sorted { $0.x < $1.x }
-        self.a = Double(ordered[0].y - ordered[1].y)
-        self.b = Double(ordered[1].x - ordered[0].x)
-        self.c = Double(-((ordered[0].x * ordered[1].y) - (ordered[1].x * ordered[0].y)))
+    static func lineIntersect(m1: Double, b1: Double, m2: Double, b2: Double) -> (Double, Double)? {
+        guard m1 != m2 else { return nil }
+        // y = mx + b
+        // Set both lines equal to find the intersection point in the x direction
+        // m1 * x + b1 = m2 * x + b2
+        // m1 * x - m2 * x = b2 - b1
+        // x * (m1 - m2) = b2 - b1
+        // x = (b2 - b1) / (m1 - m2)
+        let x = (b2 - b1) / (m1 - m2)
+        // Now solve for y -- use either line, because they are equal here
+        // y = mx + b
+        let y = m1 * x + b1
+        return (x,y)
     }
     
-}
-
-public func intersectionOfLines(line1: Line, line2: Line) -> (Double, Double)? {
-    let d = line1.a * line2.b - line1.b * line2.a
-    let dx = line1.c * line2.b - line1.b * line2.c
-    let dy = line1.a * line2.c - line1.c * line2.a
-    
-    guard d != 0 else { return nil }
-    let x = dx / d
-    let y = dy / d
-    return (x,y)
+    static func intersectionOfLines(a1: Point, a2: Point, b1: Point, b2: Point) -> (Double, Double)? {
+        let m1 = Point.slope(p1: a1, p2: a2)
+        let m2 = Point.slope(p1: b1, p2: b2)
+        let y1 = Point.yIntercept(p1: a1, slope: m1)
+        let y2 = Point.yIntercept(p1: b1, slope: m2)
+//        print("A1",a1,"A2",a2,"B1",b1,"B2",b2)
+//        print("M1",m1,"M2",m2,"Y1",y1,"Y2",y2)
+        return Point.lineIntersect(m1: m1, b1: y1, m2: m2, b2: y2)
+    }
 }
