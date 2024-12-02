@@ -67,7 +67,7 @@ public struct Day22 {
             nextPoint()
         }
         
-        var finalSides = [Day22Mapping]()
+        let finalSides = [Day22Mapping]()
         
         /*  U D L R
          1

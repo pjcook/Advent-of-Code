@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -52,6 +52,10 @@ let package = Package(
         .library(
             name: "Year2023",
             targets: ["Year2023"]),
+        
+            .library(
+                name: "Year2023",
+                targets: ["Year2024"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -206,5 +210,19 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
+        
+            .target(
+                name: "Year2024",
+                dependencies: ["StandardLibraries"]),
+            .testTarget(
+                name: "Year2024Tests",
+                dependencies: [
+                    "InputReader",
+                    "StandardLibraries",
+                    "Year2024"
+                ],
+                resources: [
+                    .process("Resources"),
+                ]),
     ]
 )
