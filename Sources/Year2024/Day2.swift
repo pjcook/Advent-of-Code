@@ -4,29 +4,12 @@ import StandardLibraries
 public struct Day2 {
     public init() {}
     
-    public struct CubeGameLimits {
-        public let red: Int
-        public let green: Int
-        public let blue: Int
-        
-        public init(red: Int, green: Int, blue: Int) {
-            self.red = red
-            self.green = green
-            self.blue = blue
-        }
-    }
-    
-    public func part1(_ input: [String], limits: CubeGameLimits) -> Int {
+    public func part1(_ input: [String]) -> Int {
         let results = parse(input)
         var sum = 0
         
         for result in results {
-            guard
-                limits.red >= result.maxRed,
-                limits.green >= result.maxGreen,
-                limits.blue >= result.maxBlue
-            else { continue }
-            sum += result.id
+            sum += isValidSequence(result, hasFaultTolerance: false) ? 1 : 0
         }
         
         return sum
@@ -37,8 +20,7 @@ public struct Day2 {
         var sum = 0
         
         for result in results {
-            let power = result.maxRed * result.maxGreen * result.maxBlue
-            sum += power
+            sum += isValidSequence(result, hasFaultTolerance: true) ? 1 : 0
         }
         
         return sum
@@ -46,55 +28,105 @@ public struct Day2 {
 }
 
 extension Day2 {
-    struct CubeBagGameResult {
-        let id: Int
-        let entries: [CubeBagSelection]
+    public func part2_validation(_ input: [String], _ input2: [String]) -> Int {
+        let results = parse(input)
+        let results2 = parse(input2)
+        var sum = 0
         
-        var maxRed: Int {
-            findMax(cubeType: .red)
+        for item in results {
+            let result = isValidSequence(item, hasFaultTolerance: true)
+            if !result,
+                results2.contains(item) {
+                print(item)
+            }
+            sum += result ? 1 : 0
         }
         
-        var maxGreen: Int {
-            findMax(cubeType: .green)
-        }
-        
-        var maxBlue: Int {
-            findMax(cubeType: .blue)
-        }
-        
-        private func findMax(cubeType: CubeType) -> Int {
-            entries
-                .filter({ $0.cubeType == cubeType })
-                .sorted(by: { $0.numberOfCubes > $1.numberOfCubes })
-                .first?
-                .numberOfCubes ?? 0
-        }
+        return sum
     }
     
-    struct CubeBagSelection {
-        let cubeType: CubeType
-        let numberOfCubes: Int
-        
-        init(_ input: String) {
-            let components = input.trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: " ")
-            self.numberOfCubes = Int(components[0])!
-            self.cubeType = CubeType(rawValue: components[1])!
+    enum Direction {
+        case unknown, up, down
+    }
+    
+    func checkFaultTolerance(_ list: [Int], index: Int) -> Bool {
+        var list1 = list
+        var list2 = list
+        list1.remove(at: index-1)
+        list2.remove(at: index)
+        if isValidSequence(list1, hasFaultTolerance: false) {
+            return true
         }
+        if list1 != list2, isValidSequence(list2, hasFaultTolerance: false) {
+            return true
+        }
+        
+        for i in (0..<list.count) {
+            var list3 = list
+            list3.remove(at: i)
+            if isValidSequence(list3, hasFaultTolerance: false) {
+                return true
+            }
+        }
+        
+        return false
     }
     
-    enum CubeType: String {
-        case red, green, blue
+    public func isValidSequence(_ list: [Int], hasFaultTolerance: Bool) -> Bool {
+        var direction: Direction = .unknown
+        var last = list.first!
+        var failed = false
+        
+        for i in (1...list.count-1) {
+            let value = list[i]
+            if direction == .unknown {
+                if last < value {
+                    direction = .up
+                } else {
+                    direction = .down
+                }
+            }
+            
+            if !(1...3).contains(abs(last - value)) {
+                if hasFaultTolerance, checkFaultTolerance(list, index: i) {
+                    return true
+                }
+                failed = true
+                break
+            }
+            
+            switch direction {
+            case .up:
+                if last < value {
+                    last = value
+                    continue
+                }
+            case .down:
+                if last > value {
+                    last = value
+                    continue
+                }
+            default:
+                break
+            }
+            
+            if hasFaultTolerance, checkFaultTolerance(list, index: i) {
+                return true
+            }
+
+            failed = true
+            break
+        }
+        
+        return !failed
     }
     
-    func parse(_ input: [String]) -> [CubeBagGameResult] {
-        var results = [CubeBagGameResult]()
+    func parse(_ input: [String]) -> [[Int]] {
+        var results = [[Int]]()
         
         for line in input {
-            let components = line.components(separatedBy: CharacterSet(arrayLiteral: ":", ",", ";"))
-            let selections = components[1...].map(CubeBagSelection.init)
-            let gameComponents = components[0].components(separatedBy: " ")
-            let gameResult = CubeBagGameResult(id: Int(gameComponents[1])!, entries: selections)
-            results.append(gameResult)
+            let components = line.components(separatedBy: " ").map({ Int($0)! })
+            results.append(components)
         }
         
         return results
