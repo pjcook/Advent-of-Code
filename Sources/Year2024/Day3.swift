@@ -4,6 +4,10 @@ import StandardLibraries
 public struct Day3 {
     public init() {}
     
+    /// These regex would have worked if I'd put the {1,3} in
+    /// mul\(\d{1,3},\d{1,3}\)
+    /// mul\(\d{1,3},\d{1,3}\)|do\(\)|don\'t\(\)
+    
     public func part1(_ input: [String]) throws -> Int {
         parse(input, isConditional: false).reduce(0) { $0 + $1.value1 * $1.value2 }
     }
