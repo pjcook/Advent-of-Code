@@ -4,16 +4,52 @@ import StandardLibraries
 public struct Day3 {
     public init() {}
     
-    /// These regex would have worked if I'd put the {1,3} in
-    /// mul\(\d{1,3},\d{1,3}\)
-    /// mul\(\d{1,3},\d{1,3}\)|do\(\)|don\'t\(\)
-    
-    public func part1(_ input: [String]) throws -> Int {
+    public func part1(_ input: [String]) -> Int {
         parse(input, isConditional: false).reduce(0) { $0 + $1.value1 * $1.value2 }
     }
     
     public func part2(_ input: [String]) -> Int {
         parse(input, isConditional: true).reduce(0) { $0 + $1.value1 * $1.value2 }
+    }
+}
+
+public struct Day3WithRegEx {
+    public init() {}
+    
+    let regex1 = try! RegularExpression(pattern: "mul\\((\\d{1,3}),(\\d{1,3})\\)")
+    let regex2 = try! RegularExpression(pattern: "mul\\((\\d{1,3}),(\\d{1,3})\\)|(do)\\(\\)|(don)\\'t\\(\\)")
+    
+    public func part1(_ input: [String]) throws -> Int {
+        try calculate(input, regex: regex1)
+    }
+    
+    public func part2(_ input: [String]) throws -> Int {
+        try calculate(input, regex: regex2)
+    }
+    
+    public func calculate(_ input: [String], regex: RegularExpression) throws -> Int {
+        var result = 0
+        var enabled = true
+        
+        for line in input {
+            let matches = regex.matches(in: line)
+            for match in matches {
+                if match.captureGroups.count == 1 {
+                    let value = try? match.string(at: 0)
+                    if value == "do" {
+                        enabled = true
+                    } else {
+                        enabled = false
+                    }
+                } else if enabled {
+                    let val1 = try match.integer(at: 0)
+                    let val2 = try match.integer(at: 1)
+                    result += val1 * val2
+                }
+            }
+        }
+        
+        return result
     }
 }
 
