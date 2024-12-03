@@ -32,4 +32,8 @@ xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
 """.lines
         XCTAssertEqual(48, day.part2(input))
     }
+    
+    func test_lookup() throws {
+        XCTAssertTrue(day.lookup("xmul(2,4)", i: 1, value: "mul(", inputLength: 9))
+    }
 }
