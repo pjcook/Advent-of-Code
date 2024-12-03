@@ -7,52 +7,29 @@ class Day3Tests: XCTestCase {
     let input = Input("Day3.input", Bundle.module).lines
     let day = Day3()
 
-    func test_part1() {
+    func test_part1() throws {
 //        measure {
-        XCTAssertEqual(529618, day.part1(input))
+        XCTAssertEqual(159833790, try day.part1(input))
 //        }
     }
     
-    func test_part1_chris() {
-        let input = Input("Day3_Chris.input", Bundle.module).lines
-        XCTAssertEqual(546312, day.part1(input))
-    }
-    
-    func test_part1_example() {
+    func test_part1_example() throws {
         let input = """
-467..114..
-...*......
-..35..633.
-......#...
-617*......
-.....+.58.
-..592.....
-......755.
-...$.*....
-.664.598..
+xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))
 """.lines
-        XCTAssertEqual(4361, day.part1(input))
+        XCTAssertEqual(161, try day.part1(input))
     }
     
-    func test_part2() {
+    func test_part2() throws {
 //        measure {
-        XCTAssertEqual(77509019, day.part2(input))
+        XCTAssertEqual(89349241, day.part2(input))
 //        }
     }
     
-    func test_part2_example() {
+    func test_part2_example() throws {
         let input = """
-467..114..
-...*......
-..35..633.
-......#...
-617*......
-.....+.58.
-..592.....
-......755.
-...$.*....
-.664.598..
+xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
 """.lines
-        XCTAssertEqual(467835, day.part2(input))
+        XCTAssertEqual(48, day.part2(input))
     }
 }

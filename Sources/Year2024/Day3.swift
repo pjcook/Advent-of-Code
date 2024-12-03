@@ -3,22 +3,18 @@ import StandardLibraries
 
 public struct Day3 {
     public init() {}
+//    public let regex = try! RegularExpression(pattern: "(mul\\(\\d,\\d\\))")
     
-    public func part1(_ input: [String]) -> Int {
-        let grid = parse(input)
+    public func part1(_ input: [String]) throws -> Int {
         var result = 0
-        let symbols = ["%", "/", "$", "+", "@", "=", "&", "#", "*", "-"]
-//        var symbols = extractSetOfNonNumericCharacters(grid: grid)
-//        symbols.remove(".")
         
-        // Look for symbols
-        for y in (0..<grid.rows) {
-            for x in (0..<grid.columns) {
-                let value = grid[x,y]
-                guard symbols.contains(value) else { continue }
-                let sum = extractAdjacentNumbers(grid: grid, point: Point(x, y))
-                    .reduce(0, +)
-                result += sum
+        for line in input {
+            let instructions = parse(line)
+            for instruction in instructions {
+                switch instruction.prefix {
+                case "mul": result += instruction.value1 * instruction.value2
+                default: break
+                }
             }
         }
         
@@ -26,87 +22,150 @@ public struct Day3 {
     }
     
     public func part2(_ input: [String]) -> Int {
-        let grid = parse(input)
         var result = 0
-        let symbols = ["*"]
-        
-        // Look for symbols
-        for y in (0..<grid.rows) {
-            for x in (0..<grid.columns) {
-                let value = grid[x,y]
-                guard symbols.contains(value) else { continue }
-                let numbers = extractAdjacentNumbers(grid: grid, point: Point(x, y))
-                guard numbers.count == 2 else { continue }
-                result += numbers.reduce(1, *)
+        let instructions = parse2(input)
+
+        for instruction in instructions {
+            switch instruction.prefix {
+            case "mul": result += instruction.value1 * instruction.value2
+            default: break
             }
         }
-        
+
         return result
     }
 }
 
 extension Day3 {
-    func extractAdjacentNumbers(grid: Grid<String>, point: Point) -> [Int] {
-        let maxPoint = grid.bottomRight
-        var results = [Int]()
-        var neighbors = Set(point.neighbors(false, min: .zero, max: maxPoint))
+    struct Instruction {
+        let prefix: String
+        let value1: Int
+        let value2: Int
+    }
+    
+    func parse(_ input: String) -> [Instruction] {
+        var results = [Instruction]()
+        var valString = ""
+        var val1 = 0
+        var val2 = 0
+        var i = 0
+        let inputLength = input.count
         
-        while let neighbor = neighbors.popFirst() {
-            let value = grid[neighbor]
-            let characterSet = CharacterSet(charactersIn: value)
-            guard characterSet.isSubset(of: .decimalDigits) else { continue }
-            
-            var digits = value
-            // Found a number
-            
-            // scanLeft
-            var lastPoint = neighbor
-            while true {
-                lastPoint = lastPoint.left()
-                guard lastPoint.isValid(max: maxPoint) else { break }
-                let value = grid[lastPoint]
-                let characterSet = CharacterSet(charactersIn: value)
-                guard characterSet.isSubset(of: .decimalDigits) else { break }
-                neighbors.remove(lastPoint)
-                digits = value + digits
+        outerloop: while i < inputLength {
+            if input[i] == "m", i+7 < inputLength, input[i+1] == "u", input[i+2] == "l", input[i+3] == "(" {
+                i += 4
+                valString = ""
+                val1 = 0
+                val2 = 0
+                
+                while i < inputLength && Character(String(input[i])).isNumber {
+                    valString += String(input[i])
+                    i += 1
+                }
+                guard input[i] == "," else {
+                    i += 1
+                    continue outerloop
+                }
+                i += 1
+                
+                if let value = Int(valString) {
+                    val1 = value
+                } else {
+                    continue outerloop
+                }
+                
+                valString = ""
+                while i < inputLength && Character(String(input[i])).isNumber {
+                    valString += String(input[i])
+                    i += 1
+                }
+                guard input[i] == ")" else {
+                    i += 1
+                    continue outerloop
+                }
+                i += 1
+                
+                if let value = Int(valString) {
+                    val2 = value
+                } else {
+                    continue outerloop
+                }
+                
+                results.append(Instruction(prefix: "mul", value1: val1, value2: val2))
+                continue outerloop
             }
             
-            // scanRight
-            lastPoint = neighbor
-            while true {
-                lastPoint = lastPoint.right()
-                guard lastPoint.isValid(max: maxPoint) else { break }
-                let value = grid[lastPoint]
-                let characterSet = CharacterSet(charactersIn: value)
-                guard characterSet.isSubset(of: .decimalDigits) else { break }
-                neighbors.remove(lastPoint)
-                digits = digits + value
-            }
-            
-            let number = Int(digits)!
-            results.append(number)
+            i += 1
         }
         
         return results
     }
     
-    func extractSetOfNonNumericCharacters(grid: Grid<String>) -> Set<String> {
-        // Example gives: ["#", "$", "*", ".", "+"]
-        // Puzzle input gives: ["%", "/", "$", "+", ".", "@", "=", "&", "#", "*", "-"]
-        var nonDigitCharacters = Set<String>()
-        for y in (0..<grid.rows) {
-            for x in (0..<grid.columns) {
-                let value = grid[x,y]
-                let characterSet = CharacterSet(charactersIn: value)
-                if !characterSet.isSubset(of: .decimalDigits) {
-                    nonDigitCharacters.insert(value)
+    func parse2(_ lines: [String]) -> [Instruction] {
+        var results = [Instruction]()
+        var valString = ""
+        var val1 = 0
+        var val2 = 0
+        var enabled = true
+        
+        for input in lines {
+            var i = 0
+            var inputLength = input.count
+            
+            outerloop: while i < inputLength {
+                if input[i] == "m", i+7 < inputLength, input[i+1] == "u", input[i+2] == "l", input[i+3] == "(" {
+                    i += 4
+                    valString = ""
+                    val1 = 0
+                    val2 = 0
+                    
+                    while i < inputLength && Character(String(input[i])).isNumber {
+                        valString += String(input[i])
+                        i += 1
+                    }
+                    guard input[i] == "," else {
+                        i += 1
+                        continue outerloop
+                    }
+                    i += 1
+                    
+                    if let value = Int(valString) {
+                        val1 = value
+                    } else {
+                        continue outerloop
+                    }
+                    
+                    valString = ""
+                    while i < inputLength && Character(String(input[i])).isNumber {
+                        valString += String(input[i])
+                        i += 1
+                    }
+                    guard input[i] == ")" else {
+                        i += 1
+                        continue outerloop
+                    }
+                    i += 1
+                    
+                    if let value = Int(valString) {
+                        val2 = value
+                    } else {
+                        continue outerloop
+                    }
+                    
+                    if enabled {
+                        results.append(Instruction(prefix: "mul", value1: val1, value2: val2))
+                    }
+                    continue outerloop
+                } else if input[i] == "d", i+3 < inputLength && input[i+1] == "o", input[i+2] == "(", input[i+3] == ")" {
+                    enabled = true
+                } else if input[i] == "d", i+6 < inputLength && input[i+1] == "o", input[i+2] == "n", input[i+3] == "'", input[i+4] == "t", input[i+5] == "(", input[i+6] == ")" {
+                    enabled = false
                 }
+                
+                i += 1
             }
         }
-        return nonDigitCharacters
-    }
-    
-    func parse(_ input: [String]) -> Grid<String> {
-        Grid(input)
+        
+        return results
     }
 }
