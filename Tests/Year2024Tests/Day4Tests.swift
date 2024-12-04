@@ -13,6 +13,28 @@ class Day4Tests: XCTestCase {
 //        }
     }
     
+    func test_part1_chris() {
+//        measure {
+        XCTAssertEqual(2569, day.chrisPart1(input))
+//        }
+    }
+    
+    func test_part1_example_chris() {
+        let input = """
+MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX
+""".lines
+        XCTAssertEqual(18, day.chrisPart1(input))
+    }
+    
     func test_part1_example() {
         let input = """
 MMMSXXMASM
