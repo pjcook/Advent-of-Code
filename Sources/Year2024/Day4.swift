@@ -5,87 +5,80 @@ public struct Day4 {
     public init() {}
     
     public func part1(_ input: [String]) -> Int {
-        let scratchCards = parse(input)
-        return scratchCards.reduce(0, { $0 + $1.points })
+        var results = 0
+        let grid = Grid<String>(input)
+        let options = ["XMAS", "SAMX"]
+        func checkValue(_ value: String) {
+            if options.contains(value) {
+                results += 1
+            }
+        }
+        
+        for x in (0..<grid.columns) {
+            for y in (0..<grid.rows) {
+                guard grid[x,y] == "X" else { continue }
+                // checkHorizontal
+                if x-3 >= 0 {
+                    let value = "X" + grid[x-1, y] + grid[x-2, y] + grid[x-3, y]
+                    checkValue(value)
+                }
+                
+                if x+3 < grid.columns {
+                    let value = "X" + grid[x+1, y] + grid[x+2, y] + grid[x+3, y]
+                    checkValue(value)
+                }
+                
+                // checkVertical
+                if y-3 >= 0 {
+                    let value = "X" + grid[x, y-1] + grid[x, y-2] + grid[x, y-3]
+                    checkValue(value)
+                }
+                
+                if y+3 < grid.rows {
+                    let value = "X" + grid[x, y+1] + grid[x, y+2] + grid[x, y+3]
+                    checkValue(value)
+                }
+                
+                // checkDiagonal
+                if x-3 >= 0, y-3 >= 0 {
+                    let value = "X" + grid[x-1, y-1] + grid[x-2, y-2] + grid[x-3, y-3]
+                    checkValue(value)
+                }
+                
+                if x-3 >= 0, y+3 < grid.rows {
+                    let value = "X" + grid[x-1, y+1] + grid[x-2, y+2] + grid[x-3, y+3]
+                    checkValue(value)
+                }
+                
+                if x+3 < grid.columns, y-3 >= 0 {
+                    let value = "X" + grid[x+1, y-1] + grid[x+2, y-2] + grid[x+3, y-3]
+                    checkValue(value)
+                }
+                
+                if x+3 < grid.columns, y+3 < grid.rows {
+                    let value = "X" + grid[x+1, y+1] + grid[x+2, y+2] + grid[x+3, y+3]
+                    checkValue(value)
+                }
+            }
+        }
+        
+        return results
     }
     
     public func part2(_ input: [String]) -> Int {
-        let scratchCards = parse(input)
-        var results = Array(repeating: 0, count: scratchCards.count)
-
-        // iterate backwards
-        for i in (0..<scratchCards.count) {
-            let index = scratchCards.count - 1 - i
-            var total = 1
-            for j in (index+1..<index + 1 + scratchCards[index].numberOfWinningNumbers) {
-                total += results[j]
-            }
-            results[index] = total
-        }
-        
-        return results.reduce(0, +)
-    }
-    
-    struct ScratchCard {
-        let id: Int
-        let winningNumbers: [Int]
-        let numbers: [Int]
-        let points: Int
-        let numberOfWinningNumbers: Int
-        
-        init(id: Int, winningNumbers: [Int], numbers: [Int]) {
-            self.id = id
-            self.winningNumbers = winningNumbers
-            self.numbers = numbers
-            
-            // calculate points
-            var score = 0
-            var numberOfWinningNumbers = 0
-            for n in numbers {
-                if winningNumbers.contains(n) {
-                    numberOfWinningNumbers += 1
-                    if score == 0 {
-                        score = 1
-                    } else {
-                        score *= 2
-                    }
+        var results = 0
+        let grid = Grid<String>(input)
+        let options = ["MAS", "SAM"]
+        for x in (1..<grid.columns-1) {
+            for y in (1..<grid.rows-1) {
+                guard grid[x, y] == "A" else { continue }
+                
+                let value1 = grid[x-1, y-1] + "A" + grid[x+1, y+1]
+                let value2 = grid[x+1, y-1] + "A" + grid[x-1, y+1]
+                if options.contains(value1), options.contains(value2) {
+                    results += 1
                 }
             }
-            self.points = score
-            self.numberOfWinningNumbers = numberOfWinningNumbers
-        }
-    }
-}
-
-extension Day4 {
-    func parse(_ input: [String]) -> [ScratchCard] {
-        var results = [ScratchCard]()
-        
-        for line in input {
-            guard !line.isEmpty else { continue }
-            let cleanLine = line
-                .replacingOccurrences(of: "  ", with: " ")
-                .replacingOccurrences(of: "  ", with: " ")
-                .replacingOccurrences(of: ": ", with: ":")
-                .replacingOccurrences(of: " | ", with: "|")
-            let sections = cleanLine.components(separatedBy: ":")
-            let cardItems = sections[0].components(separatedBy: " ")
-            let cardID = Int(cardItems[1])!
-            
-            let numberSections = sections[1].components(separatedBy: "|")
-            let winningNumberItems = numberSections[0].components(separatedBy: " ")
-            let numberItems = numberSections[1].components(separatedBy: " ")
-            
-            let scratchCard = ScratchCard(
-                id: cardID,
-                winningNumbers:
-                    winningNumberItems
-                    .map({ Int($0)! }),
-                numbers: 
-                    numberItems
-                    .map({ Int($0)! })
-            )
-            results.append(scratchCard)
         }
         
         return results
