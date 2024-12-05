@@ -1,110 +1,88 @@
---- Day 5: If You Give A Seed A Fertilizer ---
+--- Day 5: Print Queue ---
 
-You take the boat and find the gardener right where you were told he would be: managing a giant "garden" that looks more to you like a farm.
+Satisfied with their search on Ceres, the squadron of scholars suggests subsequently scanning the stationery stacks of sub-basement 17.
 
-"A water source? Island Island is the water source!" You point out that Snow Island isn't receiving any water.
+The North Pole printing department is busier than ever this close to Christmas, and while The Historians continue their search of this historically significant facility, an Elf operating a very familiar printer beckons you over.
 
-"Oh, we had to stop the water because we ran out of sand to filter it with! Can't make snow with dirty water. Don't worry, I'm sure we'll get more sand soon; we only turned off the water a few days... weeks... oh no." His face sinks into a look of horrified realization.
+The Elf must recognize you, because they waste no time explaining that the new sleigh launch safety manual updates won't print correctly. Failure to update the safety manuals would be dire indeed, so you offer your services.
 
-"I've been so busy making sure everyone here has food that I completely forgot to check why we stopped getting more sand! There's a ferry leaving soon that is headed over in that direction - it's much faster than your boat. Could you please go check it out?"
+Safety protocols clearly indicate that new pages for the safety manuals must be printed in a very specific order. The notation X|Y means that if both page number X and page number Y are to be produced as part of an update, page number X must be printed at some point before page number Y.
 
-You barely have time to agree to this request when he brings up another. "While you wait for the ferry, maybe you can help us with our food production problem. The latest Island Island Almanac just arrived and we're having trouble making sense of it."
-
-The almanac (your puzzle input) lists all of the seeds that need to be planted. It also lists what type of soil to use with each kind of seed, what type of fertilizer to use with each kind of soil, what type of water to use with each kind of fertilizer, and so on. Every type of seed, soil, fertilizer and so on is identified with a number, but numbers are reused by each category - that is, soil 123 and fertilizer 123 aren't necessarily related to each other.
+The Elf has for you both the page ordering rules and the pages to produce in each update (your puzzle input), but can't figure out whether each update has the pages in the right order.
 
 For example:
 
-seeds: 79 14 55 13
+47|53
+97|13
+97|61
+97|47
+75|29
+61|13
+75|53
+29|13
+97|29
+53|29
+61|53
+97|53
+61|29
+47|13
+75|47
+97|75
+47|61
+75|61
+47|29
+75|13
+53|13
 
-seed-to-soil map:
-50 98 2
-52 50 48
+75,47,61,53,29
+97,61,53,29,13
+75,29,13
+75,97,47,61,53
+61,13,29
+97,13,75,29,47
+The first section specifies the page ordering rules, one per line. The first rule, 47|53, means that if an update includes both page number 47 and page number 53, then page number 47 must be printed at some point before page number 53. (47 doesn't necessarily need to be immediately before 53; other pages are allowed to be between them.)
 
-soil-to-fertilizer map:
-0 15 37
-37 52 2
-39 0 15
+The second section specifies the page numbers of each update. Because most safety manuals are different, the pages needed in the updates are different too. The first update, 75,47,61,53,29, means that the update consists of page numbers 75, 47, 61, 53, and 29.
 
-fertilizer-to-water map:
-49 53 8
-0 11 42
-42 0 7
-57 7 4
+To get the printers going as soon as possible, start by identifying which updates are already in the right order.
 
-water-to-light map:
-88 18 7
-18 25 70
+In the above example, the first update (75,47,61,53,29) is in the right order:
 
-light-to-temperature map:
-45 77 23
-81 45 19
-68 64 13
+75 is correctly first because there are rules that put each other page after it: 75|47, 75|61, 75|53, and 75|29.
+47 is correctly second because 75 must be before it (75|47) and every other page must be after it according to 47|61, 47|53, and 47|29.
+61 is correctly in the middle because 75 and 47 are before it (75|61 and 47|61) and 53 and 29 are after it (61|53 and 61|29).
+53 is correctly fourth because it is before page number 29 (53|29).
+29 is the only page left and so is correctly last.
+Because the first update does not include some page numbers, the ordering rules involving those missing page numbers are ignored.
 
-temperature-to-humidity map:
-0 69 1
-1 0 69
+The second and third updates are also in the correct order according to the rules. Like the first update, they also do not include every page number, and so only some of the ordering rules apply - within each update, the ordering rules that involve missing page numbers are not used.
 
-humidity-to-location map:
-60 56 37
-56 93 4
-The almanac starts by listing which seeds need to be planted: seeds 79, 14, 55, and 13.
+The fourth update, 75,97,47,61,53, is not in the correct order: it would print 75 before 97, which violates the rule 97|75.
 
-The rest of the almanac contains a list of maps which describe how to convert numbers from a source category into numbers in a destination category. That is, the section that starts with seed-to-soil map: describes how to convert a seed number (the source) to a soil number (the destination). This lets the gardener and his team know which soil to use with which seeds, which water to use with which fertilizer, and so on.
+The fifth update, 61,13,29, is also not in the correct order, since it breaks the rule 29|13.
 
-Rather than list every source number and its corresponding destination number one by one, the maps describe entire ranges of numbers that can be converted. Each line within a map contains three numbers: the destination range start, the source range start, and the range length.
+The last update, 97,13,75,29,47, is not in the correct order due to breaking several rules.
 
-Consider again the example seed-to-soil map:
+For some reason, the Elves also need to know the middle page number of each update being printed. Because you are currently only printing the correctly-ordered updates, you will need to find the middle page number of each correctly-ordered update. In the above example, the correctly-ordered updates are:
 
-50 98 2
-52 50 48
-The first line has a destination range start of 50, a source range start of 98, and a range length of 2. This line means that the source range starts at 98 and contains two values: 98 and 99. The destination range is the same length, but it starts at 50, so its two values are 50 and 51. With this information, you know that seed number 98 corresponds to soil number 50 and that seed number 99 corresponds to soil number 51.
+75,47,61,53,29
+97,61,53,29,13
+75,29,13
+These have middle page numbers of 61, 53, and 29 respectively. Adding these page numbers together gives 143.
 
-The second line means that the source range starts at 50 and contains 48 values: 50, 51, ..., 96, 97. This corresponds to a destination range starting at 52 and also containing 48 values: 52, 53, ..., 98, 99. So, seed number 53 corresponds to soil number 55.
+Of course, you'll need to be careful: the actual list of page ordering rules is bigger and more complicated than the above example.
 
-Any source numbers that aren't mapped correspond to the same destination number. So, seed number 10 corresponds to soil number 10.
-
-So, the entire list of seed numbers and their corresponding soil numbers looks like this:
-
-seed  soil
-0     0
-1     1
-...   ...
-48    48
-49    49
-50    52
-51    53
-...   ...
-96    98
-97    99
-98    50
-99    51
-With this map, you can look up the soil number required for each initial seed number:
-
-Seed number 79 corresponds to soil number 81.
-Seed number 14 corresponds to soil number 14.
-Seed number 55 corresponds to soil number 57.
-Seed number 13 corresponds to soil number 13.
-The gardener and his team want to get started as soon as possible, so they'd like to know the closest location that needs a seed. Using these maps, find the lowest location number that corresponds to any of the initial seeds. To do this, you'll need to convert each seed number through other categories until you can find its corresponding location number. In this example, the corresponding types are:
-
-Seed 79, soil 81, fertilizer 81, water 81, light 74, temperature 78, humidity 78, location 82.
-Seed 14, soil 14, fertilizer 53, water 49, light 42, temperature 42, humidity 43, location 43.
-Seed 55, soil 57, fertilizer 57, water 53, light 46, temperature 82, humidity 82, location 86.
-Seed 13, soil 13, fertilizer 52, water 41, light 34, temperature 34, humidity 35, location 35.
-So, the lowest location number in this example is 35.
-
-What is the lowest location number that corresponds to any of the initial seed numbers?
+Determine which updates are already in the correct order. What do you get if you add up the middle page number from those correctly-ordered updates?
 
 --- Part Two ---
 
-Everyone will starve if you only plant such a small number of seeds. Re-reading the almanac, it looks like the seeds: line actually describes ranges of seed numbers.
+While the Elves get to work printing the correctly-ordered updates, you have a little time to fix the rest of them.
 
-The values on the initial seeds: line come in pairs. Within each pair, the first value is the start of the range and the second value is the length of the range. So, in the first line of the example above:
+For each of the incorrectly-ordered updates, use the page ordering rules to put the page numbers in the right order. For the above example, here are the three incorrectly-ordered updates and their correct orderings:
 
-seeds: 79 14 55 13
-This line describes two ranges of seed numbers to be planted in the garden. The first range starts with seed number 79 and contains 14 values: 79, 80, ..., 91, 92. The second range starts with seed number 55 and contains 13 values: 55, 56, ..., 66, 67.
+75,97,47,61,53 becomes 97,75,47,61,53.
+61,13,29 becomes 61,29,13.
+97,13,75,29,47 becomes 97,75,47,29,13.
+After taking only the incorrectly-ordered updates and ordering them correctly, their middle page numbers are 47, 29, and 47. Adding these together produces 123.
 
-Now, rather than considering four seed numbers, you need to consider a total of 27 seed numbers.
-
-In the above example, the lowest location number can be obtained from seed number 82, which corresponds to soil 84, fertilizer 84, water 84, light 77, temperature 45, humidity 46, and location 46. So, the lowest location number is 46.
-
-Consider all of the initial seed numbers listed in the ranges on the first line of the almanac. What is the lowest location number that corresponds to any of the initial seed numbers?
+Find the updates which are not in the correct order. What do you get if you add up the middle page numbers after correctly ordering just those updates?
