@@ -9,7 +9,7 @@ public struct Day6 {
         let direction: CompassDirection
         
         func next(limit: Point) -> Point? {
-            var nextPoint = point.add(direction: direction)
+            let nextPoint = point.add(direction: direction)
             if nextPoint.x < 0 || nextPoint.y < 0 || nextPoint.x >= limit.x || nextPoint.y >= limit.y {
                 return nil
             }
@@ -54,7 +54,7 @@ public struct Day6 {
     public func part2(_ input: [String]) -> Int {
         var grid = Grid<String>(input)
         let startIndex = grid.items.firstIndex(where: { $0 == "^" })!
-        var startPosition = Place(point: grid.point(for: startIndex), direction: .s)
+        let startPosition = Place(point: grid.point(for: startIndex), direction: .s)
         var currentPosition = startPosition
         var visited = Set<Place>()
         
