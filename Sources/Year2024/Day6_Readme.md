@@ -1,58 +1,177 @@
---- Day 6: Wait For It ---
+--- Day 6: Guard Gallivant ---
 
-The ferry quickly brings you across Island Island. After asking around, you discover that there is indeed normally a large pile of sand somewhere near here, but you don't see anything besides lots of water and the small island where the ferry has docked.
+The Historians use their fancy device again, this time to whisk you all away to the North Pole prototype suit manufacturing lab... in the year 1518! It turns out that having direct access to history is very convenient for a group of historians.
 
-As you try to figure out what to do next, you notice a poster on a wall near the ferry dock. "Boat races! Open to the public! Grand prize is an all-expenses-paid trip to Desert Island!" That must be where the sand comes from! Best of all, the boat races are starting in just a few minutes.
+You still have to be careful of time paradoxes, and so it will be important to avoid anyone from 1518 while The Historians search for the Chief. Unfortunately, a single guard is patrolling this part of the lab.
 
-You manage to sign up as a competitor in the boat races just in time. The organizer explains that it's not really a traditional race - instead, you will get a fixed amount of time during which your boat has to travel as far as it can, and you win if your boat goes the farthest.
+Maybe you can work out where the guard will go ahead of time so that The Historians can search safely?
 
-As part of signing up, you get a sheet of paper (your puzzle input) that lists the time allowed for each race and also the best distance ever recorded in that race. To guarantee you win the grand prize, you need to make sure you go farther in each race than the current record holder.
+You start by making a map (your puzzle input) of the situation. For example:
 
-The organizer brings you over to the area where the boat races are held. The boats are much smaller than you expected - they're actually toy boats, each with a big button on top. Holding down the button charges the boat, and releasing the button allows the boat to move. Boats move faster if their button was held longer, but time spent holding the button counts against the total race time. You can only hold the button at the start of the race, and boats don't move until the button is released.
+....#.....
+.........#
+..........
+..#.......
+.......#..
+..........
+.#..^.....
+........#.
+#.........
+......#...
+The map shows the current position of the guard with ^ (to indicate the guard is currently facing up from the perspective of the map). Any obstructions - crates, desks, alchemical reactors, etc. - are shown as #.
 
-For example:
+Lab guards in 1518 follow a very strict patrol protocol which involves repeatedly following these steps:
 
-Time:      7  15   30
-Distance:  9  40  200
-This document describes three races:
+If there is something directly in front of you, turn right 90 degrees.
+Otherwise, take a step forward.
+Following the above protocol, the guard moves up several times until she reaches an obstacle (in this case, a pile of failed suit prototypes):
 
-The first race lasts 7 milliseconds. The record distance in this race is 9 millimeters.
-The second race lasts 15 milliseconds. The record distance in this race is 40 millimeters.
-The third race lasts 30 milliseconds. The record distance in this race is 200 millimeters.
-Your toy boat has a starting speed of zero millimeters per millisecond. For each whole millisecond you spend at the beginning of the race holding down the button, the boat's speed increases by one millimeter per millisecond.
+....#.....
+....^....#
+..........
+..#.......
+.......#..
+..........
+.#........
+........#.
+#.........
+......#...
+Because there is now an obstacle in front of the guard, she turns right before continuing straight in her new facing direction:
 
-So, because the first race lasts 7 milliseconds, you only have a few options:
+....#.....
+........>#
+..........
+..#.......
+.......#..
+..........
+.#........
+........#.
+#.........
+......#...
+Reaching another obstacle (a spool of several very long polymers), she turns right again and continues downward:
 
-Don't hold the button at all (that is, hold it for 0 milliseconds) at the start of the race. The boat won't move; it will have traveled 0 millimeters by the end of the race.
-Hold the button for 1 millisecond at the start of the race. Then, the boat will travel at a speed of 1 millimeter per millisecond for 6 milliseconds, reaching a total distance traveled of 6 millimeters.
-Hold the button for 2 milliseconds, giving the boat a speed of 2 millimeters per millisecond. It will then get 5 milliseconds to move, reaching a total distance of 10 millimeters.
-Hold the button for 3 milliseconds. After its remaining 4 milliseconds of travel time, the boat will have gone 12 millimeters.
-Hold the button for 4 milliseconds. After its remaining 3 milliseconds of travel time, the boat will have gone 12 millimeters.
-Hold the button for 5 milliseconds, causing the boat to travel a total of 10 millimeters.
-Hold the button for 6 milliseconds, causing the boat to travel a total of 6 millimeters.
-Hold the button for 7 milliseconds. That's the entire duration of the race. You never let go of the button. The boat can't move until you let go of the button. Please make sure you let go of the button so the boat gets to move. 0 millimeters.
-Since the current record for this race is 9 millimeters, there are actually 4 different ways you could win: you could hold the button for 2, 3, 4, or 5 milliseconds at the start of the race.
+....#.....
+.........#
+..........
+..#.......
+.......#..
+..........
+.#......v.
+........#.
+#.........
+......#...
+This process continues for a while, but the guard eventually leaves the mapped area (after walking past a tank of universal solvent):
 
-In the second race, you could hold the button for at least 4 milliseconds and at most 11 milliseconds and beat the record, a total of 8 different ways to win.
+....#.....
+.........#
+..........
+..#.......
+.......#..
+..........
+.#........
+........#.
+#.........
+......#v..
+By predicting the guard's route, you can determine which specific positions in the lab will be in the patrol path. Including the guard's starting position, the positions visited by the guard before leaving the area are marked with an X:
 
-In the third race, you could hold the button for at least 11 milliseconds and no more than 19 milliseconds and still beat the record, a total of 9 ways you could win.
+....#.....
+....XXXXX#
+....X...X.
+..#.X...X.
+..XXXXX#X.
+..X.X.X.X.
+.#XXXXXXX.
+.XXXXXXX#.
+#XXXXXXX..
+......#X..
+In this example, the guard will visit 41 distinct positions on your map.
 
-To see how much margin of error you have, determine the number of ways you can beat the record in each race; in this example, if you multiply these values together, you get 288 (4 * 8 * 9).
-
-Determine the number of ways you could beat the record in each race. What do you get if you multiply these numbers together?
+Predict the path of the guard. How many distinct positions will the guard visit before leaving the mapped area?
 
 --- Part Two ---
 
-As the race is about to start, you realize the piece of paper with race times and record distances you got earlier actually just has very bad kerning. There's really only one race - ignore the spaces between the numbers on each line.
+While The Historians begin working around the guard's patrol route, you borrow their fancy device and step outside the lab. From the safety of a supply closet, you time travel through the last few months and record the nightly status of the lab's guard post on the walls of the closet.
 
-So, the example from before:
+Returning after what seems like only a few seconds to The Historians, they explain that the guard's patrol area is simply too large for them to safely search the lab without getting caught.
 
-Time:      7  15   30
-Distance:  9  40  200
-...now instead means this:
+Fortunately, they are pretty sure that adding a single new obstruction won't cause a time paradox. They'd like to place the new obstruction in such a way that the guard will get stuck in a loop, making the rest of the lab safe to search.
 
-Time:      71530
-Distance:  940200
-Now, you have to figure out how many ways there are to win this single race. In this example, the race lasts for 71530 milliseconds and the record distance you need to beat is 940200 millimeters. You could hold the button anywhere from 14 to 71516 milliseconds and beat the record, a total of 71503 ways!
+To have the lowest chance of creating a time paradox, The Historians would like to know all of the possible positions for such an obstruction. The new obstruction can't be placed at the guard's starting position - the guard is there right now and would notice.
 
-How many ways can you beat the record in this one much longer race?
+In the above example, there are only 6 different positions where a new obstruction would cause the guard to get stuck in a loop. The diagrams of these six situations use O to mark the new obstruction, | to show a position where the guard moves up/down, - to show a position where the guard moves left/right, and + to show a position where the guard moves both up/down and left/right.
+
+Option one, put a printing press next to the guard's starting position:
+
+....#.....
+....+---+#
+....|...|.
+..#.|...|.
+....|..#|.
+....|...|.
+.#.O^---+.
+........#.
+#.........
+......#...
+Option two, put a stack of failed suit prototypes in the bottom right quadrant of the mapped area:
+
+....#.....
+....+---+#
+....|...|.
+..#.|...|.
+..+-+-+#|.
+..|.|.|.|.
+.#+-^-+-+.
+......O.#.
+#.........
+......#...
+Option three, put a crate of chimney-squeeze prototype fabric next to the standing desk in the bottom right quadrant:
+
+....#.....
+....+---+#
+....|...|.
+..#.|...|.
+..+-+-+#|.
+..|.|.|.|.
+.#+-^-+-+.
+.+----+O#.
+#+----+...
+......#...
+Option four, put an alchemical retroencabulator near the bottom left corner:
+
+....#.....
+....+---+#
+....|...|.
+..#.|...|.
+..+-+-+#|.
+..|.|.|.|.
+.#+-^-+-+.
+..|...|.#.
+#O+---+...
+......#...
+Option five, put the alchemical retroencabulator a bit to the right instead:
+
+....#.....
+....+---+#
+....|...|.
+..#.|...|.
+..+-+-+#|.
+..|.|.|.|.
+.#+-^-+-+.
+....|.|.#.
+#..O+-+...
+......#...
+Option six, put a tank of sovereign glue right next to the tank of universal solvent:
+
+....#.....
+....+---+#
+....|...|.
+..#.|...|.
+..+-+-+#|.
+..|.|.|.|.
+.#+-^-+-+.
+.+----++#.
+#+----++..
+......#O..
+It doesn't really matter what you choose to use as an obstacle so long as you and The Historians can put it into position without the guard noticing. The important thing is having enough options that you can find one that minimizes time paradoxes, and in this example, there are 6 different positions you could choose.
+
+You need to get the guard stuck in a loop by adding a single new obstruction. How many different positions could you choose for this obstruction?
