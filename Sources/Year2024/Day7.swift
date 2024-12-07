@@ -2,16 +2,16 @@ import Foundation
 import StandardLibraries
 
 public struct Day7Item {
-    public enum ItemValue {
-        case value(Int)
+    public enum Operators {
         case addition
         case multiply
         case concatenate
-        
-        public var value: Int {
+
+        func eval(_ a: Int, _ b: Int) -> Int {
             switch self {
-            case .value(let value): return value
-            default: return 0
+            case .addition: return a + b
+            case .multiply: return a * b
+            case .concatenate: return Int(String(a) + String(b))!
             }
         }
     }
@@ -26,70 +26,22 @@ public struct Day7Item {
         self.values = components.map { Int($0)! }
     }
     
-    public func isValid(_ isPart2: Bool = false) -> Bool {
-        let options = options(isPart2)
-        for option in options {
-            if evaluate(option) == result {
-                return true
+    public func isValid(with operators: [Operators]) -> Bool {
+        var remaining = self.values
+        var results = [Int]()
+        results.append(remaining.removeFirst())
+        while !remaining.isEmpty {
+            let next = remaining.removeFirst()            
+            var newResults = [Int]()
+            for result in results {
+                for op in operators {
+                    newResults.append(op.eval(result, next))
+                }
             }
-        }
-        return false
-    }
-    
-    public func options(_ isPart2: Bool) -> [[ItemValue]] {
-        calculateOptions(values, isFirst: true, isPart2: isPart2)
-    }
-    
-    public func evaluate(_ items: [ItemValue]) -> Int {
-        var items = items
-        while items.count > 1 {
-            let val1 = items[0].value
-            let val2 = items[2].value
-            let op = items[1]
-            switch op {
-            case .addition:
-                items[0] = .value(val1 + val2)
-            case .multiply:
-                items[0] = .value(val1 * val2)
-            case .concatenate:
-                items[0] = .value(Int(String(val1) + String(val2))!)
-            default:
-                break
-            }
-            items.remove(at: 1)
-            items.remove(at: 1)
+            results = newResults
         }
         
-        return items.first!.value
-    }
-    
-    public func calculateOptions(_ values: [Int], isFirst: Bool = false, isPart2: Bool) -> [[ItemValue]] {
-        var values = values
-        let next: ItemValue = .value(values.removeFirst())
-        var results = [[ItemValue]]()
-        if values.isEmpty {
-            results.append([.addition, next])
-            results.append([.multiply, next])
-            if isPart2 {
-                results.append([.concatenate, next])
-            }
-        } else {
-            let options = calculateOptions(values, isPart2: isPart2)
-            if isFirst {
-                for option in options {
-                    results.append([next] + option)
-                }
-            } else {
-                for option in options {
-                    results.append([.addition, next] + option)
-                    results.append([.multiply, next] + option)
-                    if isPart2 {
-                        results.append([.concatenate, next] + option)
-                    }
-                }
-            }
-        }
-        return results
+        return results.first(where: { $0 == self.result }) != nil
     }
 }
 
@@ -101,7 +53,7 @@ public struct Day7 {
         var result = 0
         
         for item in items {
-            if item.isValid() {
+            if item.isValid(with: [.addition, .multiply]) {
                 result += item.result
             }
         }
@@ -114,7 +66,7 @@ public struct Day7 {
         var result = 0
         
         for item in items {
-            if item.isValid(true) {
+            if item.isValid(with: [.addition, .multiply, .concatenate]) {
                 result += item.result
             }
         }
