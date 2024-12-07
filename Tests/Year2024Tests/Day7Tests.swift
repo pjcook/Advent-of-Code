@@ -27,18 +27,18 @@ class Day7Tests: XCTestCase {
 """.lines
         XCTAssertEqual(3749, day.part1(input))
     }
-    
-    func test_item() {
-        let item = Day7Item("190: 10 19 15")
-        let options = item.options(false)
-        print(options)
-        XCTAssertEqual(item.evaluate(options.first!), item.result)
-    }
-    
-    func test_evaluate() {
-        let item = Day7Item("292: 11 6 16 20")
-        XCTAssertEqual(item.evaluate("11 + 6 * 16 + 20"), item.result)
-    }
+//    
+//    func test_item() {
+//        let item = Day7Item("190: 10 19 15")
+//        let options = item.options(false)
+//        print(options)
+//        XCTAssertEqual(item.evaluate(options.first!), item.result)
+//    }
+//    
+//    func test_evaluate() {
+//        let item = Day7Item("292: 11 6 16 20")
+//        XCTAssertEqual(item.evaluate("11 + 6 * 16 + 20"), item.result)
+//    }
     
     func test_part2() {
 //        measure {

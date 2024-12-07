@@ -4,9 +4,16 @@ import StandardLibraries
 public struct Day7Item {
     public enum ItemValue {
         case value(Int)
-        case plus
+        case addition
         case multiply
         case concatenate
+        
+        public var value: Int {
+            switch self {
+            case .value(let value): return value
+            default: return 0
+            }
+        }
     }
     
     public let result: Int
@@ -29,54 +36,55 @@ public struct Day7Item {
         return false
     }
     
-    public func options(_ isPart2: Bool) -> [String] {
+    public func options(_ isPart2: Bool) -> [[ItemValue]] {
         calculateOptions(values, isFirst: true, isPart2: isPart2)
     }
     
-    public func evaluate(_ value: String) -> Int {
-        var components = value.components(separatedBy: " ")
-        while components.count > 1 {
-            let val1 = Int(components[0])!
-            let val2 = Int(components[2])!
-            let op = components[1]
+    public func evaluate(_ items: [ItemValue]) -> Int {
+        var items = items
+        while items.count > 1 {
+            let val1 = items[0].value
+            let val2 = items[2].value
+            let op = items[1]
             switch op {
-            case "+":
-                components[0] = String(val1 + val2)
-            case "*":
-                components[0] = String(val1 * val2)
-            case "|":
-                components[0] = String(val1) + String(val2)
+            case .addition:
+                items[0] = .value(val1 + val2)
+            case .multiply:
+                items[0] = .value(val1 * val2)
+            case .concatenate:
+                items[0] = .value(Int(String(val1) + String(val2))!)
             default:
                 break
             }
-            components.remove(at: 1)
-            components.remove(at: 1)
+            items.remove(at: 1)
+            items.remove(at: 1)
         }
-        return Int(components.first!)!
+        
+        return items.first!.value
     }
     
-    public func calculateOptions(_ values: [Int], isFirst: Bool = false, isPart2: Bool) -> [String] {
+    public func calculateOptions(_ values: [Int], isFirst: Bool = false, isPart2: Bool) -> [[ItemValue]] {
         var values = values
-        let next = values.removeFirst()
-        var results = [String]()
+        let next: ItemValue = .value(values.removeFirst())
+        var results = [[ItemValue]]()
         if values.isEmpty {
-            results.append("+ \(next)")
-            results.append("* \(next)")
+            results.append([.addition, next])
+            results.append([.multiply, next])
             if isPart2 {
-                results.append("| \(next)")
+                results.append([.concatenate, next])
             }
         } else {
             let options = calculateOptions(values, isPart2: isPart2)
             if isFirst {
                 for option in options {
-                    results.append("\(next) \(option)")
+                    results.append([next] + option)
                 }
             } else {
                 for option in options {
-                    results.append("+ \(next) \(option)")
-                    results.append("* \(next) \(option)")
+                    results.append([.addition, next] + option)
+                    results.append([.multiply, next] + option)
                     if isPart2 {
-                        results.append("| \(next) \(option)")
+                        results.append([.concatenate, next] + option)
                     }
                 }
             }
