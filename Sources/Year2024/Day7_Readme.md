@@ -1,74 +1,46 @@
---- Day 7: Camel Cards ---
+--- Day 7: Bridge Repair ---
 
-Your all-expenses-paid trip turns out to be a one-way, five-minute ride in an airship. (At least it's a cool airship!) It drops you off at the edge of a vast desert and descends back to Island Island.
+The Historians take you to a familiar rope bridge over a river in the middle of a jungle. The Chief isn't on this side of the bridge, though; maybe he's on the other side?
 
-"Did you bring the parts?"
+When you go to cross the bridge, you notice a group of engineers trying to repair it. (Apparently, it breaks pretty frequently.) You won't be able to cross until it's fixed.
 
-You turn around to see an Elf completely covered in white clothing, wearing goggles, and riding a large camel.
+You ask how long it'll take; the engineers tell you that it only needs final calibrations, but some young elephants were playing nearby and stole all the operators from their calibration equations! They could finish the calibrations if only someone could determine which test values could possibly be produced by placing any combination of operators into their calibration equations (your puzzle input).
 
-"Did you bring the parts?" she asks again, louder this time. You aren't sure what parts she's looking for; you're here to figure out why the sand stopped.
+For example:
 
-"The parts! For the sand, yes! Come with me; I will show you." She beckons you onto the camel.
+190: 10 19
+3267: 81 40 27
+83: 17 5
+156: 15 6
+7290: 6 8 6 15
+161011: 16 10 13
+192: 17 8 14
+21037: 9 7 18 13
+292: 11 6 16 20
+Each line represents a single equation. The test value appears before the colon on each line; it is your job to determine whether the remaining numbers can be combined with operators to produce the test value.
 
-After riding a bit across the sands of Desert Island, you can see what look like very large rocks covering half of the horizon. The Elf explains that the rocks are all along the part of Desert Island that is directly above Island Island, making it hard to even get there. Normally, they use big machines to move the rocks and filter the sand, but the machines have broken down because Desert Island recently stopped receiving the parts they need to fix the machines.
+Operators are always evaluated left-to-right, not according to precedence rules. Furthermore, numbers in the equations cannot be rearranged. Glancing into the jungle, you can see elephants holding two different types of operators: add (+) and multiply (*).
 
-You've already assumed it'll be your job to figure out why the parts stopped when she asks if you can help. You agree automatically.
+Only three of the above equations can be made true by inserting operators:
 
-Because the journey will take a few days, she offers to teach you the game of Camel Cards. Camel Cards is sort of similar to poker except it's designed to be easier to play while riding a camel.
+190: 10 19 has only one position that accepts an operator: between 10 and 19. Choosing + would give 29, but choosing * would give the test value (10 * 19 = 190).
+3267: 81 40 27 has two positions for operators. Of the four possible configurations of the operators, two cause the right side to match the test value: 81 + 40 * 27 and 81 * 40 + 27 both equal 3267 (when evaluated left-to-right)!
+292: 11 6 16 20 can be solved in exactly one way: 11 + 6 * 16 + 20.
+The engineers just need the total calibration result, which is the sum of the test values from just the equations that could possibly be true. In the above example, the sum of the test values for the three equations listed above is 3749.
 
-In Camel Cards, you get a list of hands, and your goal is to order them based on the strength of each hand. A hand consists of five cards labeled one of A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, or 2. The relative strength of each card follows this order, where A is the highest and 2 is the lowest.
-
-Every hand is exactly one type. From strongest to weakest, they are:
-
-Five of a kind, where all five cards have the same label: AAAAA
-Four of a kind, where four cards have the same label and one card has a different label: AA8AA
-Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
-Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: TTT98
-Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
-One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
-High card, where all cards' labels are distinct: 23456
-Hands are primarily ordered based on type; for example, every full house is stronger than any three of a kind.
-
-If two hands have the same type, a second ordering rule takes effect. Start by comparing the first card in each hand. If these cards are different, the hand with the stronger first card is considered stronger. If the first card in each hand have the same label, however, then move on to considering the second card in each hand. If they differ, the hand with the higher second card wins; otherwise, continue with the third card in each hand, then the fourth, then the fifth.
-
-So, 33332 and 2AAAA are both four of a kind hands, but 33332 is stronger because its first card is stronger. Similarly, 77888 and 77788 are both a full house, but 77888 is stronger because its third card is stronger (and both hands have the same first and second card).
-
-To play Camel Cards, you are given a list of hands and their corresponding bid (your puzzle input). For example:
-
-32T3K 765
-T55J5 684
-KK677 28
-KTJJT 220
-QQQJA 483
-This example shows five hands; each hand is followed by its bid amount. Each hand wins an amount equal to its bid multiplied by its rank, where the weakest hand gets rank 1, the second-weakest hand gets rank 2, and so on up to the strongest hand. Because there are five hands in this example, the strongest hand will have rank 5 and its bid will be multiplied by 5.
-
-So, the first step is to put the hands in order of strength:
-
-32T3K is the only one pair and the other hands are all a stronger type, so it gets rank 1.
-KK677 and KTJJT are both two pair. Their first cards both have the same label, but the second card of KK677 is stronger (K vs T), so KTJJT gets rank 2 and KK677 gets rank 3.
-T55J5 and QQQJA are both three of a kind. QQQJA has a stronger first card, so it gets rank 5 and T55J5 gets rank 4.
-Now, you can determine the total winnings of this set of hands by adding up the result of multiplying each hand's bid with its rank (765 * 1 + 220 * 2 + 28 * 3 + 684 * 4 + 483 * 5). So the total winnings in this example are 6440.
-
-Find the rank of every hand in your set. What are the total winnings?
+Determine which equations could possibly be true. What is their total calibration result?
 
 --- Part Two ---
 
-To make things a little more interesting, the Elf introduces one additional rule. Now, J cards are jokers - wildcards that can act like whatever card would make the hand the strongest type possible.
+The engineers seem concerned; the total calibration result you gave them is nowhere close to being within safety tolerances. Just then, you spot your mistake: some well-hidden elephants are holding a third type of operator.
 
-To balance this, J cards are now the weakest individual cards, weaker even than 2. The other cards stay in the same order: A, K, Q, T, 9, 8, 7, 6, 5, 4, 3, 2, J.
+The concatenation operator (||) combines the digits from its left and right inputs into a single number. For example, 12 || 345 would become 12345. All operators are still evaluated left-to-right.
 
-J cards can pretend to be whatever card is best for the purpose of determining hand type; for example, QJJQ2 is now considered four of a kind. However, for the purpose of breaking ties between two hands of the same type, J is always treated as J, not the card it's pretending to be: JKKK2 is weaker than QQQQ2 because J is weaker than Q.
+Now, apart from the three equations that could be made true using only addition and multiplication, the above example has three more equations that can be made true by inserting operators:
 
-Now, the above example goes very differently:
+156: 15 6 can be made true through a single concatenation: 15 || 6 = 156.
+7290: 6 8 6 15 can be made true using 6 * 8 || 6 * 15.
+192: 17 8 14 can be made true using 17 || 8 + 14.
+Adding up all six test values (the three that could be made before using only + and * plus the new three that can now be made by also using ||) produces the new total calibration result of 11387.
 
-32T3K 765
-T55J5 684
-KK677 28
-KTJJT 220
-QQQJA 483
-32T3K is still the only one pair; it doesn't contain any jokers, so its strength doesn't increase.
-KK677 is now the only two pair, making it the second-weakest hand.
-T55J5, KTJJT, and QQQJA are now all four of a kind! T55J5 gets rank 3, QQQJA gets rank 4, and KTJJT gets rank 5.
-With the new joker rule, the total winnings in this example are 5905.
-
-Using the new joker rule, find the rank of every hand in your set. What are the new total winnings?
+Using your new knowledge of elephant hiding spots, determine which equations could possibly be true. What is their total calibration result?
