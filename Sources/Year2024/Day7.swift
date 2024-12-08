@@ -11,7 +11,15 @@ public struct Day7Item {
             switch self {
             case .addition: return a + b
             case .multiply: return a * b
-            case .concatenate: return Int(String(a) + String(b))!
+            case .concatenate:
+                var scale = 1
+                switch b {
+                case 0...9: scale = 10
+                case 10...99: scale = 100
+                case 100...999: scale = 1000
+                default: break
+                }
+                return a * scale + b  // Int(String(a) + String(b))!
             }
         }
     }
@@ -28,17 +36,31 @@ public struct Day7Item {
     public func isValid(with operators: [Operators]) -> Bool {
         var results = [Int]()
         results.append(values.first!)
-        for next in values[1...] {
+        // do initial checks up to the end
+        for next in values[1..<(values.count-1)] {
             var newResults = [Int]()
             for result in results {
                 for op in operators {
-                    newResults.append(op.eval(result, next))
+                    let val = op.eval(result, next)
+                    if val <= self.result {
+                        newResults.append(val)
+                    }
                 }
             }
             results = newResults
         }
         
-        return results.first(where: { $0 == self.result }) != nil
+        // then check the end separately so you can exit early
+        let next = values.last!
+        for result in results {
+            for op in operators {
+                if op.eval(result, next) == self.result {
+                    return true
+                }
+            }
+        }
+        
+        return false
     }
 }
 
