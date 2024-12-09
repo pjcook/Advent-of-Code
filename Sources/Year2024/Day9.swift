@@ -19,34 +19,9 @@ public struct Day9 {
     }
     
     public func part1(_ input: String) -> Int {
-        var index = 0
-        var position = 0
-        var disk = [Option]()
         let input2 = input.map { Int(String($0))! }
-        
-        // write disk contents
-        while position < input2.count {
-            let value = input2[position]
-            position += 1
-            
-            for _ in (0..<value) {
-                disk.append(.value(index))
-            }
-            
-            index += 1
-            
-            if position >= input2.count {
-                break
-            }
-            
-            let value2 = input2[position]
-            position += 1
-            
-            for _ in (0..<value2) {
-                disk.append(.free)
-            }
-        }
-        
+        var (disk, _) = writeDiskContents(input2)
+
         // compact disk
         while let freeIndex = disk.firstIndex(of: .free) {
             let value = disk.removeLast()
@@ -66,59 +41,34 @@ public struct Day9 {
     }
     
     public func part2(_ input: String) -> Int {
-        var index = 0
-        var position = 0
-        var disk = [Option]()
         let input2 = input.map { Int(String($0))! }
-        
-        // write disk contents
-        while position < input2.count {
-            let value = input2[position]
-            position += 1
-            
-            for _ in (0..<value) {
-                disk.append(.value(index))
-            }
-            
-            index += 1
-            
-            if position >= input2.count {
-                break
-            }
-            
-            let value2 = input2[position]
-            position += 1
-            
-            for _ in (0..<value2) {
-                disk.append(.free)
-            }
-        }
+        var (disk, index) = writeDiskContents(input2)
         
         // compact disk
+        var highestLookupIndex = disk.count
         outerloop: for i in (1..<index).reversed() {
             var nextIndexes = [Int]()
-            for j in (0..<disk.count).reversed() {
+            for j in (0..<highestLookupIndex).reversed() {
                 if disk[j] == .value(i) {
                     nextIndexes.append(j)
                 } else if nextIndexes.count > 0 {
+                    highestLookupIndex = j+1
                     break
                 }
             }            
             
             let itemCount = nextIndexes.count
+            let lowestIndexPosition = nextIndexes.sorted().first!
 
             // find contiguous block of free space large enough
             var startIndex = -1
-            for j in (0..<disk.count) {
+            guard let lowestFreeSpaceIndex = disk.firstIndex(of: .free), lowestFreeSpaceIndex < lowestIndexPosition else { break outerloop }
+            for j in (lowestFreeSpaceIndex..<lowestIndexPosition) {
                 if disk[j] == .free {
                     if startIndex == -1 {
                         startIndex = j
                     }
-                    if j - startIndex + 1 == itemCount {
-                        guard startIndex < nextIndexes.sorted().first! else {
-                            continue outerloop
-                        }
-                        
+                    if j - startIndex + 1 == itemCount {                        
                         for k in (startIndex..<startIndex+itemCount) {
                             disk[k] = .value(i)
                         }
@@ -142,5 +92,38 @@ public struct Day9 {
         }
         
         return checksum
+    }
+}
+
+extension Day9 {
+    func writeDiskContents(_ input: [Int]) -> ([Option], Int) {
+        var disk = [Option]()
+        var index = 0
+        var position = 0
+        
+        // write disk contents
+        while position < input.count {
+            let value = input[position]
+            position += 1
+            
+            for _ in (0..<value) {
+                disk.append(.value(index))
+            }
+            
+            index += 1
+            
+            if position >= input.count {
+                break
+            }
+            
+            let value2 = input[position]
+            position += 1
+            
+            for _ in (0..<value2) {
+                disk.append(.free)
+            }
+        }
+        
+        return (disk, index)
     }
 }
