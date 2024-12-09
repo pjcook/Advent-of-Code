@@ -1,84 +1,66 @@
---- Day 9: Mirage Maintenance ---
+--- Day 9: Disk Fragmenter ---
 
-You ride the camel through the sandstorm and stop where the ghost's maps told you to stop. The sandstorm subsequently subsides, somehow seeing you standing at an oasis!
+Another push of the button leaves you in the familiar hallways of some friendly amphipods! Good thing you each somehow got your own personal mini submarine. The Historians jet away in search of the Chief, mostly by driving directly into walls.
 
-The camel goes to get some water and you stretch your neck. As you look up, you discover what must be yet another giant floating island, this one made of metal! That must be where the parts to fix the sand machines come from.
+While The Historians quickly figure out how to pilot these things, you notice an amphipod in the corner struggling with his computer. He's trying to make more contiguous free space by compacting all of the files, but his program isn't working; you offer to help.
 
-There's even a hang glider partially buried in the sand here; once the sun rises and heats up the sand, you might be able to use the glider and the hot air to get all the way up to the metal island!
+He shows you the disk map (your puzzle input) he's already generated. For example:
 
-While you wait for the sun to rise, you admire the oasis hidden here in the middle of Desert Island. It must have a delicate ecosystem; you might as well take some ecological readings while you wait. Maybe you can report any environmental instabilities you find to someone so the oasis can be around for the next sandstorm-worn traveler.
+2333133121414131402
+The disk map uses a dense format to represent the layout of files and free space on the disk. The digits alternate between indicating the length of a file and the length of free space.
 
-You pull out your handy Oasis And Sand Instability Sensor and analyze your surroundings. The OASIS produces a report of many values and how they are changing over time (your puzzle input). Each line in the report contains the history of a single value. For example:
+So, a disk map like 12345 would represent a one-block file, two blocks of free space, a three-block file, four blocks of free space, and then a five-block file. A disk map like 90909 would represent three nine-block files in a row (with no free space between them).
 
-0 3 6 9 12 15
-1 3 6 10 15 21
-10 13 16 21 30 45
-To best protect the oasis, your environmental report should include a prediction of the next value in each history. To do this, start by making a new sequence from the difference at each step of your history. If that sequence is not all zeroes, repeat this process, using the sequence you just generated as the input sequence. Once all of the values in your latest sequence are zeroes, you can extrapolate what the next value of the original history should be.
+Each file on disk also has an ID number based on the order of the files as they appear before they are rearranged, starting with ID 0. So, the disk map 12345 has three files: a one-block file with ID 0, a three-block file with ID 1, and a five-block file with ID 2. Using one character for each block where digits are the file ID and . is free space, the disk map 12345 represents these individual blocks:
 
-In the above dataset, the first history is 0 3 6 9 12 15. Because the values increase by 3 each step, the first sequence of differences that you generate will be 3 3 3 3 3. Note that this sequence has one fewer value than the input sequence because at each step it considers two numbers from the input. Since these values aren't all zero, repeat the process: the values differ by 0 at each step, so the next sequence is 0 0 0 0. This means you have enough information to extrapolate the history! Visually, these sequences can be arranged like this:
+0..111....22222
+The first example above, 2333133121414131402, represents these individual blocks:
 
-0   3   6   9  12  15
-  3   3   3   3   3
-    0   0   0   0
-To extrapolate, start by adding a new zero to the end of your list of zeroes; because the zeroes represent differences between the two values above them, this also means there is now a placeholder in every sequence above it:
+00...111...2...333.44.5555.6666.777.888899
+The amphipod would like to move file blocks one at a time from the end of the disk to the leftmost free space block (until there are no gaps remaining between file blocks). For the disk map 12345, the process looks like this:
 
-0   3   6   9  12  15   B
-  3   3   3   3   3   A
-    0   0   0   0   0
-You can then start filling in placeholders from the bottom up. A needs to be the result of increasing 3 (the value to its left) by 0 (the value below it); this means A must be 3:
+0..111....22222
+02.111....2222.
+022111....222..
+0221112...22...
+02211122..2....
+022111222......
+The first example requires a few more steps:
 
-0   3   6   9  12  15   B
-  3   3   3   3   3   3
-    0   0   0   0   0
-Finally, you can fill in B, which needs to be the result of increasing 15 (the value to its left) by 3 (the value below it), or 18:
+00...111...2...333.44.5555.6666.777.888899
+009..111...2...333.44.5555.6666.777.88889.
+0099.111...2...333.44.5555.6666.777.8888..
+00998111...2...333.44.5555.6666.777.888...
+009981118..2...333.44.5555.6666.777.88....
+0099811188.2...333.44.5555.6666.777.8.....
+009981118882...333.44.5555.6666.777.......
+0099811188827..333.44.5555.6666.77........
+00998111888277.333.44.5555.6666.7.........
+009981118882777333.44.5555.6666...........
+009981118882777333644.5555.666............
+00998111888277733364465555.66.............
+0099811188827773336446555566..............
+The final step of this file-compacting process is to update the filesystem checksum. To calculate the checksum, add up the result of multiplying each of these blocks' position with the file ID number it contains. The leftmost block is in position 0. If a block contains free space, skip it instead.
 
-0   3   6   9  12  15  18
-  3   3   3   3   3   3
-    0   0   0   0   0
-So, the next value of the first history is 18.
+Continuing the first example, the first few blocks' position multiplied by its file ID number are 0 * 0 = 0, 1 * 0 = 0, 2 * 9 = 18, 3 * 9 = 27, 4 * 8 = 32, and so on. In this example, the checksum is the sum of these, 1928.
 
-Finding all-zero differences for the second history requires an additional sequence:
-
-1   3   6  10  15  21
-  2   3   4   5   6
-    1   1   1   1
-      0   0   0
-Then, following the same process as before, work out the next value in each sequence from the bottom up:
-
-1   3   6  10  15  21  28
-  2   3   4   5   6   7
-    1   1   1   1   1
-      0   0   0   0
-So, the next value of the second history is 28.
-
-The third history requires even more sequences, but its next value can be found the same way:
-
-10  13  16  21  30  45  68
-   3   3   5   9  15  23
-     0   2   4   6   8
-       2   2   2   2
-         0   0   0
-So, the next value of the third history is 68.
-
-If you find the next value for each history in this example and add them together, you get 114.
-
-Analyze your OASIS report and extrapolate the next value for each history. What is the sum of these extrapolated values?
+Compact the amphipod's hard drive using the process he requested. What is the resulting filesystem checksum? (Be careful copy/pasting the input for this puzzle; it is a single, very long line.)
 
 --- Part Two ---
 
-Of course, it would be nice to have even more history included in your report. Surely it's safe to just extrapolate backwards as well, right?
+Upon completion, two things immediately become clear. First, the disk definitely has a lot more contiguous free space, just like the amphipod hoped. Second, the computer is running much more slowly! Maybe introducing all of that file system fragmentation was a bad idea?
 
-For each history, repeat the process of finding differences until the sequence of differences is entirely zero. Then, rather than adding a zero to the end and filling in the next values of each previous sequence, you should instead add a zero to the beginning of your sequence of zeroes, then fill in new first values for each previous sequence.
+The eager amphipod already has a new plan: rather than move individual blocks, he'd like to try compacting the files on his disk by moving whole files instead.
 
-In particular, here is what the third example history looks like when extrapolating back in time:
+This time, attempt to move whole files to the leftmost span of free space blocks that could fit the file. Attempt to move each file exactly once in order of decreasing file ID number starting with the file with the highest file ID number. If there is no span of free space to the left of a file that is large enough to fit the file, the file does not move.
 
-5  10  13  16  21  30  45
-  5   3   3   5   9  15
-   -2   0   2   4   6
-      2   2   2   2
-        0   0   0
-Adding the new values on the left side of each sequence from bottom to top eventually reveals the new left-most history value: 5.
+The first example from above now proceeds differently:
 
-Doing this for the remaining example data above results in previous values of -3 for the first history and 0 for the second history. Adding all three new values together produces 2.
+00...111...2...333.44.5555.6666.777.888899
+0099.111...2...333.44.5555.6666.777.8888..
+0099.1117772...333.44.5555.6666.....8888..
+0099.111777244.333....5555.6666.....8888..
+00992111777.44.333....5555.6666.....8888..
+The process of updating the filesystem checksum is the same; now, this example's checksum would be 2858.
 
-Analyze your OASIS report again, this time extrapolating the previous value for each history. What is the sum of these extrapolated values?
+Start over, now compacting the amphipod's hard drive using this new method instead. What is the resulting filesystem checksum?
