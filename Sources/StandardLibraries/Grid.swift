@@ -42,6 +42,18 @@ public struct Grid<T: Hashable>: Hashable {
     public func index(for point: Point) -> Int {
         point.x + point.y * columns
     }
+    
+    public func points(for value: T) -> [Point] {
+        var points = [Point]()
+        
+        for i in (0..<items.count) {
+            if items[i] == value {
+                points.append(point(for: i))
+            }
+        }
+        
+        return points
+    }
 }
 
 extension Grid where T == [String] {
