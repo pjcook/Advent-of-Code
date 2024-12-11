@@ -1,87 +1,73 @@
 import Foundation
 import StandardLibraries
 
-public struct Day11 {
+public final class Day11 {
     public init() {}
     
-    typealias ExpandedRows = [Int]
-    typealias ExpandedColumns = [Int]
+    struct CacheKey: Hashable {
+        let value: Int
+        let depth: Int
+    }
+    private var cache = [CacheKey: Int]()
     
-    public func solve(_ input: [String], multiplier: Int) -> Int {
-        let grid = Grid<String>(input)
-        let galaxies = findGalaxies(grid)
-        let (expandedColumns, expandedRows) = calculateExpandingColumnsRows(galaxies, columns: grid.columns, rows: grid.rows)
-        let galaxyPairs = pairGalaxies(galaxies)
-        return calculateSumOfManhattanDistances(galaxyPairs, expandedRows, expandedColumns, multiplier)
+    public func solve(_ input: String, iterations: Int) -> Int {
+        var stones = input.components(separatedBy: " ").map { Int($0)! }
+        
+        for i in 0..<iterations {
+            stones = blink(stones)
+            print(i+1, stones.count)
+        }
+        
+        return stones.count
+    }
+    
+    public func solve2(_ input: String, iterations: Int) -> Int {
+        let stones = input.components(separatedBy: " ").map { Int($0)! }
+        var results = 0
+        for stone in stones {
+            results += blink2(stone, depth: 0, maxDepth: iterations)
+        }
+        return results
     }
 }
 
 extension Day11 {
-    func calculateSumOfManhattanDistances(_ galaxyPairs: [(Point, Point)], _ expandedRows: Day11.ExpandedRows, _ expandedColumns: Day11.ExpandedColumns, _ multiplier: Int) -> Int {
-        var sum = 0
+    func blink(_ stones: [Int]) -> [Int] {
+        var results = [Int]()
         
-        for (a, b) in galaxyPairs {
-            let distance = a.manhattanDistance(to: b)
-            let additionalRows = countFilteredOptions(expandedRows, a: a.y, b: b.y)            
-            let additionalColumns = countFilteredOptions(expandedColumns, a: a.x, b: b.x)
-            
-            sum += distance + (additionalRows * multiplier) + (additionalColumns * multiplier) - (additionalColumns + additionalRows)
-        }
-        
-        return sum
-    }
-    
-    func countFilteredOptions(_ options: [Int], a: Int, b: Int) -> Int {
-        let minValue = min(a, b)
-        let maxValue = max(a, b)
-        var count = 0
-        guard minValue < options.last!, maxValue > options.first! else { return 0 }
-        
-        for value in options {
-            if value >= minValue, value <= maxValue {
-                count += 1
-            } else if value > maxValue {
-                break
-            }
-        }
-        
-        return count
-    }
-    
-    func pairGalaxies(_ galaxies: [Point]) -> [(Point, Point)] {
-        var galaxies = galaxies
-        var results = [(Point, Point)]()
-        
-        while let galaxy = galaxies.popLast() {
-            for g in galaxies {
-                results.append((galaxy, g))
+        for stone in stones {
+            if stone == 0 {
+                results.append(1)
+            } else if stone.length.isEven {
+                let dx = pow(10, stone.length / 2)
+                let left = stone / dx
+                let right = stone - (left * dx)
+                results.append(left)
+                results.append(right)
+            } else {
+                results.append(stone * 2024)
             }
         }
         
         return results
     }
     
-    func calculateExpandingColumnsRows(_ galaxies: [Point], columns: Int, rows: Int) -> (ExpandedColumns, ExpandedRows) {
-        var rowsToExpand = Set(0..<rows)
-        var columnsToExpand = Set(0..<columns)
+    func blink2(_ stone: Int, depth: Int, maxDepth: Int) -> Int {
+        guard depth < maxDepth else { return 1 }
         
-        for galaxy in galaxies {
-            rowsToExpand.remove(galaxy.y)
-            columnsToExpand.remove(galaxy.x)
+        let cacheKey = CacheKey(value: stone, depth: depth)
+        if let result = cache[cacheKey] {
+            return result
         }
         
-        return (Array(columnsToExpand).sorted(), Array(rowsToExpand).sorted())
-    }
-    
-    func findGalaxies(_ grid: Grid<String>) -> [Point] {
-        var galaxies = [Point]()
+        let stones = blink([stone])
+        var results = 0
         
-        for i in (0..<grid.items.count) {
-            if grid.items[i] == "#" {
-                galaxies.append(grid.point(for: i))
-            }
+        for s in stones {
+            results += blink2(s, depth: depth + 1, maxDepth: maxDepth)
         }
         
-        return galaxies
+        cache[cacheKey] = results
+        return results
     }
 }
