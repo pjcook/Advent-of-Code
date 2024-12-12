@@ -163,6 +163,18 @@ public extension Point {
         return items
     }()
     
+    func cardinalNeighbors<T>(in grid: Grid<T>, matching: [T]) -> Set<Point> {
+        var neighbors = cardinalNeighbors(max: grid.bottomRight)
+        
+        for n in neighbors {
+            if !matching.contains(grid[n]) {
+                neighbors.remove(n)
+            }
+        }
+        
+        return neighbors
+    }
+    
     func cardinalNeighbors(_ allowNegative: Bool = false, min: Point = .zero, max: Point? = nil) -> Set<Point> {
         return Set([
             Point(x, y-1),
@@ -280,6 +292,16 @@ public enum Direction: Int, Hashable, CaseIterable {
                 .right
             case .right:
                 .left
+        }
+    }
+    
+    // Used when you want to follow the outer edge of an area of tiles in a grid
+    public var emptyEdge: Direction {
+        switch self {
+        case .up: return .left
+        case .down: return .right
+        case .left: return .down
+        case .right: return .up
         }
     }
 }
