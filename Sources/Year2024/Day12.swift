@@ -1,219 +1,188 @@
 import Foundation
 import StandardLibraries
 
-public struct Day12 {
+public class Day12 {
     public init() {}
+    private var visited = Set<Point>()
     
     public func part1(_ input: [String]) -> Int {
-        let survey = parse(input)
-        return survey.reduce(0) { $0 + $1.calculateOptions() }
+        visited = []
+        let grid = Grid<String>(input)
+        var cost = 0
+        
+        for x in (0..<grid.columns) {
+            for y in (0..<grid.rows) {
+                let point = Point(x: x, y: y)
+                guard !visited.contains(point) else { continue }
+                
+                cost += calculatePlotCost(for: point, in: grid)
+            }
+        }
+        
+        return cost
     }
     
     public func part2(_ input: [String]) -> Int {
-        let survey = parse2(input)
-        return survey.reduce(0) { $0 + $1.calculateOptions() }
-    }
-    
-    public func part1Paulson(_ input: [String]) -> Int {
-        let survey = parse(input)
-        let jp = JonathanPaulsonDay12()
-        return survey.reduce(0) {
-            $0 + jp.beginScore(dots: $1.report, blocks: $1.contiguousGroups, i: 0, bi: 0, current: 0)
-        }
-    }
-    
-    public func part2Paulson(_ input: [String]) -> Int {
-        let survey = parse2(input)
-        let jp = JonathanPaulsonDay12()
-        return survey.reduce(0) {
-            $0 + jp.beginScore(dots: $1.report, blocks: $1.contiguousGroups, i: 0, bi: 0, current: 0)
-        }
-    }
-    
-    public struct SurveyEntry {
-        public let report: String
-        public let contiguousGroups: [Int]
+        visited = []
+        let grid = Grid<String>(input)
+        var cost = 0
         
-        init(report: String, contiguousGroups: [Int]) {
-            self.report = report
-            self.contiguousGroups = contiguousGroups
-        }
-        
-        public init(_ input: String) {
-            let components = input.components(separatedBy: CharacterSet(arrayLiteral: " ", ","))
-            self.report = components[0]
-            self.contiguousGroups = components[1...].map({ Int(String($0))! })
-        }
-    }
-}
-
-extension Day12 {
-    class JonathanPaulsonDay12 {
-        /// Thanks and credit to Jonathan Paulson. Converted from his Python solution
-        /// https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/12.py
-
-        struct Key: Hashable {
-            let i: Int
-            let bi: Int
-            let current: Int
-        }
-        var lookup = [Key: Int]()
-        
-        func beginScore(dots: String, blocks: [Int], i: Int, bi: Int, current: Int) -> Int {
-            lookup.removeAll()
-            return calculateScore(dots: dots, blocks: blocks, i: i, bi: bi, current: current)
-        }
-
-        /// # i == current position within dots
-        /// # bi == current position within blocks
-        /// # current == length of current block of '#'
-        /// # state space is len(dots) * len(blocks) * len(dots)
-        private func calculateScore(dots: String, blocks: [Int], i: Int, bi: Int, current: Int) -> Int {
-            let key = Key(i: i, bi: bi, current: current)
-            if let value = lookup[key] {
-                return value
-            }
-            
-            if i == dots.count {
-                if bi == blocks.count && current == 0 {
-                    return 1
-                } else if bi == blocks.count-1 && blocks[bi] == current {
-                    return 1
-                } else {
-                    return 0
-                }
-            }
-            
-            var ans = 0
-            for c in [".", "#"] {
-                if dots[i] == c || dots[i] == "?" {
-                    if c == "." && current == 0 {
-                        ans += calculateScore(dots: dots, blocks: blocks, i: i+1, bi: bi, current: 0)
-                    } else if c == "." && current > 0 && bi < blocks.count && blocks[bi] == current {
-                        ans += calculateScore(dots: dots, blocks: blocks, i: i+1, bi: bi+1, current: 0)
-                    } else if c == "#" {
-                        ans += calculateScore(dots: dots, blocks: blocks, i: i+1, bi: bi, current: current+1)
-                    }
-                }
-            }
-            lookup[key] = ans
-            return ans
-        }
-    }
-}
-
-extension Day12.SurveyEntry {
-    public func calculateOptions() -> Int {
-        var result = 0
-        var toProcess = [(report, contiguousGroups, 0)]
-        
-        while let (nextReport, remainingGroups, currentIndex) = toProcess.popLast() {
-            let currentGroup = remainingGroups.first!
-            var index = currentIndex
-            var newReport = nextReport
-            while index < nextReport.count {
-                if nextReport[index] == "." {
-                    index += 1
-                    continue
-                }
+        for x in (0..<grid.columns) {
+            for y in (0..<grid.rows) {
+                let point = Point(x: x, y: y)
+                guard !visited.contains(point) else { continue }
                 
-                if canFitGroup(report: nextReport, startIndex: index, length: currentGroup) {
-                    var newReport2 = newReport
-                    for i in (index..<index+currentGroup) {
-                        newReport[i] = "#"
-                    }
-                    
-                    if remainingGroups.count > 1 {
-                        toProcess.append((newReport, Array(remainingGroups[1...]), index + currentGroup))
-                        
-                        if newReport2[index] == "?" {
-                            newReport2[index] = "."
-                            toProcess.append((newReport2, remainingGroups, index + 1))
-                        }
-                        break
-                    } else {
-                        if isValid(report: newReport.replacingOccurrences(of: "?", with: ".")) {
-                            result += 1
-                        }
-                        
-                        if newReport2[index] == "?" {
-                            newReport2[index] = "."
-                            toProcess.append((newReport2, remainingGroups, index + 1))
-                        }
-                        
-                        break
-                    }
-                } else {
-                    if newReport[index] == "?" {
-                        newReport[index] = "."
-                    }
-                    index += 1
-                }
+                cost += calculatePlotCostWithBulkDiscount(for: point, in: grid)
             }
         }
         
-        return result
-    }
-    
-    public func numberOfConfigurations() -> Int {
-        var results = Set<String>()
-        results.insert(report)
-        
-        // calculate all options
-        outerloop: for i in (0..<report.count) {
-            let reports = results
-            results.removeAll()
-            
-            for var report in reports {
-                if report[i] == "?" {
-                    report[i] = "."
-                    results.insert(report)
-
-                    report[i] = "#"
-                    results.insert(report)
-                } else {
-                    results = reports
-                    continue outerloop
-                }
-            }
-        }
-        
-        return results.reduce(0) { $0 + (isValid(report: $1) ? 1 : 0) }
-    }
-    
-    public func isValid(report: String) -> Bool {
-        report.components(separatedBy: ".").map({ $0.count }).filter({ $0 > 0 }) == contiguousGroups
-    }
-    
-    public func canFitGroup(report: String, startIndex: Int, length: Int) -> Bool {
-        guard startIndex + length - 1 < report.count else { return false }
-        let nextCharsFit = report[startIndex..<startIndex + length].reduce(true) { $0 && ["?", "#"].contains($1) }
-        var nextAfterValid = true
-        if startIndex + length < report.count {
-            nextAfterValid = ["?", "."].contains(report[startIndex + length])
-        }
-        var previousValid = true
-        if startIndex > 0 {
-            previousValid = ["?", "."].contains(report[startIndex - 1])
-        }
-        return nextCharsFit && nextAfterValid && previousValid
+        return cost
     }
 }
 
 extension Day12 {
-    func parse(_ input: [String]) -> [SurveyEntry] {
-        input.map(SurveyEntry.init)
+    func calculatePlotCost(for point: Point, in grid: Grid<String>) -> Int {
+        let plotID = grid[point]
+        var sides = 0
+        var plots = 0
+        var toVisit = [point]
+        
+        while !toVisit.isEmpty {
+            let point = toVisit.removeFirst()
+            plots += 1
+            visited.insert(point)
+            let neighbors = findValidNeighbours(for: point, grid: grid, plotID: plotID)
+            
+            sides += 4 - neighbors.count
+            for n in neighbors {
+                if !toVisit.contains(n), !visited.contains(n) {
+                    toVisit.append(n)
+                }
+            }
+        }
+        
+        return sides * plots
     }
     
-    func parse2(_ input: [String]) -> [SurveyEntry] {
-        var results = [SurveyEntry]()
-        for line in input {
-            let components = line.components(separatedBy: CharacterSet(arrayLiteral: " ", ","))
-            let report = components[0] + "?" + components[0] + "?" + components[0] + "?" + components[0] + "?" + components[0]
-            let groups = components[1...].map({ Int(String($0))! })
-            let contiguousGroups = groups + groups + groups + groups + groups
-            results.append(SurveyEntry(report: report, contiguousGroups: contiguousGroups))
+    func calculatePlotCostWithBulkDiscount(for point: Point, in grid: Grid<String>) -> Int {
+        let plotID = grid[point]
+        var plots = [Point]()
+        var toVisit = [point]
+        
+        // find all plots
+        while !toVisit.isEmpty {
+            let point = toVisit.removeFirst()
+            plots.append(point)
+            visited.insert(point)
+            let neighbors = findValidNeighbours(for: point, grid: grid, plotID: plotID)
+            
+            for n in neighbors {
+                if !toVisit.contains(n), !visited.contains(n) {
+                    toVisit.append(n)
+                }
+            }
         }
-        return results
+        
+        // calculate sides
+        var sides = 0
+        
+        // calculate outer edge
+        var position = point
+        var direction: Direction = .right
+        var remainingTiles = Set(plots)
+        
+        while !remainingTiles.isEmpty {
+            let (foundSides, foundEdges) = followEdge(from: position, with: direction, plots: plots)
+            sides += foundSides
+            
+            foundEdges.forEach { remainingTiles.remove($0) }
+            for point in remainingTiles {
+                let neighbors = findValidNeighbours(for: point, grid: grid, plotID: plotID)
+                if neighbors.count == 4 {
+                    remainingTiles.remove(point)
+                }
+            }
+            
+            if remainingTiles.isEmpty { continue }
+            position = remainingTiles.first!
+            let neighbors = findValidNeighbours(for: position, grid: grid, plotID: plotID)
+            if !neighbors.contains(position + Direction.up.point) {
+                direction = .right
+            } else if !neighbors.contains(position + Direction.right.point) {
+                direction = .down
+            } else if !neighbors.contains(position + Direction.down.point) {
+                direction = .left
+            } else if !neighbors.contains(position + Direction.left.point) {
+                direction = .up
+            }
+        }
+        
+        return sides * plots.count
+    }
+    
+    func findValidNeighbours(for point: Point, grid: Grid<String>, plotID: String) -> Set<Point> {
+        var neighbors = point.cardinalNeighbors(max: grid.bottomRight)
+        for n in neighbors {
+            if grid[n] != plotID {
+                neighbors.remove(n)
+            }
+        }
+        return neighbors
+    }
+    
+    func followEdge(from point: Point, with initialDirection: Direction, plots: [Point]) -> (Int, Set<Point>) {
+        var sides = 0
+        var position = point
+        var direction: Direction = initialDirection
+        var edges = Set<Point>()
+        while true {
+            edges.insert(position)
+            if canContinue(from: position, in: direction, plots: plots) {
+                position = position + direction.point
+                
+                // Exit when back at start
+                if position == point, direction == initialDirection {
+                    break
+                }
+                continue
+            }
+            
+            sides += 1
+            changeDirection(from: &position, in: &direction, plots: plots)
+            
+            // Exit when back at start
+            if position == point, direction == initialDirection {
+                break
+            }
+        }
+        
+        return (sides, edges)
+    }
+    
+    func canContinue(from point: Point, in direction: Direction, plots: [Point]) -> Bool {
+        let next = point + direction.point
+        return plots.contains(next) && !plots.contains(next + direction.emptyEdge.point)
+    }
+    
+    func changeDirection(from point: inout Point, in direction: inout Direction, plots: [Point]) {
+        var next = point + direction.point
+        
+        if plots.contains(next + direction.emptyEdge.point) {
+            point = next + direction.emptyEdge.point
+            direction = direction.emptyEdge
+        } else {
+            direction = direction.emptyEdge.opposite
+        }
+    }
+}
+
+extension Direction {
+    var emptyEdge: Direction {
+        switch self {
+        case .up: return .left
+        case .down: return .right
+        case .left: return .down
+        case .right: return .up
+        }
     }
 }

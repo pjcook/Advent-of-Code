@@ -1,97 +1,134 @@
---- Day 12: Hot Springs ---
+--- Day 12: Garden Groups ---
 
-You finally reach the hot springs! You can see steam rising from secluded areas attached to the primary, ornate building.
+Why not search for the Chief Historian near the gardener and his massive farm? There's plenty of food, so The Historians grab something to eat while they search.
 
-As you turn to enter, the researcher stops you. "Wait - I thought you were looking for the hot springs, weren't you?" You indicate that this definitely looks like hot springs to you.
+You're about to settle near a complex arrangement of garden plots when some Elves ask if you can lend a hand. They'd like to set up fences around each region of garden plots, but they can't figure out how much fence they need to order or how much it will cost. They hand you a map (your puzzle input) of the garden plots.
 
-"Oh, sorry, common mistake! This is actually the onsen! The hot springs are next door."
+Each garden plot grows only a single type of plant and is indicated by a single letter on your map. When multiple garden plots are growing the same type of plant and are touching (horizontally or vertically), they form a region. For example:
 
-You look in the direction the researcher is pointing and suddenly notice the massive metal helixes towering overhead. "This way!"
+AAAA
+BBCD
+BBCC
+EEEC
+This 4x4 arrangement includes garden plots growing five different types of plants (labeled A, B, C, D, and E), each grouped into their own region.
 
-It only takes you a few more steps to reach the main gate of the massive fenced-off area containing the springs. You go through the gate and into a small administrative building.
+In order to accurately calculate the cost of the fence around a single region, you need to know that region's area and perimeter.
 
-"Hello! What brings you to the hot springs today? Sorry they're not very hot right now; we're having a lava shortage at the moment." You ask about the missing machine parts for Desert Island.
+The area of a region is simply the number of garden plots the region contains. The above map's type A, B, and C plants are each in a region of area 4. The type E plants are in a region of area 3; the type D plants are in a region of area 1.
 
-"Oh, all of Gear Island is currently offline! Nothing is being manufactured at the moment, not until we get more lava to heat our forges. And our springs. The springs aren't very springy unless they're hot!"
+Each garden plot is a square and so has four sides. The perimeter of a region is the number of sides of garden plots in the region that do not touch another garden plot in the same region. The type A and C plants are each in a region with perimeter 10. The type B and E plants are each in a region with perimeter 8. The lone D plot forms its own region with perimeter 4.
 
-"Say, could you go up and see why the lava stopped flowing? The springs are too cold for normal operation, but we should be able to find one springy enough to launch you up there!"
+Visually indicating the sides of plots in each region that contribute to the perimeter using - and |, the above map's regions' perimeters are measured as follows:
 
-There's just one problem - many of the springs have fallen into disrepair, so they're not actually sure which springs would even be safe to use! Worse yet, their condition records of which springs are damaged (your puzzle input) are also damaged! You'll need to help them repair the damaged records.
++-+-+-+-+
+|A A A A|
++-+-+-+-+     +-+
+              |D|
++-+-+   +-+   +-+
+|B B|   |C|
++   +   + +-+
+|B B|   |C C|
++-+-+   +-+ +
+          |C|
++-+-+-+   +-+
+|E E E|
++-+-+-+
+Plants of the same type can appear in multiple separate regions, and regions can even appear within other regions. For example:
 
-In the giant field just outside, the springs are arranged into rows. For each row, the condition records show every spring and whether it is operational (.) or damaged (#). This is the part of the condition records that is itself damaged; for some springs, it is simply unknown (?) whether the spring is operational or damaged.
+OOOOO
+OXOXO
+OOOOO
+OXOXO
+OOOOO
+The above map contains five regions, one containing all of the O garden plots, and the other four each containing a single X plot.
 
-However, the engineer that produced the condition records also duplicated some of this information in a different format! After the list of springs for a given row, the size of each contiguous group of damaged springs is listed in the order those groups appear in the row. This list always accounts for every damaged spring, and each number is the entire size of its contiguous group (that is, groups are always separated by at least one operational spring: #### would always be 4, never 2,2).
+The four X regions each have area 1 and perimeter 4. The region containing 21 type O plants is more complicated; in addition to its outer edge contributing a perimeter of 20, its boundary with each X region contributes an additional 4 to its perimeter, for a total perimeter of 36.
 
-So, condition records with no unknown spring conditions might look like this:
+Due to "modern" business practices, the price of fence required for a region is found by multiplying that region's area by its perimeter. The total price of fencing all regions on a map is found by adding together the price of fence for every region on the map.
 
-#.#.### 1,1,3
-.#...#....###. 1,1,3
-.#.###.#.###### 1,3,1,6
-####.#...#... 4,1,1
-#....######..#####. 1,6,5
-.###.##....# 3,2,1
-However, the condition records are partially damaged; some of the springs' conditions are actually unknown (?). For example:
+In the first example, region A has price 4 * 10 = 40, region B has price 4 * 8 = 32, region C has price 4 * 10 = 40, region D has price 1 * 4 = 4, and region E has price 3 * 8 = 24. So, the total price for the first example is 140.
 
-???.### 1,1,3
-.??..??...?##. 1,1,3
-?#?#?#?#?#?#?#? 1,3,1,6
-????.#...#... 4,1,1
-????.######..#####. 1,6,5
-?###???????? 3,2,1
-Equipped with this information, it is your job to figure out how many different arrangements of operational and broken springs fit the given criteria in each row.
+In the second example, the region with all of the O plants has price 21 * 36 = 756, and each of the four smaller X regions has price 1 * 4 = 4, for a total price of 772 (756 + 4 + 4 + 4 + 4).
 
-In the first line (???.### 1,1,3), there is exactly one way separate groups of one, one, and three broken springs (in that order) can appear in that row: the first three unknown springs must be broken, then operational, then broken (#.#), making the whole row #.#.###.
+Here's a larger example:
 
-The second line is more interesting: .??..??...?##. 1,1,3 could be a total of four different arrangements. The last ? must always be broken (to satisfy the final contiguous group of three broken springs), and each ?? must hide exactly one of the two broken springs. (Neither ?? could be both broken springs or they would form a single contiguous group of two; if that were true, the numbers afterward would have been 2,3 instead.) Since each ?? can either be #. or .#, there are four possible arrangements of springs.
+RRRRIICCFF
+RRRRIICCCF
+VVRRRCCFFF
+VVRCCCJFFF
+VVVVCJJCFE
+VVIVCCJJEE
+VVIIICJJEE
+MIIIIIJJEE
+MIIISIJEEE
+MMMISSJEEE
+It contains:
 
-The last line is actually consistent with ten different arrangements! Because the first number is 3, the first and second ? must both be . (if either were #, the first number would have to be 4 or higher). However, the remaining run of unknown spring conditions have many different ways they could hold groups of two and one broken springs:
+A region of R plants with price 12 * 18 = 216.
+A region of I plants with price 4 * 8 = 32.
+A region of C plants with price 14 * 28 = 392.
+A region of F plants with price 10 * 18 = 180.
+A region of V plants with price 13 * 20 = 260.
+A region of J plants with price 11 * 20 = 220.
+A region of C plants with price 1 * 4 = 4.
+A region of E plants with price 13 * 18 = 234.
+A region of I plants with price 14 * 22 = 308.
+A region of M plants with price 5 * 12 = 60.
+A region of S plants with price 3 * 8 = 24.
+So, it has a total price of 1930.
 
-?###???????? 3,2,1
-.###.##.#...
-.###.##..#..
-.###.##...#.
-.###.##....#
-.###..##.#..
-.###..##..#.
-.###..##...#
-.###...##.#.
-.###...##..#
-.###....##.#
-In this example, the number of possible arrangements for each row is:
-
-???.### 1,1,3 - 1 arrangement
-.??..??...?##. 1,1,3 - 4 arrangements
-?#?#?#?#?#?#?#? 1,3,1,6 - 1 arrangement
-????.#...#... 4,1,1 - 1 arrangement
-????.######..#####. 1,6,5 - 4 arrangements
-?###???????? 3,2,1 - 10 arrangements
-Adding all of the possible arrangement counts together produces a total of 21 arrangements.
-
-For each row, count all of the different arrangements of operational and broken springs that meet the given criteria. What is the sum of those counts?
+What is the total price of fencing all regions on your map?
 
 --- Part Two ---
 
-As you look out at the field of springs, you feel like there are way more springs than the condition records list. When you examine the records, you discover that they were actually folded up this whole time!
+Fortunately, the Elves are trying to order so much fence that they qualify for a bulk discount!
 
-To unfold the records, on each row, replace the list of spring conditions with five copies of itself (separated by ?) and replace the list of contiguous groups of damaged springs with five copies of itself (separated by ,).
+Under the bulk discount, instead of using the perimeter to calculate the price, you need to use the number of sides each region has. Each straight section of fence counts as a side, regardless of how long it is.
 
-So, this row:
+Consider this example again:
 
-.# 1
-Would become:
+AAAA
+BBCD
+BBCC
+EEEC
+The region containing type A plants has 4 sides, as does each of the regions containing plants of type B, D, and E. However, the more complex region containing the plants of type C has 8 sides!
 
-.#?.#?.#?.#?.# 1,1,1,1,1
-The first line of the above example would become:
+Using the new method of calculating the per-region price by multiplying the region's area by its number of sides, regions A through E have prices 16, 16, 32, 4, and 12, respectively, for a total price of 80.
 
-???.###????.###????.###????.###????.### 1,1,3,1,1,3,1,1,3,1,1,3,1,1,3
-In the above example, after unfolding, the number of possible arrangements for some rows is now much larger:
+The second example above (full of type X and O plants) would have a total price of 436.
 
-???.### 1,1,3 - 1 arrangement
-.??..??...?##. 1,1,3 - 16384 arrangements
-?#?#?#?#?#?#?#? 1,3,1,6 - 1 arrangement
-????.#...#... 4,1,1 - 16 arrangements
-????.######..#####. 1,6,5 - 2500 arrangements
-?###???????? 3,2,1 - 506250 arrangements
-After unfolding, adding all of the possible arrangement counts together produces 525152.
+Here's a map that includes an E-shaped region full of type E plants:
 
-Unfold your condition records; what is the new sum of possible arrangement counts?
+EEEEE
+EXXXX
+EEEEE
+EXXXX
+EEEEE
+The E-shaped region has an area of 17 and 12 sides for a price of 204. Including the two regions full of type X plants, this map has a total price of 236.
+
+This map has a total price of 368:
+
+AAAAAA
+AAABBA
+AAABBA
+ABBAAA
+ABBAAA
+AAAAAA
+It includes two regions full of type B plants (each with 4 sides) and a single region full of type A plants (with 4 sides on the outside and 8 more sides on the inside, a total of 12 sides). Be especially careful when counting the fence around regions like the one full of type A plants; in particular, each section of fence has an in-side and an out-side, so the fence does not connect across the middle of the region (where the two B regions touch diagonally). (The Elves would have used the Möbius Fencing Company instead, but their contract terms were too one-sided.)
+
+The larger example from before now has the following updated prices:
+
+A region of R plants with price 12 * 10 = 120.
+A region of I plants with price 4 * 4 = 16.
+A region of C plants with price 14 * 22 = 308.
+A region of F plants with price 10 * 12 = 120.
+A region of V plants with price 13 * 10 = 130.
+A region of J plants with price 11 * 12 = 132.
+A region of C plants with price 1 * 4 = 4.
+A region of E plants with price 13 * 8 = 104.
+A region of I plants with price 14 * 16 = 224.
+A region of M plants with price 5 * 6 = 30.
+A region of S plants with price 3 * 6 = 18.
+Adding these together produces its new total price of 1206.
+
+What is the new total price of fencing all regions on your map?
