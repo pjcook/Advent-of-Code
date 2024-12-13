@@ -5,118 +5,96 @@ public struct Day13 {
     public init() {}
     
     public func part1(_ input: [String]) -> Int {
-        let blocks = parse(input)
-        return blocks.reduce(0) { $0 + calculateScore(rows: $1.0, cols: $1.1, checkForSmudge: false)}
+        let games = parse(input)
+        var results = 0
+        
+        for game in games {
+            let result = solve(game, adjusted: false)
+            print(result)
+            results += result
+        }
+        
+        return results
     }
     
     public func part2(_ input: [String]) -> Int {
-        let blocks = parse(input)
-        return blocks.reduce(0) { $0 + calculateScore(rows: $1.0, cols: $1.1, checkForSmudge: true)}
+        let games = parse(input)
+        var results = 0
+        
+        for game in games {
+            let result = solve(game, adjusted: true)
+            print(result)
+            results += result
+        }
+        
+        return results
     }
     
-    typealias Rows = [String]
-    typealias Columns = [String]
+    struct Game: Hashable {
+        let a: Point
+        let b: Point
+        let prize: Point
+    }
+    
+    struct Option: Hashable {
+        let a: Int
+        let b: Int
+    }
 }
 
 extension Day13 {
-    
-    
-    func calculateScore(rows: Rows, cols: Columns, checkForSmudge: Bool) -> Int {
-        if let score = checkRows(cols, checkForSmudge: checkForSmudge, multiplier: 1) {
-            return score
+    func parse(_ input: [String]) -> [Game] {
+        var input = input
+        var games = [Game]()
+        
+        while !input.isEmpty {
+            let a = input.removeFirst().replacingOccurrences(of: "Button A: X+", with: "").replacingOccurrences(of: " Y+", with: "").components(separatedBy: ",").map { Int($0)! }
+            let b = input.removeFirst().replacingOccurrences(of: "Button B: X+", with: "").replacingOccurrences(of: " Y+", with: "").components(separatedBy: ",").map { Int($0)! }
+            let prize = input.removeFirst().replacingOccurrences(of: "Prize: X=", with: "").replacingOccurrences(of: " Y=", with: "").components(separatedBy: ",").map { Int($0)! }
+            
+            let game = Game(a: Point(a[0], a[1]), b: Point(b[0], b[1]), prize: Point(prize[0], prize[1]))
+            games.append(game)
+            
+            if !input.isEmpty {
+                input.removeFirst()
+            }
         }
         
-        if let score = checkRows(rows, checkForSmudge: checkForSmudge, multiplier: 100) {
-            return score
+        return games
+    }
+    
+    func solve(_ game: Game, adjusted: Bool) -> Int {
+        let a = solve(game.prize.x, a: game.a.x, b: game.b.x, adjusted: adjusted)
+        if a.isEmpty { return 0 }
+        
+        let b = solve(game.prize.y, a: game.a.y, b: game.b.y, adjusted: adjusted)
+        if b.isEmpty { return 0 }
+        
+        for option in a.reversed() {
+            if b.contains(option) {
+                return option.a * 3 + option.b
+            }
         }
         
-        assertionFailure("Oops")
         return 0
     }
     
-    func checkRows(_ rows: Day13.Rows, checkForSmudge: Bool, multiplier: Int) -> Int? {
-        for y in (0..<rows.count-1) {
-            if checkDifference(a: rows[y], b: rows[y+1], checkForSmudge: checkForSmudge), validate(rows: rows, index: y, checkForSmudge: checkForSmudge) {
-                return (y+1) * multiplier
+    func solve(_ value: Int, a: Int, b: Int, adjusted: Bool) -> [Option] {
+        // prioritise button `b` because it's cheaper to push
+        let value = adjusted ? value + 10000000000000 : value
+        var options = [Option]()
+        let maxPushes = max(value / b, 100)
+        
+        for i in 0..<maxPushes {
+            if i % 1000 == 0 {
+                print(i, options.count)
             }
-        }
-        return nil
-    }
-    
-    func checkDifference(a: String, b: String, checkForSmudge: Bool) -> Bool {
-        guard checkForSmudge else { return a == b }
-        return a == b || hasSmudge(a: a, b: b)
-    }
-    
-    func hasSmudge(a: String, b: String) -> Bool {
-        a.hammingDistance(with: b) == 1
-    }
-        
-    func validate(rows: Rows, index: Int, checkForSmudge: Bool) -> Bool {
-        var differences = 0
-        var lower = index
-        var upper = index+1
-        while lower >= 0 && upper < rows.count {
-            if rows[lower] != rows[upper] {
-                if checkForSmudge == false {
-                    return false
-                }
-                
-                if hasSmudge(a: rows[lower], b: rows[upper]) {
-                    differences += 1
-                } else {
-                    return false
-                }
-
-                if differences > 1 {
-                    return false
-                }
-            }
-            lower = lower-1
-            upper = upper+1
-        }
-        return checkForSmudge ? differences == 1 : true
-    }
-}
-
-extension Day13 {
-    func parse(_ input: [String]) -> [(Rows, Columns)] {
-        var results = [(Rows, Columns)]()
-        var rows = [String]()
-        
-        for row in input {
-            guard !row.isEmpty else {
-                let cols = calculateColumns(rows)
-                results.append((rows, cols))
-                rows = []
-                continue
-            }
-            
-            rows.append(row)
-        }
-        
-        if rows.count > 0 {
-            let cols = calculateColumns(rows)
-            results.append((rows, cols))
-        }
-        
-        return results
-    }
-    
-    func calculateColumns(_ rows: [String]) -> Columns {
-        var columns = [Int: String]()
-        
-        for row in rows {
-            for x in (0..<row.count) {
-                let col = columns[x, default: ""]
-                columns[x] = col + row[x]
+            if (value - (b * i)) % a == 0 {
+                let option = Option(a: (value - (b * i)) / a, b: i)
+                options.append(option)
             }
         }
         
-        var results = Columns()
-        for x in (0..<columns.count) {
-            results.append(columns[x]!)
-        }
-        return results
+        return options
     }
 }

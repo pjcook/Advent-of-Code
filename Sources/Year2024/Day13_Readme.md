@@ -1,111 +1,73 @@
---- Day 13: Point of Incidence ---
+--- Day 13: Claw Contraption ---
 
-With your help, the hot springs team locates an appropriate spring which launches you neatly and precisely up to the edge of Lava Island.
+Next up: the lobby of a resort on a tropical island. The Historians take a moment to admire the hexagonal floor tiles before spreading out.
 
-There's just one problem: you don't see any lava.
+Fortunately, it looks like the resort has a new arcade! Maybe you can win some prizes from the claw machines?
 
-You do see a lot of ash and igneous rock; there are even what look like gray mountains scattered around. After a while, you make your way to a nearby cluster of mountains only to discover that the valley between them is completely full of large mirrors. Most of the mirrors seem to be aligned in a consistent way; perhaps you should head in that direction?
+The claw machines here are a little unusual. Instead of a joystick or directional buttons to control the claw, these machines have two buttons labeled A and B. Worse, you can't just put in a token and play; it costs 3 tokens to push the A button and 1 token to push the B button.
 
-As you move through the valley of mirrors, you find that several of them have fallen from the large metal frames keeping them in place. The mirrors are extremely flat and shiny, and many of the fallen mirrors have lodged into the ash at strange angles. Because the terrain is all one color, it's hard to tell where it's safe to walk or where you're about to run into a mirror.
+With a little experimentation, you figure out that each machine's buttons are configured to move the claw a specific amount to the right (along the X axis) and a specific amount forward (along the Y axis) each time that button is pressed.
 
-You note down the patterns of ash (.) and rocks (#) that you see as you walk (your puzzle input); perhaps by carefully analyzing these patterns, you can figure out where the mirrors are!
+Each machine contains one prize; to win the prize, the claw must be positioned exactly above the prize on both the X and Y axes.
 
-For example:
+You wonder: what is the smallest number of tokens you would have to spend to win as many prizes as possible? You assemble a list of every machine's button behavior and prize location (your puzzle input). For example:
 
-#.##..##.
-..#.##.#.
-##......#
-##......#
-..#.##.#.
-..##..##.
-#.#.##.#.
+Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=8400, Y=5400
 
-#...##..#
-#....#..#
-..##..###
-#####.##.
-#####.##.
-..##..###
-#....#..#
-To find the reflection in each pattern, you need to find a perfect reflection across either a horizontal line between two rows or across a vertical line between two columns.
+Button A: X+26, Y+66
+Button B: X+67, Y+21
+Prize: X=12748, Y=12176
 
-In the first pattern, the reflection is across a vertical line between two columns; arrows on each of the two columns point at the line between the columns:
+Button A: X+17, Y+86
+Button B: X+84, Y+37
+Prize: X=7870, Y=6450
 
-123456789
-    ><   
-#.##..##.
-..#.##.#.
-##......#
-##......#
-..#.##.#.
-..##..##.
-#.#.##.#.
-    ><   
-123456789
-In this pattern, the line of reflection is the vertical line between columns 5 and 6. Because the vertical line is not perfectly in the middle of the pattern, part of the pattern (column 1) has nowhere to reflect onto and can be ignored; every other column has a reflected column within the pattern and must match exactly: column 2 matches column 9, column 3 matches 8, 4 matches 7, and 5 matches 6.
+Button A: X+69, Y+23
+Button B: X+27, Y+71
+Prize: X=18641, Y=10279
+This list describes the button configuration and prize location of four different claw machines.
 
-The second pattern reflects across a horizontal line instead:
+For now, consider just the first claw machine in the list:
 
-1 #...##..# 1
-2 #....#..# 2
-3 ..##..### 3
-4v#####.##.v4
-5^#####.##.^5
-6 ..##..### 6
-7 #....#..# 7
-This pattern reflects across the horizontal line between rows 4 and 5. Row 1 would reflect with a hypothetical row 8, but since that's not in the pattern, row 1 doesn't need to match anything. The remaining rows match: row 2 matches row 7, row 3 matches row 6, and row 4 matches row 5.
+Pushing the machine's A button would move the claw 94 units along the X axis and 34 units along the Y axis.
+Pushing the B button would move the claw 22 units along the X axis and 67 units along the Y axis.
+The prize is located at X=8400, Y=5400; this means that from the claw's initial position, it would need to move exactly 8400 units along the X axis and exactly 5400 units along the Y axis to be perfectly aligned with the prize in this machine.
+The cheapest way to win the prize is by pushing the A button 80 times and the B button 40 times. This would line up the claw along the X axis (because 80*94 + 40*22 = 8400) and along the Y axis (because 80*34 + 40*67 = 5400). Doing this would cost 80*3 tokens for the A presses and 40*1 for the B presses, a total of 280 tokens.
 
-To summarize your pattern notes, add up the number of columns to the left of each vertical line of reflection; to that, also add 100 multiplied by the number of rows above each horizontal line of reflection. In the above example, the first pattern's vertical line has 5 columns to its left and the second pattern's horizontal line has 4 rows above it, a total of 405.
+For the second and fourth claw machines, there is no combination of A and B presses that will ever win a prize.
 
-Find the line of reflection in each of the patterns in your notes. What number do you get after summarizing all of your notes?
+For the third claw machine, the cheapest way to win the prize is by pushing the A button 38 times and the B button 86 times. Doing this would cost a total of 200 tokens.
+
+So, the most prizes you could possibly win is two; the minimum tokens you would have to spend to win all (two) prizes is 480.
+
+You estimate that each button would need to be pressed no more than 100 times to win a prize. How else would someone be expected to play?
+
+Figure out how to win as many prizes as possible. What is the fewest tokens you would have to spend to win all possible prizes?
 
 --- Part Two ---
 
-You resume walking through the valley of mirrors and - SMACK! - run directly into one. Hopefully nobody was watching, because that must have been pretty embarrassing.
+As you go to win the first prize, you discover that the claw is nowhere near where you expected it would be. Due to a unit conversion error in your measurements, the position of every prize is actually 10000000000000 higher on both the X and Y axis!
 
-Upon closer inspection, you discover that every mirror has exactly one smudge: exactly one . or # should be the opposite type.
+Add 10000000000000 to the X and Y position of every prize. After making this change, the example above would now look like this:
 
-In each pattern, you'll need to locate and fix the smudge that causes a different reflection line to be valid. (The old reflection line won't necessarily continue being valid after the smudge is fixed.)
+Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=10000000008400, Y=10000000005400
 
-Here's the above example again:
+Button A: X+26, Y+66
+Button B: X+67, Y+21
+Prize: X=10000000012748, Y=10000000012176
 
-#.##..##.
-..#.##.#.
-##......#
-##......#
-..#.##.#.
-..##..##.
-#.#.##.#.
+Button A: X+17, Y+86
+Button B: X+84, Y+37
+Prize: X=10000000007870, Y=10000000006450
 
-#...##..#
-#....#..#
-..##..###
-#####.##.
-#####.##.
-..##..###
-#....#..#
-The first pattern's smudge is in the top-left corner. If the top-left # were instead ., it would have a different, horizontal line of reflection:
+Button A: X+69, Y+23
+Button B: X+27, Y+71
+Prize: X=10000000018641, Y=10000000010279
+Now, it is only possible to win a prize on the second and fourth claw machines. Unfortunately, it will take many more than 100 presses to do so.
 
-1 ..##..##. 1
-2 ..#.##.#. 2
-3v##......#v3
-4^##......#^4
-5 ..#.##.#. 5
-6 ..##..##. 6
-7 #.#.##.#. 7
-With the smudge in the top-left corner repaired, a new horizontal line of reflection between rows 3 and 4 now exists. Row 7 has no corresponding reflected row and can be ignored, but every other row matches exactly: row 1 matches row 6, row 2 matches row 5, and row 3 matches row 4.
+Using the corrected prize coordinates, figure out how to win as many prizes as possible. What is the fewest tokens you would have to spend to win all possible prizes?
 
-In the second pattern, the smudge can be fixed by changing the fifth symbol on row 2 from . to #:
-
-1v#...##..#v1
-2^#...##..#^2
-3 ..##..### 3
-4 #####.##. 4
-5 #####.##. 5
-6 ..##..### 6
-7 #....#..# 7
-Now, the pattern has a different horizontal line of reflection between rows 1 and 2.
-
-Summarize your notes as before, but instead use the new different reflection lines. In this example, the first pattern's new horizontal line has 3 rows above it and the second pattern's new horizontal line has 1 row above it, summarizing to the value 400.
-
-In each pattern, fix the smudge and find the different line of reflection. What number do you get after summarizing the new reflection line in each pattern in your notes?

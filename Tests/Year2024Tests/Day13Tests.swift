@@ -9,29 +9,29 @@ class Day13Tests: XCTestCase {
 
     func test_part1() {
 //        measure {
-        XCTAssertEqual(33356, day.part1(input))
+        XCTAssertEqual(31552, day.part1(input))
 //        }
     }
     
     func test_part1_example() {
         let input = """
-#.##..##.
-..#.##.#.
-##......#
-##......#
-..#.##.#.
-..##..##.
-#.#.##.#.
+Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=8400, Y=5400
 
-#...##..#
-#....#..#
-..##..###
-#####.##.
-#####.##.
-..##..###
-#....#..#
+Button A: X+26, Y+66
+Button B: X+67, Y+21
+Prize: X=12748, Y=12176
+
+Button A: X+17, Y+86
+Button B: X+84, Y+37
+Prize: X=7870, Y=6450
+
+Button A: X+69, Y+23
+Button B: X+27, Y+71
+Prize: X=18641, Y=10279
 """.lines
-        XCTAssertEqual(405, day.part1(input))
+        XCTAssertEqual(480, day.part1(input))
     }
     
     func test_part2() {
@@ -42,44 +42,22 @@ class Day13Tests: XCTestCase {
     
     func test_part2_example() {
         let input = """
-#.##..##.
-..#.##.#.
-##......#
-##......#
-..#.##.#.
-..##..##.
-#.#.##.#.
+Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=8400, Y=5400
 
-#...##..#
-#....#..#
-..##..###
-#####.##.
-#####.##.
-..##..###
-#....#..#
+Button A: X+26, Y+66
+Button B: X+67, Y+21
+Prize: X=12748, Y=12176
+
+Button A: X+17, Y+86
+Button B: X+84, Y+37
+Prize: X=7870, Y=6450
+
+Button A: X+69, Y+23
+Button B: X+27, Y+71
+Prize: X=18641, Y=10279
 """.lines
         XCTAssertEqual(400, day.part2(input))
-    }
-    
-    func test_part2_example2() {
-        let input = """
-......#
-###.#..
-###.##.
-###.##.
-###.#..
-.....##
-##..#..
-##.#...
-.###.#.
-##.....
-..#...#
-#....##
-#....##
-..#...#
-##.....
-""".lines
-        XCTAssertEqual(1200, day.part1(input))
-        XCTAssertEqual(300, day.part2(input))
     }
 }
