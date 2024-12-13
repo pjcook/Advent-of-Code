@@ -36,7 +36,7 @@ Prize: X=18641, Y=10279
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(28475, day.part2(input))
+        XCTAssertEqual(95273925552482, day.part2b(input))
 //        }
     }
     
@@ -58,6 +58,7 @@ Button A: X+69, Y+23
 Button B: X+27, Y+71
 Prize: X=18641, Y=10279
 """.lines
-        XCTAssertEqual(400, day.part2(input))
+        XCTAssertEqual(875318608908, day.part2b(input))
     }
 }
+
