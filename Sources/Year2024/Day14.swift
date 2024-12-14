@@ -4,91 +4,121 @@ import StandardLibraries
 public struct Day14 {
     public init() {}
     
-    let roundRock = "O"
-    let cubeRock = "#"
-    let ground = "."
-    
-    public func part1(_ input: [String]) -> Int {
-        var grid = Grid<String>(input)
-        tilt(.up, grid: &grid)
-        return calculateLoad(.up, grid: grid)
+    public func part1(_ input: [String], boardSize: Point, iterations: Int) -> Int {
+        let robots = parse(input)
+        
+        for _ in (0..<iterations) {
+            for robot in robots {
+                robot.move(on: boardSize)
+            }
+        }
+        
+        var tl = 0
+        var tr = 0
+        var bl = 0
+        var br = 0
+        let halfWidth = boardSize.x / 2
+        let halfHeight = boardSize.y / 2
+        
+        for robot in robots {
+            switch (robot.point.x, robot.point.y) {
+            case (0..<halfWidth, 0..<halfHeight):
+                tl += 1
+            case (halfWidth+1...boardSize.x, 0..<halfHeight):
+                tr += 1
+            case (0..<halfWidth, halfHeight+1...boardSize.y):
+                bl += 1
+            case (halfWidth+1...boardSize.x, halfHeight+1...boardSize.y):
+                br += 1
+            default:
+                continue
+            }
+        }
+        
+        return tl * tr * bl * br
     }
     
-    public func part2(_ input: [String], iterations: Int) -> Int {
-        var grid = Grid<String>(input)
-        var cache = [[String]]()
-        var currentIndex = 0
-        var pivotIndex = 0
-        for i in (0..<iterations) {
-            tilt(.up, grid: &grid)
-            tilt(.left, grid: &grid)
-            tilt(.down, grid: &grid)
-            tilt(.right, grid: &grid)
-            if let cacheIndex = cache.firstIndex(of: grid.items) {
-                pivotIndex = cacheIndex
-                currentIndex = i
-                break
+    public func part2(_ input: [String], boardSize: Point) -> Int {
+        let robots = parse(input)
+        var i = 0
+        
+        outerloop: while true {
+            i += 1
+
+            for robot in robots {
+                robot.move(on: boardSize)
             }
-            cache.append(grid.items)
+            
+            let robotPositions = robots.map(\.point)
+            for y in (0..<boardSize.y) {
+                var beginning: Point?
+                for x in (0..<boardSize.x) {
+                    if robotPositions.contains(Point(x, y)) {
+                        if beginning == nil {
+                            beginning = Point(x, y)
+                        } else if x - beginning!.x >= 30 {
+                            break outerloop
+                        }
+                    } else {
+                        beginning = nil
+                    }
+                }
+            }
         }
 
-        let remainder = (iterations - currentIndex) % (cache.count - pivotIndex)
-        let finalGrid = Grid<String>(columns: grid.columns, items: cache[pivotIndex + remainder - 1])
-        return calculateLoad(.up, grid: finalGrid)
+        var grid = Grid<String>(size: boardSize, fill: ".")
+        for robot in robots {
+            grid[robot.point] = "#"
+        }
+        grid.draw()
+
+        return i
+    }
+    
+    final class Robot: Hashable {
+        static func == (lhs: Day14.Robot, rhs: Day14.Robot) -> Bool {
+            lhs.point == rhs.point && lhs.velocity == rhs.velocity
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            var hasher = Hasher()
+            hasher.combine(point)
+            hasher.combine(velocity)
+        }
+        
+        var point: Point
+        let velocity: Point
+        
+        init(point: Point, velocity: Point) {
+            self.point = point
+            self.velocity = velocity
+        }
+        
+        func move(on board: Point) {
+            point = point + velocity
+            if point.isValid(max: board) { return }
+            
+            if point.x < 0 { point.x += board.x }
+            if point.x >= board.x { point.x -= board.x }
+            if point.y < 0 { point.y += board.y }
+            if point.y >= board.y { point.y -= board.y }
+        }
     }
 }
 
 extension Day14 {
-    func calculateLoad(_ direction: Direction, grid: Grid<String>) -> Int {
-        var sum = 0
-        for y in (0..<grid.rows) {
-            for x in (0..<grid.columns) {
-                switch direction {
-                    case .up:
-                        if grid[x,y] == roundRock {
-                            sum += grid.rows - y
-                        }
-                        
-                    case .down:
-                        if grid[x,y] == roundRock {
-                            sum += y + 1
-                        }
-                        
-                    case .left:
-                        if grid[x,y] == roundRock {
-                            sum += grid.columns - x
-                        }
-                        
-                    case .right:
-                        if grid[x,y] == roundRock {
-                            sum += x + 1
-                        }
-                }
+    func parse(_ input: [String]) -> [Robot] {
+        var robots = [Robot]()
+        
+        for line in input {
+            // p=0,4 v=3,-3
+            let parts = line.split(separator: " ").map {
+                let values = $0.dropFirst(2).split(separator: ",").map { Int($0)! }
+                return Point(values[0], values[1])
             }
+            robots.append(Robot(point: parts[0], velocity: parts[1]))
         }
-        return sum
-    }
-    
-    func tilt(_ direction: Direction, grid: inout Grid<String>) {
-        for i in (0..<grid.items.count) {
-            var point: Point
-            if [.down, .right].contains(direction) {
-                point = grid.point(for: grid.items.count - i - 1)
-            } else {
-                point = grid.point(for: i)
-            }
-            if grid[point] == roundRock {
-                while true {
-                    let next = point + direction.point
-                    if next.isValid(max: grid.bottomRight) && grid[next] == ground {
-                        grid[next] = roundRock
-                        grid[point] = ground
-                        point = next
-                        continue
-                    }
-                    break
-                }
-            }
-        }
+        
+        return robots
     }
 }

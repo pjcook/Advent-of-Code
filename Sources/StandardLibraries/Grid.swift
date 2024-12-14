@@ -82,6 +82,13 @@ extension Grid where T == String {
     }
 }
 
+extension Grid where T == String {
+    public init(size: Point, fill: String) {
+        self.columns = size.x
+        self.items = Array(repeating: fill, count: size.x * size.y)
+    }
+}
+
 extension Grid where T == Int {
     public init(_ input: [String]) {
         var items = [Int]()
