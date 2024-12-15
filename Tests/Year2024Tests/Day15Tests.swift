@@ -5,37 +5,107 @@ import Year2024
 
 class Day15Tests: XCTestCase {
     
-    let input = Input("Day15.input", Bundle.module).input
+    let input = Input("Day15.input", Bundle.module).lines
     let day = Day15()
 
     func test_part1() {
 //        measure {
-        XCTAssertEqual(521434, day.part1(input))
+        XCTAssertEqual(1451928, day.part1(input))
 //        }
     }
     
-    func test_part1_example() {
-        XCTAssertEqual("H".toAscii().first!, 72)
-        XCTAssertEqual("H".toAscii().first! * 17, 1224)
-        XCTAssertEqual(("H".toAscii().first! * 17) % 256, 200)
+    func test_part1_example1() {
+        let input = """
+########
+#..O.O.#
+##@.O..#
+#...O..#
+#.#.O..#
+#...O..#
+#......#
+########
+
+<^^>>>vv<v>>v<<
+""".lines
         
-        XCTAssertEqual("A".toAscii().first!, 65)
-        XCTAssertEqual("S".toAscii().first!, 83)
-        XCTAssertEqual("H".toAscii().first!, 72)
+        XCTAssertEqual(day.part1(input), 2028)
+    }
+    
+    func test_part1_example2() {
+        let input = """
+##########
+#..O..O.O#
+#......O.#
+#.OO..O.O#
+#..O@..O.#
+#O#..O...#
+#O..O..O.#
+#.OO.O.OO#
+#....O...#
+##########
+
+<vv>^<v^>v>^vv^v>v<>v^v<v<^vv<<<^><<><>>v<vvv<>^v^>^<<<><<v<<<v^vv^v>^
+vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
+><>vv>v^v^<>><>>>><^^>vv>v<^^^>>v^v^<^^>v^^>v^<^v>v<>>v^v^<v>v^^<^^vv<
+<<v<^>>^^^^>>>v^<>vvv^><v<<<>^^^vv^<vvv>^>v<^^^^v<>^>vvvv><>>v^<<^^^^^
+^><^><>>><>^^<<^^v>>><^<v>^<vv>>v>>>^v><>^v><<<<v>>v<v<v>vvv>^<><<>^><
+^>><>^v<><^vvv<^^<><v<<<<<><^v<<<><<<^^<v<^^^><^>>^<v^><<<^>>^v<v^v<v^
+>^>>^v>vv>^<<^v<>><<><<v<<v><>v<^vv<<<>^^v^>^^>>><<^v>>v^v><^^>>^<>vv^
+<><^^>^^^<><vvvvv^v<v<<>^v<v>v<<^><<><<><<<^^<<<^<<>><<><^^^>^^<>^>v<>
+^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
+v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^
+""".lines
         
-        XCTAssertEqual("HASH".toAscii().reduce(0) { (($0 + $1) * 17) % 256 }, 52)
-        XCTAssertEqual("rn=1".toAscii().reduce(0) { (($0 + $1) * 17) % 256 }, 30)
-        
-        XCTAssertEqual(day.part1("rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7"), 1320)
+        XCTAssertEqual(day.part1(input), 10092)
     }
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(248279, day.part2(input))
+        XCTAssertEqual(1462788, day.part2(input))
 //        }
     }
     
-    func test_part2_example() {
-        XCTAssertEqual(day.part2("rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7"), 145)
+    func test_part2_example1() {
+        let input = """
+#######
+#...#.#
+#.....#
+#..OO@#
+#..O..#
+#.....#
+#######
+
+<vv<<^^<<^^
+""".lines
+        
+        XCTAssertEqual(day.part2(input), 618)
+    }
+    
+    func test_part2_example2() {
+        let input = """
+##########
+#..O..O.O#
+#......O.#
+#.OO..O.O#
+#..O@..O.#
+#O#..O...#
+#O..O..O.#
+#.OO.O.OO#
+#....O...#
+##########
+
+<vv>^<v^>v>^vv^v>v<>v^v<v<^vv<<<^><<><>>v<vvv<>^v^>^<<<><<v<<<v^vv^v>^
+vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
+><>vv>v^v^<>><>>>><^^>vv>v<^^^>>v^v^<^^>v^^>v^<^v>v<>>v^v^<v>v^^<^^vv<
+<<v<^>>^^^^>>>v^<>vvv^><v<<<>^^^vv^<vvv>^>v<^^^^v<>^>vvvv><>>v^<<^^^^^
+^><^><>>><>^^<<^^v>>><^<v>^<vv>>v>>>^v><>^v><<<<v>>v<v<v>vvv>^<><<>^><
+^>><>^v<><^vvv<^^<><v<<<<<><^v<<<><<<^^<v<^^^><^>>^<v^><<<^>>^v<v^v<v^
+>^>>^v>vv>^<<^v<>><<><<v<<v><>v<^vv<<<>^^v^>^^>>><<^v>>v^v><^^>>^<>vv^
+<><^^>^^^<><vvvvv^v<v<<>^v<v>v<<^><<><<><<<^^<<<^<<>><<><^^^>^^<>^>v<>
+^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
+v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^
+""".lines
+        
+        XCTAssertEqual(day.part2(input), 9021)
     }
 }
