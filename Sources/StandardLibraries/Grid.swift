@@ -100,7 +100,9 @@ extension Grid where T == Int {
         self.columns = input[0].count
         self.items = items
     }
-    
+}
+
+extension Grid where T == String {
     public func dijkstra(start: Point, end: Point, calculateScore: (Point) -> Int) -> Int {
         dijkstra(start: start, end: end, maxPoint: bottomRight, calculateScore: calculateScore)
     }
@@ -139,7 +141,7 @@ extension Grid where T == Int {
         return costSoFar[end, default: -1]
     }
     
-    public func dijkstra(start: Point, end: Point, maxPoint: Point, shouldDrawPath: Bool = false, calculateScore: (Point, Point) -> Int) -> Int {
+    public func dijkstra(start: Point, end: Point, maxPoint: Point, shouldDrawPath: Bool = false, calculateScore: (Point?, Point, Point) -> Int) -> Int {
         let queue = PriorityQueue<Point>()
         queue.enqueue(start, priority: 0)
         var cameFrom = [Point:Point]()
@@ -155,7 +157,185 @@ extension Grid where T == Int {
             }
             
             for next in current.cardinalNeighbors(max: maxPoint) {
+                let newCost = costSoFar[current, default: 0] + calculateScore(cameFrom[current], current, next)
+                if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
+                    costSoFar[next] = newCost
+                    queue.enqueue(next, priority: newCost)
+                    cameFrom[next] = current
+                }
+            }
+        }
+        
+        // Draw Path
+        if shouldDrawPath {
+            drawCalculatedPath(end, &cameFrom)
+        }
+        
+        return costSoFar[end, default: -1]
+    }
+    
+    func drawCalculatedPath(_ end: Point, _ cameFrom: inout [Point : Point]) {
+//        var path = [Point]()
+//        var current: Point? = end
+//        while current != nil {
+//            if let point = current, let next = cameFrom[point] {
+//                path.append(next)
+//                current = next
+//            } else {
+//                current = nil
+//            }
+//        }
+//        
+//        path.reversed().forEach { print($0) }
+        
+        var grid = self
+        var current: Point? = end
+        while current != nil {
+            grid[current!] = "X"
+            current = cameFrom[current!]
+        }
+        grid.draw()
+    }
+    
+    public func aStar(start: Point, end: Point, calculateScore: (Point) -> Int) -> Int {
+        aStar(start: start, end: end, maxPoint: bottomRight, calculateScore: calculateScore)
+    }
+    
+    public func aStar(start: Point, end: Point, maxPoint: Point, calculateScore: (Point) -> Int) -> Int {
+        let queue = PriorityQueue<Point>()
+        queue.enqueue(start, priority: 0)
+        var cameFrom = [Point:Point]()
+        var costSoFar = [Point: Int]()
+        costSoFar[start] = 0
+        
+        while !queue.isEmpty {
+            let current = queue.dequeue()!
+            if current == end {
+                break
+            }
+            
+            for next in current.cardinalNeighbors(max: maxPoint) {
+                let newCost = costSoFar[current, default: 0] + calculateScore(next)
+                if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
+                    costSoFar[next] = newCost
+                    queue.enqueue(next, priority: newCost + current.manhattanDistance(to: next))
+                    cameFrom[next] = current
+                }
+            }
+        }
+        
+        return costSoFar[end, default: -1]
+    }
+    
+    public func aStar(start: Point, end: Point, maxPoint: Point, calculateScore: (Point, Point) -> Int) -> Int {
+        let queue = PriorityQueue<Point>()
+        queue.enqueue(start, priority: 0)
+        var cameFrom = [Point:Point]()
+        var costSoFar = [Point: Int]()
+        costSoFar[start] = 0
+        
+        while !queue.isEmpty {
+            let current = queue.dequeue()!
+            if current == end {
+                break
+            }
+            
+            for next in current.cardinalNeighbors(max: maxPoint) {
                 let newCost = costSoFar[current, default: 0] + calculateScore(current, next)
+                if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
+                    costSoFar[next] = newCost
+                    queue.enqueue(next, priority: newCost + current.manhattanDistance(to: next))
+                    cameFrom[next] = current
+                }
+            }
+        }
+        
+        return costSoFar[end, default: -1]
+    }
+    
+    public func aStar(start: Point, end: Point, maxPoint: Point, calculateScore: (Point?, Point, Point) -> Int) -> Int {
+        let queue = PriorityQueue<Point>()
+        queue.enqueue(start, priority: 0)
+        var cameFrom = [Point:Point]()
+        var costSoFar = [Point: Int]()
+        costSoFar[start] = 0
+        
+        while !queue.isEmpty {
+            let current = queue.dequeue()!
+            if current == end {
+                break
+            }
+            
+            for next in current.cardinalNeighbors(max: maxPoint) {
+                let newCost = costSoFar[current, default: 0] + calculateScore(cameFrom[current], current, next)
+                if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
+                    costSoFar[next] = newCost
+                    queue.enqueue(next, priority: newCost + current.manhattanDistance(to: next))
+                    cameFrom[next] = current
+                }
+            }
+        }
+        
+        return costSoFar[end, default: -1]
+    }
+}
+
+extension Grid where T == Int {
+    public func dijkstra(start: Point, end: Point, calculateScore: (Point) -> Int) -> Int {
+        dijkstra(start: start, end: end, maxPoint: bottomRight, calculateScore: calculateScore)
+    }
+    
+    // https://www.redblobgames.com/pathfinding/a-star/introduction.html
+    public func dijkstra(start: Point, end: Point, maxPoint: Point, shouldDrawPath: Bool = false, calculateScore: (Point) -> Int) -> Int {
+        let queue = PriorityQueue<Point>()
+        queue.enqueue(start, priority: 0)
+        var cameFrom = [Point:Point]()
+        var costSoFar = [Point: Int]()
+        costSoFar[start] = 0
+        
+        // calculate shortest path
+        while !queue.isEmpty {
+            // Using a priority queue means we always pick the next cheapest value
+            let current = queue.dequeue()!
+            if current == end {
+                break   // exit early
+            }
+            
+            for next in current.cardinalNeighbors(max: maxPoint) {
+                let newCost = costSoFar[current, default: 0] + calculateScore(next)
+                if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
+                    costSoFar[next] = newCost
+                    queue.enqueue(next, priority: newCost)
+                    cameFrom[next] = current
+                }
+            }
+        }
+        
+        // Draw Path
+        if shouldDrawPath {
+            drawCalculatedPath(end, &cameFrom)
+        }
+        
+        return costSoFar[end, default: -1]
+    }
+    
+    public func dijkstra(start: Point, end: Point, maxPoint: Point, shouldDrawPath: Bool = false, calculateScore: (Point?, Point, Point) -> Int) -> Int {
+        let queue = PriorityQueue<Point>()
+        queue.enqueue(start, priority: 0)
+        var cameFrom = [Point:Point]()
+        var costSoFar = [Point: Int]()
+        costSoFar[start] = 0
+        
+        // calculate shortest path
+        while !queue.isEmpty {
+            // Using a priority queue means we always pick the next cheapest value
+            let current = queue.dequeue()!
+            if current == end {
+                break   // exit early
+            }
+            
+            for next in current.cardinalNeighbors(max: maxPoint) {
+                let newCost = costSoFar[current, default: 0] + calculateScore(cameFrom[current], current, next)
                 if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
                     costSoFar[next] = newCost
                     queue.enqueue(next, priority: newCost)
@@ -183,7 +363,7 @@ extension Grid where T == Int {
                 current = nil
             }
         }
-        
+
         path.reversed().forEach { print($0) }
     }
     

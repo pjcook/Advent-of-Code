@@ -211,6 +211,22 @@ public extension Point {
         }
         return nil
     }
+    
+    func direction(from point: Point) -> Direction {
+        if y == point.y {
+            if x > point.x {
+                return .right
+            } else {
+                return .left
+            }
+        } else {
+            if y > point.y {
+                return .down
+            } else {
+                return .up
+            }
+        }
+    }
 }
 
 public enum Position {

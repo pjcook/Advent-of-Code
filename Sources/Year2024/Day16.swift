@@ -3,126 +3,139 @@ import StandardLibraries
 
 public struct Day16 {
     public init() {}
-
+    
     public func part1(_ input: [String]) -> Int {
-        let grid = parse(input)
-        return calculateEnergizedTileCount(grid: grid, start: MapEntry(point: Point(-1,0), direction: .right))
+        let grid = Grid<String>(input)
+        let start = grid.point(for: grid.items.firstIndex(of: "S")!)
+        let end = grid.point(for: grid.items.firstIndex(of: "E")!)
+        
+        return grid.dijkstra(start: start, end: end, maxPoint: grid.bottomRight, shouldDrawPath: true) { previous, current, next in
+            if grid[next] == "#" {
+                return 100000
+            }
+            
+            let direction = previous != nil ? current.direction(from: previous!) : .right
+            if next == current + direction.point {
+                return 1
+            } else {
+                return 1001
+            }
+        }
     }
     
-    public func part2(_ input: [String]) -> Int {
-        let grid = parse(input)
-        var largest = 0
+    public func part1b(_ input: [String]) -> Int {
+        let directions = [Direction.up, Direction.right, Direction.down, Direction.left]
+        let grid = Grid<String>(input)
+        let start = grid.point(for: grid.items.firstIndex(of: "S")!)
+        let end = grid.point(for: grid.items.firstIndex(of: "E")!)
+        var best: Int?
+        var seen = Set<SeenItem>()
         
+        let queue = PriorityQueue<Item>()
+        queue.enqueue(Item(point: start, directionIndex: 1, cost: 0), priority: 1)
+        
+        while let item = queue.dequeue() {
+            if item.point == end && best == nil {
+                best = item.cost
+            }
+            let seenItem = SeenItem(point: item.point, direction: directions[item.directionIndex])
+            if seen.contains(seenItem) {
+                continue
+            }
+            seen.insert(seenItem)
+            let nextPoint = item.point + directions[item.directionIndex].point
+            if nextPoint.isValid(max: grid.bottomRight), grid[nextPoint] != "#" {
+                queue.enqueue(Item(point: nextPoint, directionIndex: item.directionIndex, cost: item.cost + 1), priority: item.cost + 1)
+            }
+            queue.enqueue(Item(point: item.point, directionIndex: (item.directionIndex + 1) % 4, cost: item.cost + 1000), priority: item.cost + 1000)
+            queue.enqueue(Item(point: item.point, directionIndex: (item.directionIndex + 3) % 4, cost: item.cost + 1000), priority: item.cost + 1000)
+        }
+        
+        return best!
+    }
+    
+    public func part2b(_ input: [String]) -> Int {
+        let directions = [Direction.up, Direction.right, Direction.down, Direction.left]
+        let grid = Grid<String>(input)
+        let start = grid.point(for: grid.items.firstIndex(of: "S")!)
+        let end = grid.point(for: grid.items.firstIndex(of: "E")!)
+        var best: Int?
+        var seen = Set<SeenItem>()
+        var dist = [SeenItem: Int]()
+        var dist2 = [SeenItem: Int]()
+        let queue = PriorityQueue<Item>()
+
+        // Go forwards
+        queue.enqueue(Item(point: start, directionIndex: 1, cost: 0), priority: 1)
+        
+        while let item = queue.dequeue() {
+            let seenItem = SeenItem(point: item.point, direction: directions[item.directionIndex])
+            if dist[seenItem] == nil {
+                dist[seenItem] = item.cost
+            }
+            if item.point == end && best == nil {
+                best = item.cost
+            }
+            if seen.contains(seenItem) {
+                continue
+            }
+            seen.insert(seenItem)
+            let nextPoint = item.point + directions[item.directionIndex].point
+            if nextPoint.isValid(max: grid.bottomRight), grid[nextPoint] != "#" {
+                queue.enqueue(Item(point: nextPoint, directionIndex: item.directionIndex, cost: item.cost + 1), priority: item.cost + 1)
+            }
+            queue.enqueue(Item(point: item.point, directionIndex: (item.directionIndex + 1) % 4, cost: item.cost + 1000), priority: item.cost + 1000)
+            queue.enqueue(Item(point: item.point, directionIndex: (item.directionIndex + 3) % 4, cost: item.cost + 1000), priority: item.cost + 1000)
+        }
+        
+        // Go backwards
+        seen = Set<SeenItem>()
+        queue.enqueue(Item(point: end, directionIndex: 0, cost: 0), priority: 0)
+        queue.enqueue(Item(point: end, directionIndex: 1, cost: 0), priority: 0)
+        queue.enqueue(Item(point: end, directionIndex: 2, cost: 0), priority: 0)
+        queue.enqueue(Item(point: end, directionIndex: 3, cost: 0), priority: 0)
+        
+        while let item = queue.dequeue() {
+            let seenItem = SeenItem(point: item.point, direction: directions[item.directionIndex])
+            if dist2[seenItem] == nil {
+                dist2[seenItem] = item.cost
+            }
+            if seen.contains(seenItem) {
+                continue
+            }
+            seen.insert(seenItem)
+            let nextPoint = item.point + directions[(item.directionIndex + 2) % 4].point
+            if nextPoint.isValid(max: grid.bottomRight), grid[nextPoint] != "#" {
+                queue.enqueue(Item(point: nextPoint, directionIndex: item.directionIndex, cost: item.cost + 1), priority: item.cost + 1)
+            }
+            queue.enqueue(Item(point: item.point, directionIndex: (item.directionIndex + 1) % 4, cost: item.cost + 1000), priority: item.cost + 1000)
+            queue.enqueue(Item(point: item.point, directionIndex: (item.directionIndex + 3) % 4, cost: item.cost + 1000), priority: item.cost + 1000)
+        }
+        
+        // find optimal path points
+        var pathPoints = Set<Point>()
         for y in (0..<grid.rows) {
-            let result = calculateEnergizedTileCount(grid: grid, start: MapEntry(point: Point(-1,y), direction: .right))
-            largest = max(largest, result)
-            
-            let result2 = calculateEnergizedTileCount(grid: grid, start: MapEntry(point: Point(grid.rows,y), direction: .left))
-            largest = max(largest, result2)
-        }
-        
-        for x in (0..<grid.columns) {
-            let result = calculateEnergizedTileCount(grid: grid, start: MapEntry(point: Point(x,-1), direction: .down))
-            largest = max(largest, result)
-            
-            let result2 = calculateEnergizedTileCount(grid: grid, start: MapEntry(point: Point(x,grid.columns), direction: .up))
-            largest = max(largest, result2)
-        }
-        
-        return largest
-    }
-    
-    func calculateEnergizedTileCount(grid: Grid<Tile>, start: MapEntry) -> Int {
-        var energized = Set<MapEntry>()
-        var toProcess = Set<MapEntry>()
-        toProcess.insert(start)
-        
-        while let entry = toProcess.popFirst() {
-            guard !energized.contains(entry) else { continue }
-            
-            energized.insert(entry)
-            let nextPoint = entry.point + entry.direction.point
-            
-            guard nextPoint.isValid(max: grid.bottomRight) else { continue }
-            
-            switch grid[nextPoint] {
-                    
-                case .empty:    // "."
-                    toProcess.insert(MapEntry(point: nextPoint, direction: entry.direction))
-                    
-                case .splitVertical:    // "|"
-                    if [.left, .right].contains(entry.direction) {
-                        toProcess.insert(MapEntry(point: nextPoint, direction: .up))
-                        toProcess.insert(MapEntry(point: nextPoint, direction: .down))
-                    } else {
-                        toProcess.insert(MapEntry(point: nextPoint, direction: entry.direction))
+            for x in (0..<grid.columns) {
+                for dir in directions {
+                    let item = SeenItem(point: Point(x, y), direction: dir)
+                    if let d1 = dist[item], let d2 = dist2[item], d1 + d2 == best {
+                        pathPoints.insert(item.point)
                     }
-                    
-                case .splitHorizontal:  // "-"
-                    if [.up, .down].contains(entry.direction) {
-                        toProcess.insert(MapEntry(point: nextPoint, direction: .left))
-                        toProcess.insert(MapEntry(point: nextPoint, direction: .right))
-                    } else {
-                        toProcess.insert(MapEntry(point: nextPoint, direction: entry.direction))
-                    }
-                    
-                case .mirrorRight:  // "/"
-                    switch entry.direction {
-                        case .up:
-                            toProcess.insert(MapEntry(point: nextPoint, direction: .right))
-                        case .down:
-                            toProcess.insert(MapEntry(point: nextPoint, direction: .left))
-                        case .left:
-                            toProcess.insert(MapEntry(point: nextPoint, direction: .down))
-                        case .right:
-                            toProcess.insert(MapEntry(point: nextPoint, direction: .up))
-                    }
-                    
-                case .mirrorLeft:   // "\"
-                    switch entry.direction {
-                        case .up:
-                            toProcess.insert(MapEntry(point: nextPoint, direction: .left))
-                        case .down:
-                            toProcess.insert(MapEntry(point: nextPoint, direction: .right))
-                        case .left:
-                            toProcess.insert(MapEntry(point: nextPoint, direction: .up))
-                        case .right:
-                            toProcess.insert(MapEntry(point: nextPoint, direction: .down))
-                    }
+                }
             }
         }
         
-        var results = Set<Point>()
-        for entry in energized {
-            results.insert(entry.point)
-        }
-        return results.count - 1
+        return pathPoints.count
     }
     
-    enum Tile: String, CustomStringConvertible {
-        case empty = "."
-        case splitVertical = "|"
-        case splitHorizontal = "-"
-        case mirrorRight = "/"
-        case mirrorLeft = "\\"
-        
-        var description: String { rawValue }
-    }
-    
-    struct MapEntry: Hashable {
+    struct SeenItem: Hashable {
         let point: Point
         let direction: Direction
     }
-}
-
-extension Day16 {
-    func parse(_ input: [String]) -> Grid<Tile> {
-        var items = [Tile]()
-        
-        for row in input {
-            row.forEach { items.append(Tile(rawValue: String($0))!) }
-        }
-        
-        return Grid<Tile>(columns: input[0].count, items: items)
+    
+    struct Item: Hashable {
+        let point: Point
+        let directionIndex: Int
+        let cost: Int
     }
 }

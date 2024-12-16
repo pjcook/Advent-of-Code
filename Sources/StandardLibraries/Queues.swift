@@ -45,6 +45,10 @@ public class PriorityQueue<T: Hashable> {
     public func dequeue() -> T? {
         queue.pop()?.item
     }
+    
+    public var queuedItems: [T] {
+        queue.storage.map { $0.item }
+    }
 }
 
 public struct BinaryHeap<Element> {
