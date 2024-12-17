@@ -4,181 +4,192 @@ import StandardLibraries
 public struct Day17 {
     public init() {}
     
-    public func part1(_ input: [String]) -> Int {
-        let grid = Grid<Int>(input)
-        return calculatePath2(start: .zero, end: Point(grid.columns - 1, grid.rows - 1), grid: grid, part2: false)
+    public func part1(_ computer: Computer) -> String {
+        computer.run().map(String.init).joined(separator: ",")
     }
     
-    public func part2(_ input: [String]) -> Int {
-        let grid = Grid<Int>(input)
-        return calculatePath2(start: .zero, end: Point(grid.columns - 1, grid.rows - 1), grid: grid, part2: true)
-    }
-    
-    public func part1b(_ input: [String]) -> Int {
-        let grid = Grid<Int>(input)
-        return calculatePath3(start: .zero, end: Point(grid.columns - 1, grid.rows - 1), grid: grid, part2: false)
-    }
-    
-    public func part2b(_ input: [String]) -> Int {
-        let grid = Grid<Int>(input)
-        return calculatePath3part2(start: .zero, end: Point(grid.columns - 1, grid.rows - 1), grid: grid)
-    }
-    
-    struct Entry: Hashable {
-        let heatLoss: Int
-        let row: Int
-        let col: Int
-        let dir: Int
-        let indir: Int
+    public func part2(_ computer: Computer) -> Int {
+        var i = 0 // 13921800000
+        computer.a = i
+        computer.b = 0
+        computer.c = 0
+        computer.pointer = 0
+        var best = 0
+        var fudge = 0
         
-        var value: Int { heatLoss }
-    }
-    
-    struct History: Hashable {
-        let row: Int
-        let col: Int
-        let dir: Int
-        let indir: Int
-        
-        init(_ entry: Entry) {
-            self.row = entry.row
-            self.col = entry.col
-            self.dir = entry.dir
-            self.indir = entry.indir
-        }
-        
-        static func == (lhs: History, rhs: History) -> Bool {
-            lhs.row == rhs.row && lhs.col == rhs.col && lhs.dir == rhs.dir && lhs.indir == rhs.indir
+        while true {
+            var ast = i
+            if fudge > 0 {
+                ast = i * pow(8, fudge.length) + fudge
+            }
+
+            computer.a = ast
+            computer.b = 0
+            computer.c = 0
+            computer.pointer = 0
+            let out = computer.run(isPart2: true)
+            if out == computer.program {
+                return ast
+            }
+            
+            var x = 0
+            for (a, b) in zip(out, computer.program) {
+                if a == b {
+                    x += 1
+                } else {
+                    break
+                }
+            }
+            if x > 7, x < computer.program.count - 3, x > best {
+                fudge = ast
+                print(i, fudge, out, ast)
+                i = -1
+                best = x
+            }
+            
+            if i % 100000 == 0 {
+                print(ast, out, String(Int(out.map(String.init).joined())!, radix: 8, uppercase: false), best, computer.program.count, fudge)
+            }
+            i += 1
         }
     }
 }
 
 extension Day17 {
-    func calculatePath2(start: Point, end: Point, grid: Grid<Int>, part2: Bool) -> Int {
-        let queue = PriorityQueue<Entry>()
-        queue.enqueue(Entry(heatLoss: 0, row: 0, col: 0, dir: -1, indir: -1), priority: 0)
-        var processed = [History: Int]()
-        var step = 0
-        var lowest = Int.max
+    public final class Computer {
+        public var a: Int
+        public var b: Int
+        public var c: Int
         
-        while let item = queue.dequeue() {
-            if item.row == end.y && item.col == end.x {
-                lowest = min(lowest, item.heatLoss)
-//                print(step, item.dist)
-                break
+        public let program: [Int]
+        public var pointer = 0
+        
+        public init(a: Int, b: Int, c: Int, program: [Int]) {
+            self.program = program
+            self.a = a
+            self.b = b
+            self.c = c
+        }
+        
+        public func run(isPart2: Bool = false) -> [Int] {
+            var output = [Int]()
+            
+            func value(for operand: Operand) -> Int {
+                switch operand {
+                case 0, 1, 2, 3: return operand
+                case 4: return a
+                case 5: return b
+                case 6: return c
+                default: return operand // fatalError("Unknown operand \(operand)")
+                }
             }
             
-            let history = History(item)
-            if processed[history] != nil {
-//                assert(item.dist >= processed[history]!)
-                continue
-            }
-            
-            processed[history] = item.heatLoss
-            for (direction, (dr, dc)) in [(-1,0),(0,1),(1,0),(0,-1)].enumerated() {
-                let rr = item.row + dr
-                let cc = item.col + dc
-                let new_dir = direction
-                let new_indir = new_dir != item.dir ? 1 : item.indir + 1
-                guard 
-                    ((new_dir + 2) % 4 != item.dir),
-                    rr >= 0, cc >= 0, rr < grid.rows, cc < grid.columns
-                else { continue }
+            while pointer < program.count {
+                let instruction = Instruction(Opcode(rawValue: program[pointer])!, program[pointer + 1])
                 
-                let isValid_part1 = new_indir <= 3
-                let isValid_part2 = new_indir <= 10 && (new_dir == item.dir || item.indir >= 4 || item.indir == -1)
-
-                guard part2 ? isValid_part2 : isValid_part1 else { continue }                
-                let cost = grid[cc,rr]
-                let nextCost = item.heatLoss + cost
-                queue.enqueue(Entry(heatLoss: nextCost, row: rr, col: cc, dir: new_dir, indir: new_indir), priority: nextCost)
+                switch instruction.0 {
+                case .adv:
+                    /*
+                     The adv instruction (opcode 0) performs division. The numerator is the value in the A register. The denominator is found by raising 2 to the power of the instruction's combo operand. (So, an operand of 2 would divide A by 4 (2^2); an operand of 5 would divide A by 2^B.) The result of the division operation is truncated to an integer and then written to the A register.
+                     */
+                    a = a / pow(2, value(for: instruction.1))
+                    
+                case .bxl:
+                    /*
+                     The bxl instruction (opcode 1) calculates the bitwise XOR of register B and the instruction's literal operand, then stores the result in register B.
+                     */
+                    b = b ^ value(for: instruction.1)
+                    
+                case .bst:
+                    /*
+                     The bst instruction (opcode 2) calculates the value of its combo operand modulo 8 (thereby keeping only its lowest 3 bits), then writes that value to the B register.
+                     */
+                    b = value(for: instruction.1) % 8
+                    
+                case .jnz:
+                    /*
+                     The jnz instruction (opcode 3) does nothing if the A register is 0. However, if the A register is not zero, it jumps by setting the instruction pointer to the value of its literal operand; if this instruction jumps, the instruction pointer is not increased by 2 after this instruction.
+                     */
+                    if a != 0 {
+                        pointer = value(for: instruction.1)
+                        continue
+                    }
+                    
+                case .bxc:
+                    /*
+                     The bxc instruction (opcode 4) calculates the bitwise XOR of register B and register C, then stores the result in register B. (For legacy reasons, this instruction reads an operand but ignores it.)
+                     */
+                    
+                    b = b ^ c
+                    
+                case .out:
+                    /*
+                     The out instruction (opcode 5) calculates the value of its combo operand modulo 8, then outputs that value. (If a program outputs multiple values, they are separated by commas.)
+                     */
+                    let val = value(for: instruction.1) % 8
+                    output.append(val)
+                    
+                    // exit early
+                    if isPart2, Array(program.prefix(output.count)) != output {
+                        return output
+                    }
+                    
+                case .bdv:
+                    /*
+                     The bdv instruction (opcode 6) works exactly like the adv instruction except that the result is stored in the B register. (The numerator is still read from the A register.)
+                     */
+                    b = a / pow(2, value(for: instruction.1))
+                    
+                case .cdv:
+                    /*
+                     The cdv instruction (opcode 7) works exactly like the adv instruction except that the result is stored in the C register. (The numerator is still read from the A register.)
+                     */
+                    c = a / pow(2, value(for: instruction.1))                    
+                }
+                
+                pointer += 2
             }
             
-            step += 1
+            return output
         }
-        
-        return lowest
     }
     
-    func calculatePath3(start: Point, end: Point, grid: Grid<Int>, part2: Bool) -> Int {
-        let directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-        let queue = PriorityQueue<Entry>()
-        queue.enqueue(Entry(heatLoss: 0, row: 0, col: 0, dir: -1, indir: 0), priority: 0)
-        var seen = Set<History>()
-        while let item = queue.dequeue() {            
-            if item.row == end.y && item.col == end.x && (part2 ? item.indir >= 4 : true) {
-                return item.heatLoss
-            }
-            
-            let history = History(item)
-            guard seen.contains(history) == false else  { continue }
-            seen.insert(history)
-            
-            if item.indir < (part2 ? 10 : 3) && item.dir != -1 {
-                let direction = directions[item.dir]
-                let nr = item.row + direction.0
-                let nc = item.col + direction.1
-                if nr >= 0 && nc >= 0 && nr < grid.rows && nc < grid.columns {
-                    let hl = item.heatLoss + grid[nc,nr]
-                    queue.enqueue(Entry(heatLoss: hl, row: nr, col: nc, dir: item.dir, indir: item.indir + 1), priority: hl)
-                }
-            }
-            
-            if (part2 ? item.indir >= 4 : true) || item.dir == -1 {
-                for (i, direction) in directions.enumerated() {
-                    if i != item.dir && (i + 2) % 4 != item.dir {
-                        let nr = item.row + direction.0
-                        let nc = item.col + direction.1
-                        if nr >= 0 && nc >= 0 && nr < grid.rows && nc < grid.columns {
-                            let hl = item.heatLoss + grid[nc,nr]
-                            queue.enqueue(Entry(heatLoss: hl, row: nr, col: nc, dir: i, indir: 1), priority: hl)
-                        }
-                    }
-                }
-            }
-        }
-        
-        return -1
+    enum Opcode: Int {
+        case adv = 0
+        case bxl = 1
+        case bst = 2
+        case jnz = 3
+        case bxc = 4
+        case out = 5
+        case bdv = 6
+        case cdv = 7
     }
     
-    func calculatePath3part2(start: Point, end: Point, grid: Grid<Int>) -> Int {
-        let directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-        let queue = PriorityQueue<Entry>()
-        queue.enqueue(Entry(heatLoss: 0, row: 0, col: 0, dir: -1, indir: 0), priority: 0)
-        var seen = Set<History>()
-        while let item = queue.dequeue() {            
-            if item.row == end.y && item.col == end.x && item.indir >= 4 {
-                return item.heatLoss
-            }
-            
-            let history = History(item)
-            guard seen.contains(history) == false else  { continue }
-            seen.insert(history)
-            
-            if item.indir < 10 && item.dir != -1 {
-                let direction = directions[item.dir]
-                let nr = item.row + direction.0
-                let nc = item.col + direction.1
-                if nr >= 0 && nc >= 0 && nr < grid.rows && nc < grid.columns {
-                    let hl = item.heatLoss + grid[nc,nr]
-                    queue.enqueue(Entry(heatLoss: hl, row: nr, col: nc, dir: item.dir, indir: item.indir + 1), priority: hl)
-                }
-            }
-            
-            if item.indir >= 4 || item.dir == -1 {
-                for (i, direction) in directions.enumerated() {
-                    if i != item.dir && (i + 2) % 4 != item.dir {
-                        let nr = item.row + direction.0
-                        let nc = item.col + direction.1
-                        if nr >= 0 && nc >= 0 && nr < grid.rows && nc < grid.columns {
-                            let hl = item.heatLoss + grid[nc,nr]
-                            queue.enqueue(Entry(heatLoss: hl, row: nr, col: nc, dir: i, indir: 1), priority: hl)
-                        }
-                    }
-                }
-            }
-        }
-        
-        return -1
-    }
+    typealias Operand = Int
+    typealias Instruction = (Opcode, Operand)
 }
+/*
+ [OPERAND]
+ Combo operands 0 through 3 represent literal values 0 through 3.
+ Combo operand 4 represents the value of register A.
+ Combo operand 5 represents the value of register B.
+ Combo operand 6 represents the value of register C.
+ Combo operand 7 is reserved and will not appear in valid programs.
+ 
+ [OPCODE]
+ The adv instruction (opcode 0) performs division. The numerator is the value in the A register. The denominator is found by raising 2 to the power of the instruction's combo operand. (So, an operand of 2 would divide A by 4 (2^2); an operand of 5 would divide A by 2^B.) The result of the division operation is truncated to an integer and then written to the A register.
+
+ The bxl instruction (opcode 1) calculates the bitwise XOR of register B and the instruction's literal operand, then stores the result in register B.
+
+ The bst instruction (opcode 2) calculates the value of its combo operand modulo 8 (thereby keeping only its lowest 3 bits), then writes that value to the B register.
+
+ The jnz instruction (opcode 3) does nothing if the A register is 0. However, if the A register is not zero, it jumps by setting the instruction pointer to the value of its literal operand; if this instruction jumps, the instruction pointer is not increased by 2 after this instruction.
+
+ The bxc instruction (opcode 4) calculates the bitwise XOR of register B and register C, then stores the result in register B. (For legacy reasons, this instruction reads an operand but ignores it.)
+
+ The out instruction (opcode 5) calculates the value of its combo operand modulo 8, then outputs that value. (If a program outputs multiple values, they are separated by commas.)
+
+ The bdv instruction (opcode 6) works exactly like the adv instruction except that the result is stored in the B register. (The numerator is still read from the A register.)
+
+ The cdv instruction (opcode 7) works exactly like the adv instruction except that the result is stored in the C register. (The numerator is still read from the A register.)
+ */

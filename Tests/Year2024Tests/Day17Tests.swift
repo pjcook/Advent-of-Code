@@ -5,111 +5,29 @@ import Year2024
 
 class Day17Tests: XCTestCase {
     
-    let input = Input("Day17.input", Bundle.module).lines
     let day = Day17()
 
-    // Had to run someone elses Python solution
-    // Credit Jonathan Paulson https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/17.py
-    // Source is in Day17.py needed to run via the `IDLE` app
-    
     func test_part1() {
+        let computer = Day17.Computer(a: 64012472, b: 0, c: 0, program: [2,4,1,7,7,5,0,3,1,7,4,1,5,5,3,0])
 //        measure {
-        XCTAssertEqual(665, day.part1b(input))
+        XCTAssertEqual("1,0,2,0,5,7,2,1,3", day.part1(computer))
 //        }
     }
     
-    func test_part1_grid() {
-        let grid = Grid<Int>(input)
-        XCTAssertEqual(141, grid.columns)
-        XCTAssertEqual(141, grid.rows)
-    }
-    
     func test_part1_example() {
-        let input = """
-2413432311323
-3215453535623
-3255245654254
-3446585845452
-4546657867536
-1438598798454
-4457876987766
-3637877979653
-4654967986887
-4564679986453
-1224686865563
-2546548887735
-4322674655533
-""".lines
-        XCTAssertEqual(102, day.part1(input))
-    }
-    
-    func test_part1b_example() {
-        let input = """
-2413432311323
-3215453535623
-3255245654254
-3446585845452
-4546657867536
-1438598798454
-4457876987766
-3637877979653
-4654967986887
-4564679986453
-1224686865563
-2546548887735
-4322674655533
-""".lines
-        XCTAssertEqual(102, day.part1b(input))
+        let computer = Day17.Computer(a: 729, b: 0, c: 0, program: [0,1,5,4,3,0])
+        XCTAssertEqual("4,6,3,5,6,3,5,2,1,0", day.part1(computer))
     }
     
     func test_part2() {
-//        measure {
-        XCTAssertEqual(809, day.part2(input))
+        let computer = Day17.Computer(a: 64012472, b: 0, c: 0, program: [2,4,1,7,7,5,0,3,1,7,4,1,5,5,3,0])
+//        measure { 
+        XCTAssertEqual(265652340990875, day.part2(computer))
 //        }
     }
     
     func test_part2_example() {
-        let input = """
-2413432311323
-3215453535623
-3255245654254
-3446585845452
-4546657867536
-1438598798454
-4457876987766
-3637877979653
-4654967986887
-4564679986453
-1224686865563
-2546548887735
-4322674655533
-""".lines
-        XCTAssertEqual(94, day.part2(input))
-    }
-    
-    func test_part2b_example() {
-        let input = """
-2413432311323
-3215453535623
-3255245654254
-3446585845452
-4546657867536
-1438598798454
-4457876987766
-3637877979653
-4654967986887
-4564679986453
-1224686865563
-2546548887735
-4322674655533
-""".lines
-        XCTAssertEqual(94, day.part2b(input))
-    }
-    
-    func test_stuff() {
-        XCTAssertEqual(2, (0 + 2) % 4)
-        XCTAssertEqual(3, (1 + 2) % 4)
-        XCTAssertEqual(0, (2 + 2) % 4)
-        XCTAssertEqual(1, (3 + 2) % 4)
+        let computer = Day17.Computer(a: 729, b: 0, c: 0, program: [0,3,5,4,3,0])
+        XCTAssertEqual(117440, day.part2(computer))
     }
 }
