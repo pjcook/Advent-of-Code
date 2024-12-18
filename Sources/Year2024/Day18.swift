@@ -17,22 +17,25 @@ public struct Day18 {
     }
     
     public func part2(_ input: [String], size: Int) -> String {
+        var grid = Grid<String>(size: Point(size, size), fill: ".")
         let points = parse(input)
         let start = input.count >= 1024 ? 1024 : 0
+        if start != 0 {
+            for p in points.prefix(start) {
+                grid[p] = "#"
+            }
+        }
+        
         for i in start..<points.count {
-            if solve(points: Array(points.prefix(i)), size: size) == -1 {
-                return "\(points[i-1].x),\(points[i-1].y)"
+            grid[points[i]] = "#"
+            if solve(grid) == -1 {
+                return "\(points[i].x),\(points[i].y)"
             }
         }
         return "failed"
     }
     
-    func solve(points: [Point], size: Int) -> Int {
-        var grid = Grid<String>(size: Point(size, size), fill: ".")
-        for p in points {
-            grid[p] = "#"
-        }
-
+    func solve(_ grid: Grid<String>) -> Int {
         return grid.dijkstra(start: Point(0, 0), end: grid.bottomRight - Point(1,1), maxPoint: grid.bottomRight, calculateScore: { _ in 1 }, canEnter: { point in
             return point.isValid(max: grid.bottomRight) && grid[point] != "#"
         })
