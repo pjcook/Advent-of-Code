@@ -10,73 +10,75 @@ class Day18Tests: XCTestCase {
 
     func test_part1() {
 //        measure {
-        XCTAssertEqual(35401, day.part1Shoelace(input))
+        XCTAssertEqual(280, day.part1(Array(input.prefix(1024)), size: 71))
 //        }
     }
     
     func test_part1_example() {
         let input = """
-R 6 (#70c710)
-D 5 (#0dc571)
-L 2 (#5713f0)
-D 2 (#d2c081)
-R 2 (#59c680)
-D 2 (#411b91)
-L 5 (#8ceee2)
-U 2 (#caa173)
-L 1 (#1b58a2)
-U 2 (#caa171)
-R 2 (#7807d2)
-U 3 (#a77fa3)
-L 2 (#015232)
-U 2 (#7a21e3)
+5,4
+4,2
+4,5
+3,0
+2,1
+6,3
+2,4
+1,5
+0,6
+3,3
+2,6
+5,1
+1,2
+5,5
+2,5
+6,5
+1,4
+0,4
+6,4
+1,1
+6,1
+1,0
+0,5
+1,6
+2,0
 """.lines
-        XCTAssertEqual(62, day.part1(input))
-    }
-    
-    func test_part1_shoelaceTheorum() {
-        let input = """
-R 6 (#70c710)
-D 5 (#0dc571)
-L 2 (#5713f0)
-D 2 (#d2c081)
-R 2 (#59c680)
-D 2 (#411b91)
-L 5 (#8ceee2)
-U 2 (#caa173)
-L 1 (#1b58a2)
-U 2 (#caa171)
-R 2 (#7807d2)
-U 3 (#a77fa3)
-L 2 (#015232)
-U 2 (#7a21e3)
-""".lines
-        XCTAssertEqual(62, day.part1Shoelace(input))
+        XCTAssertEqual(22, day.part1(Array(input.prefix(12)), size: 7))
     }
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(48020869073824, day.part2(input))
+        XCTAssertEqual("28,56", day.part2(input, size: 71))
 //        }
     }
     
     func test_part2_example() {
         let input = """
-R 6 (#70c710)
-D 5 (#0dc571)
-L 2 (#5713f0)
-D 2 (#d2c081)
-R 2 (#59c680)
-D 2 (#411b91)
-L 5 (#8ceee2)
-U 2 (#caa173)
-L 1 (#1b58a2)
-U 2 (#caa171)
-R 2 (#7807d2)
-U 3 (#a77fa3)
-L 2 (#015232)
-U 2 (#7a21e3)
+5,4
+4,2
+4,5
+3,0
+2,1
+6,3
+2,4
+1,5
+0,6
+3,3
+2,6
+5,1
+1,2
+5,5
+2,5
+6,5
+1,4
+0,4
+6,4
+1,1
+6,1
+1,0
+0,5
+1,6
+2,0
 """.lines
-        XCTAssertEqual(952_408_144_115, day.part2(input))
+        XCTAssertEqual("6,1", day.part2(input, size: 7))
     }
 }

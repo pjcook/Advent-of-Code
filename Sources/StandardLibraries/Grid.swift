@@ -103,12 +103,12 @@ extension Grid where T == Int {
 }
 
 extension Grid where T == String {
-    public func dijkstra(start: Point, end: Point, calculateScore: (Point) -> Int) -> Int {
-        dijkstra(start: start, end: end, maxPoint: bottomRight, calculateScore: calculateScore)
+    public func dijkstra(start: Point, end: Point, calculateScore: (Point) -> Int, canEnter: (Point) -> Bool) -> Int {
+        dijkstra(start: start, end: end, maxPoint: bottomRight, calculateScore: calculateScore, canEnter: canEnter)
     }
     
     // https://www.redblobgames.com/pathfinding/a-star/introduction.html
-    public func dijkstra(start: Point, end: Point, maxPoint: Point, shouldDrawPath: Bool = false, calculateScore: (Point) -> Int) -> Int {
+    public func dijkstra(start: Point, end: Point, maxPoint: Point, shouldDrawPath: Bool = false, calculateScore: (Point) -> Int, canEnter: (Point) -> Bool) -> Int {
         let queue = PriorityQueue<Point>()
         queue.enqueue(start, priority: 0)
         var cameFrom = [Point:Point]()
@@ -124,6 +124,7 @@ extension Grid where T == String {
             }
             
             for next in current.cardinalNeighbors(max: maxPoint) {
+                guard canEnter(next) else { continue }
                 let newCost = costSoFar[current, default: 0] + calculateScore(next)
                 if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
                     costSoFar[next] = newCost
