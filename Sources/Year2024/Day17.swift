@@ -9,7 +9,7 @@ public struct Day17 {
     }
     
     public func part2(_ computer: Computer) -> Int {
-        var i = 0 // 13921800000
+        var i = 0
         computer.a = i
         computer.b = 0
         computer.c = 0
