@@ -187,6 +187,18 @@ public extension Point {
         )
     }
     
+    func extremeNeighbors(min minPoint: Point = .zero, max maxPoint: Point? = nil, size: Int) -> Set<Point> {
+        var results = Set<Point>()
+        
+        for x in (max(minPoint.x, x - size)...min(x + size, maxPoint?.x ?? x + size)) {
+            for y in (max(minPoint.y, y - size)...min(y + size, maxPoint?.y ?? y + size)) {
+                results.insert(Point(x, y))
+            }
+        }
+        
+        return results
+    }
+    
     func neighbors(_ allowNegative: Bool = false, min: Point = .zero, max: Point? = nil) -> Set<Point> {
         return Set([
             Point(x-1, y-1),

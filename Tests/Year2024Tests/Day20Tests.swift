@@ -10,49 +10,71 @@ class Day20Tests: XCTestCase {
 
     func test_part1() {
 //        measure {
-        XCTAssertEqual(763500168, day.part1(input))
+        XCTAssertEqual(1321, day.part1(input, savingAtLeast: 100))
 //        }
     }
     
     func test_part1_example1() {
         let input = """
-broadcaster -> a, b, c
-%a -> b
-%b -> c
-%c -> inv
-&inv -> a
+###############
+#...#...#.....#
+#.#.#.#.#.###.#
+#S#...#.#.#...#
+#######.#.#.###
+#######.#.#...#
+#######.#.###.#
+###..E#...#...#
+###.#######.###
+#...###...#...#
+#.#####.#.###.#
+#.#...#.#.#...#
+#.#.#.#.#.#.###
+#...#...#...###
+###############
 """.lines
-        XCTAssertEqual(32000000, day.part1(input))
-    }
-    
-    func test_part1_example2() {
-        let input = """
-broadcaster -> a
-%a -> inv, con
-&inv -> b
-%b -> con
-&con -> output
-""".lines
-        XCTAssertEqual(11687500, day.part1(input))
+        XCTAssertEqual(43, day.part1(input, savingAtLeast: 0))
     }
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(1, day.part2(input))
+        XCTAssertEqual(971737, day.part2(input, savingAtLeast: 100))
 //        }
     }
     
-    func test_part1b() {
-//        measure {
-        let day = Day20b()
-        XCTAssertEqual(763500168, day.part1(input))
-//        }
-    }
-    
-    func test_part2b() {
-//        measure {
-        let day = Day20b()
-        XCTAssertEqual(207652583562007, day.part2(input))
-//        }
+    func test_part2_example1() {
+        let input = """
+###############
+#...#...#.....#
+#.#.#.#.#.###.#
+#S#...#.#.#...#
+#######.#.#.###
+#######.#.#...#
+#######.#.###.#
+###..E#...#...#
+###.#######.###
+#...###...#...#
+#.#####.#.###.#
+#.#...#.#.#...#
+#.#.#.#.#.#.###
+#...#...#...###
+###############
+""".lines
+        
+        XCTAssertEqual(3, day.part2(input, savingAtLeast: 76))
+        XCTAssertEqual(7, day.part2(input, savingAtLeast: 74))
+        XCTAssertEqual(29, day.part2(input, savingAtLeast: 72))
+        XCTAssertEqual(41, day.part2(input, savingAtLeast: 70))
+        XCTAssertEqual(55, day.part2(input, savingAtLeast: 68))
+        XCTAssertEqual(67, day.part2(input, savingAtLeast: 66))
+        XCTAssertEqual(86, day.part2(input, savingAtLeast: 64))
+        XCTAssertEqual(106, day.part2(input, savingAtLeast: 62))
+        XCTAssertEqual(129, day.part2(input, savingAtLeast: 60))
+        XCTAssertEqual(154, day.part2(input, savingAtLeast: 58))
+        XCTAssertEqual(193, day.part2(input, savingAtLeast: 56))
+        XCTAssertEqual(222, day.part2(input, savingAtLeast: 54))
+        XCTAssertEqual(253, day.part2(input, savingAtLeast: 52))
+        XCTAssertEqual(285, day.part2(input, savingAtLeast: 50))
     }
 }
+
+

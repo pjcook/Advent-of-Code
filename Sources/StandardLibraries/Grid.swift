@@ -42,7 +42,7 @@ public struct Grid<T: Hashable>: Hashable {
     public func index(for point: Point) -> Int {
         point.x + point.y * columns
     }
-    
+        
     public func points(for value: T) -> [Point] {
         var points = [Point]()
         
@@ -53,6 +53,13 @@ public struct Grid<T: Hashable>: Hashable {
         }
         
         return points
+    }
+}
+
+extension Grid where T == String {
+    public func point(for value: String) -> Point? {
+        guard let index = items.firstIndex(of: value) else { return nil }
+        return point(for: index)
     }
 }
 
@@ -142,6 +149,42 @@ extension Grid where T == String {
         return costSoFar[end, default: -1]
     }
     
+    public func dijkstraPath(start: Point, end: Point, calculateScore: (Point) -> Int, canEnter: (Point) -> Bool) -> ([Point], [Point: Int]) {
+        let queue = PriorityQueue<Point>()
+        queue.enqueue(start, priority: 0)
+        var cameFrom = [Point:Point]()
+        var costSoFar = [Point: Int]()
+        costSoFar[start] = 0
+        
+        // calculate shortest path
+        while !queue.isEmpty {
+            // Using a priority queue means we always pick the next cheapest value
+            let current = queue.dequeue()!
+            if current == end {
+                break   // exit early
+            }
+            
+            for next in current.cardinalNeighbors(max: bottomRight) {
+                guard canEnter(next) else { continue }
+                let newCost = costSoFar[current, default: 0] + calculateScore(next)
+                if costSoFar[next] == nil || newCost < costSoFar[next, default: 0] {
+                    costSoFar[next] = newCost
+                    queue.enqueue(next, priority: newCost)
+                    cameFrom[next] = current
+                }
+            }
+        }
+        
+        var path = [Point]()
+        var current: Point? = end
+        while current != nil {
+            path.append(current!)
+            current = cameFrom[current!]
+        }
+        
+        return (path.reversed(), costSoFar)
+    }
+    
     public func dijkstra(start: Point, end: Point, maxPoint: Point, shouldDrawPath: Bool = false, calculateScore: (Point?, Point, Point) -> Int) -> Int {
         let queue = PriorityQueue<Point>()
         queue.enqueue(start, priority: 0)
@@ -192,7 +235,7 @@ extension Grid where T == String {
         var grid = self
         var current: Point? = end
         while current != nil {
-            grid[current!] = "X"
+            grid[current!] = "O"
             current = cameFrom[current!]
         }
         grid.draw()
