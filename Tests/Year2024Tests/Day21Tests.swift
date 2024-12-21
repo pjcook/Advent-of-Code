@@ -4,81 +4,44 @@ import Year2024
 
 class Day21Tests: XCTestCase {
     
-    let input = Input("Day21.input", Bundle.module).lines
+//    let input = Input("Day21.input", Bundle.module).lines
     let day = Day21()
 
     func test_part1() {
+        let input = """
+413A
+480A
+682A
+879A
+083A
+""".lines
 //        measure {
-        XCTAssertEqual(3733, day.part1(input, steps: 64))
+        XCTAssertEqual(177814, day.part1(input, chainLength: 2))
 //        }
     }
     
     func test_part1_example() {
         let input = """
-...........
-.....###.#.
-.###.##..#.
-..#.#...#..
-....#.#....
-.##..S####.
-.##..#...#.
-.......##..
-.##.#.####.
-.##..##.##.
-...........
+029A
+980A
+179A
+456A
+379A
 """.lines
-        XCTAssertEqual(16, day.part1(input, steps: 6))
+        // 127900
+        XCTAssertEqual(126384, day.part1(input, chainLength: 2))
     }
     
     func test_part2() {
+        let input = """
+413A
+480A
+682A
+879A
+083A
+""".lines
 //        measure {
-        XCTAssertEqual(617729401414635, day.part2b(input, steps: 26501365))
+        XCTAssertEqual(617729401414635, day.part1(input, chainLength: 25))
 //        }
-    }
-    
-    func test_part2_example() {
-        let input = """
-...........
-.....###.#.
-.###.##..#.
-..#.#...#..
-....#.#....
-.##..S####.
-.##..#...#.
-.......##..
-.##.#.####.
-.##..##.##.
-...........
-""".lines
-        XCTAssertEqual(16, day.part2(input, steps: 6))
-//        XCTAssertEqual(50, day.part2(input, steps: 10))
-//        XCTAssertEqual(1594, day.part2(input, steps: 50))
-//        XCTAssertEqual(6536, day.part2(input, steps: 100))
-//        XCTAssertEqual(167004, day.part2(input, steps: 500))
-//        XCTAssertEqual(668697, day.part2(input, steps: 1000))
-//        XCTAssertEqual(16733044, day.part2(input, steps: 5000))
-    }
-    
-    func test_part2b_example() {
-        let input = """
-...........
-.....###.#.
-.###.##..#.
-..#.#...#..
-....#.#....
-.##..S####.
-.##..#...#.
-.......##..
-.##.#.####.
-.##..##.##.
-...........
-""".lines
-//        XCTAssertEqual(16, day.part2b(input, steps: 6))
-//        XCTAssertEqual(50, day.part2b(input, steps: 10))
-//        XCTAssertEqual(1594, day.part2b(input, steps: 50))
-//        XCTAssertEqual(6536, day.part2b(input, steps: 100))
-//        XCTAssertEqual(167004, day.part2b(input, steps: 500))
-//        XCTAssertEqual(668697, day.part2b(input, steps: 1000))
-        XCTAssertEqual(16733044, day.part2b(input, steps: 5000))
     }
 }
