@@ -1,127 +1,112 @@
---- Day 22: Sand Slabs ---
+--- Day 22: Monkey Market ---
 
-Enough sand has fallen; it can finally filter water for Snow Island.
+As you're all teleported deep into the jungle, a monkey steals The Historians' device! You'll need get it back while The Historians are looking for the Chief.
 
-Well, almost.
+The monkey that stole the device seems willing to trade it, but only in exchange for an absurd number of bananas. Your only option is to buy bananas on the Monkey Exchange Market.
 
-The sand has been falling as large compacted bricks of sand, piling up to form an impressive stack here near the edge of Island Island. In order to make use of the sand to filter water, some of the bricks will need to be broken apart - nay, disintegrated - back into freely flowing sand.
+You aren't sure how the Monkey Exchange Market works, but one of The Historians senses trouble and comes over to help. Apparently, they've been studying these monkeys for a while and have deciphered their secrets.
 
-The stack is tall enough that you'll have to be careful about choosing which bricks to disintegrate; if you disintegrate the wrong brick, large portions of the stack could topple, which sounds pretty dangerous.
+Today, the Market is full of monkeys buying good hiding spots. Fortunately, because of the time you recently spent in this jungle, you know lots of good hiding spots you can sell! If you sell enough hiding spots, you should be able to get enough bananas to buy the device back.
 
-The Elves responsible for water filtering operations took a snapshot of the bricks while they were still falling (your puzzle input) which should let you work out which bricks are safe to disintegrate. For example:
+On the Market, the buyers seem to use random prices, but their prices are actually only pseudorandom! If you know the secret of how they pick their prices, you can wait for the perfect time to sell.
 
-1,0,1~1,2,1
-0,0,2~2,0,2
-0,2,3~2,2,3
-0,0,4~0,2,4
-2,0,5~2,2,5
-0,1,6~2,1,6
-1,1,8~1,1,9
-Each line of text in the snapshot represents the position of a single brick at the time the snapshot was taken. The position is given as two x,y,z coordinates - one for each end of the brick - separated by a tilde (~). Each brick is made up of a single straight line of cubes, and the Elves were even careful to choose a time for the snapshot that had all of the free-falling bricks at integer positions above the ground, so the whole snapshot is aligned to a three-dimensional cube grid.
+The part about secrets is literal, the Historian explains. Each buyer produces a pseudorandom sequence of secret numbers where each secret is derived from the previous.
 
-A line like 2,2,2~2,2,2 means that both ends of the brick are at the same coordinate - in other words, that the brick is a single cube.
+In particular, each buyer's secret number evolves into the next secret number in the sequence via the following process:
 
-Lines like 0,0,10~1,0,10 or 0,0,10~0,1,10 both represent bricks that are two cubes in volume, both oriented horizontally. The first brick extends in the x direction, while the second brick extends in the y direction.
+Calculate the result of multiplying the secret number by 64. Then, mix this result into the secret number. Finally, prune the secret number.
+Calculate the result of dividing the secret number by 32. Round the result down to the nearest integer. Then, mix this result into the secret number. Finally, prune the secret number.
+Calculate the result of multiplying the secret number by 2048. Then, mix this result into the secret number. Finally, prune the secret number.
+Each step of the above process involves mixing and pruning:
 
-A line like 0,0,1~0,0,10 represents a ten-cube brick which is oriented vertically. One end of the brick is the cube located at 0,0,1, while the other end of the brick is located directly above it at 0,0,10.
+To mix a value into the secret number, calculate the bitwise XOR of the given value and the secret number. Then, the secret number becomes the result of that operation. (If the secret number is 42 and you were to mix 15 into the secret number, the secret number would become 37.)
+To prune the secret number, calculate the value of the secret number modulo 16777216. Then, the secret number becomes the result of that operation. (If the secret number is 100000000 and you were to prune the secret number, the secret number would become 16113920.)
+After this process completes, the buyer is left with the next secret number in the sequence. The buyer can repeat this process as many times as necessary to produce more secret numbers.
 
-The ground is at z=0 and is perfectly flat; the lowest z value a brick can have is therefore 1. So, 5,5,1~5,6,1 and 0,2,1~0,2,5 are both resting on the ground, but 3,3,2~3,3,3 was above the ground at the time of the snapshot.
+So, if a buyer had a secret number of 123, that buyer's next ten secret numbers would be:
 
-Because the snapshot was taken while the bricks were still falling, some bricks will still be in the air; you'll need to start by figuring out where they will end up. Bricks are magically stabilized, so they never rotate, even in weird situations like where a long horizontal brick is only supported on one end. Two bricks cannot occupy the same position, so a falling brick will come to rest upon the first other brick it encounters.
+15887950
+16495136
+527345
+704524
+1553684
+12683156
+11100544
+12249484
+7753432
+5908254
+Each buyer uses their own secret number when choosing their price, so it's important to be able to predict the sequence of secret numbers for each buyer. Fortunately, the Historian's research has uncovered the initial secret number of each buyer (your puzzle input). For example:
 
-Here is the same example again, this time with each brick given a letter so it can be marked in diagrams:
+1
+10
+100
+2024
+This list describes the initial secret number of four different secret-hiding-spot-buyers on the Monkey Exchange Market. If you can simulate secret numbers from each buyer, you'll be able to predict all of their future prices.
 
-1,0,1~1,2,1   <- A
-0,0,2~2,0,2   <- B
-0,2,3~2,2,3   <- C
-0,0,4~0,2,4   <- D
-2,0,5~2,2,5   <- E
-0,1,6~2,1,6   <- F
-1,1,8~1,1,9   <- G
-At the time of the snapshot, from the side so the x axis goes left to right, these bricks are arranged like this:
+In a single day, buyers each have time to generate 2000 new secret numbers. In this example, for each buyer, their initial secret number and the 2000th new secret number they would generate are:
 
- x
-012
-.G. 9
-.G. 8
-... 7
-FFF 6
-..E 5 z
-D.. 4
-CCC 3
-BBB 2
-.A. 1
---- 0
-Rotating the perspective 90 degrees so the y axis now goes left to right, the same bricks are arranged like this:
+1: 8685429
+10: 4700978
+100: 15273692
+2024: 8667524
+Adding up the 2000th new secret number for each buyer produces 37327623.
 
- y
-012
-.G. 9
-.G. 8
-... 7
-.F. 6
-EEE 5 z
-DDD 4
-..C 3
-B.. 2
-AAA 1
---- 0
-Once all of the bricks fall downward as far as they can go, the stack looks like this, where ? means bricks are hidden behind other bricks at that location:
-
- x
-012
-.G. 6
-.G. 5
-FFF 4
-D.E 3 z
-??? 2
-.A. 1
---- 0
-Again from the side:
-
- y
-012
-.G. 6
-.G. 5
-.F. 4
-??? 3 z
-B.C 2
-AAA 1
---- 0
-Now that all of the bricks have settled, it becomes easier to tell which bricks are supporting which other bricks:
-
-Brick A is the only brick supporting bricks B and C.
-Brick B is one of two bricks supporting brick D and brick E.
-Brick C is the other brick supporting brick D and brick E.
-Brick D supports brick F.
-Brick E also supports brick F.
-Brick F supports brick G.
-Brick G isn't supporting any bricks.
-Your first task is to figure out which bricks are safe to disintegrate. A brick can be safely disintegrated if, after removing it, no other bricks would fall further directly downward. Don't actually disintegrate any bricks - just determine what would happen if, for each brick, only that brick were disintegrated. Bricks can be disintegrated even if they're completely surrounded by other bricks; you can squeeze between bricks if you need to.
-
-In this example, the bricks can be disintegrated as follows:
-
-Brick A cannot be disintegrated safely; if it were disintegrated, bricks B and C would both fall.
-Brick B can be disintegrated; the bricks above it (D and E) would still be supported by brick C.
-Brick C can be disintegrated; the bricks above it (D and E) would still be supported by brick B.
-Brick D can be disintegrated; the brick above it (F) would still be supported by brick E.
-Brick E can be disintegrated; the brick above it (F) would still be supported by brick D.
-Brick F cannot be disintegrated; the brick above it (G) would fall.
-Brick G can be disintegrated; it does not support any other bricks.
-So, in this example, 5 bricks can be safely disintegrated.
-
-Figure how the blocks will settle based on the snapshot. Once they've settled, consider disintegrating a single brick; how many bricks could be safely chosen as the one to get disintegrated?
+For each buyer, simulate the creation of 2000 new secret numbers. What is the sum of the 2000th secret number generated by each buyer?
 
 --- Part Two ---
 
-Disintegrating bricks one at a time isn't going to be fast enough. While it might sound dangerous, what you really need is a chain reaction.
+Of course, the secret numbers aren't the prices each buyer is offering! That would be ridiculous. Instead, the prices the buyer offers are just the ones digit of each of their secret numbers.
 
-You'll need to figure out the best brick to disintegrate. For each brick, determine how many other bricks would fall if that brick were disintegrated.
+So, if a buyer starts with a secret number of 123, that buyer's first ten prices would be:
 
-Using the same example as above:
+3 (from 123)
+0 (from 15887950)
+6 (from 16495136)
+5 (etc.)
+4
+4
+6
+4
+4
+2
+This price is the number of bananas that buyer is offering in exchange for your information about a new hiding spot. However, you still don't speak monkey, so you can't negotiate with the buyers directly. The Historian speaks a little, but not enough to negotiate; instead, he can ask another monkey to negotiate on your behalf.
 
-Disintegrating brick A would cause all 6 other bricks to fall.
-Disintegrating brick F would cause only 1 other brick, G, to fall.
-Disintegrating any other brick would cause no other bricks to fall. So, in this example, the sum of the number of other bricks that would fall as a result of disintegrating each brick is 7.
+Unfortunately, the monkey only knows how to decide when to sell by looking at the changes in price. Specifically, the monkey will only look for a specific sequence of four consecutive changes in price, then immediately sell when it sees that sequence.
 
-For each brick, determine how many other bricks would fall if that brick were disintegrated. What is the sum of the number of other bricks that would fall?
+So, if a buyer starts with a secret number of 123, that buyer's first ten secret numbers, prices, and the associated changes would be:
+
+     123: 3 
+15887950: 0 (-3)
+16495136: 6 (6)
+  527345: 5 (-1)
+  704524: 4 (-1)
+ 1553684: 4 (0)
+12683156: 6 (2)
+11100544: 4 (-2)
+12249484: 4 (0)
+ 7753432: 2 (-2)
+Note that the first price has no associated change because there was no previous price to compare it with.
+
+In this short example, within just these first few prices, the highest price will be 6, so it would be nice to give the monkey instructions that would make it sell at that time. The first 6 occurs after only two changes, so there's no way to instruct the monkey to sell then, but the second 6 occurs after the changes -1,-1,0,2. So, if you gave the monkey that sequence of changes, it would wait until the first time it sees that sequence and then immediately sell your hiding spot information at the current price, winning you 6 bananas.
+
+Each buyer only wants to buy one hiding spot, so after the hiding spot is sold, the monkey will move on to the next buyer. If the monkey never hears that sequence of price changes from a buyer, the monkey will never sell, and will instead just move on to the next buyer.
+
+Worse, you can only give the monkey a single sequence of four price changes to look for. You can't change the sequence between buyers.
+
+You're going to need as many bananas as possible, so you'll need to determine which sequence of four price changes will cause the monkey to get you the most bananas overall. Each buyer is going to generate 2000 secret numbers after their initial secret number, so, for each buyer, you'll have 2000 price changes in which your sequence can occur.
+
+Suppose the initial secret number of each buyer is:
+
+1
+2
+3
+2024
+There are many sequences of four price changes you could tell the monkey, but for these four buyers, the sequence that will get you the most bananas is -2,1,-1,3. Using that sequence, the monkey will make the following sales:
+
+For the buyer with an initial secret number of 1, changes -2,1,-1,3 first occur when the price is 7.
+For the buyer with initial secret 2, changes -2,1,-1,3 first occur when the price is 7.
+For the buyer with initial secret 3, the change sequence -2,1,-1,3 does not occur in the first 2000 changes.
+For the buyer starting with 2024, changes -2,1,-1,3 first occur when the price is 9.
+So, by asking the monkey to sell the first time each buyer's prices go down 2, then up 1, then down 1, then up 3, you would get 23 (7 + 7 + 9) bananas!
+
+Figure out the best sequence to tell the monkey so that by looking for that same sequence of changes in every buyer's future prices, you get the most bananas in total. What is the most bananas you can get?
