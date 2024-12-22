@@ -54,6 +54,18 @@ public struct Grid<T: Hashable>: Hashable {
         
         return points
     }
+    
+    public var points: [Point: T] {
+        var points = [Point: T]()
+        
+        for x in 0..<columns {
+            for y in 0..<rows {
+                points[Point(x, y)] = self[x, y]
+            }
+        }
+        
+        return points
+    }
 }
 
 extension Grid where T == String {
