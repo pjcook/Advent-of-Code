@@ -10,7 +10,7 @@ class Day24Tests: XCTestCase {
 
     func test_part1() {
 //        measure {
-        XCTAssertEqual(25810, day.part1(input, minValue: 200000000000000, maxValue: 400000000000000))
+        XCTAssertEqual(25810, day.part1(input))
 //        }
     }
     
@@ -22,17 +22,7 @@ class Day24Tests: XCTestCase {
 12, 31, 28 @ -1, -2, -1
 20, 19, 15 @  1, -5, -3
 """.lines
-        XCTAssertEqual(2, day.part1(input, minValue: 7, maxValue: 27))
-    }
-    
-    func test_part1_example1() {
-        let a1 = Point(19,13)
-        let a2 = Point(17,14)
-        let b1 = Point(20,19)
-        let b2 = Point(21,14)
-        if let (x,y) = Point.intersectionOfLines(a1: a1, a2: a2, b1: b1, b2: b2) {
-            print("X",x,"Y",y)
-        }
+        XCTAssertEqual(2, day.part1(input))
     }
     
     func test_part2() {
