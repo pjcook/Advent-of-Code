@@ -9,71 +9,89 @@ class Day23Tests: XCTestCase {
 
     func test_part1() {
 //        measure {
-        XCTAssertEqual(2442, day.part1(input))
+        XCTAssertEqual(1218, day.part1(input))
 //        }
     }
     
     func test_part1_example() {
         let input = """
-#.#####################
-#.......#########...###
-#######.#########.#.###
-###.....#.>.>.###.#.###
-###v#####.#v#.###.#.###
-###.>...#.#.#.....#...#
-###v###.#.#.#########.#
-###...#.#.#.......#...#
-#####.#.#.#######.#.###
-#.....#.#.#.......#...#
-#.#####.#.#.#########v#
-#.#...#...#...###...>.#
-#.#.#v#######v###.###v#
-#...#.>.#...>.>.#.###.#
-#####v#.#.###v#.#.###.#
-#.....#...#...#.#.#...#
-#.#########.###.#.#.###
-#...###...#...#...#.###
-###.###.#.###v#####v###
-#...#...#.#.>.>.#.>.###
-#.###.###.#.###.#.#v###
-#.....###...###...#...#
-#####################.#
+kh-tc
+qp-kh
+de-cg
+ka-co
+yn-aq
+qp-ub
+cg-tb
+vc-aq
+tb-ka
+wh-tc
+yn-cg
+kh-ub
+ta-co
+de-co
+tc-td
+tb-wq
+wh-td
+ta-ka
+td-qp
+aq-cg
+wq-ub
+ub-vc
+de-ta
+wq-aq
+wq-vc
+wh-yn
+ka-de
+kh-ta
+co-tc
+wh-qp
+tb-vc
+td-yn
 """.lines
-        XCTAssertEqual(94, day.part1(input))
+        XCTAssertEqual(7, day.part1(input))
     }
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(6898, day.part2(input))
+        XCTAssertEqual("ah,ap,ek,fj,fr,jt,ka,ln,me,mp,qa,ql,zg", day.part2(input))
 //        }
     }
     
     func test_part2_example() {
         let input = """
-#.#####################
-#.......#########...###
-#######.#########.#.###
-###.....#.>.>.###.#.###
-###v#####.#v#.###.#.###
-###.>...#.#.#.....#...#
-###v###.#.#.#########.#
-###...#.#.#.......#...#
-#####.#.#.#######.#.###
-#.....#.#.#.......#...#
-#.#####.#.#.#########v#
-#.#...#...#...###...>.#
-#.#.#v#######v###.###v#
-#...#.>.#...>.>.#.###.#
-#####v#.#.###v#.#.###.#
-#.....#...#...#.#.#...#
-#.#########.###.#.#.###
-#...###...#...#...#.###
-###.###.#.###v#####v###
-#...#...#.#.>.>.#.>.###
-#.###.###.#.###.#.#v###
-#.....###...###...#...#
-#####################.#
+kh-tc
+qp-kh
+de-cg
+ka-co
+yn-aq
+qp-ub
+cg-tb
+vc-aq
+tb-ka
+wh-tc
+yn-cg
+kh-ub
+ta-co
+de-co
+tc-td
+tb-wq
+wh-td
+ta-ka
+td-qp
+aq-cg
+wq-ub
+ub-vc
+de-ta
+wq-aq
+wq-vc
+wh-yn
+ka-de
+kh-ta
+co-tc
+wh-qp
+tb-vc
+td-yn
 """.lines
-        XCTAssertEqual(154, day.part2(input))
+        XCTAssertEqual("co,de,ka,ta", day.part2(input))
     }
 }

@@ -1,98 +1,84 @@
---- Day 23: A Long Walk ---
+--- Day 23: LAN Party ---
 
-The Elves resume water filtering operations! Clean water starts flowing over the edge of Island Island.
+As The Historians wander around a secure area at Easter Bunny HQ, you come across posters for a LAN party scheduled for today! Maybe you can find it; you connect to a nearby datalink port and download a map of the local network (your puzzle input).
 
-They offer to help you go over the edge of Island Island, too! Just hold on tight to one end of this impossibly long rope and they'll lower you down a safe distance from the massive waterfall you just created.
+The network map provides a list of every connection between two computers. For example:
 
-As you finally reach Snow Island, you see that the water isn't really reaching the ground: it's being absorbed by the air itself. It looks like you'll finally have a little downtime while the moisture builds up to snow-producing levels. Snow Island is pretty scenic, even without any snow; why not take a walk?
+kh-tc
+qp-kh
+de-cg
+ka-co
+yn-aq
+qp-ub
+cg-tb
+vc-aq
+tb-ka
+wh-tc
+yn-cg
+kh-ub
+ta-co
+de-co
+tc-td
+tb-wq
+wh-td
+ta-ka
+td-qp
+aq-cg
+wq-ub
+ub-vc
+de-ta
+wq-aq
+wq-vc
+wh-yn
+ka-de
+kh-ta
+co-tc
+wh-qp
+tb-vc
+td-yn
+Each line of text in the network map represents a single connection; the line kh-tc represents a connection between the computer named kh and the computer named tc. Connections aren't directional; tc-kh would mean exactly the same thing.
 
-There's a map of nearby hiking trails (your puzzle input) that indicates paths (.), forest (#), and steep slopes (^, >, v, and <).
+LAN parties typically involve multiplayer games, so maybe you can locate it by finding groups of connected computers. Start by looking for sets of three computers where each computer in the set is connected to the other two computers.
 
-For example:
+In this example, there are 12 such sets of three inter-connected computers:
 
-#.#####################
-#.......#########...###
-#######.#########.#.###
-###.....#.>.>.###.#.###
-###v#####.#v#.###.#.###
-###.>...#.#.#.....#...#
-###v###.#.#.#########.#
-###...#.#.#.......#...#
-#####.#.#.#######.#.###
-#.....#.#.#.......#...#
-#.#####.#.#.#########v#
-#.#...#...#...###...>.#
-#.#.#v#######v###.###v#
-#...#.>.#...>.>.#.###.#
-#####v#.#.###v#.#.###.#
-#.....#...#...#.#.#...#
-#.#########.###.#.#.###
-#...###...#...#...#.###
-###.###.#.###v#####v###
-#...#...#.#.>.>.#.>.###
-#.###.###.#.###.#.#v###
-#.....###...###...#...#
-#####################.#
-You're currently on the single path tile in the top row; your goal is to reach the single path tile in the bottom row. Because of all the mist from the waterfall, the slopes are probably quite icy; if you step onto a slope tile, your next step must be downhill (in the direction the arrow is pointing). To make sure you have the most scenic hike possible, never step onto the same tile twice. What is the longest hike you can take?
+aq,cg,yn
+aq,vc,wq
+co,de,ka
+co,de,ta
+co,ka,ta
+de,ka,ta
+kh,qp,ub
+qp,td,wh
+tb,vc,wq
+tc,td,wh
+td,wh,yn
+ub,vc,wq
+If the Chief Historian is here, and he's at the LAN party, it would be best to know that right away. You're pretty sure his computer's name starts with t, so consider only sets of three computers where at least one computer's name starts with t. That narrows the list down to 7 sets of three inter-connected computers:
 
-In the example above, the longest hike you can take is marked with O, and your starting position is marked S:
-
-#S#####################
-#OOOOOOO#########...###
-#######O#########.#.###
-###OOOOO#OOO>.###.#.###
-###O#####O#O#.###.#.###
-###OOOOO#O#O#.....#...#
-###v###O#O#O#########.#
-###...#O#O#OOOOOOO#...#
-#####.#O#O#######O#.###
-#.....#O#O#OOOOOOO#...#
-#.#####O#O#O#########v#
-#.#...#OOO#OOO###OOOOO#
-#.#.#v#######O###O###O#
-#...#.>.#...>OOO#O###O#
-#####v#.#.###v#O#O###O#
-#.....#...#...#O#O#OOO#
-#.#########.###O#O#O###
-#...###...#...#OOO#O###
-###.###.#.###v#####O###
-#...#...#.#.>.>.#.>O###
-#.###.###.#.###.#.#O###
-#.....###...###...#OOO#
-#####################O#
-This hike contains 94 steps. (The other possible hikes you could have taken were 90, 86, 82, 82, and 74 steps long.)
-
-Find the longest hike you can take through the hiking trails listed on your map. How many steps long is the longest hike?
+co,de,ta
+co,ka,ta
+de,ka,ta
+qp,td,wh
+tb,vc,wq
+tc,td,wh
+td,wh,yn
+Find all the sets of three inter-connected computers. How many contain at least one computer with a name that starts with t?
 
 --- Part Two ---
 
-As you reach the trailhead, you realize that the ground isn't as slippery as you expected; you'll have no problem climbing up the steep slopes.
+There are still way too many results to go through them all. You'll have to find the LAN party another way and go there yourself.
 
-Now, treat all slopes as if they were normal paths (.). You still want to make sure you have the most scenic hike possible, so continue to ensure that you never step onto the same tile twice. What is the longest hike you can take?
+Since it doesn't seem like any employees are around, you figure they must all be at the LAN party. If that's true, the LAN party will be the largest set of computers that are all connected to each other. That is, for each computer at the LAN party, that computer will have a connection to every other computer at the LAN party.
 
-In the example above, this increases the longest hike to 154 steps:
+In the above example, the largest set of computers that are all connected to each other is made up of co, de, ka, and ta. Each computer in this set has a connection to every other computer in the set:
 
-#S#####################
-#OOOOOOO#########OOO###
-#######O#########O#O###
-###OOOOO#.>OOO###O#O###
-###O#####.#O#O###O#O###
-###O>...#.#O#OOOOO#OOO#
-###O###.#.#O#########O#
-###OOO#.#.#OOOOOOO#OOO#
-#####O#.#.#######O#O###
-#OOOOO#.#.#OOOOOOO#OOO#
-#O#####.#.#O#########O#
-#O#OOO#...#OOO###...>O#
-#O#O#O#######O###.###O#
-#OOO#O>.#...>O>.#.###O#
-#####O#.#.###O#.#.###O#
-#OOOOO#...#OOO#.#.#OOO#
-#O#########O###.#.#O###
-#OOO###OOO#OOO#...#O###
-###O###O#O###O#####O###
-#OOO#OOO#O#OOO>.#.>O###
-#O###O###O#O###.#.#O###
-#OOOOO###OOO###...#OOO#
-#####################O#
-Find the longest hike you can take through the surprisingly dry hiking trails listed on your map. How many steps long is the longest hike?
+ka-co
+ta-co
+de-co
+ta-ka
+de-ta
+ka-de
+The LAN party posters say that the password to get into the LAN party is the name of every computer at the LAN party, sorted alphabetically, then joined together with commas. (The people running the LAN party are clearly a bunch of nerds.) In this example, the password would be co,de,ka,ta.
+
+What is the password to get into the LAN party?
