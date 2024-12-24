@@ -10,6 +10,11 @@ public extension Int {
         return String(repeating: character, count: padLength - binary.count) + binary
     }
     
+    func padToString(length: Int, with character: Character = "0") -> String {
+        let value = String(self)
+        return String(repeating: character, count: length - value.count) + value
+    }
+    
     var isPrime: Bool {
         guard self >= 2     else { return false }
         guard self != 2     else { return true  }

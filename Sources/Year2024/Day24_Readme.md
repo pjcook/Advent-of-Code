@@ -1,104 +1,187 @@
---- Day 24: Never Tell Me The Odds ---
+--- Day 24: Crossed Wires ---
 
-It seems like something is going wrong with the snow-making process. Instead of forming snow, the water that's been absorbed into the air seems to be forming hail!
+You and The Historians arrive at the edge of a large grove somewhere in the jungle. After the last incident, the Elves installed a small device that monitors the fruit. While The Historians search the grove, one of them asks if you can take a look at the monitoring device; apparently, it's been malfunctioning recently.
 
-Maybe there's something you can do to break up the hailstones?
+The device seems to be trying to produce a number through some boolean logic gates. Each gate has two inputs and one output. The gates all operate on values that are either true (1) or false (0).
 
-Due to strong, probably-magical winds, the hailstones are all flying through the air in perfectly linear trajectories. You make a note of each hailstone's position and velocity (your puzzle input). For example:
+AND gates output 1 if both inputs are 1; if either input is 0, these gates output 0.
+OR gates output 1 if one or both inputs is 1; if both inputs are 0, these gates output 0.
+XOR gates output 1 if the inputs are different; if the inputs are the same, these gates output 0.
+Gates wait until both inputs are received before producing output; wires can carry 0, 1 or no value at all. There are no loops; once a gate has determined its output, the output will not change until the whole system is reset. Each wire is connected to at most one gate output, but can be connected to many gate inputs.
 
-19, 13, 30 @ -2,  1, -2
-18, 19, 22 @ -1, -1, -2
-20, 25, 34 @ -2, -2, -4
-12, 31, 28 @ -1, -2, -1
-20, 19, 15 @  1, -5, -3
-Each line of text corresponds to the position and velocity of a single hailstone. The positions indicate where the hailstones are right now (at time 0). The velocities are constant and indicate exactly how far each hailstone will move in one nanosecond.
+Rather than risk getting shocked while tinkering with the live system, you write down all of the gate connections and initial wire values (your puzzle input) so you can consider them in relative safety. For example:
 
-Each line of text uses the format px py pz @ vx vy vz. For instance, the hailstone specified by 20, 19, 15 @ 1, -5, -3 has initial X position 20, Y position 19, Z position 15, X velocity 1, Y velocity -5, and Z velocity -3. After one nanosecond, the hailstone would be at 21, 14, 12.
+x00: 1
+x01: 1
+x02: 1
+y00: 0
+y01: 1
+y02: 0
 
-Perhaps you won't have to do anything. How likely are the hailstones to collide with each other and smash into tiny ice crystals?
+x00 AND y00 -> z00
+x01 XOR y01 -> z01
+x02 OR y02 -> z02
+Because gates wait for input, some wires need to start with a value (as inputs to the entire system). The first section specifies these values. For example, x00: 1 means that the wire named x00 starts with the value 1 (as if a gate is already outputting that value onto that wire).
 
-To estimate this, consider only the X and Y axes; ignore the Z axis. Looking forward in time, how many of the hailstones' paths will intersect within a test area? (The hailstones themselves don't have to collide, just test for intersections between the paths they will trace.)
+The second section lists all of the gates and the wires connected to them. For example, x00 AND y00 -> z00 describes an instance of an AND gate which has wires x00 and y00 connected to its inputs and which will write its output to wire z00.
 
-In this example, look for intersections that happen with an X and Y position each at least 7 and at most 27; in your actual data, you'll need to check a much larger test area. Comparing all pairs of hailstones' future paths produces the following results:
+In this example, simulating these gates eventually causes 0 to appear on wire z00, 0 to appear on wire z01, and 1 to appear on wire z02.
 
-Hailstone A: 19, 13, 30 @ -2, 1, -2
-Hailstone B: 18, 19, 22 @ -1, -1, -2
-Hailstones' paths will cross inside the test area (at x=14.333, y=15.333).
+Ultimately, the system is trying to produce a number by combining the bits on all wires starting with z. z00 is the least significant bit, then z01, then z02, and so on.
 
-Hailstone A: 19, 13, 30 @ -2, 1, -2
-Hailstone B: 20, 25, 34 @ -2, -2, -4
-Hailstones' paths will cross inside the test area (at x=11.667, y=16.667).
+In this example, the three output bits form the binary number 100 which is equal to the decimal number 4.
 
-Hailstone A: 19, 13, 30 @ -2, 1, -2
-Hailstone B: 12, 31, 28 @ -1, -2, -1
-Hailstones' paths will cross outside the test area (at x=6.2, y=19.4).
+Here's a larger example:
 
-Hailstone A: 19, 13, 30 @ -2, 1, -2
-Hailstone B: 20, 19, 15 @ 1, -5, -3
-Hailstones' paths crossed in the past for hailstone A.
+x00: 1
+x01: 0
+x02: 1
+x03: 1
+x04: 0
+y00: 1
+y01: 1
+y02: 1
+y03: 1
+y04: 1
 
-Hailstone A: 18, 19, 22 @ -1, -1, -2
-Hailstone B: 20, 25, 34 @ -2, -2, -4
-Hailstones' paths are parallel; they never intersect.
+ntg XOR fgs -> mjb
+y02 OR x01 -> tnw
+kwq OR kpj -> z05
+x00 OR x03 -> fst
+tgd XOR rvg -> z01
+vdt OR tnw -> bfw
+bfw AND frj -> z10
+ffh OR nrd -> bqk
+y00 AND y03 -> djm
+y03 OR y00 -> psh
+bqk OR frj -> z08
+tnw OR fst -> frj
+gnj AND tgd -> z11
+bfw XOR mjb -> z00
+x03 OR x00 -> vdt
+gnj AND wpb -> z02
+x04 AND y00 -> kjc
+djm OR pbm -> qhw
+nrd AND vdt -> hwm
+kjc AND fst -> rvg
+y04 OR y02 -> fgs
+y01 AND x02 -> pbm
+ntg OR kjc -> kwq
+psh XOR fgs -> tgd
+qhw XOR tgd -> z09
+pbm OR djm -> kpj
+x03 XOR y03 -> ffh
+x00 XOR y04 -> ntg
+bfw OR bqk -> z06
+nrd XOR fgs -> wpb
+frj XOR qhw -> z04
+bqk OR frj -> z07
+y03 OR x01 -> nrd
+hwm AND bqk -> z03
+tgd XOR rvg -> z12
+tnw OR pbm -> gnj
+After waiting for values on all wires starting with z, the wires in this system have the following values:
 
-Hailstone A: 18, 19, 22 @ -1, -1, -2
-Hailstone B: 12, 31, 28 @ -1, -2, -1
-Hailstones' paths will cross outside the test area (at x=-6, y=-5).
+bfw: 1
+bqk: 1
+djm: 1
+ffh: 0
+fgs: 1
+frj: 1
+fst: 1
+gnj: 1
+hwm: 1
+kjc: 0
+kpj: 1
+kwq: 0
+mjb: 1
+nrd: 1
+ntg: 0
+pbm: 1
+psh: 1
+qhw: 1
+rvg: 0
+tgd: 0
+tnw: 1
+vdt: 1
+wpb: 0
+z00: 0
+z01: 0
+z02: 0
+z03: 1
+z04: 0
+z05: 1
+z06: 1
+z07: 1
+z08: 1
+z09: 1
+z10: 1
+z11: 0
+z12: 0
+Combining the bits from all wires starting with z produces the binary number 0011111101000. Converting this number to decimal produces 2024.
 
-Hailstone A: 18, 19, 22 @ -1, -1, -2
-Hailstone B: 20, 19, 15 @ 1, -5, -3
-Hailstones' paths crossed in the past for both hailstones.
-
-Hailstone A: 20, 25, 34 @ -2, -2, -4
-Hailstone B: 12, 31, 28 @ -1, -2, -1
-Hailstones' paths will cross outside the test area (at x=-2, y=3).
-
-Hailstone A: 20, 25, 34 @ -2, -2, -4
-Hailstone B: 20, 19, 15 @ 1, -5, -3
-Hailstones' paths crossed in the past for hailstone B.
-
-Hailstone A: 12, 31, 28 @ -1, -2, -1
-Hailstone B: 20, 19, 15 @ 1, -5, -3
-Hailstones' paths crossed in the past for both hailstones.
-So, in this example, 2 hailstones' future paths cross inside the boundaries of the test area.
-
-However, you'll need to search a much larger test area if you want to see if any hailstones might collide. Look for intersections that happen with an X and Y position each at least 200000000000000 and at most 400000000000000. Disregard the Z axis entirely.
-
-Considering only the X and Y axes, check all pairs of hailstones' future paths for intersections. How many of these intersections occur within the test area?
+Simulate the system of gates and wires. What decimal number does it output on the wires starting with z?
 
 --- Part Two ---
 
-Upon further analysis, it doesn't seem like any hailstones will naturally collide. It's up to you to fix that!
+After inspecting the monitoring device more closely, you determine that the system you're simulating is trying to add two binary numbers.
 
-You find a rock on the ground nearby. While it seems extremely unlikely, if you throw it just right, you should be able to hit every hailstone in a single throw!
+Specifically, it is treating the bits on wires starting with x as one binary number, treating the bits on wires starting with y as a second binary number, and then attempting to add those two numbers together. The output of this operation is produced as a binary number on the wires starting with z. (In all three cases, wire 00 is the least significant bit, then 01, then 02, and so on.)
 
-You can use the probably-magical winds to reach any integer position you like and to propel the rock at any integer velocity. Now including the Z axis in your calculations, if you throw the rock at time 0, where do you need to be so that the rock perfectly collides with every hailstone? Due to probably-magical inertia, the rock won't slow down or change direction when it collides with a hailstone.
+The initial values for the wires in your puzzle input represent just one instance of a pair of numbers that sum to the wrong value. Ultimately, any two binary numbers provided as input should be handled correctly. That is, for any combination of bits on wires starting with x and wires starting with y, the sum of the two numbers those bits represent should be produced as a binary number on the wires starting with z.
 
-In the example above, you can achieve this by moving to position 24, 13, 10 and throwing the rock at velocity -3, 1, 2. If you do this, you will hit every hailstone as follows:
+For example, if you have an addition system with four x wires, four y wires, and five z wires, you should be able to supply any four-bit number on the x wires, any four-bit number on the y numbers, and eventually find the sum of those two numbers as a five-bit number on the z wires. One of the many ways you could provide numbers to such a system would be to pass 11 on the x wires (1011 in binary) and 13 on the y wires (1101 in binary):
 
-Hailstone: 19, 13, 30 @ -2, 1, -2
-Collision time: 5
-Collision position: 9, 18, 20
+x00: 1
+x01: 1
+x02: 0
+x03: 1
+y00: 1
+y01: 0
+y02: 1
+y03: 1
+If the system were working correctly, then after all gates are finished processing, you should find 24 (11+13) on the z wires as the five-bit binary number 11000:
 
-Hailstone: 18, 19, 22 @ -1, -1, -2
-Collision time: 3
-Collision position: 15, 16, 16
+z00: 0
+z01: 0
+z02: 0
+z03: 1
+z04: 1
+Unfortunately, your actual system needs to add numbers with many more bits and therefore has many more wires.
 
-Hailstone: 20, 25, 34 @ -2, -2, -4
-Collision time: 4
-Collision position: 12, 17, 18
+Based on forensic analysis of scuff marks and scratches on the device, you can tell that there are exactly four pairs of gates whose output wires have been swapped. (A gate can only be in at most one such pair; no gate's output was swapped multiple times.)
 
-Hailstone: 12, 31, 28 @ -1, -2, -1
-Collision time: 6
-Collision position: 6, 19, 22
+For example, the system below is supposed to find the bitwise AND of the six-bit number on x00 through x05 and the six-bit number on y00 through y05 and then write the result as a six-bit number on z00 through z05:
 
-Hailstone: 20, 19, 15 @ 1, -5, -3
-Collision time: 1
-Collision position: 21, 14, 12
-Above, each hailstone is identified by its initial position and its velocity. Then, the time and position of that hailstone's collision with your rock are given.
+x00: 0
+x01: 1
+x02: 0
+x03: 1
+x04: 0
+x05: 1
+y00: 0
+y01: 0
+y02: 1
+y03: 1
+y04: 0
+y05: 1
 
-After 1 nanosecond, the rock has exactly the same position as one of the hailstones, obliterating it into ice dust! Another hailstone is smashed to bits two nanoseconds after that. After a total of 6 nanoseconds, all of the hailstones have been destroyed.
+x00 AND y00 -> z05
+x01 AND y01 -> z02
+x02 AND y02 -> z01
+x03 AND y03 -> z03
+x04 AND y04 -> z04
+x05 AND y05 -> z00
+However, in this example, two pairs of gates have had their output wires swapped, causing the system to produce wrong answers. The first pair of gates with swapped outputs is x00 AND y00 -> z05 and x05 AND y05 -> z00; the second pair of gates is x01 AND y01 -> z02 and x02 AND y02 -> z01. Correcting these two swaps results in this system that works as intended for any set of initial values on wires that start with x or y:
 
-So, at time 0, the rock needs to be at X position 24, Y position 13, and Z position 10. Adding these three coordinates together produces 47. (Don't add any coordinates from the rock's velocity.)
+x00 AND y00 -> z00
+x01 AND y01 -> z01
+x02 AND y02 -> z02
+x03 AND y03 -> z03
+x04 AND y04 -> z04
+x05 AND y05 -> z05
+In this example, two pairs of gates have outputs that are involved in a swap. By sorting their output wires' names and joining them with commas, the list of wires involved in swaps is z00,z01,z02,z05.
 
-Determine the exact position and velocity the rock needs to have at time 0 so that it perfectly collides with every hailstone. What do you get if you add up the X, Y, and Z coordinates of that initial position?
+Of course, your actual system is much more complex than this, and the gates that need their outputs swapped could be anywhere, not just attached to a wire starting with z. If you were to determine that you need to swap output wires aaa with eee, ooo with z99, bbb with ccc, and aoc with z24, your answer would be aaa,aoc,bbb,ccc,eee,ooo,z24,z99.
+
+Your system of gates and wires has four pairs of gates which need their output wires swapped - eight wires in total. Determine which four pairs of gates need their outputs swapped so that your system correctly performs addition; what do you get if you sort the names of the eight wires involved in a swap and then join those names with commas?
