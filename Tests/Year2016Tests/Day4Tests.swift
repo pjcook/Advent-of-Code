@@ -9,7 +9,7 @@ class Day4Tests: XCTestCase {
 
     func test_part4() {
 //        measure {
-        XCTAssertEqual(1, day.part1(input))
+        XCTAssertEqual(173787, day.part1(input))
 //        }
     }
     
