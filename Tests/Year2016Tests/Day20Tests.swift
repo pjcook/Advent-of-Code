@@ -5,7 +5,7 @@ import Year2016
 class Day20Tests: XCTestCase {
     
     let input = Input("Day20.input", Bundle.module).integers
-    let day = Day1()
+    let day = Day20()
 
     func test_part20() {
 //        measure {

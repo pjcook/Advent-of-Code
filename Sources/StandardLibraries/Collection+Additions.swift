@@ -14,6 +14,24 @@ public extension Collection where Element: Comparable {
     }
 }
 
+public extension Collection where Element == Point {
+    func extremes() -> (Point, Point) {
+        var minX = 0
+        var minY = 0
+        var maxX = 0
+        var maxY = 0
+        
+        for element in self {
+            minX = Swift.min(minX, element.x)
+            minY = Swift.min(minY, element.y)
+            maxX = Swift.max(maxX, element.x)
+            maxY = Swift.max(maxY, element.y)
+        }
+        
+        return (Point(minX, minY), Point(maxX, maxY))
+    }
+}
+
 public extension Collection where Self.Iterator.Element: Collection {
     var transpose: Array<Array<Self.Iterator.Element.Iterator.Element>> {
         var result = Array<Array<Self.Iterator.Element.Iterator.Element>>()

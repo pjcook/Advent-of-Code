@@ -114,6 +114,10 @@ extension Point {
         }
     }
     
+    public func add(direction: Direction, distance: Int = 1) -> Point {
+        self + direction.point * distance
+    }
+    
     public func rotateLeft(angle: Int) -> Point {
         switch angle / 90 {
         case 1: return Point(x: -y, y: x)
@@ -307,6 +311,24 @@ public enum Direction: Int, Hashable, CaseIterable {
         case .left: return Point(-1, 0)
         case .right: return Point(1, 0)
         case .down: return Point(0, 1)
+        }
+    }
+    
+    public func rotateLeft() -> Direction {
+        switch self {
+        case .up: return .left
+        case .down: return .right
+        case .right: return .up
+        case .left: return .down
+        }
+    }
+    
+    public func rotateRight() -> Direction {
+        switch self {
+        case .up: return .right
+        case .down: return .left
+        case .right: return .down
+        case .left: return .up
         }
     }
     
