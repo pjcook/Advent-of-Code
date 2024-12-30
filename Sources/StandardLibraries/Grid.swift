@@ -66,6 +66,22 @@ public struct Grid<T: Hashable>: Hashable {
         
         return points
     }
+    
+    public func row(at y: Int) -> [T] {
+        var values = [T]()
+        for x in 0..<columns {
+            values.append(self[x,y])
+        }
+        return values
+    }
+    
+    public func column(at x: Int) -> [T] {
+        var values = [T]()
+        for y in 0..<rows {
+            values.append(self[x,y])
+        }
+        return values
+    }
 }
 
 extension Grid where T == String {
