@@ -60,6 +60,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -101,7 +102,10 @@ let package = Package(
         
         .target(
             name: "Year2016",
-            dependencies: ["StandardLibraries"]),
+            dependencies: [
+                "StandardLibraries",
+                .product(name: "Algorithms", package: "swift-algorithms"),
+            ]),
         .testTarget(
             name: "Year2016Tests",
             dependencies: [
