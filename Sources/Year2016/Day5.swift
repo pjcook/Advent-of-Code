@@ -8,7 +8,6 @@
 
 import Foundation
 import StandardLibraries
-import CryptoKit
 
 public struct Day5 {
     public init() {}
@@ -19,15 +18,11 @@ public struct Day5 {
         
         while password.count < 8 {
             i += 1
-            let md5 = Insecure.MD5.hash(data: (input + String(i)).data(using: .utf8)!)
-            let hash = md5.map { String(format: "%02hhx", $0) }.joined()
+            let hash = generateMD5Hash(for: input + String(i))
             if hash.hasPrefix("00000") {
                 password.append(String(hash[5]))
                 print(password, i, hash)
             }
-//            if i % 10000 == 0 {
-//                print(i)
-//            }
         }
         
         return password
@@ -39,8 +34,7 @@ public struct Day5 {
         
         while password.count < 8 {
             i += 1
-            let md5 = Insecure.MD5.hash(data: (input + String(i)).data(using: .utf8)!)
-            let hash = md5.map { String(format: "%02hhx", $0) }.joined()
+            let hash = generateMD5Hash(for: input + String(i))
             if hash.hasPrefix("00000") {
                 guard let index = Int(hash[5]), (0...7).contains(index), password[index] == nil else { continue }
                 password[index] = String(hash[6])

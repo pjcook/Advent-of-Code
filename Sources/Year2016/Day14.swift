@@ -8,7 +8,6 @@
 
 import Foundation
 import StandardLibraries
-import CryptoKit
 
 public struct Day14 {
     public init() {}
@@ -131,8 +130,7 @@ extension Day14 {
     }
     
     func generateHash(value: String) -> String {
-        let md5 = Insecure.MD5.hash(data: value.data(using: .utf8)!)
-        return md5.map { String(format: "%02hhx", $0) }.joined()
+        generateMD5Hash(for: value)
     }
     
     func check(hash: String) -> [String: Int] {
