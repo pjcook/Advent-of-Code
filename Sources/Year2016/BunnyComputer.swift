@@ -15,6 +15,8 @@ public final class BunnyComputer {
     public var d: Int
     private var instructionPointer: Int = 0
     private var program: [BunnyComputerInstruction] = []
+    private var outputTo: ((Int) -> Bool)?
+    private var shouldTerminate = false
     
     public init(a: Int = 0, b: Int = 0, c: Int = 0, d: Int = 0) {
         self.a = a
@@ -23,12 +25,36 @@ public final class BunnyComputer {
         self.d = d
     }
     
+    public func reset(a: Int = 0, b: Int = 0, c: Int = 0, d: Int = 0) {
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+        instructionPointer = 0
+        shouldTerminate = false
+    }
+    
+    public func connectOutput(to: ((Int) -> Bool)?) {
+        outputTo = to
+    }
+    
     public func execute(program input: [BunnyComputerInstruction]) {
         program = input
 
-        while instructionPointer < program.count {
+        while !shouldTerminate, instructionPointer < program.count {
             let instruction = program[instructionPointer]
             process(instruction: instruction)
+        }
+    }
+    
+    public func execute(program input: [BunnyComputerInstruction], with limit: Int) {
+        program = input
+
+        var count = 0
+        while !shouldTerminate, instructionPointer < program.count, count < limit {
+            let instruction = program[instructionPointer]
+            process(instruction: instruction)
+            count += 1
         }
     }
     
@@ -197,7 +223,33 @@ public final class BunnyComputer {
                     
                 case let .jump(v1, v2):
                     program[value] = .copy(v1, v2)
+                    
+                case .output:
+                    break
                 }
+            }
+            
+        case let .output(v):
+            var value = 0
+            switch v {
+            case let .register(register):
+                switch register {
+                case .a:
+                    value = self.a
+                case .b:
+                    value = self.b
+                case .c:
+                    value = self.c
+                case .d:
+                    value = self.d
+                }
+                
+            case let .value(v2):
+                value = v2
+            }
+
+            if let outputTo, !outputTo(value) {
+                shouldTerminate = true
             }
         }
         
@@ -230,6 +282,7 @@ public enum BunnyComputerInstruction {
     case decrease(BunnyComputerInstructionValue)
     case jump(BunnyComputerInstructionValue, BunnyComputerInstructionValue)
     case toggle(BunnyComputerInstructionValue)
+    case output(BunnyComputerInstructionValue)
     
     public init(_ value: String) {
         self.init(rawValue: value)!
@@ -244,6 +297,7 @@ public enum BunnyComputerInstruction {
         case "dec": self = .decrease(BunnyComputerInstructionValue(rawValue: String(parts[1]))!)
         case "jnz": self = .jump(BunnyComputerInstructionValue(rawValue: String(parts[1]))!, BunnyComputerInstructionValue(rawValue: String(parts[2]))!)
         case "tgl": self = .toggle(BunnyComputerInstructionValue(rawValue: String(parts[1]))!)
+        case "out": self = .output( BunnyComputerInstructionValue(rawValue: String(parts[1]))!)
         default: return nil
         }
     }
