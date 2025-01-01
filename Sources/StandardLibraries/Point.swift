@@ -179,6 +179,10 @@ public extension Point {
         return neighbors
     }
     
+    func isCardinalNeighbor(of point: Point) -> Bool {
+        cardinalNeighbors().contains(point)
+    }
+    
     func cardinalNeighbors(_ allowNegative: Bool = false, min: Point = .zero, max: Point? = nil) -> Set<Point> {
         return Set([
             Point(x, y-1),
