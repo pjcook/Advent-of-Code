@@ -55,6 +55,10 @@ public extension StringProtocol {
         let end = index(start, offsetBy: range.upperBound - range.lowerBound)
         return self[start ... end]
     }
+    
+    func pad(to length: Int, with character: Character = "0") -> String {
+        return String(repeating: character, count: length - self.count) + self
+    }
 }
 
 public enum Alphabet {
