@@ -9,13 +9,35 @@ class Day5Tests: XCTestCase {
 
     func test_part1() {
 //        measure {
-        XCTAssertEqual(1, day.part1(input))
+        XCTAssertEqual(336905, day.part1(input))
 //        }
+    }
+    
+    func test_part1_example() {
+        let input = """
+0
+3
+0
+1
+-3
+""".integers
+        XCTAssertEqual(5, day.part1(input))
     }
     
     func test_part2() {
 //        measure {
-        XCTAssertEqual(1, day.part2(input))
+        XCTAssertEqual(21985262, day.part2(input))
 //        }
+    }
+    
+    func test_part2_example() {
+        let input = """
+0
+3
+0
+1
+-3
+""".integers
+        XCTAssertEqual(10, day.part2(input))
     }
 }
