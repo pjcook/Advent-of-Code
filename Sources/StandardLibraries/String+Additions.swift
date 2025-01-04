@@ -23,7 +23,7 @@ public extension String {
 }
 
 public extension StringProtocol {
-
+    
     var length: Int {
         return count
     }
@@ -31,11 +31,11 @@ public extension StringProtocol {
     subscript (i: Int, l: Int) -> SubSequence {
         return self[i ..< i + l]
     }
-
+    
     func substring(fromIndex: Int) -> SubSequence {
         return self[Swift.min(fromIndex, length) ..< length]
     }
-
+    
     func substring(toIndex: Int) -> SubSequence {
         return self[0 ..< Swift.max(0, toIndex)]
     }
@@ -81,7 +81,7 @@ public extension String {
             guard let after = index(range.lowerBound,
                                     offsetBy: offset,
                                     limitedBy: endIndex) else {
-                                        break
+                break
             }
             position = index(after: after)
         }
@@ -89,8 +89,47 @@ public extension String {
     }
     
     func ranges(of searchString: String) -> [Range<String.Index>] {
-            let _indices = indices(of: searchString)
-            let count = searchString.count
-            return _indices.map({ index(startIndex, offsetBy: $0)..<index(startIndex, offsetBy: $0+count) })
+        let _indices = indices(of: searchString)
+        let count = searchString.count
+        return _indices.map({ index(startIndex, offsetBy: $0)..<index(startIndex, offsetBy: $0+count) })
+    }
+    
+    func knotHash() -> String {
+        let lengths = (self.map { $0.asciiValue! } + [17, 31, 73, 47, 23]).compactMap(Int.init)
+        
+        var skipSize = 0
+        var i = 0
+        var list = Array(0...255)
+
+        for _ in 0..<64 {
+            for l in lengths {
+                if i + l < list.count {
+                    list.replaceSubrange(i..<i+l, with: list[i..<i+l].reversed())
+                } else {
+                    let remainder = l + i - list.count
+                    let reversed = Array(Array(list[i...] + list[..<remainder]).reversed())
+                    let remainderIndex = (reversed.count - remainder)
+                    list.replaceSubrange(i..., with: reversed[..<remainderIndex])
+                    list.replaceSubrange(..<remainder, with: reversed[remainderIndex...])
+                }
+                i += skipSize + l
+                i = i % list.count
+                skipSize += 1
+            }
         }
+        
+        var denseHash = [Int]()
+        i = 0
+        var subset = [Int]()
+        while i < list.count {
+            subset.append(list[i])
+            i += 1
+            if i % 16 == 0 {
+                denseHash.append(subset[1...].reduce(subset[0], { $0 ^ $1 }))
+                subset = []
+            }
+        }
+        
+        return denseHash.map({ String($0, radix: 16).pad(to: 2) }).joined()
+    }
 }
