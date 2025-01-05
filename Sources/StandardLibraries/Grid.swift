@@ -115,6 +115,23 @@ extension Grid where T == String {
         self.columns = input[0].count
         self.items = items
     }
+    
+    public init(_ input: [String], size: Point) {
+        var items = [String]()
+        
+        for line in input {
+            for i in 0..<size.x {
+                if i < line.count {
+                    items.append(String(line[i]))
+                } else {
+                    items.append(" ")
+                }
+            }
+        }
+        
+        self.columns = size.x
+        self.items = items
+    }
 }
 
 extension Grid where T == String {
