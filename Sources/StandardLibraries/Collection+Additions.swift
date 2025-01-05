@@ -49,3 +49,43 @@ public extension Collection where Self.Iterator.Element: Collection {
         return result
     }
 }
+
+public extension Array where Element == String {
+    func flipHorizontal() -> [String] {
+        var results = [String]()
+        
+        for row in self {
+            results.append(String(row.reversed()))
+        }
+        
+        return results
+    }
+    
+    func flipVertical() -> [String] {
+        var results = [String]()
+        
+        for row in self.reversed() {
+            results.append(row)
+        }
+        
+        return results
+    }
+    
+    func flipHorizontalAndVertical() -> [String] {
+        return flipHorizontal().flipVertical()
+    }
+    
+    func rotateLeft() -> [String] {
+        var results = [String]()
+        
+        for y in (0..<self.count).reversed() {
+            var row = ""
+            for x in 0..<self[y].count {
+                row.append(String((self[x])[y]))
+            }
+            results.append(row)
+        }
+        
+        return results
+    }
+}
