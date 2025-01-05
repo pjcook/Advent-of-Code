@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Vector: Hashable {
+public struct Vector: Hashable, Comparable {
     public let x: Int
     public let y: Int
     public let z: Int
@@ -25,6 +25,18 @@ public extension Vector {
     
     static func - (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(x: lhs.x - rhs.x, y: lhs.y - rhs.y, z: lhs.z - rhs.z)
+    }
+    
+    static func * (lhs: Vector, rhs: Vector) -> Vector {
+        return Vector(x: lhs.x * rhs.x, y: lhs.y * rhs.y, z: lhs.z * rhs.z)
+    }
+    
+    static func * (lhs: Vector, rhs: Int) -> Vector {
+        return Vector(x: lhs.x * rhs, y: lhs.y * rhs, z: lhs.z * rhs)
+    }
+    
+    static func * (lhs: Int, rhs: Vector) -> Vector {
+        return Vector(x: lhs * rhs.x, y: lhs * rhs.y, z: lhs * rhs.z)
     }
     
     static func < (lhs: Vector, rhs: Vector) -> Bool {
