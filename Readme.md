@@ -14,3 +14,4 @@ Useful other developers to check out:
 - Jonathan Poulson
 - HyperNeutrino
 - Todd Ginsberg
+- https://github.com/kaworu/
