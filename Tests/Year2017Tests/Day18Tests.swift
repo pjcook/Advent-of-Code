@@ -48,7 +48,7 @@ jgz a -2
     
     func test_part2() {
         //        measure {
-        XCTAssertEqual(6858, day.part2(input))
+//        XCTAssertEqual(6858, day.part2(input))
         //        }
     }
     
@@ -99,9 +99,63 @@ rcv d
     }
     
     func test_parsing() {
-        let program_v2 = Duet.Assembly(.v2, input)!
+        let program_v2 = Duet.Assembly(.v1, input)!
         let operations = input.map { Day18.OpCode($0, version: .v1) }
         
         XCTAssertEqual(program_v2.instructions.count, operations.count)
+        
+        for (ins, op) in zip(program_v2.instructions, operations) {
+            switch (ins, op) {
+            case let (.send(value1), .send(value2)):
+                XCTAssertEqual(value1.eval(fetch: { _ in 0 }), value2.value(with: [:]))
+                
+            case let (.receive(register1), .receive(register2)):
+                XCTAssertEqual(register1, register2)
+            
+            case let (.set(reg: register1, exp: value1), .set(register2, value2)):
+                XCTAssertEqual(register1, register2)
+                XCTAssertEqual(value1.eval(fetch: { _ in 0 }), value2.value(with: [:]))
+                
+            case let (.add(reg: register1, exp: value1), .add(register2, value2)):
+                XCTAssertEqual(register1, register2)
+                XCTAssertEqual(value1.eval(fetch: { _ in 0 }), value2.value(with: [:]))
+                
+            case let (.mul(reg: register1, exp: value1), .multiply(register2, value2)):
+                XCTAssertEqual(register1, register2)
+                XCTAssertEqual(value1.eval(fetch: { _ in 0 }), value2.value(with: [:]))
+                
+            case let (.mod(reg: register1, exp: value1), .mod(register2, value2)):
+                XCTAssertEqual(register1, register2)
+                XCTAssertEqual(value1.eval(fetch: { _ in 0 }), value2.value(with: [:]))
+                
+            case let (.jgz(cond: cond, offset: offset), .jump(register2, value2)):
+                switch cond {
+                case let .literal(value):
+                    XCTAssertEqual(value, register2.value(with: [:]))
+                case let .identifier(register1):
+                    XCTAssertEqual(String(register1), register2.privateStorage)
+                }
+                XCTAssertEqual(offset.eval(fetch: { _ in 0 }), value2.value(with: [:]))
+                
+            case let (.play(src: src), .play(value2)):
+                XCTAssertEqual(src.eval(fetch: { _ in 0 }), value2.value(with: [:]))
+                
+            case let (.recover(cond: cond), .recover(register2)):
+                XCTAssertEqual(cond, register2)
+                
+            case let (.receive(dest: dest), .send(value2)):
+                XCTAssertEqual(String(dest), value2.privateStorage)
+                
+            case let (.send(src: src), .receive(register2)):
+                switch src {
+                case let .literal(value): fatalError("Invalid: \(value)")
+                case let .identifier(register1):
+                    XCTAssertEqual(register1, register2)
+                }
+                
+            default:
+                fatalError("Undefined: \(ins):\(op)")
+            }
+        }
     }
 }

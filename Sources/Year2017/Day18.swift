@@ -83,10 +83,10 @@ public struct Day18 {
         }
         
         var i = 0
-        while programA.state == .running || programB.state == .running {
+        while programA.state != .none && programB.state != .none {
             i += 1
             if i % 1000000 == 0 {
-                print(i, programB.sendCount, programA.key, programB.key)
+                print(i, programB.sendCount)
             }
             programA.tick()
             programB.tick()
@@ -135,7 +135,7 @@ public struct Day18 {
                 }
 
             case let .jump(register, value):
-                if registers[register, default: 0] > 0 {
+                if register.value(with: registers) > 0 {
                     index += value.value(with: registers) - 1
                 }
             }
@@ -201,12 +201,12 @@ public struct Day18 {
         }
         
         func tick() {
-            guard isRunning, (0..<operations.count).contains(index) else {
+            execute(instruction: operations[index])
+            if !(0..<operations.count).contains(index) {
                 state = .stopped
                 return
             }
             step += 1
-            execute(instruction: operations[index])
         }
         
         func execute(instruction: OpCode) {
@@ -239,9 +239,11 @@ public struct Day18 {
             case let .receive(register):
                 if let value = receive.dequeue() {
                     registers[register] = value
+                    state = .running
                 } else {
                     index -= 1
                     step -= 1
+                    state = .waiting
                 }
             
             case let .jump(register, value):
@@ -278,18 +280,10 @@ public struct Day18 {
         private var index: Int = 0
         private var registers: Registers = [:]
         private var queue: [Int] = []
-        private(set) var state: State = .none
+        private(set) var state: State
         weak var delegate: ProgramDelegate?
         private(set) var sendCount = 0
         private var receiveCount = 0
-        var key: String {
-            [
-                id,
-                queue.isEmpty ? "n/a" : String(queue.first!),
-                String(index),
-                registers.sorted(by: { $0.key < $1.key }).map({ String($0.key) + ": " + String($0.value) }).joined(separator: ", ")
-            ].joined(separator: " ")
-        }
 
         init(id: String, operations: [OpCode], registers: Registers) {
             self.id = id
@@ -303,14 +297,11 @@ public struct Day18 {
         }
         
         func tick() {
-            guard state == .running else { return }
             guard index < operations.count else {
                 end()
                 return
             }
-            
-            var receivedRegister: Register?
-            
+                        
             registers = operations[index].execute(on: registers) { value in
                 // ignore
             } send: { value in
@@ -319,21 +310,16 @@ public struct Day18 {
             } recover: { _ in
                 // ignore
             } receive: { register, _ in
-                receiveCount += 1
-                receivedRegister = register
-            } jump: { value in
-                index += value - 1
-            }
-            
-            if let register = receivedRegister {
                 if !queue.isEmpty {
-                    let value = queue.removeFirst()
-                    if value != 0 {
-                        registers[register] = value
-                    }
+                    receiveCount += 1
+                    registers[register] = queue.removeFirst()
+                    state = .running
                 } else {
                     state = .waitingForInput
+                    index -= 1
                 }
+            } jump: { value in
+                index += value - 1
             }
 
             index += 1
@@ -366,6 +352,8 @@ public struct Day18 {
             if let value = Int(storage) { return value }
             return registers[Character(storage), default: 0]
         }
+        
+        public var privateStorage: String { storage }
     }
     
     public enum OpCode {
@@ -381,7 +369,7 @@ public struct Day18 {
         case add(Register, OpCodeValue)
         case multiply(Register, OpCodeValue)
         case mod(Register, OpCodeValue)
-        case jump(Register, OpCodeValue)
+        case jump(OpCodeValue, OpCodeValue)
         
         public init(_ value: String, version: Version) {
             let parts = value.split(separator: " ")
@@ -401,7 +389,7 @@ public struct Day18 {
             case "add": self = .add(Register(parts[1]), OpCodeValue(String(parts[2])))
             case "mul": self = .multiply(Register(parts[1]), OpCodeValue(String(parts[2])))
             case "mod": self = .mod(Register(parts[1]), OpCodeValue(String(parts[2])))
-            case "jgz": self = .jump(Register(parts[1]), OpCodeValue(String(parts[2])))
+            case "jgz": self = .jump(OpCodeValue(String(parts[1])), OpCodeValue(String(parts[2])))
             default: fatalError("Unknown opcode \(parts[0])")
             }
         }
@@ -427,9 +415,7 @@ public struct Day18 {
                     recover(getValue(for: register, registers: registers))
                 }
             case let .receive(register):
-                if getValue(for: register, registers: registers) != 0 {
-                    receive(register, getValue(for: register, registers: registers))
-                }
+                receive(register, getValue(for: register, registers: registers))
 
             case let .set(register, value):
                 registers[register] = getValue(for: value, registers: registers)

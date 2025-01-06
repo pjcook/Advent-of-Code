@@ -26,7 +26,7 @@ extension Duet {
                 
                 // Evaluate this expression. The fetch closure is used to get the value
                 // from a register (if needed).
-                func eval(fetch: (Register) -> Int) -> Int {
+                public func eval(fetch: (Register) -> Int) -> Int {
                     switch self {
                     case .literal(let number):
                         return number
