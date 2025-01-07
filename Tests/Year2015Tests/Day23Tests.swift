@@ -8,10 +8,10 @@ class Day23Tests: XCTestCase {
     let day = Day23()
 
     func test_part1() {
-        XCTAssertEqual(0, day.part1(input))
+        XCTAssertEqual(170, day.part1(input))
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+        XCTAssertEqual(247, day.part2(input))
     }
 }
