@@ -7,7 +7,7 @@ class Day21Tests: XCTestCase {
     
     let input = Input("Day21.input", .module).lines
     let day = Day21()
-    var boss = Day21.Character(hitPoints: 103, damage: 9, armor: 2)
+    let boss = Day21.Character(id: "Boss", hitPoints: 103, damage: 9, armor: 2)
     
     // (Name, Cost, Damage, Armor),
     let weapons = [
@@ -19,6 +19,7 @@ class Day21Tests: XCTestCase {
     ]
     
     let armor = [
+        Day21.Item(("none", 0, 0, 0)),
         Day21.Item(("Leather", 13, 0, 1)),
         Day21.Item(("Chainmail", 31, 0, 2)),
         Day21.Item(("Splintmail", 53, 0, 3)),
@@ -27,6 +28,7 @@ class Day21Tests: XCTestCase {
     ]
     
     let rings = [
+        Day21.Item(("none", 0, 0, 0)),
         Day21.Item(("Damage +1", 25, 1, 0)),
         Day21.Item(("Damage +2", 50, 2, 0)),
         Day21.Item(("Damage +3", 100, 3, 0)),
@@ -36,10 +38,10 @@ class Day21Tests: XCTestCase {
     ]
     
     func test_part1() {
-        XCTAssertEqual(0, day.part1(boss: boss, weapons: weapons, armor: armor, rings: rings))
+        XCTAssertEqual(121, day.part1(boss: boss, weapons: weapons, armor: armor, rings: rings))
     }
     
     func test_part2() {
-        XCTAssertEqual(0, day.part2(input))
+        XCTAssertEqual(201, day.part2(boss: boss, weapons: weapons, armor: armor, rings: rings))
     }
 }
