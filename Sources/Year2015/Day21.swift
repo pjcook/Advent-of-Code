@@ -21,13 +21,13 @@ public struct Day21 {
     }
     
     public class Character: Equatable {
-        public let id: String
+        public let name: String
         public var hitPoints: Int
         public let damage: Int
         public let armor: Int
         
-        public init(id: String, hitPoints: Int, damage: Int, armor: Int) {
-            self.id = id
+        public init(name: String, hitPoints: Int, damage: Int, armor: Int) {
+            self.name = name
             self.hitPoints = hitPoints
             self.damage = damage
             self.armor = armor
@@ -38,12 +38,12 @@ public struct Day21 {
             target.hitPoints -= max(0, damage)
         }
         
-        public static func == (lhs: Day21.Character, rhs: Day21.Character) -> Bool {
-            lhs.id == rhs.id
+        public static func == (lhs: Character, rhs: Character) -> Bool {
+            lhs.name == rhs.name
         }
         
         public func clone() -> Character {
-            Character(id: id, hitPoints: hitPoints, damage: damage, armor: armor)
+            Character(name: name, hitPoints: hitPoints, damage: damage, armor: armor)
         }
     }
     
@@ -57,7 +57,7 @@ public struct Day21 {
                     let damage = weapon.damage + a.damage + ring.damage
                     let playerArmor = weapon.armor + a.armor + ring.armor
                     let cost = weapon.cost + a.cost + ring.cost
-                    let player = Day21.Character(id: "Player", hitPoints: 100, damage: damage, armor: playerArmor)
+                    let player = Day21.Character(name: "Player", hitPoints: 100, damage: damage, armor: playerArmor)
                     if fight(player: player, boss: boss.clone()) == player {
                         minCost = min(cost, minCost)
                     }
@@ -76,7 +76,7 @@ public struct Day21 {
                         let damage = weapon.damage + a.damage + ring.damage + ring2.damage
                         let playerArmor = weapon.armor + a.armor + ring.armor + ring2.armor
                         let cost = weapon.cost + a.cost + ring.cost + ring2.cost
-                        let player = Day21.Character(id: "Player", hitPoints: 100, damage: damage, armor: playerArmor)
+                        let player = Day21.Character(name: "Player", hitPoints: 100, damage: damage, armor: playerArmor)
                         if fight(player: player, boss: boss.clone()) == boss {
                             print(cost, maximumLoser)
                             maximumLoser = max(cost, maximumLoser)

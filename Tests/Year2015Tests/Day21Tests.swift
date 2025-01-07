@@ -7,7 +7,7 @@ class Day21Tests: XCTestCase {
     
     let input = Input("Day21.input", .module).lines
     let day = Day21()
-    let boss = Day21.Character(id: "Boss", hitPoints: 103, damage: 9, armor: 2)
+    let boss = Day21.Character(name: "Boss", hitPoints: 103, damage: 9, armor: 2)
     
     // (Name, Cost, Damage, Armor),
     let weapons = [
