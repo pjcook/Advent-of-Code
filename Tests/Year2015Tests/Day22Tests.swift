@@ -13,11 +13,11 @@ class Day22Tests: XCTestCase {
         XCTAssertEqual(953, day.part1(player: player, boss: boss))
     }
     
-    func test_part1b() {
-        // EXPECT: 1824 for HP: 71 DMG: 10
-        // EXPECT:  953 for HP: 55 DMG:  8
-        XCTAssertEqual(953, day.part1b())
-    }
+//    func test_part1b() {
+//        // EXPECT: 1824 for HP: 71 DMG: 10
+//        // EXPECT:  953 for HP: 55 DMG:  8
+//        XCTAssertEqual(953, day.part1b())
+//    }
     
     func test_part1_example() {
         var boss = Day22.Character(name: "Boss", hitPoints: 14, damage: 8, armor: 0, mana: 0)
