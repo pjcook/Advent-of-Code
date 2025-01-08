@@ -81,400 +81,98 @@ public class Day19 {
         return variants
     }
     
-    fileprivate static var attemptedNodes = Set<Node>()
-    
-    fileprivate class Node: Hashable {
-        static func == (lhs: Day19.Node, rhs: Day19.Node) -> Bool {
-            lhs.key == rhs.key
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(key)
-        }
-        
-        let key: String
-        let depth: Int
-        var options: [Node]
-        
-        init(key: String, depth: Int) {
-            self.key = key
-            self.depth = depth
-            self.options = []
-        }
-        
-        func calculateOptions(sortedKeys: [String], replacementOptions: Options) -> Bool {
-            for sortedKey in sortedKeys {
-                let ranges = key.ranges(of: sortedKey)
-                guard !ranges.isEmpty else { continue }
-                
-                for range in ranges.reversed() {
-                    for value in replacementOptions[sortedKey]! {
-                        var input = key
-                        input.replaceSubrange(range, with: value)
-                        if input == "e" {
-                            return true
-                        } else {
-                            let node = Node(key: input, depth: depth+1)
-                            if !Day19.attemptedNodes.contains(node) {
-                                options.append(node)
-                            }
-                        }
-                    }
-                }
-            }
-            
-            return false
-        }
-        
-        func solve(sortedKeys: [String], replacementOptions: Options) -> Int {
-            Day19.attemptedNodes.insert(self)
-
-            if calculateOptions(sortedKeys: sortedKeys, replacementOptions: replacementOptions) {
-                return depth + 1
-            }
-            
-            for option in options.sorted(by: { $0.key < $1.key }) {
-                let result = option.solve(sortedKeys: sortedKeys, replacementOptions: replacementOptions)
-                if result > -1 {
-                    return result
-                }
-            }
-            
-            return -1
-        }
-    }
-    
-//    let regexRnar = try! RegularExpression(pattern: "([A-Z][a-z]?Rn([^Rr]+)Ar)")
-//    let regexBlocker = try! RegularExpression(pattern: "([A-Z][a-z]?[A-Z][a-z]?)Rn[^Rr]+Ar")
-//    let regexOneElement = try! RegularExpression(pattern: "[A-Z][a-z]?")
-//    let regexTwoElements = try! RegularExpression(pattern: "^[A-Z][a-z]?[A-Z][a-z]?$")
-    
-    public func part2c(_ input: [String]) -> Int {
-        let (options, molecule) = parse2(input)
-        let re = "(" + options.map({ $0.0 }).joined(separator: "|") + ")"
-        let fxx = "\(re)Rn\(re)Y\(re)Ar"
-        let fx = "\(re)Rn\(re)Ar"
-        let xx = "\(re)\(re)"
-        let regex = try! RegularExpression(pattern: RegularExpression.Pattern([fxx, fx, xx].joined(separator: "|")))
-        var m = molecule
-        var steps = 0
-        var matches = regex.matches(in: m)
-        while matches.count > 0 {
-            for match in matches { // do backwards to protect the indexes
-                m = m.replacingCharacters(in: match.range, with: "e")
-                steps += 1
-                break
-            }
-            matches = regex.matches(in: m)
-        }
-        print(steps, m.count, m)
-        return steps
-    }
-    
-    struct Step: Hashable {
-        let molecule: String
-        let steps: Int
-    }
-    
-    /*
-     Rn => (
-     Ar => )
-     Y => ,
-     x => ()
-     x => (,)
-     x => (,,)
-     x => (,,,)
-     */
-    
-    let regexRnAr = try! RegularExpression(pattern: "([A-Z][a-z]?Rn([^Rr]+)Ar)")
-    let regexBlocker = try! RegularExpression(pattern: "([A-Z][a-z]?[A-Z][a-z]?)Rn[^Rr]+Ar")
-    let regexOneElement = try! RegularExpression(pattern: "[A-Z][a-z]?")
-    let regexTwoElements = try! RegularExpression(pattern: "^[A-Z][a-z]?[A-Z][a-z]?$")
-    
-    public func part2d(_ input: [String]) throws -> Int {
-        let (options, m) = parse2(input)
-//        let optionsRnAr = options.filter { regexRnar.matches($0.0) }.sorted(by: >)
-//        let pairDown = options.filter { regexTwoElements.matches($0.0) && $0.0.contains($0.1) }
-        var molecule = m
-        var steps = 0
-        
-        while molecule != "e" {
-            var foundRnAr = false
-            for match in regexRnAr.matches(in: molecule).reversed() {
-                let from = try match.string(at: 0)
-                if let (_, to) = options.first(where: { $0.0 == from }) {
-                    foundRnAr = true
-                    molecule = molecule.replacingCharacters(in: match.range, with: to)
-                    steps += 1
-                }
-            }
-            if foundRnAr { continue }
-            
-            var foundBlocker = false
-            for match in regexBlocker.matches(in: molecule).reversed() {
-                let from = try match.string(at: 0)
-                if let (_, to) = options.first(where: { $0.0 == from }) {
-                    foundBlocker = true
-                    molecule = molecule.replacingCharacters(in: match.range, with: to)
-                    steps += 1
-                }
-            }
-            if foundBlocker { continue }
-            
-            var foundTwoElements = false
-            for match in regexTwoElements.matches(in: molecule).reversed() {
-                let from = try match.string(at: 0)
-                if let (_, to) = options.first(where: { $0.0 == from }) {
-                    foundTwoElements = true
-                    molecule = molecule.replacingCharacters(in: match.range, with: to)
-                    steps += 1
-                }
-            }
-            if foundTwoElements { continue }
-            
-            var foundOption = false
-            for (from, to) in options.sorted(by: { $0.0.count > $1.0.count }) where to != "e" {
-                for match in molecule.ranges(of: from).reversed() {
-                    foundOption = true
-                    molecule = molecule.replacingCharacters(in: match, with: to)
-                    steps += 1
-                }
-            }
-            if foundOption { continue }
-            
-            if molecule.count == 2 {
-                for (from, to) in options.sorted(by: { $0.0.count > $1.0.count }) where to == "e" {
-                    for match in molecule.ranges(of: from).reversed() {
-                        molecule = molecule.replacingCharacters(in: match, with: to)
-                        steps += 1
-                    }
-                }
-            }
-            
-            if !foundRnAr && !foundBlocker && !foundTwoElements && !foundOption {
-                break
-            }
-        }
-        
-        return steps + molecule.count - 1
-    }
-    
-    public func part2b(_ input: [String]) -> Int {
-        let (options, molecule) = parse2(input)
-        let (repl_RnAr, repl_doubles, repl_e) = splitReplacements(options)
-        var answers = [Int]()
-        var steps = 0
-        var clean = false
-        var mol_0 = molecule
-        
-        while !clean {
-            if regexRnAr.matches(in: mol_0).isEmpty {
-                clean = true
-                continue
-            }
-            
-            // reduce all the inner parts of each Rn..Ar pair
-            let (mol_1, steps1) = replaceInners(mol_0, steps, repl_doubles, repl_RnAr)
-            steps = steps1
-            
-            // perform direct xRn..Ar replacements
-            var (mol_2, steps2) = applyRnAr(mol_1, steps, repl_RnAr)
-            steps = steps2
-            
-            if mol_1 == mol_2 {
-                // if no changes this cycle
-                // but still have Rn..Ar sets
-                // then we have one or more special blockers
-                (mol_2, steps2) = clearBlockers(mol_0, steps, repl_doubles)
-                steps = steps2
-                if mol_2 == mol_0 {
-                    (mol_2, steps2) = clearBlockers(mol_0, steps, repl_e)
-                    steps = steps2
-//                    fatalError("Clearning blockers failed")
-                    break
-                }
-            }
-            mol_0 = mol_2
-        }
-        
-        // now that all Rn..Ar are removed
-        // all replacements from now on remove exactly 1 element
-        // so we can just count all the remaining elements and math the answer
-        answers.append(steps + countElements(mol_0) - 1) // -1 because we start with 1 "element": the electron
-        return answers.min()!
-    }
-    
     struct CacheKey: Hashable {
         let molecule: String
         let steps: Int
     }
-    
-    func countElements(_ mol_0: String) -> Int {
-//        regexOneElement.matches(in: mol_0).count
-        mol_0.count
-    }
-    
-    func clearBlockers(_ molecule: String, _ steps: Int, _ repl_doubles: [(String, String)]) -> (String, Int) {
-        var blockers = [(String, Range<String.Index>)]()
-        var steps = steps
-        var molecule = molecule
-        
-        // for each Rn..Ar, grab the 2 preceeding elements, store their positions in `blockers`
-        regexBlocker.matches(in: molecule).forEach { match in
-            if let value = try? match.string(at: 0) {
-                blockers.append((value, match.range))
-            }
+    // https://github.com/fizbin/adventofcode/blob/main/aoc2015/aoc19.2.py
+    public func part2(_ input: [String]) throws -> Int {
+        let (options, smolecule) = parse2(input)
+        let rulesAr = options.filter { $0.0.hasSuffix("Ar") }
+        let rulesNormal = options.filter { !$0.0.hasSuffix("Ar") }
+        var regexCache = [String: RegularExpression]()
+        for option in options {
+            regexCache[option.0] = try? RegularExpression(pattern: RegularExpression.Pattern(option.0))
         }
         
-        // for each of the found spans
-        // perform the only possible replacement
-        for (blocker0, range) in blockers.reversed() { // reversed because we start replacing from the end to avoid corrupting indexes
-            if let (_, to) = repl_doubles.first(where: { $0.0 == blocker0 }) {
-                molecule = molecule.replacingCharacters(in: range, with: to)
-                steps += 1
-            }
-        }
+        let regexRecursive = try RegularExpression("(?:Rn|Y)((?:(?!Ar|Y|Rn)[A-Z][a-z]?){2,})(?=Y|Ar)")
+        let regexNarrowing = try RegularExpression("(?:^|Rn|Y)((?:(?!Ar|Y|Rn)[A-Z][a-z]?)+)|(?=Rn[A-Z][a-z]?Ar|Rn[A-Z][a-z]?Y[A-Z][a-z]?Ar)")
+        var seen = [String: (Int, String)]()
+        var i = 0
         
-        return (molecule, steps)
-    }
-    
-    // perform direct xRn..Ar replacements
-    func applyRnAr(_ molecule: String, _ steps: Int, _ repl_RnAr: [(String, String)]) -> (String, Int) {
-        let check = try! RegularExpression(pattern: RegularExpression.Pattern(repl_RnAr.map({ ".*\($0.0).*" }).joined(separator: "|")))
-        var mol_2 = molecule
-        var steps_2 = steps
-        while !check.matches(in: mol_2).isEmpty {
-            for (from, to) in repl_RnAr {
-                for range in mol_2.ranges(of: from).reversed() {
-                    mol_2 = mol_2.replacingCharacters(in: range, with: to)
-                    steps_2 += 1
-                }
-            }
-        }
-        return (mol_2, steps_2)
-    }
-    
-    func replaceInners(_ molecule: String, _ steps: Int, _ repl_doubles: [(String, String)], _ repl_RnAr: [(String, String)]) -> (String, Int) {
-        var mol_1 = molecule
-        var steps = steps
-        var inners = [(String, String, Range<String.Index>)]()
-        
-        // grab a Set of the inner elements between Rn and Ar in the replacement options
-        // we use this in comparisons later on
-        let innersRnArMatches = regexRnAr.matches(in: mol_1)
-        let innersRnAr = innersRnArMatches.compactMap { try? $0.string(at: 1) }
-        
-        // Find a list of the inner spans between Rn and Ar in the molecule
-        innersRnArMatches.forEach {
-            if let start = try? $0.string(at: 0), let end = try? $0.string(at: 1) {
-                inners.append((start, end, $0.range))
-            }
-        }
-        
-        // For each inner span we found above
-        // Perform elemental replacements on the inner span
-        // until it matches one of the target RnAr replacement combinations (inners_RnAr)
-        // loop reversed.  We start replacing from the end first to avoid corrupting indexes
-        for (start, _, range) in inners.reversed() {
-            let inner0: String = start //mol_1[start..<end]
-            let steps0 = steps
-            var minSteps = Int.max
-            var clean: Set<CacheKey> = [CacheKey(molecule: inner0, steps: steps0)]
-            var q: [(String, Int)] = [(inner0, steps0)]
-            var processed = [String: Int]()
+        func reduceMolecule(_ molecule: String) throws -> (Int, String) {
+            var visited = [String: Int]()
+            let queue = PriorityQueue<CacheKey>()
+            queue.enqueue(CacheKey(molecule: molecule, steps: 0), priority: 0)
             
-            // perform elemental replacements on this span
-            // until it matches one of the target RnAr replacement combinations (inners_RnAr)
-            while !q.isEmpty {
-                let (inner1, steps1) = q.removeLast()
-                if steps1 > minSteps { continue }
-                if innersRnAr.contains(inner1) {
-                    clean.insert(CacheKey(molecule: inner1, steps: steps1))
-                    minSteps = min(minSteps, steps1)
-//                    continue
+            while let queuedItem = queue.dequeue() {
+                i += 1
+                if i % 10000 == 0 {
+                    print(i, seen.count, visited.count, queuedItem.steps)
+                }
+                var molecule = queuedItem.molecule
+                var steps = queuedItem.steps
+                
+                if molecule.count == 1 || (molecule.count == 2 && molecule != molecule.uppercased()) {
+                    return (steps, molecule)
                 }
                 
-                for (from, to) in repl_doubles {
-                    if inner1.contains(from) {
-                        for range in inner1.ranges(of: from).reversed() {
-                            let inner2 = inner1.replacingCharacters(in: range, with: to)
-                            let steps2 = steps1 + 1
-                            if steps2 >= processed[inner2, default: Int.max] {
-                                continue
-                            }
-                            q.append((inner2, steps2))
-                            processed[inner2] = steps2
+                let matches = regexRecursive.matches(in: queuedItem.molecule)
+                if !matches.isEmpty {
+                    for match in matches.reversed() {
+                        var add_one = 0
+                        var rep_one = ""
+                        let valueToReduce = try match.string(at: 0)
+                        if seen[valueToReduce] != nil {
+                            (add_one, rep_one) = seen[valueToReduce]!
+                        } else {
+                            (add_one, rep_one) = try reduceMolecule(try match.string(at: 0))
+                            seen[valueToReduce] = (add_one, rep_one)
+                        }
+                        molecule = molecule.replacingCharacters(in: match.range, with: rep_one)
+                        steps += add_one
+                        queue.enqueue(CacheKey(molecule: molecule, steps: steps), priority: steps + molecule.count)
+                    }
+                    continue
+                }
+                
+                for (from, to) in rulesAr {
+                    if let match = regexCache[from]!.matches(in: molecule).first {
+                        let reduction = molecule.replacingCharacters(in: match.range, with: to)
+                        if visited[reduction, default: steps + 10] > steps + 1 {
+                            visited[reduction] = steps + 1
+                            queue.enqueue(CacheKey(molecule: reduction, steps: steps + 1), priority: steps + 1 + reduction.count)
+                            break
+                        }
+
+                    }
+                }
+                
+                let matches2 = regexNarrowing.matches(in: molecule).first
+                for (from, to) in rulesNormal {
+                    for match in regexCache[from]!.matches(in: molecule) {
+                        if let matches2 = matches2, !(matches2.range.lowerBound <= match.range.lowerBound && matches2.range.upperBound >= match.range.upperBound) {
+                            continue
+                        }
+                        
+                        let reduction = molecule.replacingCharacters(in: match.range, with: to)
+                        if visited[reduction, default: steps + 10] > steps + 1 {
+                            visited[reduction] = steps + 1
+                            queue.enqueue(CacheKey(molecule: reduction, steps: steps + 1), priority: steps + 1 + reduction.count)
                         }
                     }
                 }
             }
-            
-            // If there's only one final version of the inner span (Ideally this should be true)
-            // Select the fastest way to get to it
-            // And replace the inner span in the actual molecule
-            if clean.count == 1 {
-                steps = min(clean.map { $0.steps }.min() ?? Int.max, steps)
-                let inner3 = clean.first!.molecule
-                mol_1 = mol_1.replacingCharacters(in: range, with: inner3)
-            } else {
-                fatalError("oops")
+//            fatalError("Found a molecule that couldn't be reduced: \(molecule). This should never happen.")
+            if let shortest = visited.map({ $0.0 }).sorted(by: { $0.count < $1.count }).first {
+                return (visited[shortest, default: 0], shortest)
             }
+            return (0, molecule)
         }
         
-        return (mol_1, steps)
-    }
-    
-    func splitReplacements(_ options: [(String, String)]) -> ([(String, String)], [(String, String)], [(String, String)]) {
-        var repl_RnAr = [(String, String)]()
-        var repl_doubles = [(String, String)]()
-        var repl_e = [(String, String)]()
-        
-        for option in options {
-            if option.0.contains("Rn") {
-                repl_RnAr.append(option)
-            } else if option.1.contains("e") {
-                repl_e.append(option)
-            } else {
-                repl_doubles.append(option)
-            }
-        }
-        
-        return (repl_RnAr, repl_doubles, repl_e)
-    }
-    
-    public func part2(_ input: [String]) -> Int {
-        Day19.attemptedNodes = []
-        let (options, molecule) = parse2(input)
-        let sortedKeys: [(String, String)] = options.sorted(by: { $0.0.count - $0.1.count > $1.0.count - $1.1.count })
-        let queue = PriorityQueue<Step>()
-        queue.enqueue(Step(molecule: molecule, steps: 0), priority: 0)
-        var smallest = Int.max
-        var i = 0
-//        var seen = Set<String>()
-        
-        while let step = queue.dequeue() {
-            i += 1
-            if i % 100000 == 0 {
-                print(i, step.steps, step.molecule.count, queue.queuedItems.count, smallest)
-            }
-            guard step.steps < smallest else { continue }
-            for (from, to) in sortedKeys {
-                let variant = step.molecule.replacingOccurrences(of: from, with: to)
-                if step.molecule.count == variant.count {
-                    continue
-                }
-                let instances = (step.molecule.count - variant.count) / from.count
-                if variant == "e" {
-                    smallest = min(smallest, step.steps + instances)
-                    continue
-                }
-//                if !seen.contains(variant) {
-//                    seen.insert(variant)
-                    queue.enqueue(Step(molecule: variant, steps: step.steps + instances), priority: -(step.steps + instances))
-//                }
-            }
-        }
-        return smallest
+        let result = try reduceMolecule(smolecule)
+        print(result.0, result.1.count, result.1)
+        return result.0
     }
 
     public func parse(_ input: [String]) -> (Options, String) {

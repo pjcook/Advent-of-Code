@@ -12,29 +12,15 @@ class Day19Tests: XCTestCase {
         XCTAssertEqual(576, day.part1b(input))
     }
     
-    func test_part2() {
-        // low 201
-        XCTAssertEqual(201, day.part2(input))
-    }
-    
-    func test_part2b() {
+    func test_part2() throws {
         // low 201
         // not 479
         // not 252
-        XCTAssertEqual(252, day.part2b(input))
-    }
-    
-    func test_part2c() {
         // not 411
         // not 412
         // not 479
         // not 257
-        XCTAssertEqual(412, day.part2c(input))
-    }
-    
-    func test_part2d() throws {
-        // not 411
-        XCTAssertEqual(412, try day.part2d(input))
+        XCTAssertEqual(207, try day.part2(input))
     }
     
     func test_stringReplacement() {
@@ -48,21 +34,7 @@ class Day19Tests: XCTestCase {
         print(results)
     }
     
-//    func test_part2_example() {
-//        let input = "ORnPBPMgArCaCaCaSiThCaCaSiThCaCaPBSiRnFArRnFArCaCaSiThCaCaSiThCaCaCaCaCaCaSiRnFYFArSiRnMgArCaSiRnPTiTiBFYPBFArSiRnCaSiRnTiRnFArSiAlArPTiBPTiRnCaSiAlArCaPTiTiBPMgYFArPTiRnFArSiRnCaCaFArRnCaFArCaSiRnSiRnMgArFYCaSiRnMgArCaCaSiThPRnFArPBCaSiRnMgArCaCaSiThCaSiRnTiMgArFArSiThSiThCaCaSiRnMgArCaCaSiRnFArTiBPTiRnCaSiAlArCaPTiRnFArPBPBCaCaSiThCaPBSiThPRnFArSiThCaSiThCaSiThCaPTiBSiRnFYFArCaCaPRnFArPBCaCaPBSiRnTiRnFArCaPRnFArSiRnCaCaCaSiThCaRnCaFArYCaSiRnFArBCaCaCaSiThFArPBFArCaSiRnFArRnCaCaCaFArSiRnFArTiRnPMgArF"
-//        let count = input.count
-//        let regexAr = try! RegularExpression(pattern: "(Ar)")
-//        let ar = regexAr.matches(in: input).count
-//        let regexRn = try! RegularExpression(pattern: "(Rn)")
-//        let rn = regexRn.matches(in: input).count
-//        let regexY = try! RegularExpression(pattern: "(Y)")
-//        let y = regexY.matches(in: input).count
-//
-//        let result = count - ar - rn - 2 * y - 1
-//        print(result)
-//    }
-    
-    func test_part2_test1() {
+    func test_part2_test1() throws {
         let input = """
         e => H
         e => O
@@ -72,10 +44,10 @@ class Day19Tests: XCTestCase {
         
         HOH
         """.lines
-        XCTAssertEqual(3, day.part2(input))
+        XCTAssertEqual(3, try day.part2(input))
     }
     
-    func test_part2_test2() {
+    func test_part2_test2() throws {
         let input = """
         e => H
         e => O
@@ -85,7 +57,7 @@ class Day19Tests: XCTestCase {
         
         HOHOHO
         """.lines
-        XCTAssertEqual(6, day.part2(input))
+        XCTAssertEqual(6, try day.part2(input))
     }
     
     func test_parsing() {
@@ -118,7 +90,7 @@ HOH
         XCTAssertEqual(4, day.part1b(input))
     }
     
-    func test_example2() {
+    func test_example2() throws {
         let input = """
 e => H
 e => O
@@ -128,6 +100,6 @@ O => HH
 
 HOH
 """.lines
-        XCTAssertEqual(3, day.part2(input))
+        XCTAssertEqual(3, try day.part2(input))
     }
 }
