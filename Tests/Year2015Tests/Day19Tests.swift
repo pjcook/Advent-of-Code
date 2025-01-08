@@ -13,7 +13,39 @@ class Day19Tests: XCTestCase {
     }
     
     func test_part2() {
-        XCTAssertEqual(6, day.part2(input))
+        // low 201
+        XCTAssertEqual(201, day.part2(input))
+    }
+    
+    func test_part2b() {
+        // low 201
+        // not 479
+        // not 252
+        XCTAssertEqual(252, day.part2b(input))
+    }
+    
+    func test_part2c() {
+        // not 411
+        // not 412
+        // not 479
+        // not 257
+        XCTAssertEqual(412, day.part2c(input))
+    }
+    
+    func test_part2d() throws {
+        // not 411
+        XCTAssertEqual(412, try day.part2d(input))
+    }
+    
+    func test_stringReplacement() {
+        let molecule = "afghsdfghjkl"
+        let from = "fgh"
+        let to = "d"
+        var results = [String]()
+        molecule.ranges(of: from).forEach {
+            results.append(molecule.replacingCharacters(in: $0, with: to))
+        }
+        print(results)
     }
     
 //    func test_part2_example() {

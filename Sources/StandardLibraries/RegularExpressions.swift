@@ -4,6 +4,10 @@ public struct RegularExpression {
 
     private let expression: NSRegularExpression
 
+    public init(_ pattern: Pattern) throws {
+        try self.init(pattern: pattern)
+    }
+    
     public init(pattern: Pattern) throws {
         expression = try NSRegularExpression(pattern: pattern.rawValue, options: [])
     }
