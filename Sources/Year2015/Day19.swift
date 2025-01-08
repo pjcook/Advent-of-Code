@@ -81,98 +81,25 @@ public class Day19 {
         return variants
     }
     
-    struct CacheKey: Hashable {
-        let molecule: String
-        let steps: Int
-    }
-    // https://github.com/fizbin/adventofcode/blob/main/aoc2015/aoc19.2.py
-    public func part2(_ input: [String]) throws -> Int {
-        let (options, smolecule) = parse2(input)
-        let rulesAr = options.filter { $0.0.hasSuffix("Ar") }
-        let rulesNormal = options.filter { !$0.0.hasSuffix("Ar") }
-        var regexCache = [String: RegularExpression]()
-        for option in options {
-            regexCache[option.0] = try? RegularExpression(pattern: RegularExpression.Pattern(option.0))
-        }
+    public func part2b(_ input: [String]) throws -> Int {
+        var (options, molecule) = parse2(input)
+        molecule = String(molecule.reversed())
+        options = options.map({ (String($0.0.reversed()), String($0.1.reversed())) })
+        let regex = try RegularExpression(pattern: RegularExpression.Pattern("(" + options.map({ $0.0 }).joined(separator: "|") + ")"))
         
-        let regexRecursive = try RegularExpression("(?:Rn|Y)((?:(?!Ar|Y|Rn)[A-Z][a-z]?){2,})(?=Y|Ar)")
-        let regexNarrowing = try RegularExpression("(?:^|Rn|Y)((?:(?!Ar|Y|Rn)[A-Z][a-z]?)+)|(?=Rn[A-Z][a-z]?Ar|Rn[A-Z][a-z]?Y[A-Z][a-z]?Ar)")
-        var seen = [String: (Int, String)]()
-        var i = 0
-        
-        func reduceMolecule(_ molecule: String) throws -> (Int, String) {
-            var visited = [String: Int]()
-            let queue = PriorityQueue<CacheKey>()
-            queue.enqueue(CacheKey(molecule: molecule, steps: 0), priority: 0)
-            
-            while let queuedItem = queue.dequeue() {
-                i += 1
-                if i % 10000 == 0 {
-                    print(i, seen.count, visited.count, queuedItem.steps)
-                }
-                var molecule = queuedItem.molecule
-                var steps = queuedItem.steps
-                
-                if molecule.count == 1 || (molecule.count == 2 && molecule != molecule.uppercased()) {
-                    return (steps, molecule)
-                }
-                
-                let matches = regexRecursive.matches(in: queuedItem.molecule)
-                if !matches.isEmpty {
-                    for match in matches.reversed() {
-                        var add_one = 0
-                        var rep_one = ""
-                        let valueToReduce = try match.string(at: 0)
-                        if seen[valueToReduce] != nil {
-                            (add_one, rep_one) = seen[valueToReduce]!
-                        } else {
-                            (add_one, rep_one) = try reduceMolecule(try match.string(at: 0))
-                            seen[valueToReduce] = (add_one, rep_one)
-                        }
-                        molecule = molecule.replacingCharacters(in: match.range, with: rep_one)
-                        steps += add_one
-                        queue.enqueue(CacheKey(molecule: molecule, steps: steps), priority: steps + molecule.count)
-                    }
-                    continue
-                }
-                
-                for (from, to) in rulesAr {
-                    if let match = regexCache[from]!.matches(in: molecule).first {
-                        let reduction = molecule.replacingCharacters(in: match.range, with: to)
-                        if visited[reduction, default: steps + 10] > steps + 1 {
-                            visited[reduction] = steps + 1
-                            queue.enqueue(CacheKey(molecule: reduction, steps: steps + 1), priority: steps + 1 + reduction.count)
-                            break
-                        }
-
-                    }
-                }
-                
-                let matches2 = regexNarrowing.matches(in: molecule).first
-                for (from, to) in rulesNormal {
-                    for match in regexCache[from]!.matches(in: molecule) {
-                        if let matches2 = matches2, !(matches2.range.lowerBound <= match.range.lowerBound && matches2.range.upperBound >= match.range.upperBound) {
-                            continue
-                        }
-                        
-                        let reduction = molecule.replacingCharacters(in: match.range, with: to)
-                        if visited[reduction, default: steps + 10] > steps + 1 {
-                            visited[reduction] = steps + 1
-                            queue.enqueue(CacheKey(molecule: reduction, steps: steps + 1), priority: steps + 1 + reduction.count)
-                        }
-                    }
+        var count = 0
+        while molecule != "e" {
+            if let match = regex.matches(in: molecule).first {
+                let range = match.range
+                let from = try match.string(at: 0)
+                if let value = options.first(where: { $0.0 == from })?.1 {
+                    molecule = molecule.replacingCharacters(in: range, with: value)
+                    count += 1
                 }
             }
-//            fatalError("Found a molecule that couldn't be reduced: \(molecule). This should never happen.")
-            if let shortest = visited.map({ $0.0 }).sorted(by: { $0.count < $1.count }).first {
-                return (visited[shortest, default: 0], shortest)
-            }
-            return (0, molecule)
         }
         
-        let result = try reduceMolecule(smolecule)
-        print(result.0, result.1.count, result.1)
-        return result.0
+        return count
     }
 
     public func parse(_ input: [String]) -> (Options, String) {

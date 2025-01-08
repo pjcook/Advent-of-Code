@@ -13,16 +13,9 @@ class Day19Tests: XCTestCase {
     }
     
     func test_part2() throws {
-        // low 201
-        // not 479
-        // not 252
-        // not 411
-        // not 412
-        // not 479
-        // not 257
-        XCTAssertEqual(207, try day.part2(input))
+        XCTAssertEqual(207, try day.part2b(input))
     }
-    
+
     func test_stringReplacement() {
         let molecule = "afghsdfghjkl"
         let from = "fgh"
