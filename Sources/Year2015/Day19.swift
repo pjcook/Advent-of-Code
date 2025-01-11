@@ -96,6 +96,8 @@ public class Day19 {
                     molecule = molecule.replacingCharacters(in: range, with: value)
                     count += 1
                 }
+            } else {
+                break
             }
         }
         

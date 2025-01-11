@@ -8,6 +8,7 @@
 
 import XCTest
 import InputReader
+import StandardLibraries
 import Year2019
 
 class Day19Tests: XCTestCase {

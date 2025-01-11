@@ -24,7 +24,20 @@ public struct Point: Hashable, Comparable, CustomStringConvertible {
     public var description: String { "(\(x),\(y))" }
 }
 
+extension Point: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return "(\(x):\(y))"
+    }
+}
+
 extension Point {
+    public func angle(to point: Point, _ startAngle: Double = 0) -> Double {
+        let dx = point.x - x
+        let dy = point.y - y
+        let angle = atan2(Double(dy), Double(dx)) + .pi / 2
+        return (angle + 2 * .pi).truncatingRemainder(dividingBy: 2 * .pi)
+    }
+    
     public static func pointsIn(_ topRight: Point, _ bottomLeft: Point) -> Set<Point> {
         var points = Set<Point>()
         

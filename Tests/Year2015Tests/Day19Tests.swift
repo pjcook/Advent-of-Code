@@ -37,7 +37,7 @@ class Day19Tests: XCTestCase {
         
         HOH
         """.lines
-        XCTAssertEqual(3, try day.part2(input))
+        XCTAssertEqual(3, try day.part2b(input))
     }
     
     func test_part2_test2() throws {
@@ -50,7 +50,7 @@ class Day19Tests: XCTestCase {
         
         HOHOHO
         """.lines
-        XCTAssertEqual(6, try day.part2(input))
+        XCTAssertEqual(6, try day.part2b(input))
     }
     
     func test_parsing() {
@@ -93,6 +93,6 @@ O => HH
 
 HOH
 """.lines
-        XCTAssertEqual(3, try day.part2(input))
+        XCTAssertEqual(3, try day.part2b(input))
     }
 }

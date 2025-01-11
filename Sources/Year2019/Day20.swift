@@ -7,6 +7,20 @@
 //
 
 import GameplayKit
+import StandardLibraries
+
+public struct Day20 {
+    public func part1(_ input: [String]) -> Int {
+        let columns = input.reduce(0) { max($0, $1.count) }
+        let size = Point(x: columns, y: input.count)
+        let grid = Grid<String>(input, size: size)
+        return 1
+    }
+    
+    public func part2(_ input: [String]) -> Int {
+        return 1
+    }
+}
 
 public func parsePlutoMap(_ input: [String]) -> ([Point:Int], [Point:String]) {
     var map = [Point:Int]()

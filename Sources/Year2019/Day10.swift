@@ -7,16 +7,7 @@
 //
 
 import GameplayKit
-
-public struct Point {
-    public let x: Int
-    public let y: Int
-    
-    public init(x: Int, y: Int) {
-        self.x = x
-        self.y = y
-    }
-}
+import StandardLibraries
 
 public extension Point {
     var vector: vector_int2 {
@@ -24,35 +15,7 @@ public extension Point {
     }
 }
 
-extension Point: Hashable, CustomDebugStringConvertible {
-    public func angle(to point: Point, _ startAngle: Double = 0) -> Double {
-        let dx = point.x - x
-        let dy = point.y - y
-        let angle = atan2(Double(dy), Double(dx)) + .pi / 2
-        return (angle + 2 * .pi).truncatingRemainder(dividingBy: 2 * .pi)
-    }
-    
-    public func distance(to point: Point) -> Double {
-        let dx = Double(point.x - x)
-        let dy = Double(point.y - y)
-        return sqrt(dx * dx + dy * dy)
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(x)
-        hasher.combine(y)
-    }
-    
-    public static let zero = Point(x: 0, y: 0)
-    
-    public static func + (lhs: Point, rhs: Point) -> Point {
-        return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
-    }
-    
-    public var debugDescription: String {
-        return "(\(x):\(y))"
-    }
-    
+extension Point {
     public func addY(_ value: Int) -> Point {
         return Point(x: x, y: y + value)
     }
@@ -60,14 +23,6 @@ extension Point: Hashable, CustomDebugStringConvertible {
     public func addX(_ value: Int) -> Point {
         return Point(x: x + value, y: y)
     }
-}
-
-public func radiansToDegrees(_ number: Double) -> Double {
-    return number * 180 / .pi
-}
-
-public func degreesToRadians(_ number: Double) -> Double {
-    return number * .pi / 180
 }
 
 public func readAsteroidMap(_ input: [[String]]) -> [Point] {
