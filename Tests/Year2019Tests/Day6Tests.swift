@@ -13,7 +13,7 @@ import Year2019
 class Day6Tests: XCTestCase {
 
     func test_sample_data1() throws {
-        let data = try readInputAsStrings(filename: "Day6_sample1.input", bundle: Bundle(for: Self.self))
+        let data = try readInputAsStrings(filename: "Day6_sample1.input", bundle: .module)
         
         let uom = UniversalOrbitMap(data)
         XCTAssertEqual(42, uom.totalOrbits)

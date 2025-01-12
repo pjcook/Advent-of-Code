@@ -41,14 +41,14 @@ class Day5Tests: XCTestCase {
     }
     
     func test_part1_chris() throws {
-        let data = try readInputAsIntegers(filename: "Day5_sample1.input", delimiter: ",", bundle: Bundle(for: Day5Tests.self))
+        let data = try readInputAsIntegers(filename: "Day5_sample1.input", delimiter: ",", bundle: .module)
         let computer = AdvancedIntCodeComputer(data: data)
         let output = computer.process({ 5 })
         XCTAssertEqual(584126, output)
     }
     
     func test_part1_steppedIntComputer() throws {
-        let data = try readInputAsIntegers(filename: "Day5_sample1.input", delimiter: ",", bundle: Bundle(for: Day5Tests.self))
+        let data = try readInputAsIntegers(filename: "Day5_sample1.input", delimiter: ",", bundle: .module)
         var output = 0
         let computer = SteppedIntComputer(
             id: 1,

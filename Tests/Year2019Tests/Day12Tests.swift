@@ -11,9 +11,9 @@ import InputReader
 import Year2019
 
 class Day12Tests: XCTestCase {
-    let sampleInput = parseMoonInput(try! readInputAsStrings(filename: "Day12_sample_data1.input", bundle: Bundle(for: Day12Tests.self))).map { Moon($0) }
+    let sampleInput = parseMoonInput(try! readInputAsStrings(filename: "Day12_sample_data1.input", bundle: .module)).map { Moon($0) }
     let input = parseMoonInput(try! readInputAsStrings(filename: "Day12.input", bundle: .module)).map { Moon($0) }
-    let sample2Input = parseMoonInput(try! readInputAsStrings(filename: "Day12_sample_data2.input", bundle: Bundle(for: Day12Tests.self))).map { Moon($0) }
+    let sample2Input = parseMoonInput(try! readInputAsStrings(filename: "Day12_sample_data2.input", bundle: .module)).map { Moon($0) }
     
     func test_part1_sample_data1() throws {
         for moon in sampleInput {

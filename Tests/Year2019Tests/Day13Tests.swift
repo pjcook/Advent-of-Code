@@ -23,7 +23,7 @@ class Day13Tests: XCTestCase {
     }
     
     func test_part2_sample_data_chris() throws {
-        var data = try readInputAsIntegers(filename: "Day13_chris.input", delimiter: ",", bundle: Bundle(for: Self.self))
+        var data = try readInputAsIntegers(filename: "Day13_chris.input", delimiter: ",", bundle: .module)
         data[0] = 2
         let output = playGame(data, drawBoard: false)
         XCTAssertEqual(21426, output)

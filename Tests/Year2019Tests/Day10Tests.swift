@@ -14,35 +14,35 @@ import Year2019
 class Day10Tests: XCTestCase {
 
     func test_part1_sample_data1() throws {
-        let input = try readInputAsStrings(filename: "Day10_sample1.input", bundle: Bundle(for: Self.self)).map { $0.map { String($0) } }
+        let input = try readInputAsStrings(filename: "Day10_sample1.input", bundle: .module).map { $0.map { String($0) } }
         let asteroidPoints = readAsteroidMap(input)
         let (maxCount, _) = calculateBestAsteroidBaseCount(asteroidPoints)
         XCTAssertEqual(8, maxCount)
     }
     
     func test_part1_sample_data2() throws {
-        let input = try readInputAsStrings(filename: "Day10_sample2.input", bundle: Bundle(for: Self.self)).map { $0.map { String($0) } }
+        let input = try readInputAsStrings(filename: "Day10_sample2.input", bundle: .module).map { $0.map { String($0) } }
         let asteroidPoints = readAsteroidMap(input)
         let (maxCount, _) = calculateBestAsteroidBaseCount(asteroidPoints)
         XCTAssertEqual(33, maxCount)
     }
     
     func test_part1_sample_data3() throws {
-        let input = try readInputAsStrings(filename: "Day10_sample3.input", bundle: Bundle(for: Self.self)).map { $0.map { String($0) } }
+        let input = try readInputAsStrings(filename: "Day10_sample3.input", bundle: .module).map { $0.map { String($0) } }
         let asteroidPoints = readAsteroidMap(input)
         let (maxCount, _) = calculateBestAsteroidBaseCount(asteroidPoints)
         XCTAssertEqual(35, maxCount)
     }
     
     func test_part1_sample_data4() throws {
-        let input = try readInputAsStrings(filename: "Day10_sample4.input", bundle: Bundle(for: Self.self)).map { $0.map { String($0) } }
+        let input = try readInputAsStrings(filename: "Day10_sample4.input", bundle: .module).map { $0.map { String($0) } }
         let asteroidPoints = readAsteroidMap(input)
         let (maxCount, _) = calculateBestAsteroidBaseCount(asteroidPoints)
         XCTAssertEqual(41, maxCount)
     }
     
     func test_part1_sample_data5() throws {
-        let input = try readInputAsStrings(filename: "Day10_sample5.input", bundle: Bundle(for: Self.self)).map { $0.map { String($0) } }
+        let input = try readInputAsStrings(filename: "Day10_sample5.input", bundle: .module).map { $0.map { String($0) } }
         let asteroidPoints = readAsteroidMap(input)
         let (maxCount, _) = calculateBestAsteroidBaseCount(asteroidPoints)
         XCTAssertEqual(210, maxCount)
@@ -57,7 +57,7 @@ class Day10Tests: XCTestCase {
     }
     
     func test_part2_sample_data1() throws {
-        let input = try readInputAsStrings(filename: "Day10_part2_sample1.input", bundle: Bundle(for: Self.self)).map { $0.map { String($0) } }
+        let input = try readInputAsStrings(filename: "Day10_part2_sample1.input", bundle: .module).map { $0.map { String($0) } }
         let asteroidPoints = readAsteroidMap(input)
         let points = vaporizeAsteroids(asteroidPoints, stationCoords: Point(x: 8, y: 3), mapSize: CGSize(width: 17, height: 5))
         XCTAssertEqual(Point(x: 14, y: 3), points.last)
@@ -65,7 +65,7 @@ class Day10Tests: XCTestCase {
     }
     
     func test_part2_sample_data2() throws {
-        let input = try readInputAsStrings(filename: "Day10_sample5.input", bundle: Bundle(for: Self.self)).map { $0.map { String($0) } }
+        let input = try readInputAsStrings(filename: "Day10_sample5.input", bundle: .module).map { $0.map { String($0) } }
         let asteroidPoints = readAsteroidMap(input)
         let points = vaporizeAsteroids(asteroidPoints, stationCoords: Point(x: 11, y: 13), mapSize: CGSize(width: 20, height: 20))
         XCTAssertEqual(Point(x: 11, y: 12), points[0])

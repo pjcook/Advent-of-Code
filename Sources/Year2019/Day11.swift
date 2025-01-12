@@ -83,7 +83,7 @@ public func paintWithRobot(_ program: [Int], startColor: Int) -> Int {
         }
     }, finished: nil, forceWriteMode: false)
         
-    drawShipRegistration(output)
+//    drawShipRegistration(output)
     
     return output.count
 }

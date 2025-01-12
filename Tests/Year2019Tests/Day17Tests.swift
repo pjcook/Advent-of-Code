@@ -35,7 +35,7 @@ class Day17Tests: XCTestCase {
     }
     
     func test_part2_chris() throws {
-        var input = try readInputAsIntegers(filename: "Day17_chris.input", delimiter: ",", bundle: Bundle(for: Self.self))
+        var input = try readInputAsIntegers(filename: "Day17_chris.input", delimiter: ",", bundle: .module)
         input[0] = 2
         let robot = VacuumRobot(input)
         let instructions = """

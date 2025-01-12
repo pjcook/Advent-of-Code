@@ -12,7 +12,7 @@ import Year2019
 
 class Day11Tests: XCTestCase {
     let input = try! readInputAsIntegers(filename: "Day11.input", delimiter: ",", bundle: .module)
-    let inputChris = try! readInputAsIntegers(filename: "Day11_chris.input", delimiter: ",", bundle: Bundle(for: Day11Tests.self))
+    let inputChris = try! readInputAsIntegers(filename: "Day11_chris.input", delimiter: ",", bundle: .module)
 
     func test_part1() throws {
         let result = paintWithRobot(input, startColor: 0)

@@ -10,6 +10,7 @@ import XCTest
 import InputReader
 import Year2019
 
+// TODO: optimisation
 class Day18Tests: XCTestCase {
 
     func test_part1_sample_data1() throws {

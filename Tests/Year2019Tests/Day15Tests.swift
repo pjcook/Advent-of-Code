@@ -11,6 +11,7 @@ import InputReader
 import StandardLibraries
 import Year2019
 
+// TODO: optimisation
 class Day15Tests: XCTestCase {
     let input = try! readInputAsIntegers(filename: "Day15.input", delimiter: ",", bundle: .module)
 
