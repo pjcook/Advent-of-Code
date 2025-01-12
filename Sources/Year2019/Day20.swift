@@ -10,140 +10,269 @@ import GameplayKit
 import StandardLibraries
 
 public struct Day20 {
+    public init() {}
+    
     public func part1(_ input: [String]) -> Int {
         let columns = input.reduce(0) { max($0, $1.count) }
         let size = Point(x: columns, y: input.count)
         let grid = Grid<String>(input, size: size)
-        return 1
+        let portals = calculatePortals(grid)
+        let portalEntrances = calculatePortalEntrances(for: portals)
+        let start = portals.first(where: { $0.label == "AA" })!.entrance1
+        let end = portals.first(where: { $0.label == "ZZ" })!.entrance1
+        
+        return grid.dijkstra(
+            start: start,
+            end: end,
+            calculateScore: { _ in 1 },
+            canEnter: { _ in true },
+            nextOptions: { previous, current in
+                if let next = portalEntrances[current], next != previous { return [next] }
+                return current.cardinalNeighbors(max: grid.bottomRight).filter { grid[$0] == "." }
+            })
     }
     
     public func part2(_ input: [String]) -> Int {
-        return 1
-    }
-}
-
-public func parsePlutoMap(_ input: [String]) -> ([Point:Int], [Point:String]) {
-    var map = [Point:Int]()
-    var portals = [Point:String]()
-    let width = input.reduce(0) { max($0, $1.count)}
-    
-    func getCharacter(_ point: Point) -> String {
-        guard point.y >= 0, point.x >= 0, input.count > point.y else { return " " }
-        let chars = input[point.y].map { String($0) }
-        if chars.count > point.x {
-            return chars[point.x]
-        }
-        return " "
-    }
-    
-    for y in 0..<input.count {
-        var row = input[y]
-        for x in 0..<width {
-            guard !row.isEmpty else { break }
-            let char = row.removeFirst()
-            let point = Point(x: x, y: y)
-            switch char {
-            case "#": map[point] = 0
-            case ".": map[point] = 1
-            case " ": map[point] = 2
-            default:
-                var label = String(char)
-                let charEast = getCharacter(point + Direction.E.point)
-                let charSouth = getCharacter(point + Direction.S.point)
-                let charNorth = getCharacter(point + Direction.N.point)
-                let charWest = getCharacter(point + Direction.W.point)
-                var portalPoint = point
-                if charEast == "." {
-                    label = charWest + label
-                    portalPoint = portalPoint + Direction.E.point
-                } else if charWest == "." {
-                    label += charEast
-                    portalPoint = portalPoint + Direction.W.point
-                } else if charSouth == "." {
-                    label += charNorth
-                    portalPoint = portalPoint + Direction.S.point
-                } else if charNorth == "." {
-                    label = charSouth + label
-                    portalPoint = portalPoint + Direction.N.point
-                }
-                if label.count == 2 {
-                    portals[portalPoint] = label
+        let columns = input.reduce(0) { max($0, $1.count) }
+        let cleanInput = input.compactMap { $0.isEmpty ? nil : $0 }
+        let size = Point(x: columns, y: cleanInput.count)
+        let grid = Grid<String>(cleanInput, size: size)
+        let portals = calculatePortals(grid)
+        let portalEntrances = calculatePortalEntrances(for: portals)
+        let start = portals.first(where: { $0.label == "AA" })!.entrance1
+        let end = portals.first(where: { $0.label == "ZZ" })!.entrance1
+        let routes = calculateRoutes(for: grid, portals: portals, entrances: portalEntrances)
+        
+        return grid.dijkstra(
+            start: Vector(x: start.x, y: start.y, z: 0),
+            end: Vector(x: end.x, y: end.y, z: 0),
+            calculateScore: { from, to in
+                let fromPoint = portalEntrances[Point(from)] ?? Point(from)
+                let toPoint = Point(to)
+                guard fromPoint != toPoint else { return 0 }
+                return (routes[fromPoint]?.first(where: { $0.to == toPoint && $0.from == fromPoint })?.distance ?? 1) + 1
+            },
+            canEnter: { vector in vector.z == 0 || ![start, end].contains(Point(vector)) },
+            nextOptions: { previous, current in
+                let previousPoint = Point(previous)
+                let currentPoint = Point(current)
+                
+                if previousPoint == currentPoint {
+                    return routes[currentPoint]!
+                        .map({ $0.to })
+                        .map({ Vector(x: $0.x, y: $0.y, z: current.z) })
+                } else {
+                    let dy = currentPoint.isOnOuterEdge(of: grid) ? -1 : 1
+                    guard current.z + dy >= 0 else { return [] }
+                    let newPoint = portalEntrances[currentPoint]!
+                    return routes[newPoint]!
+                        .map({ $0.to })
+                        .map({ Vector(x: $0.x, y: $0.y, z: current.z + dy) })
                 }
             }
-        }
-    }
-    
-    return (map, portals)
-}
-
-public class PortalMaze {
-    public let map: GKGridGraph<GKGridGraphNode>
-    public let rawMap: [Point:Int]
-    public let keys: [Point:String]
-    public let startingPoint: Point
-    public let endPoint: Point
-    
-    public init(rawMap: [Point:Int], keys: [Point:String]) {
-        self.rawMap = rawMap
-        self.keys = keys
-        startingPoint = keys.first(where: { $0.value == "AA" })!.key
-        endPoint = keys.first(where: { $0.value == "ZZ" })!.key
-        let (minX,minY,maxX,maxY) = calculateMapDimensions(rawMap)
-        map = GKGridGraph(
-            fromGridStartingAt: [0,0],
-            width: Int32(maxX - minX),
-            height: Int32(maxY - minY),
-            diagonalsAllowed: false
         )
+    }
+}
+
+extension Point {
+    func isOnOuterEdge(of grid: Grid<String>) -> Bool {
+        [2, grid.bottomRight.x - 3].contains(x) || [2, grid.rows - 3].contains(y)
+    }
+}
+
+extension Day20 {
+    typealias Portals = Set<Portal>
+    typealias Routes = [Point: [Route]]
+    
+    struct Route: Hashable {
+        let from: Point
+        let to: Point
+        let distance: Int
         
-        var nodesToRemove = [GKGridGraphNode]()
-        
-        for y in minY..<maxY {
-            for x in minX..<maxX {
-                let point = Point(x: x, y: y)
-                let value = rawMap[point, default: 0]
-                if [0,2].contains(value),
-                    let node = map.node(atGridPosition: point.vector) {
-                    nodesToRemove.append(node)
+        var reversed: Route { Route(from: to, to: from, distance: distance) }
+    }
+    
+    struct PortalPoint: Hashable {
+        let point: Point
+        let direction: Direction
+    }
+    
+    struct Portal: Hashable {
+        let label: String
+        let entrance1: Point
+        let entrance1Direction: Direction
+        let entrance2: Point
+        let entrance2Direction: Direction
+    }
+    
+    func calculateRoutes(for grid: Grid<String>, portals: Portals, entrances: [Point: Point]) -> Routes {
+        var routes = Routes()
+        var portalPoints = Set<Point>()
+        portals.forEach {
+            portalPoints.insert($0.entrance1)
+            portalPoints.insert($0.entrance2)
+        }
+
+        for start in portalPoints {
+            var queue = [[Point]]()
+            queue.append([start])
+            var calculatingRoutes = Set<Route>()
+            
+            while !queue.isEmpty {
+                let currentPath = queue.removeFirst()
+                let currentPoint = currentPath.last!
+                
+                for next in currentPoint.cardinalNeighbors(in: grid, matching: ["."]) where !currentPath.contains(next) {
+                    let path = currentPath + [next]
+                    queue.append(path)
+                    if entrances.keys.contains(next) {
+                        let route = Route(from: path.first!, to: next, distance: path.count-1)
+                        calculatingRoutes.insert(route)
+                        calculatingRoutes.insert(route.reversed)
+                    }
                 }
             }
-        }
-//        let node = map.node(atGridPosition: Point(x: 10, y: 3).vector)!
-//        nodesToRemove.append(node)
-        map.remove(nodesToRemove)
-        
-        var keys = keys
-        keys.removeValue(forKey: startingPoint)
-        keys.removeValue(forKey: endPoint)
-        
-        while !keys.isEmpty {
-            let item = keys.first!
-            keys.removeValue(forKey: item.key)
-            let other = keys.first(where: { $0.value == item.value })!
-            keys.removeValue(forKey: other.key)
             
-            let node1 = map.node(atGridPosition: item.key.vector)!
-            let node2 = map.node(atGridPosition: other.key.vector)!
-            node1.addConnections(to: [node2], bidirectional: true)
-        }
-    }
-    
-    public func findShortestRoute() -> Int {
-        let startNode = map.node(atGridPosition: startingPoint.vector)!
-        let endNode = map.node(atGridPosition: endPoint.vector)!
-//        let startNode = map.node(atGridPosition: Point(x: 9, y: 5).vector)!
-//        let endNode = map.node(atGridPosition: Point(x: 3, y: 8).vector)!
-        let path = map.findPath(from: startNode, to: endNode)
-        
-        var mapWithPath = rawMap
-        for node in path {
-            if let node = node as? GKGridGraphNode {
-                let point = Point(x: Int(node.gridPosition.x), y: Int(node.gridPosition.y))
-                mapWithPath[point] = 3
+            for route in calculatingRoutes {
+                var list = routes[route.from, default: []]
+                if !list.contains(route) {
+                    list.append(route)
+                }
+                routes[route.from] = list
             }
         }
-//        drawMap(mapWithPath, tileMap: [0:"🟤", 1:"⚪️", 2:"⚫️", 3:"🟠", -1:"⚫️"])
-        return path.count-1
+        
+        return routes
     }
     
+    func calculatePortalEntrances(for portals: Portals) -> [Point: Point] {
+        var entrances = [Point: Point]()
+        
+        for portal in portals {
+            guard !["AA", "ZZ"].contains(portal.label) else { continue }
+            entrances[portal.entrance1] = portal.entrance2
+            entrances[portal.entrance2] = portal.entrance1
+        }
+        
+        return entrances
+    }
+    
+    func calculatePortals(_ grid: Grid<String>) -> Portals {
+        var portals = Portals()
+        var portalLabelPoints = [Point: String]()
+        for (index, value) in grid.items.enumerated() where !["#","."," "].contains(value) {
+            portalLabelPoints[grid.point(for: index)] = value
+        }
+        var seen = Set<String>()
+        
+        var portalPoints = [String: PortalPoint]()
+        for (point, value) in portalLabelPoints {
+            var label = value
+            if let value2 = portalLabelPoints[point.right()] {
+                label += value2
+                guard !seen.contains(label) else { continue }
+                var portalPoint = point.right().right()
+                var direction: Direction = .E
+                if point.left().x >= 0, grid[point.left()] == "." {
+                    portalPoint = point.left()
+                    direction = .W
+                }
+                
+                if ["AA", "ZZ"].contains(label) {
+                    let portal = Portal(label: label, entrance1: portalPoint, entrance1Direction: direction, entrance2: portalPoint, entrance2Direction: direction)
+                    portals.insert(portal)
+                    seen.insert(label)
+                }
+                
+                if let pp1 = portalPoints[label] {
+                    if pp1.point == portalPoint { continue }
+                    let portal = Portal(label: label, entrance1: pp1.point, entrance1Direction: pp1.direction, entrance2: portalPoint, entrance2Direction: direction)
+                    portals.insert(portal)
+                    seen.insert(label)
+                } else {
+                    portalPoints[label] = PortalPoint(point: portalPoint, direction: direction)
+                }
+                
+            } else if let value2 = portalLabelPoints[point.left()] {
+                label = value2 + label
+                guard !seen.contains(label) else { continue }
+                var portalPoint = point.left().left()
+                var direction: Direction = .W
+                if point.right().x < grid.columns, grid[point.right()] == "." {
+                    portalPoint = point.right()
+                    direction = .E
+                }
+                
+                if ["AA", "ZZ"].contains(label) {
+                    let portal = Portal(label: label, entrance1: portalPoint, entrance1Direction: direction, entrance2: portalPoint, entrance2Direction: direction)
+                    portals.insert(portal)
+                    seen.insert(label)
+                }
+                
+                if let pp1 = portalPoints[label] {
+                    if pp1.point == portalPoint { continue }
+                    let portal = Portal(label: label, entrance1: pp1.point, entrance1Direction: pp1.direction, entrance2: portalPoint, entrance2Direction: direction)
+                    portals.insert(portal)
+                    seen.insert(label)
+                } else {
+                    portalPoints[label] = PortalPoint(point: portalPoint, direction: direction)
+                }
+                
+            } else if let value2 = portalLabelPoints[point.up()] {
+                label = value2 + label
+                guard !seen.contains(label) else { continue }
+                var portalPoint = point.up().up()
+                var direction: Direction = .N
+                if point.down().y < grid.rows, grid[point.down()] == "." {
+                    portalPoint = point.down()
+                    direction = .S
+                }
+                
+                if ["AA", "ZZ"].contains(label) {
+                    let portal = Portal(label: label, entrance1: portalPoint, entrance1Direction: direction, entrance2: portalPoint, entrance2Direction: direction)
+                    portals.insert(portal)
+                    seen.insert(label)
+                }
+                
+                if let pp1 = portalPoints[label] {
+                    if pp1.point == portalPoint { continue }
+                    let portal = Portal(label: label, entrance1: pp1.point, entrance1Direction: pp1.direction, entrance2: portalPoint, entrance2Direction: direction)
+                    portals.insert(portal)
+                    seen.insert(label)
+                } else {
+                    portalPoints[label] = PortalPoint(point: portalPoint, direction: direction)
+                }
+                
+            } else if let value2 = portalLabelPoints[point.down()] {
+                label += value2
+                guard !seen.contains(label) else { continue }
+                var portalPoint = point.down().down()
+                var direction: Direction = .S
+                if point.up().y >= 0, grid[point.up()] == "." {
+                    portalPoint = point.up()
+                    direction = .N
+                }
+                
+                if ["AA", "ZZ"].contains(label) {
+                    let portal = Portal(label: label, entrance1: portalPoint, entrance1Direction: direction, entrance2: portalPoint, entrance2Direction: direction)
+                    portals.insert(portal)
+                    seen.insert(label)
+                }
+                
+                if let pp1 = portalPoints[label] {
+                    if pp1.point == portalPoint { continue }
+                    let portal = Portal(label: label, entrance1: pp1.point, entrance1Direction: pp1.direction, entrance2: portalPoint, entrance2Direction: direction)
+                    portals.insert(portal)
+                    seen.insert(label)
+                } else {
+                    portalPoints[label] = PortalPoint(point: portalPoint, direction: direction)
+                }
+                
+            } else {
+                fatalError( "Could not find portal label for \(point)")
+            }
+        }
+        
+        return portals
+    }
 }

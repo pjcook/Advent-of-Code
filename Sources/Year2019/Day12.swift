@@ -9,21 +9,7 @@
 import Foundation
 import StandardLibraries
 
-public struct Vector: Hashable, CustomDebugStringConvertible {
-    public let x: Int
-    public let y: Int
-    public let z: Int
-    
-    public static let zero = Vector(x: 0, y: 0, z: 0)
-    
-    public static func + (lhs: Vector, rhs: Vector) -> Vector {
-        return Vector(x: lhs.x + rhs.x, y: lhs.y + rhs.y, z: lhs.z + rhs.z)
-    }
-    
-    public var debugDescription: String {
-        "x:\(x),y:\(y),z:\(z)"
-    }
-    
+extension Vector {
     public var sumOfAbsoluteValues: Int {
         return abs(x) + abs(y) + abs(z)
     }

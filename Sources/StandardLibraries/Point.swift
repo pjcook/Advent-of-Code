@@ -14,6 +14,11 @@ public struct Point: Hashable, Comparable, CustomStringConvertible {
         self.y = y
     }
     
+    public init(_ vector: Vector) {
+        self.x = vector.x
+        self.y = vector.y
+    }
+    
     public static let zero: Point = Point(x: 0, y: 0)
     
     public func up() -> Point { Point(x, y-1) }
