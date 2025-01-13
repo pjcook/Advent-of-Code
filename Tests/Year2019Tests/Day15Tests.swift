@@ -15,13 +15,13 @@ class Day15Tests: XCTestCase {
     let input = Input("Day15.input", Bundle.module).input.split(separator: ",").map(String.init).compactMap(Int.init)
     let day = Day15()
 
-    func test_part1b() {
+    func test_part1() {
 //        measure {
         XCTAssertEqual(300, day.part1(input))
 //        }
     }
     
-    func test_part2b() {
+    func test_part2() {
 //        measure {
         XCTAssertEqual(312, day.part2(input))
 //        }
