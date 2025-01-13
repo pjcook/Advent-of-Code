@@ -62,10 +62,10 @@ public class VacuumRobot {
     
     public func isIntersectPoint(_ point: Point) -> Bool {
         var count = 0
-        count += (map[point + Direction.N.point] ?? .empty) == .scaffold ? 1 : 0
-        count += (map[point + Direction.S.point] ?? .empty) == .scaffold ? 1 : 0
-        count += (map[point + Direction.E.point] ?? .empty) == .scaffold ? 1 : 0
-        count += (map[point + Direction.W.point] ?? .empty) == .scaffold ? 1 : 0
+        count += (map[point + Direction.up.point] ?? .empty) == .scaffold ? 1 : 0
+        count += (map[point + Direction.down.point] ?? .empty) == .scaffold ? 1 : 0
+        count += (map[point + Direction.right.point] ?? .empty) == .scaffold ? 1 : 0
+        count += (map[point + Direction.left.point] ?? .empty) == .scaffold ? 1 : 0
         return count == 4
     }
 
@@ -96,10 +96,10 @@ public class VacuumRobot {
     private func findStartPoint() -> (Point, Direction) {
         let tile = map.first { [.up, .down, .left, .right].contains($0.value) }!
     
-        if tile.value == .up { return (tile.key, Direction.N) }
-        else if tile.value == .down { return (tile.key, Direction.S) }
-        else if tile.value == .left { return (tile.key, Direction.W) }
-        else { return (tile.key, Direction.E) }
+        if tile.value == .up { return (tile.key, Direction.up) }
+        else if tile.value == .down { return (tile.key, Direction.down) }
+        else if tile.value == .left { return (tile.key, Direction.left) }
+        else { return (tile.key, Direction.right) }
         
     }
     
@@ -142,3 +142,56 @@ public class VacuumRobot {
     }
 }
 
+public func drawMap(_ output: [Point:Int], tileMap: [Int:String], filename: String? = nil) {
+    let (minX,minY,maxX,maxY) = calculateMapDimensions(output)
+    var map = ""
+
+    for y in (0...maxY-minY) {
+        writeMapRow(maxX, minX, y, minY, output, tileMap, &map)
+    }
+    
+    writeMapToFile(filename, map)
+    if filename == nil { print(map + "\n") }
+}
+
+public func drawMapReversed(_ output: [Point:Int], tileMap: [Int:String], filename: String? = nil) {
+    let (minX,minY,maxX,maxY) = calculateMapDimensions(output)
+    var map = ""
+
+    for y in (0...maxY-minY).reversed() {
+        writeMapRow(maxX, minX, y, minY, output, tileMap, &map)
+    }
+    
+    writeMapToFile(filename, map)
+    if filename == nil { print(map + "\n") }
+}
+
+public func writeMapRow(_ maxX: Int, _ minX: Int, _ y: Int, _ minY: Int, _ output: [Point : Int], _ tileMap: [Int : String], _ map: inout String) {
+    var row = ""
+    for x in 0...maxX - minX {
+        let dx = x + minX
+        let dy = y + minY
+        let value = output[Point(x: dx, y: dy)] ?? -1
+        let char = tileMap[value] ?? "(\(value.toAscii() ?? " ")"
+        row += char
+    }
+    map += row + "\n"
+}
+
+public func writeMapToFile(_ filename: String?, _ map: String) {
+    if let filename = filename {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
+        do {
+            try map.write(to: url, atomically: true, encoding: .utf8)
+            print(url)
+        } catch { print(error) }
+    }
+}
+
+public func calculateMapDimensions(_ output: [Point:Int]) -> (Int,Int,Int,Int) {
+    let minX = output.reduce(Int.max) { min($0,$1.key.x) }
+    let minY = output.reduce(Int.max) { min($0,$1.key.y) }
+    let maxX = output.reduce(0) { max($0,$1.key.x) }
+    let maxY = output.reduce(0) { max($0,$1.key.y) }
+    return (minX,minY,maxX,maxY)
+}

@@ -172,10 +172,10 @@ extension Day20 {
                 label += value2
                 guard !seen.contains(label) else { continue }
                 var portalPoint = point.right().right()
-                var direction: Direction = .E
+                var direction: Direction = .right
                 if point.left().x >= 0, grid[point.left()] == "." {
                     portalPoint = point.left()
-                    direction = .W
+                    direction = .left
                 }
                 
                 if ["AA", "ZZ"].contains(label) {
@@ -197,10 +197,10 @@ extension Day20 {
                 label = value2 + label
                 guard !seen.contains(label) else { continue }
                 var portalPoint = point.left().left()
-                var direction: Direction = .W
+                var direction: Direction = .left
                 if point.right().x < grid.columns, grid[point.right()] == "." {
                     portalPoint = point.right()
-                    direction = .E
+                    direction = .right
                 }
                 
                 if ["AA", "ZZ"].contains(label) {
@@ -222,10 +222,10 @@ extension Day20 {
                 label = value2 + label
                 guard !seen.contains(label) else { continue }
                 var portalPoint = point.up().up()
-                var direction: Direction = .N
+                var direction: Direction = .up
                 if point.down().y < grid.rows, grid[point.down()] == "." {
                     portalPoint = point.down()
-                    direction = .S
+                    direction = .down
                 }
                 
                 if ["AA", "ZZ"].contains(label) {
@@ -247,10 +247,10 @@ extension Day20 {
                 label += value2
                 guard !seen.contains(label) else { continue }
                 var portalPoint = point.down().down()
-                var direction: Direction = .S
+                var direction: Direction = .down
                 if point.up().y >= 0, grid[point.up()] == "." {
                     portalPoint = point.up()
-                    direction = .N
+                    direction = .up
                 }
                 
                 if ["AA", "ZZ"].contains(label) {

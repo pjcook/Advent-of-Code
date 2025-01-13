@@ -99,6 +99,10 @@ extension Point {
         return Point(x: lhs.x / rhs.x, y: lhs.y / rhs.y)
     }
     
+    public static func / (lhs: Point, rhs: Int) -> Point {
+        return Point(x: lhs.x / rhs, y: lhs.y / rhs)
+    }
+    
     public static func * (lhs: Point, rhs: Point) -> Point {
         return Point(x: lhs.x * rhs.x, y: lhs.y * rhs.y)
     }
@@ -170,6 +174,13 @@ extension Point {
         case 3: return Point(x: -y, y: x)
         default: return self
         }
+    }
+    
+    public func directionTo(_ point: Point) -> Direction {
+        if x < point.x { return .right }
+        if x > point.x { return .left }
+        if y < point.y { return .down }
+        return .up
     }
 }
 
@@ -289,7 +300,7 @@ public enum Position {
     }
 }
 
-public enum CompassDirection: Int {
+public enum CompassDirection: Int, CaseIterable {
     case n = 0, e = 1, s = 2, w = 3
 }
 
@@ -309,6 +320,24 @@ public extension CompassDirection {
         case .s: return .w
         case .e: return .s
         case .w: return .n
+        }
+    }
+    
+    var point: Point {
+        switch self {
+        case .n: return Point(0, -1)
+        case .w: return Point(-1, 0)
+        case .e: return Point(1, 0)
+        case .s: return Point(0, 1)
+        }
+    }
+    
+    var opposite: CompassDirection {
+        switch self {
+        case .n: return .s
+        case .s: return .n
+        case .e: return .w
+        case .w: return .e
         }
     }
     
@@ -365,6 +394,10 @@ public enum Direction: Int, Hashable, CaseIterable {
             case .right:
                 .left
         }
+    }
+    
+    public var inverse: Direction {
+        opposite
     }
     
     // Used when you want to follow the outer edge of an area of tiles in a grid

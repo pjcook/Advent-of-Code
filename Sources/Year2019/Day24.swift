@@ -53,10 +53,10 @@ public func snapshotValue(_ point: Point) -> Bool {
 
 public func isAlive(_ point: Point, _ info: Info) -> Bool {
     var count = 0
-    count += snapshotValue(point + Direction.N.point) ? 1 : 0
-    count += snapshotValue(point + Direction.E.point) ? 1 : 0
-    count += snapshotValue(point + Direction.S.point) ? 1 : 0
-    count += snapshotValue(point + Direction.W.point) ? 1 : 0
+    count += snapshotValue(point + Direction.up.point) ? 1 : 0
+    count += snapshotValue(point + Direction.right.point) ? 1 : 0
+    count += snapshotValue(point + Direction.down.point) ? 1 : 0
+    count += snapshotValue(point + Direction.left.point) ? 1 : 0
     switch info.alive {
         case true:
         return count == 1

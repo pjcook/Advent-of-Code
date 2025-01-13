@@ -9,33 +9,180 @@
 import Foundation
 import StandardLibraries
 
-public extension Direction {
-    var moveValue: Int {
-        switch self {
-            case .N: return 1
-            case .S: return 2
-            case .W: return 3
-            case .E: return 4
+public struct Day15 {
+    public init() {}
+    
+    public func part1(_ input: [Int]) -> Int {
+        let grid = mapGrid(input)
+        let start = grid.points(for: Tile.start.rawValue).first!
+        let end = grid.points(for: Tile.os.rawValue).first!
+        return grid.dijkstra(start: start, end: end, calculateScore: { _ in 1 }, canEnter: { Tile.emptySpaces.contains(grid[$0]) })
+    }
+    
+    public func part2(_ input: [Int]) -> Int {
+        var grid = mapGrid(input)
+        let start = grid.points(for: Tile.start.rawValue).first!
+        grid[start] = Tile.empty.rawValue
+        let oxygenStart = grid.points(for: Tile.os.rawValue).first!
+        var longest = 0
+        
+        grid.points(for: Tile.empty.rawValue).forEach {
+            longest = max(longest, grid.dijkstra(start: oxygenStart, end: $0, calculateScore: { _ in 1 }, canEnter: { Tile.emptySpaces.contains(grid[$0]) }))
+        }
+        
+        return longest
+    }
+}
+
+extension Day15 {
+    func mapGrid(_ input: [Int]) -> Grid<String> {
+        var grid = Grid<String>(size: Point(100,100), fill: Tile.unknown.rawValue)
+        var droid = MazeRunner(point: grid.bottomRight / 2, direction: .right)
+        grid[droid.point] = Tile.start.rawValue
+        var robotState: DroidResponse = .none
+        var pointsToTry: [Point: [Direction]] = [droid.point: Direction.allCases]
+        var navigationSteps: [Point] = []
+        var finished = false
+        
+        func findPointToTry() -> Point? {
+            for pointToTry in pointsToTry {
+                if !pointToTry.value.isEmpty { return pointToTry.key }
+            }
+            return nil
+        }
+        
+        func update(point: Point, to: Tile) {
+            if !Tile.emptySpaces.contains(grid[point]) {
+                grid[point] = to.rawValue
+            }
+        }
+        
+        func getRemainingOption(point: Point) -> Direction? {
+            var remainingOptions = pointsToTry[droid.point, default: []]
+            guard !remainingOptions.isEmpty else { return nil }
+            droid.direction = remainingOptions.removeFirst()
+            pointsToTry[droid.point] = remainingOptions
+            return droid.direction
+        }
+        
+        func readInput() -> Int? {
+            guard !pointsToTry.isEmpty else { return 99 }
+            
+            switch robotState {
+            case .none:
+                return droid.direction.moveValue
+                
+            case .hitWall:
+                update(point: droid.point + droid.direction.point, to: .wall)
+                let previousDirection = droid.direction
+                
+                // use a remaining option
+                if let remainingOption = getRemainingOption(point: droid.point) {
+                    droid.direction = remainingOption
+                    return remainingOption.moveValue
+                }
+                
+                // Check pointsToTry
+                if let point = findPointToTry() {
+                    navigationSteps = grid.routeTo(start: droid.point, end: point, emptyBlocks: Tile.emptySpaces)
+                    if !navigationSteps.isEmpty {
+                        let next = navigationSteps.removeFirst()
+                        droid.direction = droid.point.directionTo(next)
+                        return droid.direction.moveValue
+                    }
+                } else {
+                    return 99
+                }
+                
+            case .moved:
+                update(point: droid.point, to: .empty)
+                update(point: droid.point + droid.direction.point, to: .empty)
+                
+            case .movedFoundOxygenSystem:
+                update(point: droid.point, to: .empty)
+                update(point: droid.point + droid.direction.point, to: .os)
+            }
+            
+            droid.point = droid.point + droid.direction.point
+            if !navigationSteps.isEmpty {
+                let next = navigationSteps.removeFirst()
+                droid.direction = droid.point.directionTo(next)
+                return droid.direction.moveValue
+            }
+            if pointsToTry[droid.point] == nil, grid[droid.point] == Tile.empty.rawValue {
+                pointsToTry[droid.point] = Direction.allCases
+            }
+            if let remainingOption = getRemainingOption(point: droid.point) {
+                droid.direction = remainingOption
+                return remainingOption.moveValue
+            }
+            return droid.direction.moveValue
+        }
+        
+        func processOutput(_ output: Int) {
+            robotState = DroidResponse(rawValue: output)!
+        }
+        
+        let computer = SteppedIntComputer(
+            id: 1,
+            data: input,
+            readInput: readInput,
+            processOutput: processOutput,
+            completionHandler: {
+                finished = true
+            },
+            forceWriteMode: false
+        )
+        
+        computer.process()
+        
+        while !finished {}
+        return grid
+    }
+}
+
+extension Direction {
+    init?(_ value: Int) {
+        switch value {
+        case 1: self = .up
+        case 2: self = .down
+        case 3: self = .left
+        case 4: self = .right
+        default : return nil
         }
     }
     
-    var inverse: Direction {
+    var moveValue: Int {
         switch self {
-        case .N: return .S
-        case .S: return .N
-        case .W: return .E
-        case .E: return .W
+        case .up: return 1
+        case .down: return 2
+        case .left: return 3
+        case .right: return 4
         }
     }
 }
 
-public extension Point {
-    func directionTo(_ point: Point) -> Direction {
-        if x < point.x { return .E }
-        if x > point.x { return .W }
-        if y > point.y { return .S }
-        return .N
+enum Tile: String {
+    case unknown = "?"
+    case empty = "."
+    case wall = "#"
+    case os = "O"
+    case start = "S"
+    
+    static var emptySpaces: [String] {
+        [
+        Tile.empty.rawValue,
+        Tile.os.rawValue,
+        Tile.start.rawValue
+        ]
     }
+}
+
+enum DroidResponse: Int {
+    case none = -1
+    case hitWall = 0
+    case moved = 1
+    case movedFoundOxygenSystem = 2
 }
 
 public enum MoveStatus: Int {
@@ -53,224 +200,4 @@ public enum MoveStatus: Int {
         case .hitWall: return 3
         }
     }
-}
-
-public struct MapPointStatus {
-    public let point: Point
-    public let state: MoveStatus
-    public let options: Set<Direction>
-}
-
-public class Mapper {
-    public private(set) var map: [Point:MapPointStatus] = [.zero:MapPointStatus(point: .zero, state: .start, options: [])]
-    public var computer: SteppedIntComputer?
-    public let tiles = [-1:"⚪️",0:"🟤", 1:"⚫️", 2:"🟠",3:"🟣",4:"🔴"]
-    
-    public let startPosition = Point.zero
-    public private(set) var currentPosition = Point.zero
-    private var moveValue: Direction = .E
-    private var lastStatus: MoveStatus = .moved
-    private var finished = false
-    private var started = false
-    private var route = [Direction]()
-    public var processEntireSpace = false
-    
-    public init(_ input: [Int]) {
-        computer = SteppedIntComputer(
-            id: 1,
-            data: input,
-            readInput: readInput,
-            processOutput: processOutput,
-            completionHandler: {
-                self.drawMapInConsole()
-            },
-            forceWriteMode: false
-        )
-    }
-    
-    public func start() {
-        computer?.process()
-    }
-    
-    public func createMapper() -> GKMapper {
-        var newMap = [Point:Int]()
-        _ = map.map {
-            newMap[$0.key] = $0.value.state.rawValue
-        }
-        let mapper = GKMapper(newMap, wallID: 0)
-        mapper.removeTilesNotIn([1,2,4])
-        return mapper
-    }
-    
-    public func fillWithOxygen() -> Int {
-        var isFull = false
-        var minutes = 0
-        while !isFull {
-            fillTilesWithOxygen()
-            minutes += 1
-            isFull = allTilesContainOxygen()
-//            drawMapInConsole()
-        }
-        return minutes
-    }
-    
-    private func validOxygenNeighbours(_ point: Point) -> [Point] {
-        return
-            [
-                point + Direction.N.point,
-                point + Direction.S.point,
-                point + Direction.E.point,
-                point + Direction.W.point
-            ]
-            .compactMap { map[$0] }
-            .filter { [.moved, .start].contains($0.state) }
-            .map { $0.point }
-    }
-    
-    private func fillTilesWithOxygen() {
-        var tiles = [Point]()
-        _ = map
-            .filter({ $0.value.state == .movedFoundOxygenSystem })
-            .map { tiles += validOxygenNeighbours($0.key) }
-        tiles.forEach {
-            let info = map[$0]!
-            map[$0] = MapPointStatus(point: $0, state: .movedFoundOxygenSystem, options: info.options)
-        }
-    }
-    
-    private func allTilesContainOxygen() -> Bool {
-        return Set(map.map { $0.value.state }).count == 2
-    }
-    
-    private func routeTo(_ point: Point) {
-        let mapper = createMapper()
-        var position = currentPosition
-        _ = mapper.route(position, point).compactMap {
-            if $0 != currentPosition {
-                let direction = position.directionTo($0)
-                position = position + direction.point
-                route.append(direction)
-            }
-        }
-    }
-    
-    private func readInput() -> Int {
-        guard !finished else { return 99 }
-        
-        let currentTile = map[currentPosition]!
-        if currentTile.options.count < 4 {
-            route.removeAll()
-            moveValue = Direction.all.first(where: { !currentTile.options.contains($0) })!
-            return moveValue.moveValue
-        }
-        
-        if !route.isEmpty {
-            moveValue = route.removeFirst()
-            return moveValue.moveValue
-        }
-        
-        guard let tile = map.first(where: { $0.value.options.count < 4 && $0.value.state != .hitWall }) else {
-            return 99
-        }
-        
-        routeTo(tile.key)
-        moveValue = route.removeFirst()
-        return moveValue.moveValue
-    }
-    
-    private func processOutput(_ value: Int) {
-        lastStatus = MoveStatus(rawValue: value)!
-        let currentState = map[currentPosition]!
-        var options = currentState.options
-        options.insert(moveValue)
-        map[currentPosition] = MapPointStatus(point: currentPosition, state: currentState.state, options: options)
-
-        let position = currentPosition + moveValue.point
-        var nextOptions = map[position]?.options ?? []
-        map[position] = MapPointStatus(point: position, state: lastStatus, options: nextOptions)
-        
-        switch lastStatus {
-        case .hitWall:
-            break
-            
-        case .moved:
-            nextOptions.insert(moveValue.inverse)
-            map[position] = MapPointStatus(point: position, state: lastStatus, options: nextOptions)
-            currentPosition = position
-            
-        case .movedFoundOxygenSystem:
-            nextOptions.insert(moveValue.inverse)
-            map[position] = MapPointStatus(point: position, state: lastStatus, options: nextOptions)
-            currentPosition = position
-            if !processEntireSpace {
-                finished = true
-            }
-            
-        case .unknown, .start:
-            break
-        }
-//        drawMapInConsole()
-    }
-    
-    public func drawMapInConsole() {
-        var rawMap = [Point:Int]()
-        _ = map.map { rawMap[$0] = $1.state.rawValue }
-        rawMap[startPosition] = 3
-        rawMap[currentPosition] = 4
-        drawMapReversed(rawMap, tileMap: tiles)
-    }
-}
-
-public func drawMap(_ output: [Point:Int], tileMap: [Int:String], filename: String? = nil) {
-    let (minX,minY,maxX,maxY) = calculateMapDimensions(output)
-    var map = ""
-
-    for y in (0...maxY-minY) {
-        writeMapRow(maxX, minX, y, minY, output, tileMap, &map)
-    }
-    
-    writeMapToFile(filename, map)
-    if filename == nil { print(map + "\n") }
-}
-
-public func drawMapReversed(_ output: [Point:Int], tileMap: [Int:String], filename: String? = nil) {
-    let (minX,minY,maxX,maxY) = calculateMapDimensions(output)
-    var map = ""
-
-    for y in (0...maxY-minY).reversed() {
-        writeMapRow(maxX, minX, y, minY, output, tileMap, &map)
-    }
-    
-    writeMapToFile(filename, map)
-    if filename == nil { print(map + "\n") }
-}
-
-public func writeMapRow(_ maxX: Int, _ minX: Int, _ y: Int, _ minY: Int, _ output: [Point : Int], _ tileMap: [Int : String], _ map: inout String) {
-    var row = ""
-    for x in 0...maxX - minX {
-        let dx = x + minX
-        let dy = y + minY
-        let value = output[Point(x: dx, y: dy)] ?? -1
-        let char = tileMap[value] ?? "(\(value.toAscii() ?? " ")"
-        row += char
-    }
-    map += row + "\n"
-}
-
-public func writeMapToFile(_ filename: String?, _ map: String) {
-    if let filename = filename {
-        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
-        do {
-            try map.write(to: url, atomically: true, encoding: .utf8)
-            print(url)
-        } catch { print(error) }
-    }
-}
-
-public func calculateMapDimensions(_ output: [Point:Int]) -> (Int,Int,Int,Int) {
-    let minX = output.reduce(Int.max) { min($0,$1.key.x) }
-    let minY = output.reduce(Int.max) { min($0,$1.key.y) }
-    let maxX = output.reduce(0) { max($0,$1.key.x) }
-    let maxY = output.reduce(0) { max($0,$1.key.y) }
-    return (minX,minY,maxX,maxY)
 }

@@ -9,55 +9,59 @@
 import Foundation
 import StandardLibraries
 
-public enum Direction: CustomDebugStringConvertible {
-    case N
-    case E
-    case S
-    case W
-    
-    public static let all: [Direction] = [.N, .E, .S, .W]
-    
-    public var point: Point {
-        switch self {
-            case .N: return Point(x: 0, y: 1)
-            case .E: return Point(x: 1, y: 0)
-            case .S: return Point(x: 0, y: -1)
-            case .W: return Point(x: -1, y: 0)
-        }
-    }
-    
+extension Direction {
     public func rotate(_ value: Int) -> Direction {
         if value == 0 { return rotateLeft() }
         return rotateRight()
     }
-    
-    public func rotateLeft() -> Direction {
-        switch self {
-        case .N: return .W
-        case .E: return .N
-        case .S: return .E
-        case .W: return .S
-        }
-    }
-    
-    public func rotateRight() -> Direction {
-        switch self {
-        case .N: return .E
-        case .E: return .S
-        case .S: return .W
-        case .W: return .N
-        }
-    }
-    
-    public var debugDescription: String {
-        switch self {
-            case .N: return "N"
-            case .E: return "E"
-            case .S: return "S"
-            case .W: return "W"
-        }
-    }
+
 }
+
+//public enum Direction: CustomDebugStringConvertible {
+//    case N
+//    case E
+//    case S
+//    case W
+//    
+//    public static let all: [Direction] = [.N, .E, .S, .W]
+//    
+//    public var point: Point {
+//        switch self {
+//            case .N: return Point(x: 0, y: 1)
+//            case .E: return Point(x: 1, y: 0)
+//            case .S: return Point(x: 0, y: -1)
+//            case .W: return Point(x: -1, y: 0)
+//        }
+//    }
+//    
+//
+//    public func rotateLeft() -> Direction {
+//        switch self {
+//        case .N: return .W
+//        case .E: return .N
+//        case .S: return .E
+//        case .W: return .S
+//        }
+//    }
+//    
+//    public func rotateRight() -> Direction {
+//        switch self {
+//        case .N: return .E
+//        case .E: return .S
+//        case .S: return .W
+//        case .W: return .N
+//        }
+//    }
+//    
+//    public var debugDescription: String {
+//        switch self {
+//            case .N: return "N"
+//            case .E: return "E"
+//            case .S: return "S"
+//            case .W: return "W"
+//        }
+//    }
+//}
 
 public func paintWithRobot(_ program: [Int], startColor: Int) -> Int {
     let bigProgram = program + Array(repeating: 0, count: 1000)
@@ -66,7 +70,7 @@ public func paintWithRobot(_ program: [Int], startColor: Int) -> Int {
     var rawData = [Int]()
     var position = Point.zero
     var color = startColor
-    var direction = Direction.N
+    var direction = Direction.up
     var hasOutputColor = false
     _ = computer.process({
         output[position, default: 0]

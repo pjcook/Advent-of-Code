@@ -1,5 +1,14 @@
 import Foundation
 
+public struct MazeRunner: Hashable {
+    public var point: Point
+    public var direction: Direction
+    public init(point: Point, direction: Direction) {
+        self.point = point
+        self.direction = direction
+    }
+}
+
 public struct Grid<T: Hashable>: Hashable {
     public var rows: Int {
         items.count / columns
@@ -155,6 +164,42 @@ extension Grid where T == Int {
 }
 
 extension Grid where T == String {
+    public func routeTo(start: Point, end: Point, emptyBlocks: [String]) -> [Point] {
+        let queue = PriorityQueue<Point>()
+        queue.enqueue(start, priority: 0)
+        var cameFrom = [Point: Point]()
+        var costSoFar = [Point: Int]()
+        costSoFar[start] = 0
+        
+        // calculate shortest path
+        while !queue.isEmpty {
+            // Using a priority queue means we always pick the next cheapest value
+            let current = queue.dequeue()!
+            if current == end {
+                break   // exit early
+            }
+            
+            for next in current.cardinalNeighbors(max: bottomRight) {
+                guard emptyBlocks.contains(self[next]) else { continue }
+                let newCost = costSoFar[current, default: 0] + 1
+                if newCost < costSoFar[next, default: Int.max] {
+                    costSoFar[next] = newCost
+                    queue.enqueue(next, priority: newCost)
+                    cameFrom[next] = current
+                }
+            }
+        }
+        
+        var path = [end]
+        var next = end
+        while let check = cameFrom[next] {
+            next = check
+            path.append(next)
+        }
+        path = path.dropLast()
+        return path.reversed()
+    }
+    
     public func dijkstra(start: Point, end: Point, calculateScore: (Point) -> Int, canEnter: (Point) -> Bool) -> Int {
         dijkstra(start: start, end: end, maxPoint: bottomRight, calculateScore: calculateScore, canEnter: canEnter)
     }
