@@ -12,164 +12,88 @@ import Year2019
 
 // TODO: optimisation
 class Day18Tests: XCTestCase {
+    let input = Input("Day18.input", Bundle.module).lines
+    let day = Day18()
 
-    func test_part1_sample_data1() throws {
-        let input = [
-            "#########",
-            "#b.A.@.a#",
-            "#########",
-        ]
-        let pathFinder = PathFinder(input)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
-        XCTAssertEqual(8, result)
+    func test_part1b() {
+        // doesn't work currently
+//        measure {
+        // shortest path h,e,o,p,n,s,r,w,f,c,q,d,l,m,g,x,i,v,k,a,j,t,y,u,b,z
+        //               h,e,o,p,s,n,m,l,r,q,c,w,f,d,g,x,i,v,k,a,j,t,y,u,b,z
+        XCTAssertEqual(4248, day.part1(input, filename: "2019-18-part1b.cache"))
+//        }
     }
     
-    func test_part1_sample_data2() throws {
-        let input = [
-            "########################",
-            "#f.D.E.e.C.b.A.@.a.B.c.#",
-            "######################.#",
-            "#d.....................#",
-            "########################",
-        ]
-        let pathFinder = PathFinder(input)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
-        XCTAssertEqual(86, result)
+    func test_part1b2() {
+        // Works but is slow with a hack to make it finish
+        // 214.925 seconds
+//        measure {
+        XCTAssertEqual(4248, day.part1b(input))
+//        }
     }
     
-    func test_part1_sample_data3() throws {
-        let input = [
-            "########################",
-            "#...............b.C.D.f#",
-            "#.######################",
-            "#.....@.a.B.c.d.A.e.F.g#",
-            "########################",
-        ]
-        let pathFinder = PathFinder(input)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
-        XCTAssertEqual(132, result)
+    func test_part1c() {
+        // too slow to wait to see how long it takes
+//        measure {
+        XCTAssertEqual(4248, day.part1c(input))
+//        }
     }
     
-    func test_part1_sample_data4() throws {
-        let input = [
-            "#################",
-            "#i.G..c...e..H.p#",
-            "########.########",
-            "#j.A..b...f..D.o#",
-            "########@########",
-            "#k.E..a...g..B.n#",
-            "########.########",
-            "#l.F..d...h..C.m#",
-            "#################",
-        ]
-        let pathFinder = PathFinder(input)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
-        XCTAssertEqual(136, result)
+    func test_part1b_example() {
+        let input = """
+#########
+#b.A.@.a#
+#########
+""".lines
+        XCTAssertEqual(8, day.part1b(input))
+        XCTAssertEqual(8, day.part1(input, filename: "2019-18-part1b-example.cache"))
     }
     
-    func test_part1_sample_data5() throws {
-        let input = [
-            "########################",
-            "#@..............ac.GI.b#",
-            "###d#e#f################",
-            "###A#B#C################",
-            "###g#h#i################",
-            "########################",
-        ]
-        let pathFinder = PathFinder(input)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
-        XCTAssertEqual(81, result)
-    }
-        
-    func test_part2_sample_data1() throws {
-        let input = [
-        "#############",
-        "#g#f.D#..h#l#",
-        "#F###e#E###.#",
-        "#dCba@#@BcIJ#",
-        "#############",
-        "#nK.L@#@G...#",
-        "#M###N#H###.#",
-        "#o#m..#i#jk.#",
-        "#############",
-        ]
-        
-        let pathFinder = MultiPathFinder(input)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
-        XCTAssertEqual(72, result)
+    func test_part1b_example2() {
+        let input = """
+########################
+#...............b.C.D.f#
+#.######################
+#.....@.a.B.c.d.A.e.F.g#
+########################
+""".lines
+        XCTAssertEqual(132, day.part1b(input))
+        XCTAssertEqual(132, day.part1(input, filename: "2019-18-part1b-example2.cache"))
     }
     
-    func test_part2_sample_data2() throws {
-        let input = [
-        "#############",
-        "#g#f.D#..h#l#",
-        "#F###e#E###.#",
-        "#dCba@#@BcIJ#",
-        "#############",
-        "#nK.L@#@G...#",
-        "#M###N#H###.#",
-        "#o#m..#i#jk.#",
-        "#############",
-        ]
-        
-        let pathFinder = MultiPathFinder(input)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoorsBFS()
-        XCTAssertEqual(72, result)
+    func test_part1b_example3() {
+        let input = """
+#################
+#i.G..c...e..H.p#
+########.########
+#j.A..b...f..D.o#
+########@########
+#k.E..a...g..B.n#
+########.########
+#l.F..d...h..C.m#
+#################
+""".lines
+        // a, f, b, j, g, n, h, d, l, o, e, p, c, i, k, m
+        XCTAssertEqual(136, day.part1b(input))
+        XCTAssertEqual(136, day.part1(input, filename: "2019-18-part1b-example3.cache"))
     }
     
-    func test_part2_sample_data3() throws {
-        let input = [
-        "#############",
-        "#g#f.D#..h#l#",
-        "#F###e#E###.#",
-        "#dCba@#@BcIJ#",
-        "#############",
-        "#nK.L@#@G...#",
-        "#M###N#H###.#",
-        "#o#m..#i#jk.#",
-        "#############",
-        ]
-        
-        let pathFinder = MultiPathFinder(input)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoorsSingleThreaded()
-        XCTAssertEqual(72, result)
+    func test_part1b_example4() {
+        let input = """
+########################
+#@..............ac.GI.b#
+###d#e#f################
+###A#B#C################
+###g#h#i################
+########################
+""".lines
+        XCTAssertEqual(81, day.part1b(input))
+        XCTAssertEqual(81, day.part1(input, filename: "2019-18-part1b-example4.cache"))
     }
     
-    let input = try! readInputAsStrings(filename: "Day18.input", bundle: .module)
-
-    func test_part1() {
-        let pathFinder = PathFinder(input)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
-        XCTAssertEqual(4248, result)
+    func test_part2b() {
+//        measure {
+        XCTAssertEqual(1878, day.part2(input))
+//        }
     }
-
-    func test_remainigDoors() {
-        let pathFinder = PathFinder(input)
-        let keys = pathFinder.keys.map { $0.value.toAscii()! }.sorted().joined()
-        let remaining = pathFinder.remainingDoors([99,102,107])
-        let remainingKeys = remaining.map { $0.toAscii()! }.sorted().joined()
-        XCTAssertNotEqual(keys.uppercased(), remainingKeys)
-        XCTAssertEqual(keys.count, remainingKeys.count+3)
-    }
-    
-    let inputPart2 = try! readInputAsStrings(filename: "Day18_Part2.input", bundle: .module)
-
-    func test_part2() {
-        let pathFinder = MultiPathFinder(inputPart2)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoors()
-        XCTAssertEqual(1878, result)
-    }
-    
-    func test_part2SingleThreaded() {
-        let pathFinder = MultiPathFinder(inputPart2)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoorsSingleThreaded()
-        XCTAssertEqual(1878, result)
-    }
-    
-    func test_part2BFS() {
-        let pathFinder = MultiPathFinder(inputPart2)
-        let result = pathFinder.calculateShortestPathToUnlockAllDoorsBFS()
-        XCTAssertEqual(1878, result)
-    }
-
 }

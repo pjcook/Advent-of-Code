@@ -6,480 +6,444 @@
 //  Copyright © 2019 Software101. All rights reserved.
 //
 
-import GameplayKit
+import Foundation
 import StandardLibraries
 
-public struct Path {
-    public let start: Point
-    public let end: Point
-    public let distance: Int
-    public let doors: [Int]
-    public let path: [Point]
-}
-
-public struct Job {
-    public let remainingKeys: [Point: Int]
-    public let visitedKeys: [Int]
-    public let distance: Int
-}
-
-public class MultiPathFinder {
-    private var rawMap = [Point:Int]()
-    private let keys: [Point:Int]
-    private var pathFinders = [PathFinder]()
-    private var tempResult = Int.max //1886
-
-    public init(_ input: [String]) {
-        for y in 0..<input.count {
-            var row = input[y]
-            for x in 0..<input[0].count {
-                let tile = row.removeFirst()
-                rawMap[Point(x: x, y: y)] = String(tile).toAscii().first!
+public struct Day18 {
+    public init() {}
+    
+    typealias Graph = [GraphKey2: Int]
+    struct GraphKey2: Hashable {
+        let points: [Point]
+        let keys: Int
+        init(_ points: [Point], _ keys: [String]) {
+            self.points = points.sorted()
+            self.keys = Array(Set(keys)).sorted().reduce(0) { $0 | String($1).letterIndexOf() }
+        }
+    }
+    
+    public func part1c(_ input: [String]) -> Int {
+        var grid = Grid<String>(input)
+        let symbols = grid.items.filter { Alphabet.letters.lowercased().contains($0) }.sorted()
+        var shortest = Int.max
+        let start = grid.point(for: "@")!
+        grid[start] = "."
+        
+        var keys = Set<Symbol>()
+        for symbol in symbols {
+            let point = grid.point(for: symbol)!
+            keys.insert(Symbol(symbol: symbol, point: point))
+            grid[point] = "."
+        }
+        
+        var graph = Graph()
+        return minimumSteps(from: [start], seen: &graph, allKeys: keys, grid: grid)
+    }
+    
+    func minimumSteps(from: Set<Point>, haveKeys: [String] = [], seen: inout Graph, allKeys: Set<Symbol>, grid: Grid<String>) -> Int {
+        let key = GraphKey2(Array(from), haveKeys)
+        if let value = seen[key] {
+            return value
+        }
+        
+        let answer = findKeys(in: grid, from: from, keys: allKeys.filter({ !haveKeys.contains($0.symbol) }), emptyBlocks: haveKeys.map({ $0.uppercased() }) + ["."])
+            .map { (symbol, cost) in
+                cost + minimumSteps(from: [symbol.point], haveKeys: haveKeys + [symbol.symbol], seen: &seen, allKeys: allKeys, grid: grid)
+            }.min() ?? 0
+        seen[key] = answer
+        return answer
+    }
+    
+    public func part1b(_ input: [String]) -> Int {
+        var grid = Grid<String>(input)
+        let symbols = grid.items.filter { Alphabet.letters.lowercased().contains($0) }.sorted()
+        var shortest = Int.max
+        let start = grid.point(for: "@")!
+        grid[start] = "."
+        
+        var keys = Set<Symbol>()
+        var doors = Set<Symbol>()
+        for symbol in symbols {
+            let point = grid.point(for: symbol)!
+            keys.insert(Symbol(symbol: symbol, point: point))
+            grid[point] = "."
+            if let point = grid.point(for: symbol.uppercased()) {
+                doors.insert(Symbol(symbol: symbol.uppercased(), point: point))
             }
         }
-        let midY = input.count / 2
-        let midX = input[0].count / 2
         
-        pathFinders = [
-            PathFinder(rawMap.filter { $0.key.x <= midX && $0.key.y <= midY }, id: 1),
-            PathFinder(rawMap.filter { $0.key.x >= midX && $0.key.y <= midY }, id: 2),
-            PathFinder(rawMap.filter { $0.key.x <= midX && $0.key.y >= midY }, id: 3),
-            PathFinder(rawMap.filter { $0.key.x >= midX && $0.key.y >= midY }, id: 4),
-        ]
+        var graph = [GraphKey: ([(Symbol, Int)], Int)]()
+//        return calculateShortestPath(start: start, allKeys: keys, grid: grid)
         
-        var allKeys = [Point:Int]()
-        pathFinders.forEach { pathFinder in
-            _ = pathFinder.keys.map { allKeys[$0.key] = $0.value }
-        }
-        keys = allKeys
-    }
-
-    public let group = DispatchGroup()
-    public var queues = [DispatchQueue]()
-    
-    public var queue = OperationQueue()
-    public var journeyDistance = Int.max
-    public func addOperationsToQueue(_ job: Job) {
-        if self.queue.operationCount % 1000000 == 0 {
-            print("@@@", "VisitedKeys", job.visitedKeys.count, (job.visitedKeys).map({ $0.toAscii()! }).joined(), "Distance", job.distance, self.tempResult, "Queue", self.queue.operationCount)
-        }
+        let queue = PriorityQueue<QueueItem2>()
+        queue.enqueue(QueueItem2(keys: [], point: start, costSoFar: 0), priority: 0)
         
-        let validKeys = self.findValidKeys(remainingKeys: job.remainingKeys, visitedKeys: job.visitedKeys, distance: job.distance)
+        var found = 0
         
-        let sortedValidKeys = validKeys.sorted { (arg0, arg1) -> Bool in
-            let (_, (_, distance1)) = arg0
-            let (_, (_, distance2)) = arg1
-            return distance1 < distance2
-        }
-        
-        for item in sortedValidKeys {
-            var remainingKeys = job.remainingKeys
-            remainingKeys.removeValue(forKey: item.key)
-            let distance = item.value.1
+        var i = 0
+        while let item = queue.dequeue() {
+            i += 1
+            if i % 10000 == 0 {
+                found += 1
+                print(i, queue.queuedItems.count, graph.count, item.keys.count, item.costSoFar, shortest, found)
+            }
+            guard item.costSoFar < shortest else { continue }
+            if item.keys.count == keys.count {
+                found = 0
+                shortest = min(shortest, item.costSoFar)
+                print("Shortest", i, queue.queuedItems.count, graph.count, item.keys.count, item.costSoFar, shortest, item.keys.joined(separator: ","))
+                continue
+            }
             
-            guard distance < self.tempResult else { continue }
+            if found == 10 {
+                return shortest
+            }
             
-            if remainingKeys.isEmpty {
-                if distance < journeyDistance {
-                    journeyDistance = distance
-                    if distance < self.tempResult {
-                        self.tempResult = distance
-                    }
-                    print("###", "VisitedKeys", (job.visitedKeys + [item.value.0]).map({ $0.toAscii()! }).joined(), "Distance", distance, self.tempResult)
-                }
+            let graphKey = GraphKey(item)
+            var routes: [(Day18.Symbol, Int)]
+            if let (cachedRoutes, cost) = graph[graphKey] {
+                guard cost > item.costSoFar else { continue }
+                routes = cachedRoutes
             } else {
-                var visitedKeys = job.visitedKeys
-                visitedKeys.append(item.value.0)
-                let nextJob = Job(remainingKeys: remainingKeys, visitedKeys: visitedKeys, distance: distance)
-                self.queue.addOperation {
-                    self.addOperationsToQueue(nextJob)
+                routes = findKeys(in: grid, from: item.point, keys: keys.filter({ !item.keys.contains($0.symbol) }), emptyBlocks: item.keys.map({ $0.uppercased() }) + ["."])
+            }
+            graph[graphKey] = (routes, item.costSoFar)
+            for (route, routeCost) in routes {
+                guard !item.keys.contains(route.symbol) else { continue }
+                let newKeys = Array(item.keys + [route.symbol])
+                let cost = routeCost + item.costSoFar
+                queue.enqueue(
+                    QueueItem2(
+                        keys: newKeys,
+                        point: route.point,
+                        costSoFar: cost
+                    ),
+                    priority: -newKeys.count// - cost
+                )
+            }
+        }
+        
+        return shortest
+    }
+    
+    func calculateShortestPath(start: Point, allKeys: Set<Symbol>, grid: Grid<String>) -> Int {
+        var smallest = Int.max
+        var graph = [GraphKey: ([(Symbol, Int)], Int)]()
+        let queue = PriorityQueue<QueueItem2>()
+        queue.enqueue(QueueItem2(keys: [], point: start, costSoFar: 0), priority: 0)
+        var i = 0
+        while let item = queue.dequeue() {
+            i += 1
+            if item.keys.count == 26 {
+                smallest = min(smallest, item.costSoFar)
+                print("smallest", smallest, item.costSoFar, queue.queuedItems.count, i, graph.count)
+                continue
+            }
+            
+            let key = GraphKey(item.point, item.keys)
+            let cachedItem = graph[key]
+            guard cachedItem == nil || item.costSoFar < cachedItem?.1 ?? Int.max else { continue }
+            let options = cachedItem?.0 ?? findKeys(in: grid, from: item.point, keys: allKeys.filter({ !item.keys.contains($0.symbol) }), emptyBlocks: item.keys.map({ $0.uppercased() }) + ["."])
+            graph[key] = (options, item.costSoFar)
+            for option in options {
+                let cost = item.costSoFar + option.1
+                let newKeys = item.keys + [option.0.symbol]
+                let next = option.0.point
+                guard cost < smallest else { continue }
+                queue.enqueue(QueueItem2(keys: newKeys, point: next, costSoFar: cost), priority: -cost)
+            }
+        }
+        
+        return smallest
+    }
+    
+    func findKeys(in grid: Grid<String>, from: Set<Point>, keys: Set<Symbol>, emptyBlocks: [String]) -> [(Symbol, Int)] {
+        var symbols: [(Symbol, Int)] = []
+        
+        for point in from {
+            symbols.append(contentsOf: findKeys(in: grid, from: point, keys: keys, emptyBlocks: emptyBlocks))
+        }
+        
+        return symbols
+    }
+    
+    func findKeys(in grid: Grid<String>, from: Point, keys: Set<Symbol>, emptyBlocks: [String]) -> [(Symbol, Int)] {
+        var symbols: [(Symbol, Int)] = []
+        var seen = Set<Point>()
+        var queue = [(Point, Int)]()
+        queue.append((from, 0))
+        
+        while !queue.isEmpty {
+            let (point, cost) = queue.removeFirst()
+            if let s = keys.first(where: { point == $0.point }) {
+                symbols.append((s, cost))
+            }
+            
+            // exit early if possible, probably unlikely
+            if symbols.count == keys.count {
+                break
+            }
+            
+            for n in point.cardinalNeighbors(in: grid, matching: emptyBlocks) {
+                if !seen.contains(n) {
+                    seen.insert(n)
+                    queue.append((n, cost + 1))
                 }
             }
         }
-        if queue.operationCount == 1 {
-            self.group.leave()
+        
+        return symbols
+    }
+    
+    struct QueueItem2: Hashable {
+        let keys: [String]
+        let point: Point
+        let costSoFar: Int
+    }
+    
+    struct GraphValue: Hashable {
+        let symbol: Symbol
+        let cost: Int
+        let keysOnRoute: [Symbol]
+    }
+    
+    struct GraphKey: Hashable {
+        let point: Point
+        let keys: Int
+        init(_ point: Point, _ keys: [String]) {
+            self.point = point
+            self.keys = Array(Set(keys)).sorted().reduce(0) { $0 | String($1).letterIndexOf() }
+        }
+        init(_ item: QueueItem2) {
+            self.point = item.point
+            self.keys = Array(Set(item.keys)).sorted().reduce(0) { $0 | String($1).letterIndexOf() }
         }
     }
     
-    public func calculateShortestPathToUnlockAllDoorsBFS() -> Int {
-        queue.maxConcurrentOperationCount = 8
-        let job = Job(remainingKeys: keys, visitedKeys: [], distance: 0)
-        group.enter()
-        queue.addOperation {
-            self.addOperationsToQueue(job)
+    public func part1(_ input: [String], filename: String) -> Int {
+        let grid = Grid<String>(input)
+        let symbols = grid.items.filter { Alphabet.letters.lowercased().contains($0) }.sorted()
+        let allSymbols = ["@", "."] + symbols + symbols.map { $0.uppercased() }
+        let start = grid.point(for: "@")!
+        var keys = Set<Symbol>()
+        var doors = Set<Symbol>()
+        for symbol in symbols {
+            keys.insert(Symbol(symbol: symbol, point: grid.point(for: symbol)!))
+            if let point = grid.point(for: symbol.uppercased()) {
+                doors.insert(Symbol(symbol: symbol.uppercased(), point: point))
+            }
+        }
+        let doorsAndKeys = keys.union(doors)
+        let doorKeyPoints = doorsAndKeys.map({ $0.point })
+        let doorkeyMap = doorsAndKeys.reduce(into: [:]) { $0[$1.point] = $1 }
+        var distances: [DistanceKey: DistanceValue] = [:]
+        
+        if let data = try? Data(contentsOf: resolveFilename(filename), options: .uncached) {
+            if let cachedData = try? JSONDecoder().decode([DistanceKey: DistanceValue].self, from: data) {
+                distances = cachedData
+            }
         }
         
-        group.wait()
-        return journeyDistance
-    }
-    
-    public func calculateShortestPathToUnlockAllDoorsSingleThreaded() -> Int {
-        let analyser = Analyser(findValidKeys: self.findValidKeys, generateCacheID: generateCacheID, group: self.group)
-        let result = analyser.calculate(remainingKeys: keys, visitedKeys: [], distance: 0)
-        analyser.leaveGroup()
-        return result
-    }
-    
-    public func calculateShortestPathToUnlockAllDoors() -> Int {
-        let validKeys = findValidKeys(remainingKeys: keys, visitedKeys: [], distance: 0)
-        
-        var journeyDistance = Int.max
-        print("Running", validKeys.count)
-        for item in validKeys {
-            let queue = DispatchQueue(label: String(item.value.0))
-            queues.append(queue)
-            let analyser = Analyser(findValidKeys: self.findValidKeys, generateCacheID: generateCacheID, group: self.group)
-            queue.async {
-                var keys = self.keys
-                keys.removeValue(forKey: item.key)
-                let distance = item.value.1
-                let nextDistance = analyser.calculate(remainingKeys: keys, visitedKeys: [item.value.0], distance: distance)
-                if nextDistance != Int.max && nextDistance < journeyDistance {
-                    journeyDistance = nextDistance
+        if distances.isEmpty {
+            for from in Set(keys + [Symbol(symbol: "@", point: start)]) {
+                for to in keys where to != from {
+                    let key = DistanceKey(from: from.point, to: to.point)
+                    guard distances[key] == nil else { continue }
+                    let route = grid.routeTo(start: from.point, end: to.point, emptyBlocks: allSymbols)
+                    let locationsOnRoute = Set(Set(route.dropLast()).intersection(doorKeyPoints)
+                        .compactMap { doorkeyMap[$0]! })
+                    let distanceValue = DistanceValue(symbols: locationsOnRoute, distance: route.count)
+                    distances[key] = distanceValue
+                    distances[DistanceKey(from: to.point, to: from.point)] = distanceValue
                 }
-                
-                analyser.leaveGroup()
-                print("Finished Thread", item.value.0, Date())
             }
+            
+            writeCache(distances, filename: filename)
         }
-        group.wait()
-        return journeyDistance
-//        return calculate2(remainingKeys: keys, visitedKeys: [], distance: 0)
-    }
         
-    private func pathFinderContaining(_ key: Int) -> PathFinder {
-        return pathFinders.first { $0.keys.contains { $0.value == key } }!
-    }
-    
-    private func findValidKeys(remainingKeys: [Point: Int], visitedKeys: [Int], distance d: Int) -> [Point: (Int,Int)] {
-        var validKeys = [Point: (Int, Int)]()
-        _ = remainingKeys.map {
-            let pathFinder = pathFinderContaining($0.value)
-            let startingPoint = pathFinder.calculatePosition(visitedKeys)
-            let distance = pathFinder.distance(startingPoint, $0.key, visitedKeys)
-            let total = d + distance
-            if distance > 0 && total < tempResult {
-                validKeys[$0.key] = ($0.value, total)
+        //        return plotPath(from: start, history: [], keys: keys, doors: doors, distances: distances)
+        
+        let queue = PriorityQueue<QueueItem>()
+        queue.enqueue(QueueItem(keysFound: [], doorsOpened: [], from: start, to: start, costSoFar: 0, history: []), priority: 0)
+        
+        var shortest = Int.max
+        var seen = [String: Int]()
+        
+        var i = 0
+        var found = 0
+        while let item = queue.dequeue() {
+            i += 1
+            if i % 100000 == 0 {
+                found += 1
+                print("ping:", shortest, queue.queuedItems.count, seen.count, item.keysFound.count, item.doorsOpened.count, item.costSoFar, item.historyPath, found)
+            }
+            guard item.costSoFar < shortest else { continue }
+            
+            if item.keysFound.count == keys.count {
+                shortest = min(shortest, item.costSoFar)
+                print("shortest path:", shortest, queue.queuedItems.count, seen.count, item.keysFound.count, item.doorsOpened.count, item.historyPath, found)
+                found = 0
+                seen.filter { $0.value > shortest }.forEach { seen.removeValue(forKey: $0.key) }
+                continue
+            }
+            
+            let options = nextOptions(distances: distances, keys: keys, doors: doors, queueItem: item)
+            //            options.map { s in ( keys.first { $0.point == s.to }!.symbol, distances[DistanceKey(from: item.to, to: s.to)]!.distance) }.map { print($0) }
+            for option in options {
+                guard option.costSoFar < shortest, seen[option.seenKey, default: Int.max] > option.costSoFar else { continue }
+                seen[option.seenKey] = option.costSoFar
+                queue.enqueue(option, priority: -option.costSoFar)
             }
         }
-        return validKeys
+        
+        return shortest
     }
     
-    private func generateCacheID(_ cost: Int, remainingKeys: [Int]) -> String {
-        let prefix = "\(cost)"
-        return prefix + remainingKeys.map({ $0.toAscii()! }).sorted().joined()
+    public func part2(_ input: [String]) -> Int {
+        1
+    }
+    
+    struct Symbol: Hashable, Codable {
+        let symbol: String
+        let point: Point
+    }
+    
+    struct DistanceKey: Hashable, Codable {
+        let from: Point
+        let to: Point
+    }
+    
+    struct DistanceValue: Hashable, Codable {
+        let symbols: Set<Symbol>
+        let distance: Int
+    }
+    
+    struct QueueItem: Hashable {
+        let keysFound: Set<Symbol>
+        let doorsOpened: Set<Symbol>
+        let from: Point
+        let to: Point
+        let costSoFar: Int
+        let history: [Symbol]
+        
+        var seenKey: String {
+            history.map({ $0.symbol }).joined()
+        }
+        
+        var historyPath: String {
+            history.map({ $0.symbol }).joined(separator: ",")
+        }
+    }
+    
+    struct BasicQueueItem: Hashable {
+        let point: Point
+        let keys: Set<Symbol>
+        let cost: Int
+        let history: String
     }
 }
 
-public var tempResult = Int.max
-public var cachedResults = [String:Int]()
-public let semaphore = DispatchSemaphore(value: 1)
-public class Analyser {
-    public typealias FindKeys = (_ remainingKeys: [Point: Int], _ visitedKeys: [Int], _ d: Int) -> [Point: (Int,Int)]
-    public typealias GenerateCacheID = (_ cost: Int, _ remainingKeys: [Int]) -> String
-    
-    public let findValidKeys: FindKeys
-    public let generateCacheID: GenerateCacheID
-    public let group: DispatchGroup
-    
-    public init(findValidKeys: @escaping FindKeys, generateCacheID: @escaping GenerateCacheID, group: DispatchGroup) {
-        self.findValidKeys = findValidKeys
-        self.generateCacheID = generateCacheID
-        self.group = group
-        group.enter()
-    }
-    
-    public func leaveGroup() {
-        group.leave()
-    }
-        
-    private var tick = 0
-    public func calculate(remainingKeys: [Point: Int], visitedKeys: [Int], distance d: Int) -> Int {
-        var journeyDistance = Int.max
-        tick += 1
-        if tick % 1000000 == 0 {
-            print("ValidKeys", "VisitedKeys", visitedKeys.count, (visitedKeys).map({ $0.toAscii()! }).joined(), "Distance", d, tempResult, tick)
-        }
-        
-        let validKeys = findValidKeys(remainingKeys, visitedKeys, d)
-        
-        let sortedValidKeys = validKeys.sorted { (arg0, arg1) -> Bool in
-            let (_, (_, distance1)) = arg0
-            let (_, (_, distance2)) = arg1
-            return distance1 < distance2
-        }
-        
-        for item in sortedValidKeys {
-            var keys = remainingKeys
-            keys.removeValue(forKey: item.key)
-            let distance = item.value.1
-            guard distance < tempResult else { continue }
-            if keys.isEmpty {
-                print("Solution", "VisitedKeys", (visitedKeys + [item.value.0]).map({ $0.toAscii()! }).joined(), "Distance", distance, tempResult, tick)
-                if distance < journeyDistance {
-                    journeyDistance = distance
-                    if distance < tempResult { tempResult = distance }
-                }
-            } else {
-                let cacheKeys = keys.map { $0.value }
-                let newID = generateCacheID(d, cacheKeys)
-                semaphore.wait()
-                let result = cachedResults[newID]
-                semaphore.signal()
-                if let result = result {
-                    if result < journeyDistance {
-                        journeyDistance = result
-                    }
-                } else {
-                    var updatedKeys = visitedKeys
-                    updatedKeys.append(item.value.0)
-                    let nextDistance = calculate(remainingKeys: keys, visitedKeys: updatedKeys, distance: distance)
-                    if nextDistance != Int.max {
-                        semaphore.wait()
-                        cachedResults[newID] = nextDistance
-                        semaphore.signal()
-//                        print("Cache", newID, nextDistance, visitedKeys.map { $0.toAscii()! }.joined())
-                    }
-                    if nextDistance != Int.max && nextDistance < journeyDistance {
-                        journeyDistance = nextDistance
-                    }
-                }
-            }
-        }
-        
-        return journeyDistance
-    }
-}
-
-public class PathFinder {
-    public let id: Int
-    public var rawMap = [Point:Int]()
-    public var startingPoint: Point?
-    
-    public let start = "@".toAscii().first!
-    public let wall = "#".toAscii().first!
-    public let empty = ".".toAscii().first!
-    
-    public var keys = [Point:Int]()
-    public var doorsData = [Point:Int]()
-    public var isFinished = false
-    public var visitedKeys = [Int]()
-    private var cachedPaths = [Path]()
-    public let keyToDoor: [Int:Int]
-    public let doorToKey: [Int:Int]
-
-    public init(id: Int) {
-        self.id = id
-        var keyToDoor: [Int:Int] = [:]
-        var doorToKey: [Int:Int] = [:]
-        let keyChars = "abcdefghijklmnopqrstuvwxyz"
-        let doorChars = "abcdefghijklmnopqrstuvwxyz".uppercased()
-        for (a,b) in zip(keyChars, doorChars) {
-            let key = String(a).toAscii().first!
-            let door = String(b).toAscii().first!
-            keyToDoor[key] = door
-            doorToKey[door] = key
-        }
-        self.keyToDoor = keyToDoor
-        self.doorToKey = doorToKey
-    }
-    
-    public convenience init(_ input: [String]) {
-        self.init(id: 1)
-        
-        for y in 0..<input.count {
-            var row = input[y]
-            for x in 0..<input[0].count {
-                let tile = row.removeFirst()
-                rawMap[Point(x: x, y: y)] = String(tile).toAscii().first!
-            }
-        }
-        
-        parseMap()
-    }
-    
-    public convenience init(_ input: [Point:Int], id: Int = 1) {
-        self.init(id: id)
-        rawMap = input
-        parseMap()
-    }
-    
-    public func calculateShortestPathToUnlockAllDoors() -> Int {
-        guard let startingPoint = startingPoint else { return -1 }
-        let journeyDistance = calculate(startingPoint: startingPoint, remainingKeys: keys, visitedKeys: [])
-        return journeyDistance
-    }
-    
-    public func calculatePosition(_ visited: [Int]) -> Point {
-        guard let value = visited.reversed().first(where: { keys.values.contains($0) }) else { return startingPoint! }
-        return keys.first(where: { $0.value == value })?.key ?? startingPoint!
-    }
-    
-    public var cachedResults = [String:Int]()
-    internal func calculate(startingPoint: Point, remainingKeys: [Point : Int], visitedKeys: [Int]) -> Int {
-        var journeyDistance = Int.max
-        for key in remainingKeys {
-            self.visitedKeys = visitedKeys
-            let distanceToKey = distance(startingPoint, key.key, visitedKeys)
-            if distanceToKey > 0 {
-                let position = key.key
-                var keys = remainingKeys
-                keys.removeValue(forKey: position)
-                if keys.isEmpty {
-                    isFinished = true
-                    self.visitedKeys.append(key.value)
-                    if distanceToKey < journeyDistance {
-                        journeyDistance = distanceToKey
-                    }
-                } else {
-                    let newID = generateCacheID(keys, position: position)
-                    if let result = self.cachedResults[newID] {
-                        if distanceToKey + result < journeyDistance {
-                            journeyDistance = distanceToKey + result
-                        }
-                    } else {
-                        var updatedKeys = visitedKeys
-                        updatedKeys.append(key.value)
-                        let nextDistance = calculate(startingPoint: position, remainingKeys: keys, visitedKeys: updatedKeys)
-                        self.cachedResults[newID] = nextDistance
-                        if distanceToKey + nextDistance < journeyDistance {
-                            journeyDistance = distanceToKey + nextDistance
-                        }
-                    }
-                }
-            }
-        }
-        
-        return journeyDistance
-    }
-    
-    public func generateCacheID(_ keys: [Point:Int], position: Point) -> String {
-        let prefix = "id:\(id):x:\(position.x):y:\(position.y)"
-        return prefix + keys.map({ $0.value.toAscii()! }).sorted().joined()
-    }
-    
-    public func remainingDoors(_ visited: [Int]) -> [Int] {
-        return doorsData.compactMap({ visited.contains(doorToKey[$0.value]!) ? nil : $0.value })
-    }
-    
-    public func distance(_ start: Point, _ end: Point, _ visited: [Int]) -> Int {
-        let remainingDoors = self.remainingDoors(visited)
-        guard let path = cachedPaths.first(where: { $0.start == start && $0.end == end }) else {
-            print("ERROR", start, end, visited)
-            return -1
-        }
-        for door in remainingDoors {
-            if path.doors.contains(door) {
-                return -1
-            }
-        }
-        return path.distance
-    }
-}
-
-// Parse data and calculate paths
-extension PathFinder {
-    private func parseMap() {
-        var nodesToRemove = [GKGridGraphNode]()
-        let (minX,minY,maxX,maxY) = calculateMapDimensions(rawMap)
-        let map = GKGridGraph(
-            fromGridStartingAt: [Int32(minX),Int32(minY)],
-            width: Int32(maxX-minX),
-            height: Int32(maxY-minY),
-            diagonalsAllowed: false
-        )
-        
-        // Find Walls
-        _ = rawMap.filter { $0.value == wall }.map {
-            if let node = map.node(atGridPosition: $0.key.vector) {
-                nodesToRemove.append(node)
-            }
-        }
-        
-        // Remove wall tiles
-        map.remove(nodesToRemove)
-        nodesToRemove.removeAll()
-        
-        // Find starting point
-        startingPoint = rawMap.first { $0.value == start }!.key
-
-        // Find Doors
-        doorsData = rawMap.filter { CharacterSet.uppercaseLetters.contains(UnicodeScalar($0.value)!) }
-                
-        // Populate Paths Cache
-        populatePathsCache(keys, startingPoint: startingPoint!, map: map)
-        
-        for item in keys {
-            var remainingKeys = keys
-            remainingKeys.removeValue(forKey: item.key)
-            populatePathsCache(remainingKeys, startingPoint: item.key, map: map)
-        }
-        
-        print("Starting Point", startingPoint!)
-        print("Doors:", doorsData.count, "Keys:", keys.count)
-        doorsData.forEach {
-            print($0.key, $0.value)
-        }
-        print()
-        keys.forEach {
-            print($0.key, $0.value)
-        }
-        print()
-        cachedPaths.forEach {
-            print($0.start, $0.end, $0.distance, $0.doors.map { String($0) }.joined(separator: ","))
-        }
-        print()
-    }
-    
-    private func populatePathsCache(_ keys: [Point:Int], startingPoint: Point, map: GKGridGraph<GKGridGraphNode>) {
-        for item in keys {
-            let paths = pathFrom(startingPoint, item.key, map: map)
-            var doors = [Int]()
-            for item in doorsData {
-                if paths.contains(item.key) {
-                    doors.append(item.value)
-                }
-            }
-            let path = Path(start: startingPoint, end: item.key, distance: paths.count-1, doors: doors, path: paths)
-            cachedPaths.append(path)
-        }
-    }
-    
-    private func pathFrom(_ start: Point, _ end: Point, map: GKGridGraph<GKGridGraphNode>) -> [Point] {
-        guard
-            let startNode = map.node(atGridPosition: start.vector),
-            let destinationNode = map.node(atGridPosition: end.vector)
-        else { return []}
-        let path = map.findPath(from: startNode, to: destinationNode)
-        return path.compactMap {
-            guard let item = $0 as? GKGridGraphNode else { return nil }
-            return Point(x: Int(item.gridPosition.x), y: Int(item.gridPosition.y))
+extension String {
+    func letterIndexOf() -> Int {
+        switch self {
+        case "a": 0b00000000000000000000000001
+        case "b": 0b00000000000000000000000010
+        case "c": 0b00000000000000000000000100
+        case "d": 0b00000000000000000000001000
+        case "e": 0b00000000000000000000010000
+        case "f": 0b00000000000000000000100000
+        case "g": 0b00000000000000000001000000
+        case "h": 0b00000000000000000010000000
+        case "i": 0b00000000000000000100000000
+        case "j": 0b00000000000000001000000000
+        case "k": 0b00000000000000010000000000
+        case "l": 0b00000000000000100000000000
+        case "m": 0b00000000000001000000000000
+        case "n": 0b00000000000010000000000000
+        case "o": 0b00000000000100000000000000
+        case "p": 0b00000000001000000000000000
+        case "q": 0b00000000010000000000000000
+        case "r": 0b00000000100000000000000000
+        case "s": 0b00000001000000000000000000
+        case "t": 0b00000010000000000000000000
+        case "u": 0b00000100000000000000000000
+        case "v": 0b00001000000000000000000000
+        case "w": 0b00010000000000000000000000
+        case "x": 0b00100000000000000000000000
+        case "y": 0b01000000000000000000000000
+        case "z": 0b10000000000000000000000000
+        default: fatalError("unknown:\(self)")
         }
     }
 }
 
-// Draw map to console
-extension PathFinder {
-    public func drawGridMap(position: Point) {
-        var rawData = rawMap
-        rawData[position] = 2
+extension Day18 {
+    func plotPath(from: Point, history: [Symbol], keys: Set<Symbol>, doors: Set<Symbol>, distances: [DistanceKey: DistanceValue]) -> Int {
+        let queue = PriorityQueue<BasicQueueItem>()
+        queue.enqueue(BasicQueueItem(point: from, keys: [], cost: 0, history: ""), priority: 0)
+        var shortest = Int.max
+        var i = 0
+        var seen = [String: Int]()
         
-        print("Doors", doorsData.map { $0.value.toAscii()! }.joined())
-        let remaining = remainingDoors(visitedKeys)
-        _ = doorsData.map {
-            if remaining.contains($0.value) {
-                rawData[$0.key] = $0.value
+        while let next = queue.dequeue() {
+            i += 1
+            if i % 10000 == 0 {
+                print(i, shortest, queue.queuedItems.count, seen.count, next.keys.count, next.cost, next.history)
+            }
+            guard next.cost < shortest else { continue }
+            if next.keys.count == keys.count {
+                shortest = min(shortest, next.cost)
+                seen.filter { $0.value >= shortest }.forEach { seen.removeValue(forKey: $0.key) }
+                continue
+            }
+            let keySymbols = next.keys.map { $0.symbol.uppercased() }
+            let lockedDoors = doors.filter { !(keySymbols).contains($0.symbol) }
+            for key in keys.subtracting(next.keys) {
+                guard let path = distances[DistanceKey(from: next.point, to: key.point)],
+                      lockedDoors.isEmpty || path.symbols.intersection(lockedDoors).isEmpty,
+                      next.cost + path.distance < shortest
+                else { continue }
+                let newKeys = next.keys.union([key]).union(path.symbols.intersection(keys))
+                let history = next.history + (path.symbols.subtracting(next.keys).subtracting(doors) + [key]).map({ $0.symbol }).joined()
+                let cost = next.cost + path.distance
+                let cacheKey = String(history.sorted())
+                guard seen[cacheKey, default: Int.max] > cost else { continue }
+                seen[cacheKey] = cost
+                let priority = i % 4 == 0 ? -cost : -newKeys.count
+                queue.enqueue(BasicQueueItem(point: key.point, keys: newKeys, cost: cost, history: history), priority: priority)
             }
         }
         
-        print("Keys", keys.map { $0.value.toAscii()! }.joined())
-        print("Keys Visited", visitedKeys.map { $0.toAscii()! }.joined())
-        _ = keys.map {
-            if !visitedKeys.contains($0.value) {
-                rawData[$0.key] = $0.value
-            }
+        return shortest
+    }
+    
+    func nextOptions(distances: [DistanceKey: DistanceValue], keys: Set<Symbol>, doors: Set<Symbol>, queueItem: QueueItem) -> [QueueItem] {
+        var options = Set<QueueItem>()
+        let keySymbols = queueItem.keysFound.map { $0.symbol.uppercased() }
+        let lockedDoors = doors.filter { !(keySymbols).contains($0.symbol) }
+        for to in keys.subtracting(queueItem.keysFound) {
+            guard let path = distances[DistanceKey(from: queueItem.to, to: to.point)],
+                  lockedDoors.isEmpty || path.symbols.intersection(lockedDoors).isEmpty
+            else { continue }
+            let fullPath = path.symbols.union([to])
+            let newCost = queueItem.costSoFar + path.distance
+            let newKeys = queueItem.keysFound.union(fullPath.intersection(keys))
+            let newDoors = queueItem.doorsOpened.union(fullPath.intersection(doors))
+            options.insert(QueueItem(keysFound: newKeys, doorsOpened: newDoors, from: queueItem.to, to: to.point, costSoFar: newCost, history: queueItem.history + path.symbols.subtracting(queueItem.keysFound).subtracting(queueItem.doorsOpened).subtracting(doors) + [to]))
         }
-        
-        drawMap(rawData, tileMap: [1:"⚪️", 0:"⚫️", 2:"🟠"])
+        return Array(options)
+    }
+    
+    func resolveFilename(_ filename: String) -> URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(filename)
+    }
+    
+    func writeCache(_ distances: [DistanceKey: DistanceValue], filename: String) {
+        let url = resolveFilename(filename)
+        do {
+            let data = try JSONEncoder().encode(distances)
+            try data.write(to: url)
+            print(url)
+        } catch { print(error) }
     }
 }

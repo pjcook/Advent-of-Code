@@ -64,6 +64,18 @@ public struct Grid<T: Hashable>: Hashable {
         return points
     }
     
+    public func points(for values: [T]) -> [Point] {
+        var points = [Point]()
+        
+        for i in (0..<items.count) {
+            if values.contains(items[i]) {
+                points.append(point(for: i))
+            }
+        }
+        
+        return points
+    }
+    
     public var points: [Point: T] {
         var points = [Point: T]()
         
@@ -273,11 +285,17 @@ extension Grid where T == String {
         return costSoFar[end, default: -1]
     }
     
-    struct DijkstraCacheItem<E: Hashable>: Hashable {
-        let previous: E
-        let value: E
-        let costSoFar: Int
-        let history: [E]
+    public struct DijkstraCacheItem<E: Hashable>: Hashable {
+        public let previous: E
+        public let value: E
+        public let costSoFar: Int
+        public let history: [E]
+        public init(previous: E, value: E, costSoFar: Int, history: [E]) {
+            self.previous = previous
+            self.value = value
+            self.costSoFar = costSoFar
+            self.history = history
+        }
     }
     
     public func dijkstra(

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Point: Hashable, Comparable, CustomStringConvertible {
+public struct Point: Hashable, Comparable, CustomStringConvertible, Codable {
     public var x: Int
     public var y: Int
     
