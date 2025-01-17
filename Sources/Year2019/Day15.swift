@@ -74,7 +74,6 @@ extension Day15 {
                 
             case .hitWall:
                 update(point: droid.point + droid.direction.point, to: .wall)
-                let previousDirection = droid.direction
                 
                 // use a remaining option
                 if let remainingOption = getRemainingOption(point: droid.point) {

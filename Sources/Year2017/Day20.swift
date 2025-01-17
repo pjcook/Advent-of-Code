@@ -19,7 +19,7 @@ public struct Day20 {
 
         for p in 0..<particles.count {
             var particle = particles[p]
-            for i in 0..<1000 {
+            for _ in 0..<1000 {
                 particle = Particle(position: particle.position + particle.velocity + particle.acceleration, velocity: particle.velocity + particle.acceleration, acceleration: particle.acceleration)
             }
             let dx = particle.position.manhattanDistance(to: .zero)

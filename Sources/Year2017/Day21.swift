@@ -21,7 +21,7 @@ public struct Day21 {
 ###
 """.lines
         
-        for i in 0..<iterations {
+        for _ in 0..<iterations {
             var nextGrid = [String]()
             let size = grid[0].count
             let dx = size % 2 == 0 ? 2 : 3

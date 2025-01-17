@@ -25,7 +25,6 @@ public struct Day18 {
     public func part1c(_ input: [String]) -> Int {
         var grid = Grid<String>(input)
         let symbols = grid.items.filter { Alphabet.letters.lowercased().contains($0) }.sorted()
-        var shortest = Int.max
         let start = grid.point(for: "@")!
         grid[start] = "."
         

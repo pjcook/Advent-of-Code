@@ -28,7 +28,6 @@ public struct Day17 {
     }
     
     public func part2(_ input: Int) -> Int {
-        var list = [0]
         var position = 0
         var zeroIndex = 0
         var lastValue: Int?

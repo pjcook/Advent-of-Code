@@ -1,21 +1,18 @@
 //
-//  Day9.swift
-//  Year2019
-//
-//  Created by PJ COOK on 08/12/2019.
-//  Copyright © 2019 Software101. All rights reserved.
+//  Created by PJ on 16/01/2025.
 //
 
 import Foundation
 import StandardLibraries
 
-public final class Day9 {
+public final class Day5 {
     public init() {}
-    private var systemID: Int = 1
     
-    public func part1(_ input: [Int], code: Int) -> Int {
+    private var systemID = 1
+    
+    public func part1(_ input: [Int], code: Int = 1) -> Int {
         systemID = code
-        let computer = Computer(forceWriteMode: false)
+        let computer = Computer(forceWriteMode: true)
         computer.delegate = self
         
         computer.loadProgram(input)
@@ -28,7 +25,7 @@ public final class Day9 {
     }
 }
 
-extension Day9: ComputerDelegate {
+extension Day5: ComputerDelegate {
     public func processOutput(id: Int, value: Int) {}
     
     public func readInput(id: Int) -> Int { systemID }

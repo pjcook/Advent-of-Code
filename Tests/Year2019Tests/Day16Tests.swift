@@ -10,6 +10,7 @@ import XCTest
 import InputReader
 import Year2019
 
+// TODO: optimisation
 class Day16Tests: XCTestCase {
     let input = try! readInputAsStrings(filename: "Day16.input", bundle: .module)
 

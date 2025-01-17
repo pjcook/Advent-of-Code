@@ -10,6 +10,7 @@ import XCTest
 import InputReader
 import Year2019
 
+// TODO: optimisation migrate to Computer
 class Day17Tests: XCTestCase {
 
     func test_part1() throws {

@@ -8,66 +8,41 @@
 
 import Foundation
 import InputReader
+import StandardLibraries
 
-public struct IntCodeComputer {
-    public enum OpCode: Int {
-        case add = 1
-        case multiply = 2
-        case finished = 99
-    }
-
-    private var data: [Int]
-    public var readData: [Int] { return data }
+public struct Day2 {
+    public init() {}
     
-    public init(data: [Int]) {
-        self.data = data
-    }
-    
-    public mutating func process() throws {
-        guard !data.isEmpty else { throw Errors.intCodeNoData }
-        var position = 0
-        let dataCount = data.count
-        guard var opCode = OpCode(rawValue: data[position]) else { throw Errors.invalidOpCode }
-        while opCode != .finished {
-            guard position+3 < dataCount else { throw Errors.intCodeInvalidIndex }
-            let value1 = data[data[position+1]]
-            let value2 = data[data[position+2]]
-            let endIndex = data[position+3]
-            
-            switch opCode {
-            case .add: data[endIndex] = value1 + value2
-            case .multiply: data[endIndex] = value1 * value2
-            case .finished: break
-            }
-
-            position = position + 4
-            guard position < dataCount else { throw Errors.intCodeInvalidIndex }
-            guard let newOpCode = OpCode(rawValue: data[position]) else { throw Errors.invalidOpCode }
-            opCode = newOpCode
+    public func part1(_ input: [Int]) -> Int {
+        let computer = Computer(forceWriteMode: true)
+        computer.loadProgram(input)
+        
+        while !computer.isFinished {
+            computer.tick()
         }
+        
+        return computer.registerValue(for: 0) ?? -1
     }
     
-    public static func computeProgram(data: [Int]) throws -> Int {
-        var computer = IntCodeComputer(data: data)
-        try computer.process()
-        return computer.readData[0]
-    }
-}
+    public func part2(_ input: [Int], expectedOutput: Int) -> Int {
+        let computer = Computer(forceWriteMode: true)
+        var input = input
 
-public func calculateNounVerb(expectedResult: Int, data: [Int]) throws -> (Int, Int) {
-    var data = data
-    
-    for noun in 3..<99 {
-        for verb in 3..<(99/2)+1 {
-            data[1] = noun
-            data[2] = verb
-            var computer = IntCodeComputer(data: data)
-            try computer.process()
-            if computer.readData[0] == expectedResult {
-                return (noun, verb)
+        for noun in 3..<99 {
+            for verb in 3..<(99/2)+1 {
+                input[1] = noun
+                input[2] = verb
+                computer.loadProgram(input)
+                computer.reset()
+                while !computer.isFinished {
+                    computer.tick()
+                }
+                if computer.registerValue(for: 0) ?? -1 == expectedOutput {
+                    return 100 * noun + verb
+                }
             }
         }
+        
+        return -1
     }
-    throw Errors.calculateNounVerbNoResult
-    
 }

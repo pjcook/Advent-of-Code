@@ -10,6 +10,7 @@ import XCTest
 import InputReader
 import Year2019
 
+// TODO: optimisation migrate to Computer
 class Day21Tests: XCTestCase {
     let input = try! readInputAsIntegers(filename: "Day21.input", delimiter: ",", bundle: .module)
     

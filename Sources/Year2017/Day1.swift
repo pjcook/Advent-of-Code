@@ -30,7 +30,7 @@ public struct Day1 {
     }
     
     public func part2(_ input: [Int]) -> Int {
-        var dx = input.count / 2
+        let dx = input.count / 2
         var i = 0
         var count = 0
         

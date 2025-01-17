@@ -9,7 +9,7 @@
 import Foundation
 import InputReader
 
-public class SteppedIntComputer: Hashable {
+public final class SteppedIntComputer: Hashable {
     public typealias ReadInput = ()->Int?
     public typealias ProcessOutput = (Int)->Void
     public typealias CompletionHandler = ()->Void

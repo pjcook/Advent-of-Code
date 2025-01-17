@@ -11,62 +11,26 @@ import InputReader
 import Year2019
 
 class Day2Tests: XCTestCase {
-
-    func test_computer_with_no_data() throws {
-        let data = [Int]()
-        var computer = IntCodeComputer(data: data)
-        XCTAssertThrowsError(try computer.process(), "Failed") { error in
-            guard let error = error as? Errors else { return XCTFail() }
-            XCTAssertEqual(error, Errors.intCodeNoData)
-        }
+    
+    let input = Input("Day2.input", Bundle.module).delimited(",", cast: Int.init).compactMap({ $0 })
+    let day = Day2()
+    
+    func test_part1() {
+        var values = input
+        values[1] = 12
+        values[2] = 2
+        XCTAssertEqual(5290681, day.part1(values))
     }
     
-    func test_computer_with_invalid_data() throws {
-        let data = [1,2,3]
-        var computer = IntCodeComputer(data: data)
-        XCTAssertThrowsError(try computer.process(), "Failed") { error in
-            guard let error = error as? Errors else { return XCTFail() }
-            XCTAssertEqual(error, Errors.intCodeInvalidIndex)
-        }
+    func test_part1_example() {
+        XCTAssertEqual(3500, day.part1([1,9,10,3,2,3,11,0,99,30,40,50]))
+        XCTAssertEqual(2, day.part1([1,0,0,0,9]))
+        XCTAssertEqual(2, day.part1([2,3,0,3,99]))
+        XCTAssertEqual(2, day.part1([2,4,4,5,99,0]))
+        XCTAssertEqual(30, day.part1([1,1,1,4,99,5,6,0,99]))
     }
     
-    func test_computer_with_valid_data() throws {
-        XCTAssertEqual(3500, try IntCodeComputer.computeProgram(data: [1,9,10,3,2,3,11,0,99,30,40,50]))
-        
-        var computer = IntCodeComputer(data: [1,0,0,0,99])
-        try computer.process()
-        XCTAssertEqual(2, computer.readData[0])
-        
-        computer = IntCodeComputer(data: [2,3,0,3,99])
-        try computer.process()
-        XCTAssertEqual(2, computer.readData[0])
-        XCTAssertEqual(6, computer.readData[3])
-        
-        computer = IntCodeComputer(data: [2,4,4,5,99,0])
-        try computer.process()
-        XCTAssertEqual(2, computer.readData[0])
-        XCTAssertEqual(9801, computer.readData[5])
-        
-        computer = IntCodeComputer(data: [1,1,1,4,99,5,6,0,99])
-        try computer.process()
-        XCTAssertEqual(30, computer.readData[0])
-    }
-    
-    let input = try! readInputAsIntegers(filename: "Day2.input", delimiter: ",", bundle: .module)
-    
-    func test_calculate_day2_part1_result() throws {
-        var data = input
-        data[1] = 12
-        data[2] = 2
-        XCTAssertEqual(153, data.count)
-        let result = try IntCodeComputer.computeProgram(data: data)
-        XCTAssertEqual(5290681, result)
-    }
-    
-    func test_calculate_day2_part2_result() throws {
-        let result = try calculateNounVerb(expectedResult: 19690720, data: input)
-        XCTAssertEqual(57, result.0)
-        XCTAssertEqual(41, result.1)
-        XCTAssertEqual(5741, 100*result.0+result.1)
+    func test_part2() {
+        XCTAssertEqual(5741, day.part2(input, expectedOutput: 19690720))
     }
 }

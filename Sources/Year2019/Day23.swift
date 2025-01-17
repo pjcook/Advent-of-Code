@@ -8,156 +8,108 @@
 
 import Foundation
 
-public class ShipNetwork {
-    private var computers = [Int:NetworkComputer]()
-    private let numberOfComputers: Int
-    private let natQueue = DispatchQueue(label: "NAT")
-    public var finalOutput = 0
-    public let group = DispatchGroup()
-    public var queues = [DispatchQueue]()
-    public var isPart1 = true
+public final class Day23 {
+    public init() {}
+    private var x = 0
+    private var y = 0
+    private var isPart1 = true
+    private var computers = [Int: (Computer, [Int], [Int])]()
+    public var output: Int?
+    public var runningComputers = 0
 
-    public init(_ input: [Int], numberOfComputers: Int) {
-        self.numberOfComputers = numberOfComputers
-        for i in 0..<numberOfComputers {
-            let computer = NetworkComputer(input, id: i, network: self)
-            computers[i] = computer
+    public func part1(_ input: [Int], isPart1: Bool) -> Int {
+        self.isPart1 = isPart1
+        computers.removeAll()
+        (0...49).forEach {
+            let computer = Computer(id: $0, forceWriteMode: false)
+            computers[$0] = (computer, [$0], [])
+            computer.loadProgram(input)
+            computer.delegate = self
         }
-    }
-    
-    public func process() {
-        computers.forEach { item in
-            let queue = DispatchQueue(label: String(item.value.id))
-            queue.async {
-                item.value.enterGroup(self.group)
-                item.value.process()
+        runningComputers = computers.count
+        
+        while runningComputers > 0 {
+            for (computer, _, _) in computers.values {
+                computer.tick()
             }
-            queues.append(queue)
         }
         
-        group.wait()
+        return output ?? -1
     }
     
-    private func stopNetworkComputers() {
-        for queue in queues {
-            queue.suspend()
-        }
-        for item in computers {
-            item.value.leaveGroup(group)
+    func stopComputers() {
+        for (computer, _, _) in computers.values {
+            computer.stop()
         }
     }
     
-    public var x = 0
-    public var y = 0
-    public func sendMessage(address: Int, x: Int, y: Int) {
-//        print("sendMessage", address, x, y)
-        if isPart1 && address == 255 {
-            finalOutput = y
-            stopNetworkComputers()
-        } else if !isPart1 && address == 255 {
-            self.x = x
-            self.y = y
-//            print("sendMessage", address, x, y)
-        }
-        guard let computer = computers[address] else { return }
-        computer.addInput(x: x, y: y)
+    func isIdleNetwork() -> Bool {
+        guard idleComputers.count == computers.count else { return false }
+        return idleComputers.reduce(0) { $0 + ($1.value > 1 ? 1 : 0) } == computers.count
     }
     
-    private func isAllQueuesEmpty() -> Bool {
-        return computers.reduce(0, { $0 + ($1.value.hasInputs ? 1 : 0) }) == 0
-    }
-    
-    private func isNetworkIdle() -> Bool {
-        if idleComputers.count != numberOfComputers { return false }
-        return idleComputers.reduce(0, { $0 + ($1.value > 1 ? 1 : 0) }) == numberOfComputers
-    }
-    
-    private var idleComputers = [Int:Int]()
-    private var sentByNat = [Int:Int]()
-    public func readingEmptyInput(_ id: Int) {
-        natQueue.async {
-            self.idleComputers[id] = (self.idleComputers[id, default: 0]) + 1
-            if self.isNetworkIdle() && self.y != 0 {
-                self.idleComputers.removeAll()
-                self.sendMessage(address: 0, x: self.x, y: self.y)
-                let count = (self.sentByNat[self.y, default: 0]) + 1
-                if count > 1 {
-                    self.finalOutput = self.y
-                    self.stopNetworkComputers()
-                }
-                self.sentByNat[self.y] = count
-            }
+    private var lastNatMessageValue: Int?
+    func nudgeNat() {
+        if lastNatMessageValue == y {
+            output = y
+            stopComputers()
+        } else {
+            lastNatMessageValue = y
+            sendMessage(id: 0, x: x, y: y)
         }
     }
     
-    public func computerFinished(address: Int) {
-        guard let computer = computers[address] else { return }
-        computer.leaveGroup(group)
-        computers.removeValue(forKey: address)
+    private var idleComputers = [Int: Int]()
+    func computerIdle(id: Int) {
+        guard y != 0 else { return }
+        idleComputers[id] = idleComputers[id, default: 0] + 1
+        if isIdleNetwork() {
+            nudgeNat()
+            idleComputers.removeAll()
+        }
+    }
+    
+    func computerNotIdle(id: Int) {
+        idleComputers[id] = nil
     }
 }
 
-public class NetworkComputer {
-    private var computer: SteppedIntComputer?
-    private var inputs = [Int]()
-    private var outputs = [Int]()
-    private let network: ShipNetwork
-    
-    public var id: Int { return computer!.id }
-    public var hasInputs: Bool { return !inputs.isEmpty }
-    
-    public init(_ input: [Int], id: Int, network: ShipNetwork) {
-        self.network = network
-        inputs.append(id)
-        computer = SteppedIntComputer(
-            id: id,
-            data: input,
-            readInput: readInput,
-            processOutput: processOutput,
-            completionHandler: completionHandler,
-            forceWriteMode: false
-        )
+extension Day23: ComputerDelegate {
+    public func sendMessage(id: Int, x: Int, y: Int) {
+        if isPart1 && id == 255 {
+            output = y
+            stopComputers()
+        } else if !isPart1 && id == 255 {
+            self.x = x
+            self.y = y
+        }
+        guard let (computer, inputs, outputs) = computers[id] else { return }
+        computers[id] = (computer, inputs + [x, y], outputs)
     }
     
-    public func process() {
-        computer?.process()
+    public func processOutput(id: Int, value: Int) {
+        guard let (computer, inputs, outputs) = computers[id] else { return }
+        if outputs.count == 2 {
+            computers[id] = (computer, inputs, [])
+            sendMessage(id: outputs[0], x: outputs[1], y: value)
+        } else {
+            computers[id] = (computer, inputs, outputs + [value])
+        }
     }
     
-    public func addInput(x: Int, y: Int) {
-        inputs.append(x)
-        inputs.append(y)
-    }
-    
-    public func enterGroup(_ group: DispatchGroup) {
-        group.enter()
-    }
-    
-    public func leaveGroup(_ group: DispatchGroup) {
-        group.leave()
-    }
-    
-    private func readInput() -> Int {
-//        print(computer!.id, "readInput:", inputs)
-        guard !inputs.isEmpty else {
-            network.readingEmptyInput(computer!.id)
+    public func readInput(id: Int) -> Int {
+        guard let (computer, inputs, outputs) = computers[id], !inputs.isEmpty else {
+            computerIdle(id: id)
             return -1
         }
-        return inputs.removeFirst()
+        var inputs2 = inputs
+        computerNotIdle(id: id)
+        let value = inputs2.removeFirst()
+        computers[id] = (computer, inputs2, outputs)
+        return value
     }
     
-    private func processOutput(_ value: Int) {
-//        print(computer!.id, "output:", value)
-        outputs.append(value)
-        if outputs.count == 3 {
-            let address = outputs.removeFirst()
-            let x = outputs.removeFirst()
-            let y = outputs.removeFirst()
-            network.sendMessage(address: address, x: x, y: y)
-        }
-    }
-    
-    private func completionHandler() {
-//        print("[\(computer!.id)] FINISHED\n")
-        network.computerFinished(address: computer!.id)
+    public func computerFinished(id: Int) {
+        runningComputers -= 1
     }
 }

@@ -1,135 +1,128 @@
 //
-//  Day7.swift
-//  Year2019
-//
-//  Created by PJ COOK on 07/12/2019.
 //  Copyright © 2019 Software101. All rights reserved.
 //
 
 import Foundation
 import InputReader
+import StandardLibraries
 
-public func processThrusterSettings(_ settings: [Int], _ input: [Int]) throws -> Int {
-    var programInputs = [0]
-    
-    func readInput() -> Int {
-        programInputs.removeFirst()
+public final class Day7 {
+    public init() {}
+    private var inputs = [Int: [Int]]()
+    private var output = 0
+    private var finished = false
+    private var computerID = 0
+
+    public func part1(_ input: [Int], settings: [Int]) -> Int {
+        let computer = Computer(id: 0, forceWriteMode: true)
+        computer.delegate = self
+        
+        var maxValue = 0
+        
+        for combination in generateCombinations(settings) {
+            maxValue = max(maxValue, attemptSequence(input, computer: computer, sequence: combination))
+        }
+        
+        return maxValue
     }
     
-    var output = 0
-    
-    for setting in settings {
-//        print("Running Amplifier:\(setting)")
-        let amp = AdvancedIntCodeComputer(data: input)
-        programInputs = [setting, output]
-        output = amp.process(readInput, processOutput: { _ in })
-    }
+    public func part2(_ input: [Int], settings: [Int]) -> Int {
+        var computers = [Computer]()
+        for i in 0..<5 {
+            let computer = Computer(id: i, forceWriteMode: true)
+            computer.loadProgram(input)
+            computer.delegate = self
+            computers.append(computer)
+        }
 
-    return output
+        var maxValue = 0
+        
+        for combination in generateCombinations(settings) {
+            computers.forEach {
+                $0.loadProgram(input)
+                $0.reset()
+            }
+            maxValue = max(maxValue, attemptSequenceLooped(computers: computers, sequence: combination))
+        }
+        
+        return maxValue
+    }
+    
+    private func attemptSequence(_ input: [Int], computer: Computer, sequence: [Int]) -> Int {
+        var sequence = sequence
+        output = 0
+        inputs = [:]
+        computerID = 0
+        finished = false
+
+        while !sequence.isEmpty {
+            computer.loadProgram(input)
+            computer.reset()
+            let phaseSetting = sequence.removeFirst()
+            var list = inputs[0, default: []]
+            list.append(phaseSetting)
+            list.append(output)
+            inputs[0] = list
+            
+            while !computer.isFinished {
+                computer.tick()
+            }
+            computerID += 1
+            if computerID == 5 { computerID = 0 }
+        }
+        
+        return output
+    }
+    
+    private func attemptSequenceLooped(computers: [Computer], sequence: [Int]) -> Int {
+        inputs = [:]
+        output = 0
+        computerID = 0
+        finished = false
+        
+        for i in 0..<5 {
+            inputs[i] = [sequence[i]]
+        }
+        var list = inputs[0, default: []]
+        list.append(0)
+        inputs[0] = list
+
+        while !finished {
+            while !computers[computerID].isFinished {
+                computers[computerID].tick()
+            }
+            computerID += 1
+            if computerID == 5 { computerID = 0 }
+        }
+        
+        return output
+    }
 }
 
-public class ChainedComputer {
-    private let program: [Int]
-    private var inputs: [Int]
-    private var amplifier: AdvancedIntCodeComputer
-    private let id: String
-    
-    public var lastOutput: Int?
-    public var shouldStopProcessing = false
-    
-    deinit {
-        shouldStopProcessing = true
+extension Day7: ComputerDelegate {
+    public func processOutput(id: Int, value: Int) {
+        output = value
+        var computerID = id + 1
+        if computerID == 5 { computerID = 0 }
+        var list = inputs[computerID]!
+        list.append(value)
+        inputs[computerID] = list
+        self.computerID = computerID
     }
     
-    public init(id: String, inputs: [Int], program: [Int]) {
-        self.id = id
-        self.program = program
-        self.inputs = inputs
-        amplifier = AdvancedIntCodeComputer(data: program)
+    public func readInput(id: Int) -> Int {
+        if inputs[id, default: []].isEmpty { return -1 }
+        var list = inputs[id]!
+        let value = list.removeFirst()
+        inputs[id] = list
+        return value
     }
     
-    public func run(writeInput: ((Int)->Void)?) throws {
-        shouldStopProcessing = false
-        lastOutput = amplifier.process(readInput, processOutput: { input in
-            writeInput?(input)
-        }, finished: finished)
-    }
-    
-    private func readInput() -> Int {
-        guard !shouldStopProcessing else { return 0 }
-        usleep(200)
-        if inputs.isEmpty {
-            return readInput()
-        }
-        return inputs.removeFirst()
-    }
-    
-    public func writeInput(_ input: Int) {
-        inputs.append(input)
-//        print(id, input)
-    }
-    
-    private func finished() {
-        shouldStopProcessing = true
-    }
-}
-
-public func processThrusterSettingsLooped(_ settings: [Int], _ input: [Int]) throws -> Int {
-    let completeGroup = DispatchGroup()
-
-    let computer1 = ChainedComputer(id: "1", inputs: [settings[0], 0], program: input)
-    let computer2 = ChainedComputer(id: "2", inputs: [settings[1]], program: input)
-    let computer3 = ChainedComputer(id: "3", inputs: [settings[2]], program: input)
-    let computer4 = ChainedComputer(id: "4", inputs: [settings[3]], program: input)
-    let computer5 = ChainedComputer(id: "5", inputs: [settings[4]], program: input)
-    
-    DispatchQueue.global().async {
-        completeGroup.enter()
-        do {
-            try computer1.run(writeInput: computer2.writeInput)
-        } catch {}
-        completeGroup.leave()
-    }
-    
-    DispatchQueue.global().async {
-        completeGroup.enter()
-        do {
-            try computer2.run(writeInput: computer3.writeInput)
-        } catch {}
-        completeGroup.leave()
-    }
-    
-    DispatchQueue.global().async {
-        completeGroup.enter()
-        do {
-            try computer3.run(writeInput: computer4.writeInput)
-        } catch {}
-        completeGroup.leave()
-    }
-    
-    DispatchQueue.global().async {
-        completeGroup.enter()
-        do {
-            try computer4.run(writeInput: computer5.writeInput)
-        } catch {}
-        completeGroup.leave()
-    }
-    
-    var finalOutput = 0
-    completeGroup.enter()
-
-    DispatchQueue.global().async {
-        do {
-            try computer5.run(writeInput: computer1.writeInput)
-            finalOutput = computer5.lastOutput!
-            completeGroup.leave()
-        } catch {
-            completeGroup.leave()
+    public func computerFinished(id: Int) {
+        if id == 4 {
+            finished = true
         }
     }
-    
-    completeGroup.wait()
-    return finalOutput
 }
 
 public func generateCombinations(_ possibleValues: [Int]) -> [[Int]] {
@@ -149,27 +142,4 @@ public func generateCombinations(_ possibleValues: [Int]) -> [[Int]] {
     
     
     return combinations
-}
-
-public func findMaximumThrusterValue(phaseSettings: [Int], input: [Int], loop: Bool = false) throws -> Int {
-    var maxValue = 0
-    
-    for combination in generateCombinations(phaseSettings) {
-        if loop {
-            maxValue = max(try processThrusterSettingsLooped(combination, input), maxValue)
-        } else {
-            maxValue = max(try processThrusterSettings(combination, input), maxValue)
-        }
-    }
-    
-    return maxValue
-}
-
-public func findMaximumThrusterValueStepped(phaseSettings: [Int], input: [Int], loop: Bool = false) throws -> Int {
-    var maxValue = 0
-    for combination in generateCombinations(phaseSettings) {
-        maxValue = max(try processAmplifiersLooped(combination, input), maxValue)
-//        print("MaxValue:", maxValue)
-    }
-    return maxValue
 }
