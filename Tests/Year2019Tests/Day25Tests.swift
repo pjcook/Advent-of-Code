@@ -12,30 +12,37 @@ import Year2019
 
 // TODO: optimisation migrate to Computer
 class Day25Tests: XCTestCase {
-    let input = try! readInputAsIntegers(filename: "Day25.input", delimiter: ",", bundle: .module)
+    let input = Input("Day25.input", Bundle.module).delimited(",", cast: Int.init).compactMap({ $0 })
+    let day = Day25()
     
-    func test_part1() throws {
-        let droid = InvestigationDroid(input)
-        droid.process()
-        // Answer: 134807554
-        // You need: [sand, ornament, astrolabe, shell]
-        // to get across the pressure plate
-        
-        /*
-         Kitchen: sand
-         Hallway: escape pod (DO NOT TAKE)
-         Navigation: astrolabe
-         Storage: mutex
-         Observatory: shell
-         Sick Bay: giant electromagnet (DO NOT TAKE)
-         Hot Chocolate Fountain: ornament
-         Engineering: photons (DO NOT TAKE)
-         Passage: molten lava (DO NOT TAKE)
-         Science lab: klein bottle (too heavy by itself)
-         Stables: semiconductor
-         Corridor: infinite loop (DO NOT TAKE)
-         Crew Quarters: dehydrated water
-         */
+    /*
+     If you want to play the game manually then you need to comment out the line `populateValidActions()` and put a break point in the `readInput(id: Int)` function where it says `return -1`. Then when the break point is hit, you need to view the output in the console and manually enter the action you want to take. e.g. `po perform(.move(.south))` then press `play` to process that input and see the next set of options.
+     */
+    func test_part1() {
+        XCTAssertEqual(134807554, day.part1(input))
     }
 
+    /*
+                                                                                                            [Navigation (astolabe)]    [Crew quarters (dehydrated water)]
+                                                                                                                      I                               I
+                                                                                                                      I                               I
+                                                                                                            [Hallway (escape pod)]        [Corridor (infinite loop)]
+                                                                                                                      I                               I
+                                                                                                                      I                               I
+                                                                            [Storage (mutex)] --- [Arcade] --- [Kitchen (sand)]           [Warp drive maintenance]
+                                                                                                                      I                               I
+                                                                             [Observatory (shell)]                    I                               I
+                                                                                       I                              I                               I
+                                                                                       I                              I                               I
+                                                                                  [Holodeck] -------------- [Hull breach - START] --- [Science lab (klein bottle)] --- [Stables (semiconductor)]
+                                                                                       I
+                                                                                       I
+        [Gift wrap center] --- [Hot chocolate fountain (ornament)] --- [Sick bay (giant electromagnet)] --- [Engineering (photons)]
+                I                                                                                                      I
+                I                                                                                                      I
+      [Security Checkpoint]                                                                                 [Passages (molten lava)]
+                I
+                I
+         [Pressure Plate]
+     */
 }

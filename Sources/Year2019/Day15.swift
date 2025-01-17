@@ -9,7 +9,11 @@
 import Foundation
 import StandardLibraries
 
-public struct Day15 {
+public final class Day15 {
+    private var finished = false
+    private var readInputBlock: () -> Int = { 0 }
+    private var writeOutputBlock: (Int) -> Void = { _ in }
+
     public init() {}
     
     public func part1(_ input: [Int]) -> Int {
@@ -34,6 +38,20 @@ public struct Day15 {
     }
 }
 
+extension Day15: ComputerDelegate {
+    public func readInput(id: Int) -> Int {
+        readInputBlock()
+    }
+    
+    public func computerFinished(id: Int) {
+        finished = true
+    }
+    
+    public func processOutput(id: Int, value: Int) {
+        writeOutputBlock(value)
+    }
+}
+
 extension Day15 {
     func mapGrid(_ input: [Int]) -> Grid<String> {
         var grid = Grid<String>(size: Point(100,100), fill: Tile.unknown.rawValue)
@@ -42,7 +60,6 @@ extension Day15 {
         var robotState: DroidResponse = .none
         var pointsToTry: [Point: [Direction]] = [droid.point: Direction.allCases]
         var navigationSteps: [Point] = []
-        var finished = false
         
         func findPointToTry() -> Point? {
             for pointToTry in pointsToTry {
@@ -65,7 +82,7 @@ extension Day15 {
             return droid.direction
         }
         
-        func readInput() -> Int? {
+        func readInput() -> Int {
             guard !pointsToTry.isEmpty else { return 99 }
             
             switch robotState {
@@ -121,21 +138,16 @@ extension Day15 {
         func processOutput(_ output: Int) {
             robotState = DroidResponse(rawValue: output)!
         }
+
+        let computer = Computer(forceWriteMode: false)
+        computer.delegate = self
+        computer.loadProgram(input)
+        readInputBlock = readInput
+        writeOutputBlock = processOutput
         
-        let computer = SteppedIntComputer(
-            id: 1,
-            data: input,
-            readInput: readInput,
-            processOutput: processOutput,
-            completionHandler: {
-                finished = true
-            },
-            forceWriteMode: false
-        )
-        
-        computer.process()
-        
-        while !finished {}
+        while !finished {
+            computer.tick()
+        }
         return grid
     }
 }

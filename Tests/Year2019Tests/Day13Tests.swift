@@ -10,31 +10,18 @@ import XCTest
 import InputReader
 import Year2019
 
-// TODO: optimisation migrate to Computer
 class Day13Tests: XCTestCase {
-    let data = try! readInputAsIntegers(filename: "Day13.input", delimiter: ",", bundle: .module)
-
-    func test_part1_sample_data1() throws {
-        
-    }
+    let input = Input("Day13.input", Bundle.module).delimited(",", cast: Int.init).compactMap({ $0 })
+    let day = Day13()
     
     func test_part1() {
-        let output = runGame(data)
-        XCTAssertEqual(258, output)
-    }
-    
-    func test_part2_sample_data_chris() throws {
-        var data = try readInputAsIntegers(filename: "Day13_chris.input", delimiter: ",", bundle: .module)
-        data[0] = 2
-        let output = playGame(data, drawBoard: false)
-        XCTAssertEqual(21426, output)
+        XCTAssertEqual(258, day.part1(input))
     }
     
     func test_part2() {
-        var data = self.data
+        var data = input
         data[0] = 2
-        let output = playGame(data)
-        XCTAssertEqual(12765, output)
+        XCTAssertEqual(12765, day.part2(data))
     }
 
 }

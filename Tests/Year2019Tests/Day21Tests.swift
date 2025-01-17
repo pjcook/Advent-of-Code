@@ -12,11 +12,11 @@ import Year2019
 
 // TODO: optimisation migrate to Computer
 class Day21Tests: XCTestCase {
-    let input = try! readInputAsIntegers(filename: "Day21.input", delimiter: ",", bundle: .module)
+    let input = Input("Day21.input", Bundle.module).delimited(",", cast: Int.init).compactMap({ $0 })
+    let day = Day21()
     
     func test_part1() {
-        let droid = SpringDroid(input)
-        droid.process("""
+        let program = """
         NOT A J
         NOT B T
         OR T J
@@ -25,124 +25,26 @@ class Day21Tests: XCTestCase {
         AND D J
         WALK
 
-        """)
-        
-        let output = droid.finalOutput
-        XCTAssertEqual(19352638, output)
+        """
+        XCTAssertEqual(19352638, day.part1(input, springScriptProgram: program))
     }
     
-    func test_part2() {        
-        let droid = SpringDroid(input)
-        droid.process(part2SpringScript)
+    func test_part2() {
+        let program = """
+        NOT A J
+        NOT B T
+        OR T J
+        NOT C T
+        OR T J
+        AND D J
+        OR J T
+        AND E T
+        OR H T
+        AND D T
+        AND T J
+        RUN
         
-        let output = droid.finalOutput
-        XCTAssertEqual(1141251258, output)
+        """
+        XCTAssertEqual(1141251258, day.part1(input, springScriptProgram: program))
     }
-    
-    /*
-         ABCDEFGHI
-     ...@.............
-     #####..#.########
-
-         ABCDEFGHI
-     ...@.............
-     #####...#########
-
-          ABCDEFGHI
-     ....@............
-     #####...#########
-
-        ABCDEFGHI
-     ..@..............
-     #####.#.#..##.###
-
-          ABCDEFGHI
-     ....@............
-     #####.#.#..##.###
-
-          ABCDEFGHI
-     ....@............
-     #####..#####..###
-      ABCDEFGHI
-     @................
-     #####..#####..###
-
-     */
-    let part2SpringScript = """
-    NOT A J
-    NOT B T
-    OR T J
-    NOT C T
-    OR T J
-    AND D J
-    OR J T
-    AND E T
-    OR H T
-    AND D T
-    AND T J
-    RUN
-
-    """
-    
-    let sampleData = [
-        "#..#.####":true,
-        "#...#####":false,
-        "...######":true,
-        "##.#.#..#":false,
-        ".#.#..##.":true,
-        "..#####..":true,
-        "####..###":false,
-        ".#.##.#.#":true
-    ]
-    
-    let sampleData2 = [
-        "..#####..":true,
-    ]
-    
-    func test_part2_sample1() {
-        for (data, result) in sampleData {
-            var input = parse(data)
-            print(data)
-            for instruction in part2SpringScript.split(separator: "\n").compactMap({ String($0) }) {
-                input = process(instruction, input: input)
-                print(instruction.replacingOccurrences(of: "OR", with: "OR "), "\tJ", input["J"]! ? "true " : "false", "\tT", input["T"]!)
-            }
-            XCTAssertEqual(result, input["J"], data)
-        }
-    }
-    
-    private func process(_ instruction: String, input: [String:Bool]) -> [String:Bool] {
-        var output = input
-        let split = instruction.split(separator: " ").map { String($0) }
-        
-        switch split[0] {
-        case "NOT":
-            output[split[2]] = !input[split[1]]!
-        case "OR":
-            output[split[2]] = input[split[1]]! || input[split[2]]!
-        case "AND":
-            output[split[2]] = input[split[1]]! && input[split[2]]!
-        default: break
-        }
-        
-        return output
-    }
-    
-    private func parse(_ value: String) -> [String:Bool] {
-        var output = ["T":false,"J":false]
-        let input = value.map { String($0) == "#" }
-        
-        output["A"] = input[0]
-        output["B"] = input[1]
-        output["C"] = input[2]
-        output["D"] = input[3]
-        output["E"] = input[4]
-        output["F"] = input[5]
-        output["G"] = input[6]
-        output["H"] = input[7]
-        output["I"] = input[8]
-        
-        return output
-    }
-
 }

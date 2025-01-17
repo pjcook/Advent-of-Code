@@ -104,7 +104,7 @@ extension Day7: ComputerDelegate {
         output = value
         var computerID = id + 1
         if computerID == 5 { computerID = 0 }
-        var list = inputs[computerID]!
+        var list = inputs[computerID, default: []]
         list.append(value)
         inputs[computerID] = list
         self.computerID = computerID

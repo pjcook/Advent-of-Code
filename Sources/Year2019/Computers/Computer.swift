@@ -66,8 +66,8 @@ public final class Computer {
     private var registers = Registers()
     private var pointer = 0
     private var relativeBase = 0
-    private var currentValue: Int? {
-        registers[pointer]
+    private var currentValue: Int {
+        registers[pointer, default: 0]
     }
     public private(set) var state: State = .running
     public private(set) var output: Int?
@@ -101,8 +101,8 @@ public final class Computer {
     
     public func tick() {
         guard state != .finished else { return }
-        guard let instruction = currentValue,
-              let opCode = OpCode(rawValue: instruction % 100),
+        let instruction = currentValue
+        guard let opCode = OpCode(rawValue: instruction % 100),
               let mode1 = Mode(rawValue: instruction % 10000 % 1000 / 100),
               let mode2 = Mode(rawValue: instruction % 10000 / 1000),
               let mode3 = Mode(rawValue: instruction / 10000)
@@ -122,7 +122,7 @@ public final class Computer {
             
         case .input:
             let writeIndex = mode1.writePosition(registers: registers, index: pointer + 1, relativeBase: relativeBase)
-            if let input = readInput(), input != -1 {
+            if let input = readInput()/*, input != -1*/ {
                 writeData(writeIndex, input)
             }
             
@@ -165,7 +165,6 @@ public final class Computer {
     }
     
     private func writeOutput(_ value: Int) {
-//        print("output", id, value)
         output = value
         delegate?.processOutput(id: id, value: value)
     }

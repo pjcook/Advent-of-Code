@@ -9,41 +9,82 @@
 import Foundation
 import StandardLibraries
 
+public final class Day11 {
+    private var position = Point.zero
+    private var direction = Direction.up
+    private var color = 0
+    private var hasOutputColor = false
+    private var finished = false
+    private var output: [Point: Int] = [:]
+    
+    public init() {}
+    
+    public func part1(_ input: [Int]) -> Int {
+        let computer = Computer(forceWriteMode: false)
+        computer.delegate = self
+        computer.loadProgram(input)
+        color = 0
+        hasOutputColor = false
+        position = .zero
+        direction = .up
+        output = [Point.zero: color]
+        
+        while !finished {
+            computer.tick()
+        }
+        
+//        drawShipRegistration(output)
+        
+        return output.count
+    }
+    
+    public func part2(_ input: [Int]) -> Int {
+        let computer = Computer(forceWriteMode: false)
+        computer.delegate = self
+        computer.loadProgram(input)
+        color = 1
+        hasOutputColor = false
+        position = .zero
+        direction = .up
+        output = [Point.zero: color]
+        
+        while !finished {
+            computer.tick()
+        }
+        
+        drawShipRegistration(output)
+        
+        return output.count
+    }
+}
+
+extension Day11: ComputerDelegate {
+    public func readInput(id: Int) -> Int {
+        output[position, default: 0]
+    }
+    
+    public func computerFinished(id: Int) {
+        finished = true
+    }
+    
+    public func processOutput(id: Int, value: Int) {
+        if hasOutputColor {
+            direction = direction.rotate(value)
+            output[position] = color
+            position = position + direction.point
+            hasOutputColor = false
+        } else {
+            color = value
+            hasOutputColor = true
+        }
+    }
+}
+
 extension Direction {
     public func rotate(_ value: Int) -> Direction {
         if value == 0 { return rotateLeft() }
         return rotateRight()
     }
-
-}
-
-public func paintWithRobot(_ program: [Int], startColor: Int) -> Int {
-    let bigProgram = program + Array(repeating: 0, count: 1000)
-    let computer = AdvancedIntCodeComputer(data: bigProgram)
-    var output = [Point.zero:startColor]
-    var rawData = [Int]()
-    var position = Point.zero
-    var color = startColor
-    var direction = Direction.up
-    var hasOutputColor = false
-    _ = computer.process({
-        output[position, default: 0]
-    }, processOutput: {
-        rawData.append($0)
-        if hasOutputColor {
-            direction = direction.rotate($0)
-            output[position] = color
-            position = position + direction.point
-            hasOutputColor = false
-        } else {
-            color = $0
-            hasOutputColor = true
-        }
-    }, finished: nil, forceWriteMode: false)
-        
-//    drawShipRegistration(output)
-    
-    return output.count
 }
 
 public func drawShipRegistration(_ output: [Point:Int]) {
@@ -53,7 +94,7 @@ public func drawShipRegistration(_ output: [Point:Int]) {
     let maxY = output.reduce(0) { max($0,$1.key.y) }
     var map = ""
 
-    for y in (0...maxY-minY).reversed() {
+    for y in (0...maxY-minY) {
         var row = ""
         for x in 0...maxX - minX {
             let dx = x + minX

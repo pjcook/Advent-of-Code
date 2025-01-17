@@ -7,35 +7,46 @@
 //
 
 import Foundation
+import StandardLibraries
 
-public class SpringDroid {
-    private var computer: SteppedIntComputer?
+public final class Day21 {
+    public init() {}
+    private let computer = Computer(forceWriteMode: false)
     private var springScript = [Int]()
-    private var output = [String]()
-    public var finalOutput = 0
+    private var finished = false
+    private var isPart2 = false
+    private var row = ""
+    var finalOutput = 0
     
-    public init(_ input: [Int]) {
-        computer = SteppedIntComputer(
-            id: 6,
-            data: input,
-            readInput: readInput,
-            processOutput: processOutput,
-            completionHandler: completionHandler,
-            forceWriteMode: false
-        )
+    public func part1(_ input: [Int], springScriptProgram: String) -> Int {
+        finished = false
+        isPart2 = false
+        computer.reset()
+        computer.delegate = self
+        computer.loadProgram(input)
+        springScript = convertSpringScript(springScriptProgram)
+        row = ""
+        finalOutput = 0
+        
+        while !finished {
+            computer.tick()
+        }
+        
+        return finalOutput
     }
     
-    public func process(_ input: String) {
-        springScript = input.compactMap {
+    private func convertSpringScript(_ program: String) -> [Int] {
+        program.compactMap {
             if let ascii = $0.asciiValue {
                 return Int(ascii)
             }
             return nil
         }
-        computer?.process()
     }
-    
-    private func readInput() -> Int {
+}
+
+extension Day21: ComputerDelegate {
+    public func readInput(id: Int) -> Int {
         guard !springScript.isEmpty else {
             return -1
         }
@@ -43,23 +54,21 @@ public class SpringDroid {
         return value
     }
     
-    public var tempOutput = ""
-    private func processOutput(_ value: Int) {
+    public func computerFinished(id: Int) {
+        finished = true
+    }
+    
+    public func processOutput(id: Int, value: Int) {
         guard let asciiValue = value.toAscii() else {
             print("OUTPUT:", value)
             finalOutput = value
             return
         }
         guard asciiValue != "\n" else {
-            output.append(tempOutput)
-            print(tempOutput)
-            tempOutput = ""
+            print(row)
+            row = ""
             return
         }
-        tempOutput += asciiValue
-    }
-    
-    private func completionHandler() {
-        print("FINISHED\n")
+        row += asciiValue
     }
 }

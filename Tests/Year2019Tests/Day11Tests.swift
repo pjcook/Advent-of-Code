@@ -10,29 +10,15 @@ import XCTest
 import InputReader
 import Year2019
 
-// TODO: optimisation migrate to Computer
 class Day11Tests: XCTestCase {
-    let input = try! readInputAsIntegers(filename: "Day11.input", delimiter: ",", bundle: .module)
-    let inputChris = try! readInputAsIntegers(filename: "Day11_chris.input", delimiter: ",", bundle: .module)
+    let input = Input("Day11.input", Bundle.module).delimited(",", cast: Int.init).compactMap({ $0 })
+    let day = Day11()
 
     func test_part1() throws {
-        let result = paintWithRobot(input, startColor: 0)
-        XCTAssertEqual(2238, result)
-    }
-    
-    func test_part2_sample_data1() throws {
-        let result = paintWithRobot(inputChris, startColor: 0)
-        XCTAssertEqual(1686, result)
-    }
-    
-    func test_part2_sample_data2() throws {
-        let result = paintWithRobot(input, startColor: 1)
-        XCTAssertEqual(249, result)
+        XCTAssertEqual(2238, day.part1(input))
     }
     
     func test_part2() throws {
-        let result = paintWithRobot(input, startColor: 1)
-        XCTAssertEqual(249, result)
+        XCTAssertEqual(249, day.part2(input))
     }
-
 }
