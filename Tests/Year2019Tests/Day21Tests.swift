@@ -10,7 +10,6 @@ import XCTest
 import InputReader
 import Year2019
 
-// TODO: optimisation migrate to Computer
 class Day21Tests: XCTestCase {
     let input = Input("Day21.input", Bundle.module).delimited(",", cast: Int.init).compactMap({ $0 })
     let day = Day21()
