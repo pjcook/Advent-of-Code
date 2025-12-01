@@ -46,7 +46,7 @@ class Day25Tests: XCTestCase {
     }
     
     func test_part1_example() {
-        let input = """
+        let _ = """
 Begin in state A.
 Perform a diagnostic checksum after 6 steps.
 

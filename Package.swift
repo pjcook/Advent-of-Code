@@ -8,54 +8,58 @@ let package = Package(
     platforms: [.macOS(.v13), .iOS(.v14)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
-        
+
         .library(
             name: "InputReader",
             targets: ["InputReader"]),
-        
+
         .library(
             name: "StandardLibraries",
             targets: ["StandardLibraries"]),
-        
+
         .library(
             name: "Year2015",
             targets: ["Year2015"]),
-        
+
         .library(
             name: "Year2016",
             targets: ["Year2016"]),
-    
+
         .library(
             name: "Year2017",
             targets: ["Year2017"]),
-    
+
         .library(
             name: "Year2018",
             targets: ["Year2018"]),
-    
+
         .library(
             name: "Year2019",
             targets: ["Year2019"]),
-    
+
         .library(
             name: "Year2020",
             targets: ["Year2020"]),
-    
+
         .library(
             name: "Year2021",
             targets: ["Year2021"]),
-    
+
         .library(
             name: "Year2022",
             targets: ["Year2022"]),
-        
+
         .library(
             name: "Year2023",
             targets: ["Year2023"]),
-        
-            .library(
-                name: "Year2023",
-                targets: ["Year2024"]),
+
+        .library(
+            name: "Year2024",
+            targets: ["Year2024"]),
+
+        .library(
+            name: "Year2025",
+            targets: ["Year2025"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -65,7 +69,7 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
-        
+
         .target(
             name: "InputReader",
             dependencies: []),
@@ -75,7 +79,7 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
-        
+
         .target(
             name: "StandardLibraries",
             dependencies: []),
@@ -99,7 +103,7 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
-        
+
         .target(
             name: "Year2016",
             dependencies: [
@@ -116,7 +120,7 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
-        
+
         .target(
             name: "Year2017",
             dependencies: ["StandardLibraries"]),
@@ -130,7 +134,7 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
-        
+
         .target(
             name: "Year2018",
             dependencies: ["StandardLibraries"]),
@@ -144,7 +148,7 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
-        
+
         .target(
             name: "Year2019",
             dependencies: ["InputReader", "StandardLibraries"]),
@@ -158,7 +162,7 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
-        
+
         .target(
             name: "Year2020",
             dependencies: ["StandardLibraries"]),
@@ -172,7 +176,7 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
-        
+
         .target(
             name: "Year2021",
             dependencies: ["StandardLibraries"]),
@@ -186,7 +190,7 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
-        
+
         .target(
             name: "Year2022",
             dependencies: ["StandardLibraries"]),
@@ -200,7 +204,7 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
-        
+
         .target(
             name: "Year2023",
             dependencies: ["StandardLibraries"]),
@@ -214,19 +218,33 @@ let package = Package(
             resources: [
                 .process("Resources"),
             ]),
-        
-            .target(
-                name: "Year2024",
-                dependencies: ["StandardLibraries"]),
-            .testTarget(
-                name: "Year2024Tests",
-                dependencies: [
-                    "InputReader",
-                    "StandardLibraries",
-                    "Year2024"
-                ],
-                resources: [
-                    .process("Resources"),
-                ]),
+
+        .target(
+            name: "Year2024",
+            dependencies: ["StandardLibraries"]),
+        .testTarget(
+            name: "Year2024Tests",
+            dependencies: [
+                "InputReader",
+                "StandardLibraries",
+                "Year2024"
+            ],
+            resources: [
+                .process("Resources"),
+            ]),
+
+        .target(
+            name: "Year2025",
+            dependencies: ["StandardLibraries"]),
+        .testTarget(
+            name: "Year2025Tests",
+            dependencies: [
+                "InputReader",
+                "StandardLibraries",
+                "Year2025"
+            ],
+            resources: [
+                .process("Resources"),
+            ]),
     ]
 )
