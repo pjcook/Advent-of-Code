@@ -20,6 +20,24 @@ public extension String {
         }
         return count
     }
+
+    func chunked(size: Int) -> [String] {
+        precondition(size > 0)
+        precondition(count % size == 0)
+        guard !isEmpty else { return [] }
+        var output = [String]()
+        var i = 0
+
+        while i * size < count {
+            let lower = index(startIndex, offsetBy: i * size)
+            let upper = index(startIndex, offsetBy: i * size + size)
+            let value = String(self[lower ..< upper])
+            output.append(value)
+            i += 1
+        }
+
+        return output
+    }
 }
 
 public extension StringProtocol {
