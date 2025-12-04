@@ -8,28 +8,46 @@ class Day4Tests: XCTestCase {
     let day = Day4()
 
     func test_part1() throws {
-        //        measure {
-        XCTAssertEqual(0, day.part1(input))
-        //        }
+//                measure {
+        XCTAssertEqual(1569, day.part1(input))
+//                }
     }
 
     func test_part1_example() throws {
         let input = """
-0
+..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@.
 """.lines
-        XCTAssertEqual(0, day.part1(input))
+        XCTAssertEqual(13, day.part1(input))
     }
 
     func test_part2() throws {
-        //        measure {
-        XCTAssertEqual(0, day.part2(input))
-        //        }
+//                measure {
+        XCTAssertEqual(9280, day.part2(input))
+//                }
     }
 
     func test_part2_example() throws {
         let input = """
-0
+..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@.
 """.lines
-        XCTAssertEqual(0, day.part2(input))
+        XCTAssertEqual(43, day.part2(input))
     }
 }
