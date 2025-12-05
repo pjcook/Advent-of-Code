@@ -5,15 +5,12 @@ public struct Day5 {
     public init() {}
 
     public func part1(_ input: [String]) -> Int {
-        var freshIngredients = 0
         let (ranges, ingredients) = parse(input)
+        var freshIngredients = 0
 
-        for ingredient in ingredients {
-            for range in ranges {
-                if range.contains(ingredient) {
-                    freshIngredients += 1
-                    break
-                }
+        ingredients.forEach { ingredient in
+            if ranges.first(where: { $0.contains(ingredient)}) != nil {
+                freshIngredients += 1
             }
         }
 
