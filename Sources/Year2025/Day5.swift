@@ -25,41 +25,23 @@ public struct Day5 {
 
 extension Day5 {
     func parse(_ input: [String]) -> ([ClosedRange<Int>], [Int]) {
+        // Find file break
+        let index = input.firstIndex(of: "")!
+
+        // Parse Ranges
         var ranges: [ClosedRange<Int>] = []
-        var ids: [Int] = []
-        var parseRanges = true
-
-        mainLoop: for line in input {
-            if line.isEmpty {
-                parseRanges = false
-                continue
-            }
-
-            if parseRanges {
-                let parts = line.split(separator: "-").map(String.init).map(Int.init)
-                var range = parts[0]!...parts[1]!
-                var overlaps: [ClosedRange<Int>] = []
-                var indexesToRemove: [Int] = []
-
-                for i in 0..<ranges.count {
-                    let a = ranges[i]
-                    if a.overlaps(range) {
-                        indexesToRemove.append(i)
-                        overlaps.append(a)
-                    }
-                }
-
-                for i in indexesToRemove.reversed() {
-                    ranges.remove(at: i)
-                }
-
-                range = overlaps.reduce(range) { min($0.lowerBound, $1.lowerBound)...max($0.upperBound, $1.upperBound) }
-                ranges.append(range)
-            } else {
-                ids.append(Int(line)!)
-            }
+        for i in 0..<index {
+            let line = input[i]
+            let parts = line.split(separator: "-").map(String.init).map(Int.init)
+            ranges.compress(with: parts[0]!...parts[1]!)
         }
 
-        return (ranges, ids)
+        // Parse Ingredients
+        var ingredients: [Int] = []
+        for i in index+1..<input.count {
+            ingredients.append(Int(input[i])!)
+        }
+
+        return (ranges, ingredients)
     }
 }
