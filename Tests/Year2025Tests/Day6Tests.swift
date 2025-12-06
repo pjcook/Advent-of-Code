@@ -8,28 +8,34 @@ class Day6Tests: XCTestCase {
     let day = Day6()
 
     func test_part1() throws {
-        //        measure {
-        XCTAssertEqual(0, day.part1(input))
-        //        }
+//                measure {
+        XCTAssertEqual(4722948564882, day.part1(input))
+//                }
     }
 
     func test_part1_example() throws {
         let input = """
-0
+123 328  51 64 
+ 45 64  387 23 
+  6 98  215 314
+*   +   *   +  
 """.lines
-        XCTAssertEqual(0, day.part1(input))
+        XCTAssertEqual(4277556, day.part1(input))
     }
 
     func test_part2() throws {
-        //        measure {
-        XCTAssertEqual(0, day.part2(input))
-        //        }
+//                measure {
+        XCTAssertEqual(9581313737063, day.part2(input))
+//                }
     }
 
     func test_part2_example() throws {
         let input = """
-0
+123 328  51 64 
+ 45 64  387 23 
+  6 98  215 314
+*   +   *   +  
 """.lines
-        XCTAssertEqual(0, day.part2(input))
+        XCTAssertEqual(3263827, day.part2(input))
     }
 }
