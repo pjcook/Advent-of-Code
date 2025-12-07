@@ -8,28 +8,60 @@ class Day7Tests: XCTestCase {
     let day = Day7()
 
     func test_part1() throws {
-        //        measure {
-        XCTAssertEqual(0, day.part1(input))
-        //        }
+//                measure {
+        XCTAssertEqual(1533, day.part1(input))
+//                }
     }
 
     func test_part1_example() throws {
         let input = """
-0
+.......S.......
+.......^.......
+......^.^......
+.....^.^.^.....
+....^.^...^....
+...^.^...^.^...
+..^...^.....^..
+.^.^.^.^.^...^.
 """.lines
-        XCTAssertEqual(0, day.part1(input))
+        XCTAssertEqual(21, day.part1(input))
     }
 
     func test_part2() throws {
-        //        measure {
-        XCTAssertEqual(0, day.part2(input))
-        //        }
+//                measure {
+        XCTAssertEqual(10733529153890, day.part2(input))
+//                }
     }
 
     func test_part2_example() throws {
         let input = """
-0
+.......S.......
+.......^.......
+......^.^......
+.....^.^.^.....
+....^.^...^....
+...^.^...^.^...
+..^...^.....^..
+.^.^.^.^.^...^.
 """.lines
-        XCTAssertEqual(0, day.part2(input))
+        XCTAssertEqual(40, day.part2(input))
     }
 }
+/*
+ .......S.......
+ ...............
+ .......1.......1
+ ...............
+ ......1.1......3
+ ...............
+ .....1.2.1.....7
+ ...............
+ ....1.3...1....12
+ ...............
+ ...1.4...1.1...19
+ ...............
+ ..1...4.....1..25
+ ...............
+ .1.1.4.7.0...1.39+1
+ ...............
+ */
