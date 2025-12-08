@@ -107,8 +107,8 @@ let package = Package(
         .target(
             name: "Year2016",
             dependencies: [
-                "StandardLibraries",
                 .product(name: "Algorithms", package: "swift-algorithms"),
+                "StandardLibraries",
             ]),
         .testTarget(
             name: "Year2016Tests",
@@ -235,7 +235,10 @@ let package = Package(
 
         .target(
             name: "Year2025",
-            dependencies: ["StandardLibraries"]),
+            dependencies: [
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                "StandardLibraries"
+            ]),
         .testTarget(
             name: "Year2025Tests",
             dependencies: [
