@@ -10,6 +10,13 @@ public struct Vector: Hashable, Comparable {
         self.y = y
         self.z = z
     }
+
+    public init(_ parts: [String]) {
+        precondition(parts.count == 3)
+        self.x = Int(parts[0])!
+        self.y = Int(parts[1])!
+        self.z = Int(parts[2])!
+    }
 }
 
 extension Vector: CustomStringConvertible {
@@ -40,19 +47,19 @@ public extension Vector {
     }
     
     static func < (lhs: Vector, rhs: Vector) -> Bool {
-        lhs.x < rhs.x && lhs.y < rhs.y && lhs.z < rhs.z
+        zero.distance(to: lhs) < zero.distance(to: rhs)
     }
     
     static func > (lhs: Vector, rhs: Vector) -> Bool {
-        lhs.x > rhs.x && lhs.y > rhs.y && lhs.z > rhs.z
+        zero.distance(to: lhs) > zero.distance(to: rhs)
     }
     
     static func <= (lhs: Vector, rhs: Vector) -> Bool {
-        lhs.x <= rhs.x && lhs.y <= rhs.y && lhs.z <= rhs.z
+        zero.distance(to: lhs) <= zero.distance(to: rhs)
     }
     
     static func >= (lhs: Vector, rhs: Vector) -> Bool {
-        lhs.x >= rhs.x && lhs.y >= rhs.y && lhs.z >= rhs.z
+        zero.distance(to: lhs) >= zero.distance(to: rhs)
     }
     
     static func == (lhs: Vector, rhs: Vector) -> Bool {
