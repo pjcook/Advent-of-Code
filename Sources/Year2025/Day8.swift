@@ -13,54 +13,41 @@ public struct Day8 {
             self.v2 = v2
         }
 
-        static func == (lhs: Day8.Pair, rhs: Day8.Pair) -> Bool {
-            (lhs.v1 == rhs.v1 && lhs.v2 == rhs.v2) ||
-            (lhs.v1 == rhs.v2 && lhs.v2 == rhs.v1)
-        }
-
-        static func < (lhs: Day8.Pair, rhs: Day8.Pair) -> Bool {
-            (lhs.v1 < rhs.v1 && lhs.v2 < rhs.v2) || (lhs.v1 < rhs.v2 && lhs.v2 < rhs.v1)
+        var distance: Double {
+            v1.distance(to: v2)
         }
     }
 
     public func part1(_ input: [String], iterations: Int) -> Int {
-        let boxes = parse(input)
-        var distances: [Pair: Double] = [:]
+        let boxes = parse(input).sorted(by: <)
+        var pairs: Set<Pair> = []
 
-        for v1 in boxes {
-            for v2 in boxes {
-                let pair = Pair(min(v1, v2), max(v1, v2))
-                guard v1 != v2, distances[pair] == nil else { continue }
-                distances[pair] = v1.distance(to: v2)
+        for i in 0..<boxes.count {
+            let v1 = boxes[i]
+            for j in i+1..<boxes.count {
+                let v2 = boxes[j]
+                pairs.insert(Pair(v1, v2))
             }
         }
 
-        let sortedDistances = distances.sorted { $0.value < $1.value }
+        let sortedDistances = pairs.sorted { $0.distance < $1.distance }
         var groups: [Set<Vector>] = []
 
         for i in 0..<iterations {
-            let pair = sortedDistances[i].key
-            groups.append(Set([pair.v1, pair.v2]))
+            let pair = sortedDistances[i]
+            var newGroup = Set([pair.v1, pair.v2])
+            var newGroups: [Set<Vector>] = []
 
-            var grouped = true
-            while grouped {
-                grouped = false
-                outerLoop: for i in 0..<groups.count {
-                    let group1 = groups[i]
-                    for j in 0..<groups.count where j != i {
-                        let group2 = groups[j]
-
-                        if group1.intersection(group2).count > 0 {
-                            let group = group1.union(group2)
-                            groups.remove(at: max(i, j))
-                            groups.remove(at: min(i, j))
-                            groups.append(group)
-                            grouped = true
-                            break outerLoop
-                        }
-                    }
+            for group in groups {
+                if group.intersection(newGroup).count > 0 {
+                    newGroup = newGroup.union(group)
+                } else {
+                    newGroups.append(group)
                 }
             }
+
+            newGroups.append(newGroup)
+            groups = newGroups
         }
 
         let results = groups.map { $0.count }.sorted(by: >)
@@ -75,41 +62,33 @@ public struct Day8 {
 
     public func part2(_ input: [String]) -> Int {
         let boxes = parse(input)
-        var distances: [Pair: Double] = [:]
+        var pairs: Set<Pair> = []
 
-        for v1 in boxes {
-            for v2 in boxes {
-                let pair = Pair(min(v1, v2), max(v1, v2))
-                guard v1 != v2, distances[pair] == nil else { continue }
-                distances[pair] = v1.distance(to: v2)
+        for i in 0..<boxes.count {
+            let v1 = boxes[i]
+            for j in i+1..<boxes.count {
+                let v2 = boxes[j]
+                pairs.insert(Pair(v1, v2))
             }
         }
 
-        let sortedDistances = distances.sorted { $0.value < $1.value }.map { $0.key }
+        let sortedDistances = pairs.sorted { $0.distance < $1.distance }
         var groups: [Set<Vector>] = []
 
         mainLoop: for pair in sortedDistances {
-            groups.append(Set([pair.v1, pair.v2]))
+            var newGroup = Set([pair.v1, pair.v2])
+            var newGroups: [Set<Vector>] = []
 
-            var grouped = true
-            while grouped {
-                grouped = false
-                outerLoop: for i in 0..<groups.count {
-                    let group1 = groups[i]
-                    for j in 0..<groups.count where j != i {
-                        let group2 = groups[j]
-
-                        if group1.intersection(group2).count > 0 {
-                            let group = group1.union(group2)
-                            groups.remove(at: max(i, j))
-                            groups.remove(at: min(i, j))
-                            groups.append(group)
-                            grouped = true
-                            break outerLoop
-                        }
-                    }
+            for group in groups {
+                if group.intersection(newGroup).count > 0 {
+                    newGroup = newGroup.union(group)
+                } else {
+                    newGroups.append(group)
                 }
             }
+
+            newGroups.append(newGroup)
+            groups = newGroups
 
             if groups.count == 1, groups.first!.count == boxes.count {
                 return pair.v1.x * pair.v2.x
