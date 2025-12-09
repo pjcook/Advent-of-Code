@@ -24,7 +24,6 @@ public struct Day9 {
 
     public func part2(_ input: [String]) -> Int {
         let points = parse(input)
-        print(points.minMax())
         var highest = 0
 
         for i in 0..<points.count-1 {
@@ -37,40 +36,27 @@ public struct Day9 {
                     continue
                 }
 
-                let minX = min(p1.x, p2.x)
-                let maxX = max(p1.x, p2.x)
-                let minY = min(p1.y, p2.y)
-                let maxY = max(p1.y, p2.y)
+                let minX = min(p1.x, p2.x)+1
+                let maxX = max(p1.x, p2.x)-1
+                let minY = min(p1.y, p2.y)+1
+                let maxY = max(p1.y, p2.y)-1
+
+                let rx1 = min(minX, maxX)...max(minX, maxX)
+                let ry1 = min(minY, maxY)...max(minY, maxY)
 
                 for point in points where point != p1 && point != p2 && point != Point(p1.x, p2.y) && point != Point(p2.x, p1.y) {
-                    if (minX...maxX).contains(point.x) && (minY...maxY).contains(point.y) {
-                        if point.x == minX {
-                            let (n1, n2) = neighbours(of: point, in: points)
-                            let n3 = n1.y == point.y ? n1 : n2
-                            if n3.x > minX {
-                                continue loop
-                            }
-                        } else if point.x == maxX {
-                            let (n1, n2) = neighbours(of: point, in: points)
-                            let n3 = n1.y == point.y ? n1 : n2
-                            if n3.x < maxX {
-                                continue loop
-                            }
-                        } else if point.y == minY {
-                            let (n1, n2) = neighbours(of: point, in: points)
-                            let n3 = n1.x == point.x ? n1 : n2
-                            if n3.y > minY {
-                                continue loop
-                            }
-                        } else if point.y == maxY {
-                            let (n1, n2) = neighbours(of: point, in: points)
-                            let n3 = n1.x == point.x ? n1 : n2
-                            if n3.y < maxY {
-                                continue loop
-                            }
-                        } else {
-                            continue loop
-                        }
+
+                    let (n1, n2) = neighbours(of: point, in: points)
+
+                    let rx2 = min(n1.x, point.x)...max(n1.x, point.x)
+                    let ry2 = min(n1.y, point.y)...max(n1.y, point.y)
+
+                    let rx3 = min(n2.x, point.x)...max(n2.x, point.x)
+                    let ry3 = min(n2.y, point.y)...max(n2.y, point.y)
+
+                    if (rx1.overlaps(rx2) && ry1.overlaps(ry2)) ||
+                        (rx1.overlaps(rx3) && ry1.overlaps(ry3)) {
+                        continue loop
                     }
                 }
 

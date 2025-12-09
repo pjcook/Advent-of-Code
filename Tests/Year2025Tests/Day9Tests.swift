@@ -5,12 +5,11 @@ import Year2025
 class Day9Tests: XCTestCase {
     
     let input = Input("Day9.input", Bundle.module).lines
-    let input2 = Input("Day9_full.input", Bundle.module).lines
     let day = Day9()
 
     func test_part1() throws {
 //                measure {
-        XCTAssertEqual(4745816424, day.part1(input2))
+        XCTAssertEqual(4745816424, day.part1(input))
 //                }
     }
 
