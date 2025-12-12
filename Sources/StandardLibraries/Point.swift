@@ -237,7 +237,7 @@ public extension Point {
     }
     
     func neighbors(_ allowNegative: Bool = false, min: Point = .zero, max: Point? = nil) -> Set<Point> {
-        return Set([
+        Set([
             Point(x-1, y-1),
             Point(x, y-1),
             Point(x+1, y-1),
@@ -251,7 +251,14 @@ public extension Point {
             .filter({ max == nil || $0.x < max!.x && $0.y < max!.y })
         )
     }
-    
+
+    func neighbors(for positions: [Position], min: Point = .zero, max: Point? = nil, allowNegative: Bool = false) -> Set<Point> {
+        Set(positions.map((\.point))
+            .filter({ allowNegative || $0.x >= min.x && $0.y >= min.y })
+            .filter({ max == nil || $0.x < max!.x && $0.y < max!.y })
+        )
+    }
+
     func position(from origin: Point) -> Position? {
         for position in Position.all {
             if origin + position.point == self {

@@ -654,7 +654,7 @@ extension Grid where T == Int {
 
 extension Grid: Equatable {
     public static func == (lhs: Grid<T>, rhs: Grid<T>) -> Bool {
-        lhs.columns == rhs.columns && lhs.columns == rhs.columns
+        lhs.items == rhs.items
     }
 }
 
@@ -704,5 +704,101 @@ extension Grid {
             print(row)
         }
         print()
+    }
+}
+
+extension Grid {
+/*
+ # Source - https://stackoverflow.com/a
+ # Posted by Jack, modified by community. See post 'Timeline' for change history
+ # Retrieved 2025-12-12, License - CC BY-SA 4.0
+
+ def rotate(matrix: list):
+    size = len(matrix)
+    layer_count = size // 2
+
+    for layer in range(0, layer_count):
+        first = layer
+        last = size - first - 1
+
+        for element in range(first, last):
+            offset = element - first
+
+            top = matrix[first][element]
+            right_side = matrix[element][last]
+            bottom = matrix[last][last-offset]
+            left_side = matrix[last-offset][first]
+
+            matrix[first][element] = left_side
+            matrix[element][last] = top
+            matrix[last][last-offset] = right_side
+            matrix[last-offset][first] = bottom
+ */
+    public func rotateCounterClockwise() -> Self {
+        precondition(columns == rows, "Grid must be square to rotate")
+        var grid = self
+
+        let size = columns
+        let layerCount = size / 2
+        
+        for layer in 0..<layerCount {
+            let first = layer
+            let last = size - first - 1
+            
+            for element in first..<last {
+                let offset = element - first
+                let top = self[first, element]
+                let rightSide = self[element, last]
+                let bottom = self[last, last-offset]
+                let leftSize = self[last-offset, first]
+
+                grid[first, element] = leftSize
+                grid[element, last] = top
+                grid[last, last-offset] = rightSide
+                grid[last-offset, first] = bottom
+            }
+        }
+
+        return grid
+    }
+
+    public func flipVertically() -> Self {
+        precondition(columns == rows, "Grid must be square to rotate")
+        var grid = self
+
+        let size = columns
+        let layerCount = size / 2
+
+        for layer in 0..<layerCount {
+            let first = layer
+            let last = size - first - 1
+
+            for element in first..<last {
+                let offset = element - first
+                let top = self[element, first]
+                let rightSide = self[last, element]
+                let bottom = self[last-offset, last]
+                let leftSize = self[first, last-offset]
+
+                grid[first, element] = leftSize
+                grid[element, last] = top
+                grid[last, last-offset] = rightSide
+                grid[last-offset, first] = bottom
+            }
+        }
+
+        return grid
+    }
+}
+
+extension Grid: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        draw()
+        return ""
+    }
+
+    public var debugDescription: String {
+        draw()
+        return ""
     }
 }
