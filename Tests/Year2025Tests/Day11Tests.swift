@@ -31,11 +31,17 @@ iii: out
     }
 
     func test_part2() throws {
+        // 2279912250
+        // 28762875
+        // 80163710
         // 156 LOW
-        // 23 NO
+        // 242 683 485
+        // 2073 fft -> svr
+        // 13875 dac -> out
+        // 2073 * 13875
         //        measure {
         let result = day.part2(input)
-        XCTAssertEqual(156, result)
+        XCTAssertEqual(420257875695750, result)
         XCTAssertTrue(result > 156)
         //        }
     }

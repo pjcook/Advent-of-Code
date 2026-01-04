@@ -11,7 +11,43 @@ public final class Day11 {
 
     public func part2(_ input: [String]) -> Int {
         let (_, servers) = parse(input, start: "")
-        return routes2(from: "svr", to: "out", servers: servers, isPart2: true)
+        var cache = [CacheKey: Int]()
+        return dfs("svr", false, false, servers, &cache)
+    }
+
+    public func part2b(_ input: [String]) -> Int {
+        let (_, servers) = parse(input, start: "")
+//        return routes2(from: "svr", to: "out", servers: servers, isPart2: true)
+        let graph = createGraph(from: Array(servers.values))
+        guard let node = graph["svr"] else { return 0 }
+        return route(from: node, fft: false, dac: false, depth: 0, maxDepth: graph.count + 2)
+    }
+
+    class Node {
+        let name: String
+        var children: [Node] = []
+
+        init(_ name: String) {
+            self.name = name
+        }
+    }
+
+    func createGraph(from servers: [Server]) -> [String: Node] {
+        var nodes = [String: Node]()
+
+        for server in servers {
+            let node = nodes[server.name, default: Node(server.name)]
+            var children = [Node]()
+            for serverName in server.output {
+                let child = nodes[serverName, default: Node(serverName)]
+                nodes[child.name] = child
+                children.append(child)
+            }
+            node.children = children
+            nodes[node.name] = node
+        }
+
+        return nodes
     }
 
     struct Server: Hashable {
@@ -34,6 +70,52 @@ public final class Day11 {
 }
 
 extension Day11 {
+    struct CacheKey: Hashable {
+        let node: String
+        let seenDac: Bool
+        let seenFft: Bool
+
+        init(_ node: String, _ seenDac: Bool, _ seenFft: Bool) {
+            self.node = node
+            self.seenDac = seenDac
+            self.seenFft = seenFft
+        }
+    }
+    func dfs(_ node: String, _ seen_dac: Bool, _ seen_fft: Bool, _ adj_list: [String: Server], _ cache: inout [CacheKey: Int]) -> Int {
+        if node == "out" {
+            return seen_dac && seen_fft ? 1 : 0
+        }
+        let cacheKey = CacheKey(node, seen_dac, seen_fft)
+        if let value = cache[cacheKey] {
+            return value
+        }
+
+        let is_fft = node == "fft"
+        let is_dac = node == "dac"
+
+        var result = 0
+        for neighbor in adj_list[node]!.output {
+            result += dfs(neighbor, seen_dac || is_dac, seen_fft || is_fft, adj_list, &cache)
+        }
+
+        cache[cacheKey] = result
+        return result
+    }
+
+    func route(from node: Node, fft: Bool, dac: Bool, depth: Int, maxDepth: Int) -> Int {
+        guard depth < maxDepth else { return 0 }
+        if node.name == "out" {
+            return fft && dac ? 1 : 0
+        }
+        let fft = fft || node.name == "fft"
+        let dac = dac || node.name == "dac"
+        if dac == true && fft == false { return 0 }
+
+        return node.children.reduce(0) {
+            $0 + route(from: $1, fft: fft, dac: dac, depth: depth + 1, maxDepth: maxDepth)
+        }
+    }
+
     func routes(from: String, to: String, servers: [String: Server], isPart2: Bool = false) -> Int {
         let start = servers[from]!
         let match = Set(["fft", "dac"])
