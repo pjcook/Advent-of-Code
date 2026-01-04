@@ -1,7 +1,7 @@
 import Foundation
 
 // https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/
-public class Day10peti {
+public class Day10part2 {
     public init() {}
 
     // MARK: - Python Logic Conversion
@@ -12,12 +12,14 @@ public class Day10peti {
         guard elements.count >= k else { return [] }
         if k == 1 { return elements.map { [$0] } }
         var result: [[T]] = []
+
         for (i, el) in elements.enumerated() {
             let rest = Array(elements[(i+1)...])
             for comb in combinations(rest, k: k-1) {
                 result.append([el] + comb)
             }
         }
+
         return result
     }
 
@@ -26,19 +28,24 @@ public class Day10peti {
         let numButtons = coeffs.count
         let numVariables = coeffs[0].count
         var out: [ [Int] : [ [Int] : Int ] ] = [:]
+
         // Generate all parity patterns
         let parityPatterns = product(Array(repeating: [0,1], count: numVariables))
+
         for parity in parityPatterns {
             out[parity] = [:]
         }
+
         for numPressed in 0...numButtons {
             for buttons in combinations(Array(0..<numButtons), k: numPressed) {
                 var pattern = Array(repeating: 0, count: numVariables)
+
                 for i in buttons {
                     for j in 0..<numVariables {
                         pattern[j] += coeffs[i][j]
                     }
                 }
+
                 let parityPattern = pattern.map { $0 % 2 }
                 if out[parityPattern]?[pattern] == nil {
                     out[parityPattern]?[pattern] = numPressed
@@ -51,6 +58,7 @@ public class Day10peti {
     // Cartesian product helper
     func product(_ arrays: [[Int]]) -> [[Int]] {
         var result: [[Int]] = [[]]
+
         for array in arrays {
             var newResult: [[Int]] = []
             for prefix in result {
@@ -60,6 +68,7 @@ public class Day10peti {
             }
             result = newResult
         }
+
         return result
     }
 
@@ -100,6 +109,7 @@ public class Day10peti {
             $0.trimmingCharacters(in: CharacterSet(charactersIn: "()[]{}"))
                 .split(separator: ",").compactMap { Int($0) }
         }
+        
         // Convert to binary presence as in Python
         let coeffsBinary = coeffs.map { r in
             (0..<goal.count).map { i in r.contains(i) ? 1 : 0 }

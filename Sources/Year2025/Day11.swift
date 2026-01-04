@@ -15,41 +15,6 @@ public final class Day11 {
         return dfs("svr", false, false, servers, &cache)
     }
 
-    public func part2b(_ input: [String]) -> Int {
-        let (_, servers) = parse(input, start: "")
-//        return routes2(from: "svr", to: "out", servers: servers, isPart2: true)
-        let graph = createGraph(from: Array(servers.values))
-        guard let node = graph["svr"] else { return 0 }
-        return route(from: node, fft: false, dac: false, depth: 0, maxDepth: graph.count + 2)
-    }
-
-    class Node {
-        let name: String
-        var children: [Node] = []
-
-        init(_ name: String) {
-            self.name = name
-        }
-    }
-
-    func createGraph(from servers: [Server]) -> [String: Node] {
-        var nodes = [String: Node]()
-
-        for server in servers {
-            let node = nodes[server.name, default: Node(server.name)]
-            var children = [Node]()
-            for serverName in server.output {
-                let child = nodes[serverName, default: Node(serverName)]
-                nodes[child.name] = child
-                children.append(child)
-            }
-            node.children = children
-            nodes[node.name] = node
-        }
-
-        return nodes
-    }
-
     struct Server: Hashable {
         let name: String
         let output: [String]
@@ -102,20 +67,6 @@ extension Day11 {
         return result
     }
 
-    func route(from node: Node, fft: Bool, dac: Bool, depth: Int, maxDepth: Int) -> Int {
-        guard depth < maxDepth else { return 0 }
-        if node.name == "out" {
-            return fft && dac ? 1 : 0
-        }
-        let fft = fft || node.name == "fft"
-        let dac = dac || node.name == "dac"
-        if dac == true && fft == false { return 0 }
-
-        return node.children.reduce(0) {
-            $0 + route(from: $1, fft: fft, dac: dac, depth: depth + 1, maxDepth: maxDepth)
-        }
-    }
-
     func routes(from: String, to: String, servers: [String: Server], isPart2: Bool = false) -> Int {
         let start = servers[from]!
         let match = Set(["fft", "dac"])
@@ -138,65 +89,12 @@ extension Day11 {
                 if key == to {
                     if isPart2, count == 2 {
                         total += 1
-                        print(total, queue.count)
                     } else if !isPart2 {
                         total += 1
                     }
                 } else  {
                     let nextCount = count + (match.contains(key) ? 1 : 0)
                     queue.append((key, nextCount))
-                    if queue.count % 10000 == 0 {
-                        print(total, queue.count)
-                    }
-                }
-            }
-        }
-
-        return total
-    }
-
-    func routes2(from: String, to: String, servers: [String: Server], isPart2: Bool = false) -> Int {
-        let start = servers[from]!
-        let match = Set(["fft", "dac"])
-
-        var total = 0
-        var queue: [(String, Int)] = []
-        for key in start.output {
-            queue.append((key, match.contains(key) ? 1 : 0))
-        }
-
-        while !queue.isEmpty {
-            let (serverName, count) = queue.removeFirst()
-
-            guard let server = servers[serverName] else {
-                print("FAILED", serverName)
-                continue
-            }
-
-            var output = server.output
-
-            if isPart2 {
-                if output.contains("dac") {
-                    output = ["dac"]
-                } else if output.contains("fft") {
-                    output = ["fft"]
-                }
-            }
-
-            for key in output {
-                if key == to {
-                    if isPart2, count == 2 {
-                        total += 1
-                        print(total, queue.count)
-                    } else if !isPart2 {
-                        total += 1
-                    }
-                } else  {
-                    let nextCount = count + (match.contains(key) ? 1 : 0)
-                    queue.append((key, nextCount))
-                    if queue.count % 10000 == 0 {
-                        print(total, queue.count)
-                    }
                 }
             }
         }
@@ -232,7 +130,6 @@ extension Day11 {
             }
         }
 
-        print("Number of servers", servers.count)
         return (you, servers)
     }
 }
