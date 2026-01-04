@@ -9,20 +9,24 @@ public struct Day10 {
     }
 
     public func part2(_ input: [String]) -> Int {
-        parse(input).map { configureJoltage($0, current: $0.joltage) }.reduce(0, +)
+        parse(input).map { configureJoltage($0) }.reduce(0, +)
     }
 
-    typealias Button = [Int]
+    typealias Button = Set<Int>
 
     struct Machine {
         let lights: [Bool]
         let buttons: [Button]
         let joltage: [Int]
-        var defaultLightsState: [Bool] {
-            lights.map { _ in false }
-        }
-        var defaultJoltageState: [Int] {
-            joltage.map { _ in 0 }
+        let defaultLightsState: [Bool]
+        let defaultJoltageState: [Int]
+
+        init(buttons: [Button], joltage: [Int]) {
+            self.lights = []
+            self.buttons = buttons
+            self.joltage = joltage
+            self.defaultLightsState = []
+            self.defaultJoltageState = []
         }
 
         init(_ line: String) {
@@ -38,10 +42,19 @@ public struct Day10 {
             self.joltage = parts.last!
                 .components(separatedBy: ",")
                 .map { Int($0)! }
-            self.buttons = parts[1..<parts.count-1].map {
-                $0.components(separatedBy: ",")
-                    .map { Int($0)! }
-            }
+            self.buttons = parts[1..<parts.count-1]
+                .map {
+                    Set($0.components(separatedBy: ",")
+                        .map { Int($0)! })
+                }
+            self.defaultLightsState = lights.map { _ in false }
+            self.defaultJoltageState = joltage.map { _ in 0 }
+        }
+
+        func sortedJoltage() -> [(Int, Int)] {
+            joltage.enumerated()
+                .map { ($0, $1) }
+                .sorted { $0.1 > $1.1 }
         }
     }
 }
@@ -72,37 +85,81 @@ extension Day10 {
         return 0
     }
 
-    func configureJoltage(_ machine: Machine, current: [Int], currentLowest: Int = Int.max, level: Int = 0) -> Int {
-        guard currentLowest > level else {
-            return level
-        }
+    /*
+     from functools import cache
+     from itertools import combinations, product
+     import aocd
 
-        var lowest = Int.max
+     def patterns(coeffs: list[tuple[int, ...]]) -> dict[tuple[int, ...], dict[tuple[int, ...], int]]:
+     num_buttons = len(coeffs)
+     num_variables = len(coeffs[0])
+     out = {parity_pattern: {} for parity_pattern in product(range(2), repeat=num_variables)}
+     for num_pressed_buttons in range(num_buttons+1):
+     for buttons in combinations(range(num_buttons), num_pressed_buttons):
+     pattern = tuple(map(sum, zip((0,) * num_variables, *(coeffs[i] for i in buttons))))
+     parity_pattern = tuple(i%2 for i in pattern)
+     if pattern not in out[parity_pattern]:
+     out[parity_pattern][pattern] = num_pressed_buttons
+     return out
 
-        for button in buttons(for: machine, current: current) {
-            let newJoltage = toggle(joltage: current, with: button)
-            if isZero(newJoltage) {
-                return level + 1
-            } else if isValid(newJoltage) {
-                if let cacheValue = seen[newJoltage], cacheValue < level + 1 {
-                    continue
-                }
+     def solve_single(coeffs: list[tuple[int, ...]], goal: tuple[int, ...]) -> int:
+     pattern_costs = patterns(coeffs)
+     @cache
+     def solve_single_aux(goal: tuple[int, ...]) -> int:
+     if all(i == 0 for i in goal): return 0
+     answer = 1000000
+     for pattern, pattern_cost in pattern_costs[tuple(i%2 for i in goal)].items():
+     if all(i <= j for i, j in zip(pattern, goal)):
+     new_goal = tuple((j - i)//2 for i, j in zip(pattern, goal))
+     answer = min(answer, pattern_cost + 2 * solve_single_aux(new_goal))
+     return answer
+     return solve_single_aux(goal)
 
-                let result = configureJoltage(machine, current: newJoltage, currentLowest: lowest, level: level + 1)
+     def solve(raw: str):
+     score = 0
+     lines = raw.splitlines()
+     for I, L in enumerate(lines, 1):
+     _, *coeffs, goal = L.split()
+     goal = tuple(int(i) for i in goal[1:-1].split(","))
+     coeffs = [[int(i) for i in r[1:-1].split(",")] for r in coeffs]
+     coeffs = [tuple(int(i in r) for i in range(len(goal))) for r in coeffs]
 
-                lowest = min(lowest, result)
-                seen[newJoltage] = min(seen[newJoltage, default: result], result)
-//                if lowest != Int.max && level > 3 {
-//                    return lowest
-//                }
+     subscore = solve_single(coeffs, goal)
+     print(f'Line {I}/{len(lines)}: answer {subscore}')
+     score += subscore
+     print(score)
+
+     # solve(open('input/10.test').read())
+     solve(aocd.get_data(year=2025, day=10))
+     */
+
+    func configureJoltage(_ machine: Machine, level: Int = 0) -> Int {
+        1
+    }
+
+    func configureJoltage2(_ machine: Machine, level: Int = 0) -> Int {
+
+        guard machine.joltage.reduce(0, +) > 0 else { return level }
+        var lowestLevel = Int.max
+
+        let sortedJoltage = machine.sortedJoltage()
+        let remainingIndexes = Set(sortedJoltage.map({ $0.0 }))
+
+        for button in machine.buttons where button.isSubset(of: remainingIndexes) {
+            var lowest = Int.max
+            for index in button {
+                lowest = min(lowest, sortedJoltage.first { $0.0 == index }!.1)
             }
+
+            var joltage = machine.joltage
+            for index in button {
+                joltage[index] -= lowest
+            }
+
+            lowestLevel = min(lowestLevel, configureJoltage(Machine(buttons: machine.buttons, joltage: joltage), level: level + 1))
         }
 
-//        if lowest != Int.max {
-//            print(lowest)
-//        }
-
-        return lowest
+        return lowestLevel
     }
 
     func isZero(_ joltage: [Int]) -> Bool {
@@ -156,7 +213,7 @@ extension Day10 {
         return joltage
     }
 
-    func toggle(lights: [Bool], with: [Int]) -> [Bool] {
+    func toggle(lights: [Bool], with: Set<Int>) -> [Bool] {
         var lights = lights
         for index in with {
             lights[index].toggle()
